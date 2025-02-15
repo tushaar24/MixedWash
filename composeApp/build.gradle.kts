@@ -1,4 +1,6 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
+import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -6,6 +8,8 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.googleServices)
+    alias(libs.plugins.buildKonfig)
 }
 
 kotlin {
@@ -39,6 +43,19 @@ kotlin {
             // ktor
             implementation(libs.ktor.client.okhttp)
 
+            // firebase
+            implementation(project.dependencies.platform(libs.firebase.bom))
+            implementation(libs.google.firebase.analytics)
+
+            // location
+            api(libs.play.services.location)
+            api(libs.play.services.coroutines)
+
+            // startup
+            implementation(libs.androidx.startup)
+
+
+
         }
 
         commonMain.dependencies {
@@ -57,6 +74,8 @@ kotlin {
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.serialization.kotlinx.json)
+            api(libs.ktor.client.logging)
+
 
             // koin
             api(libs.koin.core)
@@ -75,8 +94,15 @@ kotlin {
 
         }
 
+        commonTest.dependencies {
+            implementation(kotlin("test"))
+
+        }
+
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
+            implementation(libs.kotlinx.atomicfu)
+            api(libs.kmp.notifier)  // documentation says to use export...
         }
 
     }
@@ -117,4 +143,25 @@ dependencies {
     debugImplementation(compose.uiTooling)
     debugImplementation(libs.androidx.ui.tooling)
 }
+
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("test_api_keys.properties")
+localProperties.load(localPropertiesFile.inputStream())
+
+val googleApiKey = localProperties.getProperty("loki_test_google_api_key") ?: ""
+val rzrpayTestKeyId = localProperties.getProperty("rzrpay_test_key_id") ?: ""
+val rzrpayTestKeySecret = localProperties.getProperty("rzrpay_test_key_secret") ?: ""
+
+buildkonfig {
+    packageName = "com.mixedwash"
+    objectName = "TestApiKeyConfig"
+    // exposeObjectWithName = "YourAwesomePublicConfig"
+
+    defaultConfigs {
+        buildConfigField(STRING, "googleApiKey", googleApiKey)
+        buildConfigField(STRING, "rzrpayTestKeyId", rzrpayTestKeyId)
+        buildConfigField(STRING, "rzrpayTestKeySecret", rzrpayTestKeySecret)
+    }
+}
+
 
