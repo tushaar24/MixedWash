@@ -1,0 +1,76 @@
+package com.mixedwash.previews
+
+import BrandTheme
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
+import com.mixedwash.domain.validation.PinCodeValidationUseCase
+import com.mixedwash.features.createOrder.presentation.components.AddressForm
+import com.mixedwash.features.createOrder.presentation.models.AddressFormState
+import com.mixedwash.features.createOrder.presentation.models.FormMode
+import com.mixedwash.presentation.models.FieldID
+import com.mixedwash.presentation.models.FormField
+import com.mixedwash.screenHorizontalPadding
+import com.mixedwash.screenVerticalPadding
+import com.mixedwash.ui.theme.MixedWashTheme
+import org.jetbrains.compose.ui.tooling.preview.Preview
+
+@Preview
+@Composable
+private fun AddressFormPreview() {
+    val baseCreateFormState = AddressFormState(
+        title = "Create Address", mode = FormMode.Create(onCreate = { }), fields = listOf(
+            FormField(
+                value = "",
+                id = FieldID.ADDRESS_TITLE,
+                label = "Address Title",
+                placeholder = "Home Address",
+                keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words),
+                onValueChange = {},
+            ), FormField(
+                value = "",
+                id = FieldID.ADDRESS_LINE_1,
+                label = "Address Line 1",
+                placeholder = "Flat No, House, Building Name",
+                keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words),
+                onValueChange = {},
+            ), FormField(value = "",
+                id = FieldID.ADDRESS_LINE_2,
+                label = "Address Line 2",
+                placeholder = "Landmark, Locality",
+                keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words),
+                onValueChange = {
+
+                }), FormField(value = "",
+                id = FieldID.ADDRESS_LINE_3,
+                label = "Address Line 3",
+                placeholder = "City, State",
+                keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words),
+                onValueChange = { }), FormField(
+                value = "",
+                id = FieldID.PIN_CODE,
+                label = "Pin Code",
+                placeholder = "6 digit pin code",
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                onValueChange = { },
+                validationUseCase = PinCodeValidationUseCase
+            )
+        )
+    )
+
+    MixedWashTheme {
+        AddressForm(
+            modifier = Modifier
+                .padding(
+                    horizontal = screenHorizontalPadding,
+                    vertical = screenVerticalPadding
+                )
+                .background(BrandTheme.colors.gray.lighter),
+            state = baseCreateFormState
+        )
+    }
+}
