@@ -1,23 +1,23 @@
-package com.mixedwash.loki.geolocation.internal
+package com.mixedwash.services.loki.geolocation.internal
 
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.useContents
-import com.mixedwash.loki.core.Altitude
-import com.mixedwash.loki.core.Azimuth
-import com.mixedwash.loki.core.Coordinates
-import com.mixedwash.loki.core.Location
-import com.mixedwash.loki.core.Priority
-import com.mixedwash.loki.core.Speed
+import com.mixedwash.services.loki.core.Altitude
+import com.mixedwash.services.loki.core.Azimuth
+import com.mixedwash.services.loki.core.Coordinates
+import com.mixedwash.services.loki.core.Location
+import com.mixedwash.services.loki.core.Priority
+import com.mixedwash.services.loki.core.Speed
 import platform.CoreLocation.CLLocation
 import platform.Foundation.timeIntervalSince1970
 import platform.UIKit.UIDevice
 
-internal val Priority.toIosPriority: Double
+internal val com.mixedwash.services.loki.core.Priority.toIosPriority: Double
     get() = when (this) {
-        Priority.HighAccuracy -> platform.CoreLocation.kCLLocationAccuracyBestForNavigation
-        Priority.Balanced -> platform.CoreLocation.kCLLocationAccuracyNearestTenMeters
-        Priority.LowPower -> platform.CoreLocation.kCLLocationAccuracyKilometer
-        Priority.Passive -> platform.CoreLocation.kCLLocationAccuracyThreeKilometers
+        com.mixedwash.services.loki.core.Priority.HighAccuracy -> platform.CoreLocation.kCLLocationAccuracyBestForNavigation
+        com.mixedwash.services.loki.core.Priority.Balanced -> platform.CoreLocation.kCLLocationAccuracyNearestTenMeters
+        com.mixedwash.services.loki.core.Priority.LowPower -> platform.CoreLocation.kCLLocationAccuracyKilometer
+        com.mixedwash.services.loki.core.Priority.Passive -> platform.CoreLocation.kCLLocationAccuracyThreeKilometers
     }
 
 @OptIn(ExperimentalForeignApi::class)

@@ -8,6 +8,7 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,17 +29,19 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
-import com.mixedwash.largePadding
-import com.mixedwash.mediumPadding
+import com.mixedwash.ui.theme.largePadding
+import com.mixedwash.ui.theme.mediumPadding
 import com.mixedwash.presentation.models.SnackBarType
-import com.mixedwash.screenHorizontalPadding
+import com.mixedwash.ui.theme.screenHorizontalPadding
 
 
 @Composable
 fun BrandSnackbar(
     modifier: Modifier = Modifier,
     message: String,
-    snackbarType: SnackBarType?
+    snackbarType: SnackBarType?,
+    action: (() -> Unit) = {},
+    actionText: String? = null
 ) {
     val type = snackbarType ?: SnackBarType.INFO
 
@@ -72,21 +75,36 @@ fun BrandSnackbar(
                         .fillMaxWidth()
                         .background(Color.White)
                         .padding(vertical = mediumPadding, horizontal = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
 
                     ) {
-                    Icon(
-                        imageVector = type.icon,
-                        tint = type.contentColor,
-                        contentDescription = null,
-                    )
-                    Text(
-                        text = message,
-                        color = type.contentColor,
-                        style = BrandTheme.typography.subtitle3.copy(lineHeight = 1.5.em),
-                        maxLines = 2
-                    )
+                    Row(
+                        modifier = Modifier.weight(1f),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = type.icon,
+                            tint = type.contentColor,
+                            contentDescription = null,
+                        )
+                        Text(
+                            text = message,
+                            color = type.contentColor,
+                            style = BrandTheme.typography.subtitle3.copy(lineHeight = 1.5.em),
+                            maxLines = 2
+                        )
+                    }
+
+                    Box(modifier = Modifier.padding(2.dp).clickable(onClick = action)) {
+                        actionText?.let {
+                            Text(
+                                text = it,
+                                style = BrandTheme.typography.subtitle3,
+                                color = type.contentColor
+                            )
+                        }
                 }
             }
         }
@@ -94,7 +112,6 @@ fun BrandSnackbar(
 
 }
 
-//@Preview(showBackground = true)
 @Composable
 fun DefaultSnackbarPreview() {
     Column(
@@ -105,21 +122,30 @@ fun DefaultSnackbarPreview() {
     ) {
         BrandSnackbar(
             message = "Message Delivered Successfully ",
-            snackbarType = SnackBarType.SUCCESS
+            snackbarType = SnackBarType.SUCCESS,
+            action = {},
+            actionText = "Open Settings"
         )
         BrandSnackbar(
             message = "Message Delivered Successfully ",
-            snackbarType = SnackBarType.WARNING
+            snackbarType = SnackBarType.WARNING,
+            action = {},
+            actionText = "Open Settings"
         )
         BrandSnackbar(
             message = "Message Delivered Successfully ",
-            snackbarType = SnackBarType.ERROR
+            snackbarType = SnackBarType.ERROR,
+            action = {},
+            actionText = "Open Settings"
         )
         BrandSnackbar(
             message = "Message Delivered Successfully ",
-            snackbarType = SnackBarType.INFO
+            snackbarType = SnackBarType.INFO,
+            action = {},
+            actionText = "Open Settings"
         )
 
     }
 
+}
 }

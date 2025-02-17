@@ -1,23 +1,23 @@
-package com.mixedwash.loki.geolocation.internal
+package com.mixedwash.services.loki.geolocation.internal
 
 import android.location.Location
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import com.google.android.gms.location.LocationRequest
-import com.mixedwash.loki.core.Altitude
-import com.mixedwash.loki.core.Azimuth
-import com.mixedwash.loki.core.Coordinates
-import com.mixedwash.loki.core.Priority
-import com.mixedwash.loki.core.Speed
-import com.mixedwash.loki.core.Location as LokiLocation
-import com.mixedwash.loki.geolocation.LocationRequest as LokiLocationRequest
+import com.mixedwash.services.loki.core.Altitude
+import com.mixedwash.services.loki.core.Azimuth
+import com.mixedwash.services.loki.core.Coordinates
+import com.mixedwash.services.loki.core.Priority
+import com.mixedwash.services.loki.core.Speed
+import com.mixedwash.services.loki.core.Location as LokiLocation
+import com.mixedwash.services.loki.geolocation.LocationRequest as LokiLocationRequest
 
 
 /**
  * Converts a [Location] to a [dev.jordond.compass.Location].
  */
 internal fun Location.toModel(): LokiLocation =
-    com.mixedwash.loki.core.Location(
+    com.mixedwash.services.loki.core.Location(
         coordinates = Coordinates(latitude = latitude, longitude = longitude),
         accuracy = accuracy.toDouble(),
         azimuth = Azimuth(
@@ -35,12 +35,12 @@ internal fun Location.toModel(): LokiLocation =
         timestampMillis = time,
     )
 
-internal val Priority.toAndroidPriority: Int
+internal val com.mixedwash.services.loki.core.Priority.toAndroidPriority: Int
     get() = when (this) {
-        Priority.Balanced -> com.google.android.gms.location.Priority.PRIORITY_BALANCED_POWER_ACCURACY
-        Priority.HighAccuracy -> com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
-        Priority.LowPower -> com.google.android.gms.location.Priority.PRIORITY_LOW_POWER
-        Priority.Passive -> com.google.android.gms.location.Priority.PRIORITY_PASSIVE
+        com.mixedwash.services.loki.core.Priority.Balanced -> com.google.android.gms.location.Priority.PRIORITY_BALANCED_POWER_ACCURACY
+        com.mixedwash.services.loki.core.Priority.HighAccuracy -> com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
+        com.mixedwash.services.loki.core.Priority.LowPower -> com.google.android.gms.location.Priority.PRIORITY_LOW_POWER
+        com.mixedwash.services.loki.core.Priority.Passive -> com.google.android.gms.location.Priority.PRIORITY_PASSIVE
     }
 
 internal fun LokiLocationRequest.toAndroidLocationRequest(): LocationRequest {

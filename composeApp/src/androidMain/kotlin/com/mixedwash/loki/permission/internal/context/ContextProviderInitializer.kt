@@ -1,4 +1,4 @@
-package com.mixedwash.loki.permission.internal.context
+package com.mixedwash.services.loki.permission.internal.context
 
 /*
 @SuppressLint

@@ -1,12 +1,12 @@
 
-package com.mixedwash.loki.permission.internal.activity
+package com.mixedwash.services.loki.permission.internal.activity
 
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
 import androidx.activity.ComponentActivity
-import com.mixedwash.loki.core.InternalLokiApi
-import com.mixedwash.loki.permission.internal.PermissionRequester
+import com.mixedwash.services.loki.core.InternalLokiApi
+import com.mixedwash.services.loki.permission.internal.PermissionRequester
 import java.lang.ref.WeakReference
 
 @InternalLokiApi

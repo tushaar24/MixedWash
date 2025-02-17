@@ -23,12 +23,6 @@ class MainActivity : ComponentActivity() {
             navigationBarStyle = systemBarStyle
         )
 
-        initKoin {
-            androidLogger()
-            androidContext(this@MainActivity)
-        }
-
-
         setContent {
             App()
         }

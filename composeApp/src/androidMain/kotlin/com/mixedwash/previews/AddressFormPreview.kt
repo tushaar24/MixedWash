@@ -9,13 +9,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import com.mixedwash.domain.validation.PinCodeValidationUseCase
-import com.mixedwash.features.createOrder.presentation.components.AddressForm
-import com.mixedwash.features.createOrder.presentation.models.AddressFormState
-import com.mixedwash.features.createOrder.presentation.models.FormMode
+import com.mixedwash.features.createOrder.presentation.address.components.AddressForm
+import com.mixedwash.features.createOrder.presentation.address.AddressFormState
+import com.mixedwash.features.createOrder.presentation.address.FormMode
 import com.mixedwash.presentation.models.FieldID
 import com.mixedwash.presentation.models.FormField
-import com.mixedwash.screenHorizontalPadding
-import com.mixedwash.screenVerticalPadding
+import com.mixedwash.ui.theme.screenHorizontalPadding
+import com.mixedwash.ui.theme.screenVerticalPadding
 import com.mixedwash.ui.theme.MixedWashTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 

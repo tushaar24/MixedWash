@@ -21,11 +21,11 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.mixedwash.largePadding
+import com.mixedwash.ui.theme.largePadding
 import com.mixedwash.ui.theme.Gray400
 import com.mixedwash.ui.theme.Gray900
 import com.mixedwash.ui.theme.MixedWashTheme
-import com.mixedwash.ui.theme.defaults.OutlinedButton
+import com.mixedwash.ui.theme.components.OutlinedButton
 
 @Composable
 fun DialogPopup(

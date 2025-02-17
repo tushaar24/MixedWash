@@ -1,5 +1,6 @@
 package com.mixedwash
 
+import com.mixedwash.core.data.di.targetDataModule
 import com.mixedwash.core.network.di.networkModule
 import com.mixedwash.features.createOrder.di.createOrderModule
 import com.mixedwash.features.laundryServices.di.laundryServiceModule
@@ -8,5 +9,5 @@ import org.koin.dsl.KoinAppDeclaration
 
 fun initKoin(appDeclaration: KoinAppDeclaration = {}) = startKoin {
     appDeclaration()
-    modules(createOrderModule, laundryServiceModule, networkModule)
+    modules(createOrderModule, laundryServiceModule, networkModule, targetDataModule())
 }

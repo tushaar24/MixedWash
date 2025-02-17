@@ -30,6 +30,12 @@ kmpNotifier = "1.4.0"
 buildKonfigRef = "0.11.0"
 androidx-startup = "1.2.0"
 kotlinx-atomicfu = "0.27.0"
+room = "2.7.0-beta01"
+ksp = "2.1.0-1.0.29"
+sqliteBundled = "2.5.0-beta01"
+datastore = "1.1.2"
+
+
 
 
 
@@ -78,6 +84,15 @@ play-services-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 google-firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 kmp-notifier = { module = "io.github.mirzemehdi:kmpnotifier", version.ref = "kmpNotifier"}
+androidx-room-common = { group = "androidx.room", name = "room-common", version.ref = "room" }
+
+#Room
+androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+androidx-sqlite-bundled = { group = "androidx.sqlite", name = "sqlite-bundled", version.ref = "sqliteBundled"}
+
+#DataStore Preferences
+androidx-datastore-preferences = { group ="androidx.datastore", name = "datastore-preferences", version.ref = "datastore"}
 
 
 
@@ -90,5 +105,7 @@ kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref =
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 googleServices = { id = "com.google.gms.google-services", version.ref = "googleServices" }
 buildKonfig = { id = "com.codingfeline.buildkonfig", version.ref = "buildKonfigRef" }
+roomGradlePlugin = { id = "androidx.room", version.ref = "room" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 
 

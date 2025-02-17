@@ -16,9 +16,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import coil3.toCoilUri
-import com.mixedwash.features.createOrder.presentation.screens.DeliveryNotes
-import com.mixedwash.screenHorizontalPadding
-import com.mixedwash.screenVerticalPadding
+import com.mixedwash.features.createOrder.presentation.slot_selection.DeliveryNotes
+import com.mixedwash.ui.theme.screenHorizontalPadding
+import com.mixedwash.ui.theme.screenVerticalPadding
 import com.mixedwash.ui.theme.MixedWashTheme
 
 @Preview(showBackground = true, showSystemUi = true)

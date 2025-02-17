@@ -1,10 +1,10 @@
-package com.mixedwash.loki.permission
+package com.mixedwash.services.loki.permission
 
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
-import com.mixedwash.loki.core.InternalLokiApi
-import com.mixedwash.loki.permission.internal.context.ContextProvider
+import com.mixedwash.services.loki.core.InternalLokiApi
+import com.mixedwash.services.loki.permission.internal.context.ContextProvider
 
 @OptIn(InternalLokiApi::class)
 internal actual fun openPermissionSettings() {

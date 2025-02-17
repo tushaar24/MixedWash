@@ -17,6 +17,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,21 +29,20 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.mixedwash.features.createOrder.presentation.models.Address
-import com.mixedwash.features.createOrder.presentation.models.AddressId
-import com.mixedwash.features.createOrder.presentation.screens.AddressScreen
-import com.mixedwash.features.createOrder.presentation.screens.AddressScreenViewModel
-import com.mixedwash.features.createOrder.presentation.screens.Offer
-import com.mixedwash.features.createOrder.presentation.screens.OrderConfirmationScreen
-import com.mixedwash.features.createOrder.presentation.screens.OrderConfirmationScreenState
-import com.mixedwash.features.createOrder.presentation.screens.OrderReviewScreen
-import com.mixedwash.features.createOrder.presentation.screens.OrderReviewScreenState
-import com.mixedwash.features.createOrder.presentation.screens.PhoneScreen
-import com.mixedwash.features.createOrder.presentation.screens.PhoneScreenViewModel
-import com.mixedwash.features.createOrder.presentation.screens.ServiceItem
-import com.mixedwash.features.createOrder.presentation.screens.SlotSelectionScreen
-import com.mixedwash.features.createOrder.presentation.screens.SlotSelectionScreenViewModel
-import com.mixedwash.features.createOrder.presentation.screens.TimeSlot
+import com.mixedwash.features.createOrder.presentation.address.model.Address
+import com.mixedwash.features.createOrder.presentation.address.AddressScreen
+import com.mixedwash.features.createOrder.presentation.address.AddressScreenViewModel
+import com.mixedwash.features.createOrder.presentation.slot_selection.Offer
+import com.mixedwash.features.createOrder.presentation.order_confirmation.OrderConfirmationScreen
+import com.mixedwash.features.createOrder.presentation.order_confirmation.OrderConfirmationScreenState
+import com.mixedwash.features.createOrder.presentation.order_review.OrderReviewScreen
+import com.mixedwash.features.createOrder.presentation.order_review.OrderReviewScreenState
+import com.mixedwash.features.createOrder.presentation.phone.PhoneScreen
+import com.mixedwash.features.createOrder.presentation.phone.PhoneScreenViewModel
+import com.mixedwash.features.createOrder.presentation.order_review.ServiceItem
+import com.mixedwash.features.createOrder.presentation.slot_selection.SlotSelectionScreen
+import com.mixedwash.features.createOrder.presentation.slot_selection.SlotSelectionScreenViewModel
+import com.mixedwash.features.createOrder.presentation.slot_selection.TimeSlot
 import com.mixedwash.features.profile.ProfileScreen
 import com.mixedwash.features.profile.ProfileScreenItem
 import com.mixedwash.features.profile.ProfileScreenState
@@ -66,7 +66,6 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-//@Preview
 fun App() {
     MixedWashTheme {
         KoinContext {
@@ -98,7 +97,7 @@ fun App() {
                                         },
                                     contentAlignment = Alignment.BottomCenter
                                 ) {
-                                    BrandSnackbar(message = message, snackbarType = type)
+                                    BrandSnackbar(message = message, snackbarType = type, actionText = snackbarData.visuals.actionLabel, action = snackbarData::performAction)
                                 }
                             }
                         }
@@ -118,10 +117,23 @@ fun App() {
 
                         NavHost(
                             navController = navController,
-                            startDestination = Route.OrderConfirmationScreen
+                            startDestination = Route.AddressRoute(
+                                title = "Manage Addresses",
+                                screenType = Route.AddressRoute.ScreenType.Edit,
+                            )
                         ) {
 
-                            composable<Route.ProfileScreen> {
+                            composable<Route.AddressRoute> {
+                                val addressViewModel = koinViewModel<AddressScreenViewModel>()
+                                val state by addressViewModel.state.collectAsState()
+                                AddressScreen(
+                                    state = state,
+                                    uiEventsFlow = addressViewModel.uiEventsFlow,
+                                    snackbarHandler = snackbarHandler,
+                                )
+                            }
+
+                            composable<Route.ProfileRoute> {
                                 val state = ProfileScreenState(
                                     imageUrl = "https://avatars.githubusercontent.com/u/26184016?v=4", // Placeholder
                                     name = "Syed",
@@ -197,17 +209,7 @@ fun App() {
                                 ProfileScreen(state = state)
                             }
 
-                            composable<Route.AddressScreen> {
-                                val addressViewModel = koinViewModel<AddressScreenViewModel>()
-                                val state by addressViewModel.state.collectAsStateWithLifecycle()
-                                AddressScreen(
-                                    state = state,
-                                    uiEventsFlow = addressViewModel.uiEventsFlow,
-                                    snackbarHandler = snackbarHandler,
-                                )
-                            }
-
-                            composable<Route.PhoneScreen> {
+                            composable<Route.PhoneRoute> {
                                 val viewModel = koinViewModel<PhoneScreenViewModel>()
                                 val state by viewModel.state.collectAsStateWithLifecycle()
                                 PhoneScreen(
@@ -218,7 +220,7 @@ fun App() {
                                 )
                             }
 
-                            composable<Route.SlotSelectionScreen> {
+                            composable<Route.SlotSelectionRoute> {
                                 val viewModel = koinViewModel<SlotSelectionScreenViewModel>()
                                 val state by viewModel.state.collectAsStateWithLifecycle()
                                 SlotSelectionScreen(
@@ -230,7 +232,7 @@ fun App() {
 
                             }
 
-                            composable<Route.OrderReviewScreen> {
+                            composable<Route.OrderReviewRoute> {
 
                                 val state = OrderReviewScreenState(
                                     items = listOf(
@@ -272,7 +274,7 @@ fun App() {
                                         addressLine1 = "2342, Electronic City Phase 2",
                                         addressLine2 = "Silicon Town, Bengaluru",
                                         pinCode = "560100",
-                                        id = AddressId("asnak")
+                                        uid = "asnak"
                                     ),
                                     pickupSlot = TimeSlot(
                                         startTimeStamp = 1736933400L, // 9:30 AM
@@ -314,7 +316,7 @@ fun App() {
 
                             }
 
-                            composable<Route.OrderConfirmationScreen> {
+                            composable<Route.OrderConfirmationRoute> {
                                 val state = OrderConfirmationScreenState(
                                     onBackHome = { },
                                     title = "Order Placed!",

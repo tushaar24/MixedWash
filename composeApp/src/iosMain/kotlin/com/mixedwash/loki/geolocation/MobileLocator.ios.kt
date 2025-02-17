@@ -1,17 +1,17 @@
-package com.mixedwash.loki.geolocation
+package com.mixedwash.services.loki.geolocation
 
-import com.mixedwash.loki.geolocation.internal.toModel
+import com.mixedwash.services.loki.geolocation.internal.toModel
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import com.mixedwash.loki.core.Location
-import com.mixedwash.loki.core.Priority
-import com.mixedwash.loki.geolocation.exception.GeolocationException
-import com.mixedwash.loki.geolocation.internal.LocationManagerDelegate
-import com.mixedwash.loki.geolocation.internal.toIosPriority
-import com.mixedwash.loki.permission.LocationPermissionController
-import com.mixedwash.loki.permission.PermissionState
-import com.mixedwash.loki.permission.throwOnError
+import com.mixedwash.services.loki.core.Location
+import com.mixedwash.services.loki.core.Priority
+import com.mixedwash.services.loki.geolocation.exception.GeolocationException
+import com.mixedwash.services.loki.geolocation.internal.LocationManagerDelegate
+import com.mixedwash.services.loki.geolocation.internal.toIosPriority
+import com.mixedwash.services.loki.permission.LocationPermissionController
+import com.mixedwash.services.loki.permission.PermissionState
+import com.mixedwash.services.loki.permission.throwOnError
 import platform.CoreLocation.CLLocationManager
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -50,7 +50,7 @@ internal class IosLocator(
         return permissionController.hasPermission()
     }
 
-    override suspend fun current(priority: Priority): Location {
+    override suspend fun current(priority: com.mixedwash.services.loki.core.Priority): Location {
         requirePermission()
 
         return suspendCoroutine { continuation ->
@@ -59,7 +59,11 @@ internal class IosLocator(
                     continuation.resume(location.toModel())
                 } else {
                     val cause = error?.localizedDescription ?: "Unknown error"
-                    continuation.resumeWithException(GeolocationException(cause))
+                    continuation.resumeWithException(
+                        com.mixedwash.services.loki.geolocation.exception.GeolocationException(
+                            cause
+                        )
+                    )
                 }
             }
         }
@@ -73,7 +77,11 @@ internal class IosLocator(
                 if (error == null) continuation.resume(Unit)
                 else {
                     val cause = error.localizedDescription
-                    continuation.resumeWithException(GeolocationException(cause))
+                    continuation.resumeWithException(
+                        com.mixedwash.services.loki.geolocation.exception.GeolocationException(
+                            cause
+                        )
+                    )
                 }
             }
         }
@@ -86,7 +94,7 @@ internal class IosLocator(
     }
 
     private suspend fun requirePermission() {
-        val state = permissionController.requirePermissionFor(Priority.Balanced)
+        val state = permissionController.requirePermissionFor(com.mixedwash.services.loki.core.Priority.Balanced)
         if (state != PermissionState.Granted) {
             state.throwOnError()
         }

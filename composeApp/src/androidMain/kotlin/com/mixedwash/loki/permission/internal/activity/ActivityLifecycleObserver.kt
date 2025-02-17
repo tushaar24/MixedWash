@@ -1,4 +1,4 @@
-package com.mixedwash.loki.permission.internal.activity
+package com.mixedwash.services.loki.permission.internal.activity
 
 import android.app.Activity
 import android.app.Application

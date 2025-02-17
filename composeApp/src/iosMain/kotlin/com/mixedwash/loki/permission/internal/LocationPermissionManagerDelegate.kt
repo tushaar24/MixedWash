@@ -1,4 +1,4 @@
-package com.mixedwash.loki.permission.internal
+package com.mixedwash.services.loki.permission.internal
 
 import platform.CoreLocation.CLAuthorizationStatus
 import platform.CoreLocation.CLLocationManager

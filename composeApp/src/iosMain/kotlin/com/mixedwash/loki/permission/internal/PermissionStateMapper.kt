@@ -1,6 +1,6 @@
-package com.mixedwash.loki.permission.internal
+package com.mixedwash.services.loki.permission.internal
 
-import com.mixedwash.loki.permission.PermissionState
+import com.mixedwash.services.loki.permission.PermissionState
 import platform.CoreLocation.CLAuthorizationStatus
 
 internal val CLAuthorizationStatus.toPermissionState: PermissionState

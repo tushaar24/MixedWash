@@ -10,7 +10,14 @@ plugins {
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.googleServices)
     alias(libs.plugins.buildKonfig)
+    alias(libs.plugins.roomGradlePlugin)
+    id("com.google.devtools.ksp")
 }
+
+room {
+    schemaDirectory("$projectDir/schemas")
+}
+
 
 kotlin {
     androidTarget {
@@ -18,6 +25,8 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
+
+
 
     listOf(
         iosX64(),
@@ -38,7 +47,7 @@ kotlin {
 
             // koin
             implementation(libs.koin.android)
-            implementation(libs.koin.androidx.compose)
+//            implementation(libs.koin.androidx.compose)
 
             // ktor
             implementation(libs.ktor.client.okhttp)
@@ -53,9 +62,6 @@ kotlin {
 
             // startup
             implementation(libs.androidx.startup)
-
-
-
         }
 
         commonMain.dependencies {
@@ -92,16 +98,22 @@ kotlin {
             // navigation
             implementation(libs.navigation.compose)
 
+            // room
+            implementation(libs.androidx.room.runtime)
+            implementation(libs.androidx.sqlite.bundled)
+
+            // datastore
+            implementation(libs.kotlinx.atomicfu)               // for kmp-notifier too
+            implementation(libs.androidx.datastore.preferences)
+            implementation(libs.kotlinx.atomicfu)
         }
 
         commonTest.dependencies {
             implementation(kotlin("test"))
-
         }
 
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
-            implementation(libs.kotlinx.atomicfu)
             api(libs.kmp.notifier)  // documentation says to use export...
         }
 
@@ -142,6 +154,13 @@ android {
 dependencies {
     debugImplementation(compose.uiTooling)
     debugImplementation(libs.androidx.ui.tooling)
+
+    // room
+    add("kspAndroid", libs.androidx.room.compiler)
+    add("kspIosSimulatorArm64", libs.androidx.room.compiler)
+    add("kspIosX64", libs.androidx.room.compiler)
+    add("kspIosArm64", libs.androidx.room.compiler)
+
 }
 
 val localProperties = Properties()

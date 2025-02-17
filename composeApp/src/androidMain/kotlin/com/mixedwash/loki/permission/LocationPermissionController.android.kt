@@ -1,4 +1,4 @@
-package com.mixedwash.loki.permission
+package com.mixedwash.services.loki.permission
 
 import android.Manifest
 import android.content.Context
@@ -6,10 +6,10 @@ import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import com.mixedwash.loki.core.InternalLokiApi
-import com.mixedwash.loki.core.Priority
-import com.mixedwash.loki.permission.internal.activity.ActivityProvider
-import com.mixedwash.loki.permission.internal.context.ContextProvider
+import com.mixedwash.services.loki.core.InternalLokiApi
+import com.mixedwash.services.loki.core.Priority
+import com.mixedwash.services.loki.permission.internal.activity.ActivityProvider
+import com.mixedwash.services.loki.permission.internal.context.ContextProvider
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -33,7 +33,7 @@ internal class AndroidLocationPermissionController(
         return context.hasAnyPermission()
     }
 
-    override suspend fun requirePermissionFor(priority: Priority): PermissionState {
+    override suspend fun requirePermissionFor(priority: com.mixedwash.services.loki.core.Priority): PermissionState {
         val permissions = permissionsFor(priority).filter { !context.hasPermission(it) }
         if (permissions.isEmpty() || permissions.hasPermissions()) return PermissionState.Granted
 
@@ -46,15 +46,15 @@ internal class AndroidLocationPermissionController(
         }
     }
 
-    private fun permissionsFor(priority: Priority): List<String> {
+    private fun permissionsFor(priority: com.mixedwash.services.loki.core.Priority): List<String> {
         return when (priority) {
-            Priority.HighAccuracy -> listOf(
+            com.mixedwash.services.loki.core.Priority.HighAccuracy -> listOf(
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION,
             )
-            Priority.Balanced,
-            Priority.LowPower,
-            Priority.Passive,
+            com.mixedwash.services.loki.core.Priority.Balanced,
+            com.mixedwash.services.loki.core.Priority.LowPower,
+            com.mixedwash.services.loki.core.Priority.Passive,
                 -> listOf(Manifest.permission.ACCESS_COARSE_LOCATION)
         }
     }

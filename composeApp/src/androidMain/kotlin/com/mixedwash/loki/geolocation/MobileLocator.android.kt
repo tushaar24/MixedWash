@@ -1,19 +1,19 @@
-package com.mixedwash.loki.geolocation
+package com.mixedwash.services.loki.geolocation
 
 import android.content.Context
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapNotNull
-import com.mixedwash.loki.core.InternalLokiApi
-import com.mixedwash.loki.core.Location
-import com.mixedwash.loki.core.Priority
-import com.mixedwash.loki.geolocation.internal.LocationManager
-import com.mixedwash.loki.geolocation.internal.toAndroidLocationRequest
-import com.mixedwash.loki.geolocation.internal.toAndroidPriority
-import com.mixedwash.loki.geolocation.internal.toModel
-import com.mixedwash.loki.permission.LocationPermissionController
-import com.mixedwash.loki.permission.PermissionState
-import com.mixedwash.loki.permission.internal.context.ContextProvider
-import com.mixedwash.loki.permission.throwOnError
+import com.mixedwash.services.loki.core.InternalLokiApi
+import com.mixedwash.services.loki.core.Location
+import com.mixedwash.services.loki.core.Priority
+import com.mixedwash.services.loki.geolocation.internal.LocationManager
+import com.mixedwash.services.loki.geolocation.internal.toAndroidLocationRequest
+import com.mixedwash.services.loki.geolocation.internal.toAndroidPriority
+import com.mixedwash.services.loki.geolocation.internal.toModel
+import com.mixedwash.services.loki.permission.LocationPermissionController
+import com.mixedwash.services.loki.permission.PermissionState
+import com.mixedwash.services.loki.permission.internal.context.ContextProvider
+import com.mixedwash.services.loki.permission.throwOnError
 
 /**
  * Creates a new [MobileLocator] instance for Android.
@@ -42,7 +42,7 @@ internal class AndroidLocator(
         return permissionController.hasPermission()
     }
 
-    override suspend fun current(priority: Priority): Location {
+    override suspend fun current(priority: com.mixedwash.services.loki.core.Priority): Location {
         requirePermission(priority)
         return locationManager.currentLocation(priority.toAndroidPriority).toModel()
     }
@@ -58,7 +58,7 @@ internal class AndroidLocator(
         locationManager.stopTracking()
     }
 
-    private suspend fun requirePermission(priority: Priority) {
+    private suspend fun requirePermission(priority: com.mixedwash.services.loki.core.Priority) {
         val state = permissionController.requirePermissionFor(priority)
         if (state != PermissionState.Granted) {
             state.throwOnError()

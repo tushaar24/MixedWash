@@ -20,9 +20,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.mixedwash.mediumPadding
-import com.mixedwash.screenHorizontalPadding
-import com.mixedwash.ui.theme.defaults.HeaderIconButton
+import com.mixedwash.ui.theme.mediumPadding
+import com.mixedwash.ui.theme.screenHorizontalPadding
+import com.mixedwash.ui.theme.components.HeaderIconButton
 
 @Composable
 fun DefaultHeader(
