@@ -1,7 +1,7 @@
 package com.mixedwash.features.createOrder.presentation.phone
 
 import com.mixedwash.presentation.models.FormField
-import com.mixedwash.presentation.models.SnackBarType
+import com.mixedwash.presentation.models.SnackbarPayload
 
 
 data class PhoneScreenState(
@@ -12,7 +12,6 @@ data class PhoneScreenState(
     val buttonText: String,
     val buttonEnabled: Boolean,
     val formField: FormField,
-    val onSubmit: () -> Unit,
     val isLoading: Boolean
 )
 
@@ -22,5 +21,6 @@ sealed class PhoneScreenEvent {
 }
 
 sealed class PhoneScreenUiEvent {
-    data class ShowSnackbar(val value : String, val type: SnackBarType) : PhoneScreenUiEvent()
+    data class ShowSnackbar(val payload: SnackbarPayload) : PhoneScreenUiEvent()
+    data object OnSubmitSuccess: PhoneScreenUiEvent()
 }

@@ -5,13 +5,13 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mixedwash.core.data.UserService
 import com.mixedwash.domain.models.Result
 import com.mixedwash.domain.validation.PhoneValidationUseCase
-import com.mixedwash.features.createOrder.domain.usecases.FindUserByPhoneUseCase
 import com.mixedwash.presentation.models.FieldID
 import com.mixedwash.presentation.models.FormField
 import com.mixedwash.presentation.models.InputState
-import com.mixedwash.presentation.models.SnackBarType
+import com.mixedwash.presentation.models.SnackbarPayload
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,11 +22,12 @@ import kotlinx.coroutines.launch
 
 
 class PhoneScreenViewModel  constructor(
-    val findUserByPhoneUseCase: FindUserByPhoneUseCase
+    private val userService: UserService,
+    userAuthService: UserService
 ) : ViewModel() {
     private val initialState = PhoneScreenState(
-        title = "Welcome 👋",
-        subtitle = "Log-in to begin doing your laundry!",
+        title = "Hi ${userService.currentUser?.userMetadata?.name ?: ""} 👋",
+        subtitle = "Enter your phone number to get started",
         phoneNumber = "",
         phoneNumberError = null,
         buttonText = "Next",
@@ -48,7 +49,6 @@ class PhoneScreenViewModel  constructor(
             onValueChange = { onEvent(PhoneScreenEvent.UpdatePhone(it)) },
             requiredMessage = "Phone Number is Required"
         ),
-        onSubmit = { onEvent(PhoneScreenEvent.OnSubmit) },
         isLoading = false
     )
 
@@ -58,7 +58,7 @@ class PhoneScreenViewModel  constructor(
     private val _uiEventsChannel = Channel<PhoneScreenUiEvent>()
     val uiEventsFlow = _uiEventsChannel.receiveAsFlow()
 
-    private fun onEvent(event: PhoneScreenEvent) {
+    fun onEvent(event: PhoneScreenEvent) {
         when (event) {
             PhoneScreenEvent.OnSubmit -> {
                 // enabled showValidation and showRequired
@@ -74,42 +74,21 @@ class PhoneScreenViewModel  constructor(
                         }
                     }
                 }
+
                 if (state.value.formField.asFieldState.isError) return
 
                 viewModelScope.launch {
-                    updateState {
-                        copy(
-                            formField = formField.copy(inputState = InputState.ReadOnly),
-                            buttonEnabled = false
-                        )
-                    }
-                    when (val result = findUserByPhoneUseCase.invoke(state.value.formField.value)) {
-                        is Result.Error -> {
-                            _uiEventsChannel.send(
-                                PhoneScreenUiEvent.ShowSnackbar(
-                                    result.error.toString(),
-                                    SnackBarType.ERROR
-                                )
-                            )
-                        }
-
+                    allowFormInput(false)
+                    val result =
+                        userService.updateMetadata(phoneNumber = state.value.formField.value)
+                    when (result) {
                         is Result.Success -> {
-                            _uiEventsChannel.send(
-                                PhoneScreenUiEvent.ShowSnackbar(
-                                    "Successful",
-                                    SnackBarType.SUCCESS
-                                )
-                            )
+                            sendUiEvent(PhoneScreenUiEvent.OnSubmitSuccess)
                         }
+                        is Result.Error -> snackbarEvent(SnackbarPayload("Updating Phone Number Failed"))
                     }
-                    updateState {
-                        copy(
-                            formField = formField.copy(inputState = InputState.Enabled),
-                            buttonEnabled = true
-                        )
-                    }
+                    allowFormInput(true)
                 }
-
             }
 
             is PhoneScreenEvent.UpdatePhone -> {
@@ -126,7 +105,33 @@ class PhoneScreenViewModel  constructor(
                     )
                 }
             }
+
         }
+    }
+
+    private fun allowFormInput(enable: Boolean) = updateState {
+        copy(
+            formField = formField.copy(inputState = if (enable) InputState.ReadOnly else InputState.Enabled),
+            buttonEnabled = enable
+        )
+
+    }
+
+    private fun sendUiEvent(event: PhoneScreenUiEvent) {
+        viewModelScope.launch {
+            _uiEventsChannel.send(event)
+        }
+    }
+
+    private fun snackbarEvent(payload: SnackbarPayload) {
+        viewModelScope.launch {
+            _uiEventsChannel.send(
+                PhoneScreenUiEvent.ShowSnackbar(
+                    payload
+                )
+            )
+        }
+
     }
 
     private fun updateState(action: PhoneScreenState.() -> PhoneScreenState) {

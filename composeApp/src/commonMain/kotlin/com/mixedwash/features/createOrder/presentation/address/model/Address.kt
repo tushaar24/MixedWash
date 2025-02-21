@@ -101,7 +101,7 @@ fun Address.toFieldIDValueMap(): Map<FieldID, String?> =
             FieldID.ADDRESS_LINE_2 -> addressLine2 ?: ""
             FieldID.ADDRESS_LINE_3 -> addressLine3 ?: ""
             FieldID.PIN_CODE -> pinCode
-            FieldID.PHONE, FieldID.EMAIL -> null
+            FieldID.PHONE, FieldID.EMAIL,FieldID.NAME -> null
         }
     }
 

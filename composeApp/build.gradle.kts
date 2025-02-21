@@ -52,9 +52,13 @@ kotlin {
             // ktor
             implementation(libs.ktor.client.okhttp)
 
-            // firebase
-            implementation(project.dependencies.platform(libs.firebase.bom))
+            // firebase (notifications)
+            implementation(project.dependencies.platform(libs.android.firebase.bom))
             implementation(libs.google.firebase.analytics)
+
+            // firebase auth
+            // implementation(libs.firebase.auth)
+            // implementation(libs.play.services.auth)
 
             // location
             api(libs.play.services.location)
@@ -106,6 +110,16 @@ kotlin {
             implementation(libs.kotlinx.atomicfu)               // for kmp-notifier too
             implementation(libs.androidx.datastore.preferences)
             implementation(libs.kotlinx.atomicfu)
+
+            // kmpauth
+            implementation(libs.kmpauth.google)     //Google One Tap Sign-In
+            implementation(libs.kmpauth.firebase)   //Integrated Authentications with Firebase
+            implementation(libs.kmpauth.uihelper)   //UiHelper SignIn buttons (AppleSignIn, GoogleSignInButton)
+
+
+            // firebase firestore
+            implementation(libs.gitlive.firebase.firestore)
+
         }
 
         commonTest.dependencies {
@@ -152,6 +166,8 @@ android {
 }
 
 dependencies {
+//    implementation(libs.firebase.auth.common)
+//    implementation(libs.firebase.auth.ktx)
     debugImplementation(compose.uiTooling)
     debugImplementation(libs.androidx.ui.tooling)
 

@@ -43,7 +43,7 @@ fun BrandSnackbar(
     action: (() -> Unit) = {},
     actionText: String? = null
 ) {
-    val type = snackbarType ?: SnackBarType.INFO
+    val type = snackbarType ?: SnackBarType.DEFAULT
 
     /**
      * SnackbarHost cannot animate Popup needed to display snackbar on top of ModalBottomSheet.
@@ -140,7 +140,7 @@ fun DefaultSnackbarPreview() {
         )
         BrandSnackbar(
             message = "Message Delivered Successfully ",
-            snackbarType = SnackBarType.INFO,
+            snackbarType = SnackBarType.DEFAULT,
             action = {},
             actionText = "Open Settings"
         )

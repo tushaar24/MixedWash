@@ -8,6 +8,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 
@@ -26,8 +28,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             App()
         }
-
-
     }
 
     override fun onResume() {

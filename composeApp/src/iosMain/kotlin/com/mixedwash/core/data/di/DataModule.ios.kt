@@ -4,6 +4,6 @@ import com.mixedwash.core.data.createDataStore
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
-actual fun targetDataModule(): Module = module {
+actual fun platformDataModule(): Module = module {
     createDataStore()
 }

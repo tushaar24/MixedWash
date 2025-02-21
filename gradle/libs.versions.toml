@@ -13,6 +13,7 @@ androidx-material = "1.12.0"
 androidx-test-junit = "1.2.1"
 compose-multiplatform = "1.7.0"
 junit = "4.13.2"
+kmpauth = "2.3.1"
 kotlin = "2.1.0"
 ktor = "3.0.3"
 koin = "4.0.0"
@@ -34,13 +35,18 @@ room = "2.7.0-beta01"
 ksp = "2.1.0-1.0.29"
 sqliteBundled = "2.5.0-beta01"
 datastore = "1.1.2"
-
-
+playServicesAuth = "21.3.0"
+firebaseAuthCommon = "9.8.0"
+firebaseAuthKtx = "23.2.0"
+firebaseGitlive = "1.13.0"  # CAUTION! : newer version requires jvm target 17 which breaks the kotlin serializer 😭
 
 
 
 [libraries]
 androidx-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
+kmpauth-firebase = { module = "io.github.mirzemehdi:kmpauth-firebase", version.ref = "kmpauth" }
+kmpauth-google = { module = "io.github.mirzemehdi:kmpauth-google", version.ref = "kmpauth" }
+kmpauth-uihelper = { module = "io.github.mirzemehdi:kmpauth-uihelper", version.ref = "kmpauth" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -81,7 +87,7 @@ androidx-startup = { module = "androidx.startup:startup-runtime", version.ref = 
 kotlinx-atomicfu = { module = "org.jetbrains.kotlinx:atomicfu", version.ref = "kotlinx-atomicfu" }
 play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
 play-services-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "playServicesCoroutines" }
-firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
+android-firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 google-firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 kmp-notifier = { module = "io.github.mirzemehdi:kmpnotifier", version.ref = "kmpNotifier"}
 androidx-room-common = { group = "androidx.room", name = "room-common", version.ref = "room" }
@@ -95,6 +101,15 @@ androidx-sqlite-bundled = { group = "androidx.sqlite", name = "sqlite-bundled", 
 androidx-datastore-preferences = { group ="androidx.datastore", name = "datastore-preferences", version.ref = "datastore"}
 
 
+#Firebae Auth
+firebase-auth = { module = "com.google.firebase:firebase-auth" }
+play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
+firebase-auth-common = { group = "com.google.firebase", name = "firebase-auth-common", version.ref = "firebaseAuthCommon" }
+firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx", version.ref = "firebaseAuthKtx" }
+
+
+#Firebase Kotlin SDK
+gitlive-firebase-firestore = { group = "dev.gitlive", name = "firebase-firestore", version.ref = "firebaseGitlive" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

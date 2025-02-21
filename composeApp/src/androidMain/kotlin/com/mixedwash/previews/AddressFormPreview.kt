@@ -17,9 +17,8 @@ import com.mixedwash.presentation.models.FormField
 import com.mixedwash.ui.theme.screenHorizontalPadding
 import com.mixedwash.ui.theme.screenVerticalPadding
 import com.mixedwash.ui.theme.MixedWashTheme
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
-@Preview
+@androidx.compose.ui.tooling.preview.Preview
 @Composable
 private fun AddressFormPreview() {
     val baseCreateFormState = AddressFormState(

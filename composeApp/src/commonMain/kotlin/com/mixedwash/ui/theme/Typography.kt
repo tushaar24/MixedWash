@@ -123,7 +123,7 @@ data class Typography(
                 fontFamily = Poppins(),
                 fontWeight = FontWeight.W400,
                 fontSize = 14.sp,
-                lineHeight = 18.sp
+                lineHeight = 20.sp
             ),
             body3 = TextStyle(
                 color = Color.Unspecified,

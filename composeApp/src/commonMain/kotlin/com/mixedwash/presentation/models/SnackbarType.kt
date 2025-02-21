@@ -28,7 +28,7 @@ enum class SnackBarType(
         contentColor = RedDark,
         icon = Icons.Rounded.Close,
     ),
-    INFO(
+    DEFAULT(
         contentColor = Gray900,
         icon = Icons.Default.Info,
     )

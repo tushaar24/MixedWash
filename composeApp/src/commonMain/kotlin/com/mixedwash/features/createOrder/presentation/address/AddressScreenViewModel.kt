@@ -14,6 +14,7 @@ import androidx.navigation.toRoute
 import com.mixedwash.Route
 import com.mixedwash.domain.models.Result
 import com.mixedwash.domain.validation.PinCodeValidationUseCase
+import com.mixedwash.features.createOrder.data.local.model.AddressEntity
 import com.mixedwash.features.createOrder.data.local.service.LocationServiceManager
 import com.mixedwash.features.createOrder.domain.usecases.address.AddressUseCases
 import com.mixedwash.features.createOrder.presentation.address.model.Address
@@ -32,6 +33,7 @@ import com.mixedwash.presentation.models.FormField
 import com.mixedwash.presentation.models.InputState
 import com.mixedwash.presentation.models.SnackBarType
 import com.mixedwash.presentation.models.SnackbarPayload
+import com.mixedwash.presentation.util.Logger
 import com.mixedwash.services.loki.autocomplete.AutocompleteResult
 import com.mixedwash.services.loki.core.Place
 import com.mixedwash.services.loki.geocoder.GeocoderResult
@@ -42,8 +44,11 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.uuid.ExperimentalUuidApi
@@ -57,15 +62,22 @@ class AddressScreenViewModel(
 ) : ViewModel() {
 
     private val addressRoute = savedStateHandle.toRoute<Route.AddressRoute>()
-
-    init {
-        viewModelScope.launch {
-            addressObserver()
+    private val addressFlow = addressUseCases.getAddressesFlow().run {
+        return@run if (this !is Result.Success) {
+            snackbarEvent(
+                "Error fetching addresses", SnackBarType.ERROR
+            )
+            emptyFlow()
+        } else {
+            data
         }
     }
 
     private val _state = MutableStateFlow(initialState())
-    val state = _state.asStateFlow()
+    val state = addressFlow.combine(_state) { list : List<AddressEntity>, state: AddressScreenState ->
+        updateState { state.copy(addressList = list.map { it.toAddress() }) }
+        _state.value
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(3000), initialState())
 
     private val _uiEventsChannel = Channel<AddressScreenUiEvent>()
     val uiEventsFlow = _uiEventsChannel.receiveAsFlow()
@@ -232,7 +244,14 @@ class AddressScreenViewModel(
                                         )
                                     }
 
-                                })
+                                }),
+                                onDismissRequest = {
+                                    viewModelScope.launch {
+                                        _uiEventsChannel.send(
+                                            AddressScreenUiEvent.ClosePopup
+                                        )
+                                    }
+                                }
                             )
                         )
                     )
@@ -418,21 +437,10 @@ class AddressScreenViewModel(
 
 
     private suspend fun addressObserver() {
-        when (val response = addressUseCases.getAddressesFlow()) {
-            is Result.Error -> {
-                snackbarEvent("Error : $response.error.message", SnackBarType.ERROR)
-            }
-
-            is Result.Success -> {
-                response.data.collect { addressList ->
-                    updateState {
-                        copy(
-                            addressList = addressList.map { it.toAddress() },
-                        )
-                    }
-                }
-            }
+        addressFlow.collect { addressList ->
+            updateState { copy(addressList = addressList.map { it.toAddress() }) }
         }
+        Logger.d("TAG", "Should be called once the flow stops being collected")
     }
 
 

@@ -28,14 +28,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.mixedwash.ui.theme.cardSpacing
 import com.mixedwash.features.createOrder.presentation.address.AddressSearchEvent
 import com.mixedwash.features.createOrder.presentation.address.AddressSearchState
 import com.mixedwash.features.createOrder.presentation.address.model.Address
+import com.mixedwash.ui.theme.MixedWashTheme
+import com.mixedwash.ui.theme.cardSpacing
+import com.mixedwash.ui.theme.components.IconButton
 import com.mixedwash.ui.theme.screenHorizontalPadding
 import com.mixedwash.ui.theme.screenVerticalPadding
-import com.mixedwash.ui.theme.MixedWashTheme
-import com.mixedwash.ui.theme.components.IconButton
 
 @Composable
 fun AddressList(
@@ -100,7 +100,7 @@ fun AddressList(
                         .size(14.dp)
                 )
                 Column(modifier = Modifier.weight(1f)) {
-                    Text(
+                    Text (
                         text = address.title,
                         style = BrandTheme.typography.subtitle2,
                         color = BrandTheme.colors.gray.dark
@@ -110,15 +110,16 @@ fun AddressList(
                     Text(
                         text = address.run {
                             """
-                                    $addressLine1, $addressLine2
-                                    $addressLine3, $pinCode
+                                    $addressLine1, $addressLine2 $addressLine3 
+                                    $pinCode
                                 """.trimIndent()
                         },
                         style = BrandTheme.typography.body2,
+                        color = BrandTheme.colors.gray.darker
                     )
 
                 }
-                Spacer(modifier = Modifier.weight(1f))
+                Spacer(modifier = Modifier.padding(16.dp))
 
                 onAddressEdit?.let {
                     IconButton(

@@ -42,9 +42,22 @@ data class FormField(
 
 }
 
+data class FieldState(
+    val value: String,
+    val onValueChange: (String) -> Unit,
+    val label: String,
+    val supportingText: String? = null,
+    val placeholder: String? = null,
+    val singleLine: Boolean,
+    val readOnly: Boolean,
+    val keyboardOptions: KeyboardOptions,
+    val enabled: Boolean,
+    val isError: Boolean
+)
+
 
 enum class FieldID {
-    ADDRESS_TITLE, PHONE, EMAIL, ADDRESS_LINE_1, ADDRESS_LINE_2, ADDRESS_LINE_3, PIN_CODE
+    ADDRESS_TITLE, PHONE, EMAIL, ADDRESS_LINE_1, ADDRESS_LINE_2, ADDRESS_LINE_3, PIN_CODE, NAME
 }
 
 

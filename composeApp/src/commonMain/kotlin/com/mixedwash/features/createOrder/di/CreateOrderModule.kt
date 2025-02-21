@@ -11,6 +11,7 @@ import com.mixedwash.features.createOrder.domain.usecases.slots.SelectSlotAndOff
 import com.mixedwash.features.createOrder.presentation.address.AddressScreenViewModel
 import com.mixedwash.features.createOrder.presentation.phone.PhoneScreenViewModel
 import com.mixedwash.features.createOrder.presentation.slot_selection.SlotSelectionScreenViewModel
+import com.mixedwash.features.profile.ProfileEditScreenViewModel
 import com.mixedwash.services.loki.autocomplete.Autocomplete
 import com.mixedwash.services.loki.autocomplete.AutocompleteOptions
 import com.mixedwash.services.loki.autocomplete.AutocompletePlace
@@ -26,7 +27,8 @@ import org.koin.dsl.module
 
 
 val createOrderModule = module {
-    includes(createOrderDataModule())
+
+includes(createOrderDataModule())
 
     single { FindUserByPhoneUseCase }
     single { LoadSlotsWithOffersUseCase() }
@@ -51,7 +53,7 @@ val createOrderModule = module {
     viewModelOf(::AddressScreenViewModel)
     viewModelOf(::SlotSelectionScreenViewModel)
     viewModelOf(::PhoneScreenViewModel)
+    viewModelOf(::ProfileEditScreenViewModel)
 
 }
-
 

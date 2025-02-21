@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -30,18 +29,18 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.mixedwash.domain.validation.PhoneValidationUseCase
-import com.mixedwash.ui.theme.minTextFieldHeight
+import com.mixedwash.presentation.components.fadeIn
 import com.mixedwash.presentation.models.FieldID
 import com.mixedwash.presentation.models.FormField
 import com.mixedwash.presentation.models.InputState
 import com.mixedwash.presentation.models.SnackbarHandler
-import com.mixedwash.presentation.models.SnackbarPayload
 import com.mixedwash.presentation.util.ObserveAsEvents
-import com.mixedwash.ui.theme.screenHorizontalPadding
-import com.mixedwash.ui.theme.screenVerticalPadding
 import com.mixedwash.ui.theme.MixedWashTheme
 import com.mixedwash.ui.theme.components.DefaultCircularProgressIndicator
 import com.mixedwash.ui.theme.components.SecondaryButton
+import com.mixedwash.ui.theme.minTextFieldHeight
+import com.mixedwash.ui.theme.screenHorizontalPadding
+import com.mixedwash.ui.theme.screenVerticalPadding
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
@@ -51,18 +50,20 @@ fun PhoneScreen(
     modifier: Modifier = Modifier,
     state: PhoneScreenState,
     uiEventsFlow: Flow<PhoneScreenUiEvent>,
-    snackbarHandler: SnackbarHandler
+    snackbarHandler: SnackbarHandler,
+    onSubmitSuccess: () -> Unit,
+    onEvent: (PhoneScreenEvent) -> Unit
 ) {
 
     ObserveAsEvents(uiEventsFlow) { event ->
         when (event) {
             is PhoneScreenUiEvent.ShowSnackbar -> snackbarHandler(
-                snackbarPayload = SnackbarPayload(
-                    message = event.value,
-                    type = event.type,
-                    duration = SnackbarDuration.Short
-                )
+                snackbarPayload = event.payload
             )
+
+            is PhoneScreenUiEvent.OnSubmitSuccess -> {
+                onSubmitSuccess.invoke()
+            }
         }
     }
 
@@ -72,6 +73,7 @@ fun PhoneScreen(
         }
         return
     }
+
     Column(
         modifier
             .fillMaxSize()
@@ -81,7 +83,7 @@ fun PhoneScreen(
             )
     ) {
         Column(
-            modifier = Modifier.weight(0.7f),
+            modifier = Modifier.weight(0.7f).fadeIn(1000),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -147,7 +149,7 @@ fun PhoneScreen(
             SecondaryButton(
                 text = state.buttonText,
                 modifier = Modifier.width(300.dp),
-                onClick = state.onSubmit,
+                onClick = { onEvent(PhoneScreenEvent.OnSubmit) },
                 enabled = state.buttonEnabled
             )
         }
@@ -195,7 +197,6 @@ fun PreviewPhoneNumberScreen() {
                     onValueChange = {},
                     requiredMessage = "Phone Number is Required"
                 ),
-                onSubmit = {},
                 isLoading = isLoading
             )
             PhoneScreen(
@@ -203,7 +204,9 @@ fun PreviewPhoneNumberScreen() {
                     .padding(innerPadding),
                 state = state,
                 uiEventsFlow = emptyFlow(),
-                snackbarHandler = { _ -> }
+                snackbarHandler = { _ -> },
+                onSubmitSuccess = { },
+                onEvent = {}
             )
         }
     }

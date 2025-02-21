@@ -10,11 +10,12 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.singleOrNull
 
+/*TODO : Make sure this works*/
 class AddressDataStore(
     private val dataStore: DataStore<Preferences>
 ) {
     companion object {
-        val ADDRESS_KEY = stringPreferencesKey("address")
+        private val ADDRESS_KEY = stringPreferencesKey("address")
     }
 
     suspend fun put(uid: String) {

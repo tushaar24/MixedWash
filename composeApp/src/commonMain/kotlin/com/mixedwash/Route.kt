@@ -5,6 +5,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 sealed class Route {
+
+    // SCREEN ROUTES
     @Serializable
     data class AddressRoute(
         val title: String,
@@ -27,8 +29,7 @@ sealed class Route {
             }
         }
     }
-    @Serializable
-    data object PhoneRoute : Route()
+
     @Serializable
     data object SlotSelectionRoute : Route()
     @Serializable
@@ -38,5 +39,25 @@ sealed class Route {
 
     @Serializable
     data object ProfileRoute : Route()
+
+    @Serializable
+    data object SignInRoute : Route()
+
+    @Serializable
+    data object PhoneRoute : Route()
+
+    @Serializable
+    data object LoadingRoute : Route()
+
+    @Serializable
+    data object ProfileEditRoute : Route()
+
+    // Graph Routes
+    @Serializable
+    data object AuthNav : Route()
+
+    @Serializable
+    data object HomeNav : Route()
+
 }
 

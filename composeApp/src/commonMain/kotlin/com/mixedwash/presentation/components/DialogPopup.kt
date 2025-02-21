@@ -18,6 +18,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -47,6 +48,7 @@ fun DialogPopup(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(18.dp, Alignment.CenterVertically)
         ) {
+
             data.apply {
                 Column(
                     modifier = Modifier.fillMaxWidth(),
@@ -62,11 +64,11 @@ fun DialogPopup(
                         )
                     }
                     Text(
-                        title,
+                        text = title,
                         modifier = Modifier.fillMaxWidth(),
                         color = BrandTheme.colors.gray.dark,
                         style = BrandTheme.typography.subtitle1,
-                        maxLines = 3
+                        textAlign = TextAlign.Center
                     )
 
                     subtitle?.let {
@@ -80,7 +82,7 @@ fun DialogPopup(
                 Spacer(Modifier.padding(8.dp))
 
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.End),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     if (secondaryButton != null) {
@@ -106,10 +108,7 @@ fun DialogPopup(
                 }
             }
 
-
         }
-
-
     }
 }
 
@@ -121,6 +120,7 @@ data class DialogPopupData(
     val iconColor: Color = Gray400,
     val primaryButton: ButtonData? = null,
     val secondaryButton: ButtonData? = null,
+    val onDismissRequest: () -> Unit
 )
 
 data class ButtonData(

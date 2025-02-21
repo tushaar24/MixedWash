@@ -9,8 +9,8 @@ fun interface SnackbarHandler {
 }
 data class SnackbarPayload(
     val message: String,
-    val type: SnackBarType,
-    val duration: SnackbarDuration?,
+    val type: SnackBarType = SnackBarType.DEFAULT,
+    val duration: SnackbarDuration = SnackbarDuration.Short,
     val action: (() -> Unit)? = null,
     val actionText: String? = null
 )

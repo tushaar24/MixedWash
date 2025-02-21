@@ -36,19 +36,22 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
-import com.mixedwash.ui.theme.headerContentSpacing
+import coil3.compose.LocalPlatformContext
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import com.mixedwash.presentation.components.DefaultHeader
 import com.mixedwash.presentation.components.HeadingAlign
 import com.mixedwash.presentation.components.HeadingSize
 import com.mixedwash.presentation.components.noRippleClickable
-import com.mixedwash.ui.theme.screenBottomSpacing
-import com.mixedwash.ui.theme.screenHorizontalPadding
 import com.mixedwash.ui.theme.MixedWashTheme
 import com.mixedwash.ui.theme.RedDark
 import com.mixedwash.ui.theme.Typography.Companion.Poppins
 import com.mixedwash.ui.theme.components.HeaderIconButton
 import com.mixedwash.ui.theme.components.IconButton
 import com.mixedwash.ui.theme.dividerBlack
+import com.mixedwash.ui.theme.headerContentSpacing
+import com.mixedwash.ui.theme.screenBottomSpacing
+import com.mixedwash.ui.theme.screenHorizontalPadding
 import mixedwash.composeapp.generated.resources.Res
 import mixedwash.composeapp.generated.resources.ic_clothes_hanger
 import org.jetbrains.compose.resources.DrawableResource
@@ -56,10 +59,10 @@ import org.jetbrains.compose.resources.vectorResource
 
 data class ProfileSection(
     val title: String,
-    val items: List<ProfileScreenItem>
+    val items: List<ProfileSectionItem>
 )
 
-data class ProfileScreenItem(
+data class ProfileSectionItem(
     val resource: DrawableResource,
     val text: String,
     val onClick: (() -> Unit)?,
@@ -69,9 +72,9 @@ data class ProfileScreenItem(
 data class ProfileScreenState(
     val sections: List<ProfileSection>,
     val imageUrl: String? = null,
-    val name: String,
+    val name: String?,
     val email: String? = null,
-    val phone: String,
+    val phone: String?,
     val appName: String,
     val appVersion: String,
     val onLogout: () -> Unit,
@@ -114,7 +117,10 @@ fun ProfileScreen(modifier: Modifier = Modifier, state: ProfileScreenState) {
                 ) {
                     if (state.imageUrl != null) {
                         AsyncImage(
-                            model = state.imageUrl, contentDescription = "Profile Picture",
+                            model = ImageRequest.Builder(LocalPlatformContext.current)
+                                .data(state.imageUrl)
+                                .crossfade(true)
+                                .build(), contentDescription = "Profile Picture",
                             modifier = Modifier
                                 .clip(shape = BrandTheme.shapes.circle)
                                 .size(72.dp),
@@ -133,16 +139,19 @@ fun ProfileScreen(modifier: Modifier = Modifier, state: ProfileScreenState) {
                         )
                     }
 
-                    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                        Text(text = state.name, style = BrandTheme.typography.subtitle2)
+                    Column(verticalArrangement = Arrangement.spacedBy(2.dp, Alignment.Top)) {
+                        Text(text = state.name ?: "User", style = BrandTheme.typography.subtitle2)
                         Spacer(Modifier.height(2.dp))
 
                         val style = BrandTheme.typography.body3.copy(fontFamily = Poppins())
-                        Text(
-                            text = state.phone,
-                            color = BrandTheme.colors.gray.normalDark,
-                            style = style
-                        )
+                        if (!state.phone.isNullOrEmpty()) {
+                            Text(
+                                text = state.phone,
+                                color = BrandTheme.colors.gray.normalDark,
+                                style = style
+                            )
+                        }
+
                         state.email?.let {
                             Text(
                                 text = it,
