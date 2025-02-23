@@ -25,11 +25,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.mixedwash.ui.theme.bottomButtonPadding
+import com.mixedwash.WindowInsetsContainer
 import com.mixedwash.features.createOrder.presentation.address.components.AddressForm
 import com.mixedwash.features.createOrder.presentation.address.components.AddressList
 import com.mixedwash.features.createOrder.presentation.address.model.Address
-import com.mixedwash.ui.theme.headerContentSpacing
 import com.mixedwash.presentation.components.DefaultHeader
 import com.mixedwash.presentation.components.DialogPopup
 import com.mixedwash.presentation.components.DialogPopupData
@@ -37,12 +36,14 @@ import com.mixedwash.presentation.components.HeadingAlign
 import com.mixedwash.presentation.components.HeadingSize
 import com.mixedwash.presentation.models.SnackbarHandler
 import com.mixedwash.presentation.util.ObserveAsEvents
-import com.mixedwash.ui.theme.screenHorizontalPadding
-import com.mixedwash.ui.theme.screenVerticalPadding
 import com.mixedwash.ui.theme.MixedWashTheme
+import com.mixedwash.ui.theme.bottomButtonPadding
 import com.mixedwash.ui.theme.components.HeaderIconButton
 import com.mixedwash.ui.theme.components.OutlinedButton
 import com.mixedwash.ui.theme.components.PrimaryButton
+import com.mixedwash.ui.theme.headerContentSpacing
+import com.mixedwash.ui.theme.screenHorizontalPadding
+import com.mixedwash.ui.theme.screenVerticalPadding
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
@@ -101,89 +102,91 @@ fun AddressScreen(
         }
     }
 
-    Column(
-        modifier = modifier.fillMaxSize()
-    ) {
-
-        DefaultHeader(title = state.title,
-            headingSize = HeadingSize.Subtitle1,
-            headingAlign = HeadingAlign.Start,
-            navigationButton = {
-                HeaderIconButton(imageVector = Icons.Rounded.KeyboardArrowLeft, onClick = {})
-            }
-        )
+    WindowInsetsContainer {
         Column(
-            Modifier.padding(horizontal = screenHorizontalPadding)
+            modifier = modifier.fillMaxSize()
         ) {
 
-            Spacer(modifier = Modifier.height(headerContentSpacing))
-
-
-
-
-            AddressList(
-                modifier = Modifier.fillMaxWidth(),
-                addresses = state.addressList,
-                onAddressClicked = state.typeParams.asSelect()?.onAddressSelected,
-                selectedIndex = state.typeParams.asSelect()?.selectedIndex ?: -1,
-                onAddressEdit = state.onAddressEdit,
-                addressSearchState = state.searchState,
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            OutlinedButton(
-                iconBefore = Icons.Rounded.Add,
-                text = "Add Address",
-                modifier = Modifier.fillMaxWidth(),
-                contentColor = BrandTheme.colors.gray.dark,
-                outlineColor = BrandTheme.colors.gray.dark,
-                onClick = state.onAddAddress
-            )
-
-            Spacer(modifier = Modifier.weight(1f))
-
-
-            state.typeParams.asSelect()?.run {
-                PrimaryButton(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = bottomButtonPadding),
-                    text = submitText,
-                    onClick = onSubmit,
-                    enabled = selectedIndex != -1
-                )
-            }
-
-        }
-    }
-
-    if (state.formState != null) {
-        ModalBottomSheet(
-            onDismissRequest = {
-                state.formEventCallBack(AddressFormEvent.OnFormClosed)
-            },
-            sheetState = sheetState,
-            shape = BrandTheme.shapes.rectangle,
-            dragHandle = {},
-            containerColor = BrandTheme.colors.background,
-            contentColor = LocalContentColor.current,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            AddressForm(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .verticalScroll(rememberScrollState())
-                    .padding(start = 24.dp, end = 24.dp, bottom = 54.dp, top = 24.dp),
-                state = state.formState,
-                onCancel = {
-                    scope.launch {
-                        if (sheetState.isVisible) {
-                            sheetState.hide()
-                        }
-                    }.invokeOnCompletion {
-                        state.formEventCallBack(AddressFormEvent.OnFormClosed)
-                    }
+            DefaultHeader(title = state.title,
+                headingSize = HeadingSize.Subtitle1,
+                headingAlign = HeadingAlign.Start,
+                navigationButton = {
+                    HeaderIconButton(imageVector = Icons.Rounded.KeyboardArrowLeft, onClick = {})
                 }
             )
+            Column(
+                Modifier.padding(horizontal = screenHorizontalPadding)
+            ) {
+
+                Spacer(modifier = Modifier.height(headerContentSpacing))
+
+
+
+
+                AddressList(
+                    modifier = Modifier.fillMaxWidth(),
+                    addresses = state.addressList,
+                    onAddressClicked = state.typeParams.asSelect()?.onAddressSelected,
+                    selectedIndex = state.typeParams.asSelect()?.selectedIndex ?: -1,
+                    onAddressEdit = state.onAddressEdit,
+                    addressSearchState = state.searchState,
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                OutlinedButton(
+                    iconBefore = Icons.Rounded.Add,
+                    text = "Add Address",
+                    modifier = Modifier.fillMaxWidth(),
+                    contentColor = BrandTheme.colors.gray.dark,
+                    outlineColor = BrandTheme.colors.gray.dark,
+                    onClick = state.onAddAddress
+                )
+
+                Spacer(modifier = Modifier.weight(1f))
+
+
+                state.typeParams.asSelect()?.run {
+                    PrimaryButton(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = bottomButtonPadding),
+                        text = submitText,
+                        onClick = onSubmit,
+                        enabled = selectedIndex != -1
+                    )
+                }
+
+            }
+        }
+
+        if (state.formState != null) {
+            ModalBottomSheet(
+                onDismissRequest = {
+                    state.formEventCallBack(AddressFormEvent.OnFormClosed)
+                },
+                sheetState = sheetState,
+                shape = BrandTheme.shapes.rectangle,
+                dragHandle = {},
+                containerColor = BrandTheme.colors.background,
+                contentColor = LocalContentColor.current,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                AddressForm(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .verticalScroll(rememberScrollState())
+                        .padding(start = 24.dp, end = 24.dp, bottom = 54.dp, top = 24.dp),
+                    state = state.formState,
+                    onCancel = {
+                        scope.launch {
+                            if (sheetState.isVisible) {
+                                sheetState.hide()
+                            }
+                        }.invokeOnCompletion {
+                            state.formEventCallBack(AddressFormEvent.OnFormClosed)
+                        }
+                    }
+                )
+            }
         }
     }
 }

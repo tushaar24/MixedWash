@@ -61,8 +61,8 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import coil3.Uri
 import coil3.compose.AsyncImage
+import com.mixedwash.WindowInsetsContainer
 import com.mixedwash.domain.util.capitalize
-import com.mixedwash.ui.theme.headerContentSpacing
 import com.mixedwash.presentation.components.DefaultHeader
 import com.mixedwash.presentation.components.HeadingAlign
 import com.mixedwash.presentation.components.HeadingSize
@@ -73,12 +73,13 @@ import com.mixedwash.presentation.util.ObserveAsEvents
 import com.mixedwash.presentation.util.formatTime
 import com.mixedwash.presentation.util.getDayAndDate
 import com.mixedwash.presentation.util.getMonth
-import com.mixedwash.ui.theme.screenHorizontalPadding
-import com.mixedwash.ui.theme.screenVerticalPadding
 import com.mixedwash.ui.theme.Green
 import com.mixedwash.ui.theme.MixedWashTheme
 import com.mixedwash.ui.theme.components.HeaderIconButton
 import com.mixedwash.ui.theme.components.PrimaryButton
+import com.mixedwash.ui.theme.headerContentSpacing
+import com.mixedwash.ui.theme.screenHorizontalPadding
+import com.mixedwash.ui.theme.screenVerticalPadding
 import kotlinx.coroutines.flow.Flow
 import mixedwash.composeapp.generated.resources.Res
 import mixedwash.composeapp.generated.resources.camera
@@ -105,142 +106,144 @@ fun SlotSelectionScreen(
     }
 
 
-    Column(
-        modifier = modifier
-            .fillMaxSize(),
-    ) {
-        DefaultHeader(
-            title = state.title,
-            headingSize = HeadingSize.Subtitle1,
-            headingAlign = HeadingAlign.Start,
-            navigationButton = {
-                HeaderIconButton(
-                    imageVector = Icons.Rounded.KeyboardArrowLeft,
-                    onClick = {}
-                )
-            }
-        )
-        Spacer(modifier = Modifier.height(headerContentSpacing))
-
-
+    WindowInsetsContainer {
         Column(
-            modifier = Modifier
-                .verticalScroll(rememberScrollState())
-                .padding(
-                    start = screenHorizontalPadding,
-                    end = screenHorizontalPadding,
-                    bottom = screenVerticalPadding
-                ),
-            verticalArrangement = Arrangement.spacedBy(
-                32.dp, alignment = Alignment.CenterVertically
-            )
+            modifier = modifier
+                .fillMaxSize(),
         ) {
-            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            DefaultHeader(
+                title = state.title,
+                headingSize = HeadingSize.Subtitle1,
+                headingAlign = HeadingAlign.Start,
+                navigationButton = {
+                    HeaderIconButton(
+                        imageVector = Icons.Rounded.KeyboardArrowLeft,
+                        onClick = {}
+                    )
+                }
+            )
+            Spacer(modifier = Modifier.height(headerContentSpacing))
 
-                Text("Select Pickup Slot", style = BrandTheme.typography.subtitle1)
 
-                val onPickupDateClick: (DateSlot) -> Unit = remember(state.screenEvent) {
-                    { dateSlot ->
-                        state.screenEvent(SlotSelectionScreenEvent.OnPickupDateSelected(dateSlot))
+            Column(
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+                    .padding(
+                        start = screenHorizontalPadding,
+                        end = screenHorizontalPadding,
+                        bottom = screenVerticalPadding
+                    ),
+                verticalArrangement = Arrangement.spacedBy(
+                    32.dp, alignment = Alignment.CenterVertically
+                )
+            ) {
+                Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+
+                    Text("Select Pickup Slot", style = BrandTheme.typography.subtitle1)
+
+                    val onPickupDateClick: (DateSlot) -> Unit = remember(state.screenEvent) {
+                        { dateSlot ->
+                            state.screenEvent(SlotSelectionScreenEvent.OnPickupDateSelected(dateSlot))
+                        }
                     }
+
+                    DateRow(
+                        slots = state.pickupSlots, onClick = onPickupDateClick,
+                        selectedDateId = state.pickupDateSelectedId
+                    )
+                    TimeSlotGrid(
+                        modifier = Modifier.fillMaxWidth(),
+                        dateSlot = state.pickupSlots.firstOrNull { it.id == state.pickupDateSelectedId },
+                        selectedTimeId = state.pickupTimeSelectedId,
+                        onSlotSelected = {
+                            state.screenEvent(SlotSelectionScreenEvent.OnPickupTimeSelected(it))
+                        }
+                    )
+
+
+                }
+                HorizontalDivider(color = Color.Black.copy(alpha = 0.05f))
+
+                Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                    Text("Select Drop Slot", style = BrandTheme.typography.subtitle1)
+
+                    val onDropDateClick: (DateSlot) -> Unit = remember(state.screenEvent) {
+                        { dateSlot ->
+                            state.screenEvent(SlotSelectionScreenEvent.OnDropDateSelect(dateSlot))
+                        }
+                    }
+
+                    DateRow(
+                        slots = state.dropSlots, onClick = onDropDateClick,
+                        selectedDateId = state.dropDateSelectedId
+                    )
+
+
+                    TimeSlotGrid(modifier = Modifier.fillMaxWidth(),
+                        dateSlot = state.dropSlots.firstOrNull { it.id == state.dropDateSelectedId },
+                        selectedTimeId = state.dropTimeSelectedId,
+                        onSlotSelected = {
+                            state.screenEvent(SlotSelectionScreenEvent.OnDropTimeSelected(it))
+                        })
+
                 }
 
-                DateRow(
-                    slots = state.pickupSlots, onClick = onPickupDateClick,
-                    selectedDateId = state.pickupDateSelectedId
-                )
-                TimeSlotGrid(
-                    modifier = Modifier.fillMaxWidth(),
-                    dateSlot = state.pickupSlots.firstOrNull { it.id == state.pickupDateSelectedId },
-                    selectedTimeId = state.pickupTimeSelectedId,
-                    onSlotSelected = {
-                        state.screenEvent(SlotSelectionScreenEvent.OnPickupTimeSelected(it))
-                    }
-                )
+                HorizontalDivider(color = Color.Black.copy(alpha = 0.05f))
 
+                Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                    Text("Pick offers available", style = BrandTheme.typography.subtitle1)
 
-            }
-            HorizontalDivider(color = Color.Black.copy(alpha = 0.05f))
-
-            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                Text("Select Drop Slot", style = BrandTheme.typography.subtitle1)
-
-                val onDropDateClick: (DateSlot) -> Unit = remember(state.screenEvent) {
-                    { dateSlot ->
-                        state.screenEvent(SlotSelectionScreenEvent.OnDropDateSelect(dateSlot))
-                    }
-                }
-
-                DateRow(
-                    slots = state.dropSlots, onClick = onDropDateClick,
-                    selectedDateId = state.dropDateSelectedId
-                )
-
-
-                TimeSlotGrid(modifier = Modifier.fillMaxWidth(),
-                    dateSlot = state.dropSlots.firstOrNull { it.id == state.dropDateSelectedId },
-                    selectedTimeId = state.dropTimeSelectedId,
-                    onSlotSelected = {
-                        state.screenEvent(SlotSelectionScreenEvent.OnDropTimeSelected(it))
-                    })
-
-            }
-
-            HorizontalDivider(color = Color.Black.copy(alpha = 0.05f))
-
-            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                Text("Pick offers available", style = BrandTheme.typography.subtitle1)
-
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.animateContentSize()
-                ) {
-                    state.getOffers().forEach { offer ->
-                        Coupon(
-                            title = offer.title,
-                            subtitle = offer.subtitle,
-                            selected = offer.code == state.selectedOfferCode,
-                            onClick = {
-                                state.screenEvent(
-                                    SlotSelectionScreenEvent.OnOfferSelected(
-                                        offer
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.animateContentSize()
+                    ) {
+                        state.getOffers().forEach { offer ->
+                            Coupon(
+                                title = offer.title,
+                                subtitle = offer.subtitle,
+                                selected = offer.code == state.selectedOfferCode,
+                                onClick = {
+                                    state.screenEvent(
+                                        SlotSelectionScreenEvent.OnOfferSelected(
+                                            offer
+                                        )
                                     )
-                                )
-                            },
-                            icon = offer.icon
-                        )
+                                },
+                                icon = offer.icon
+                            )
+                        }
+                    }
+
+                }
+
+                val onDeliveryNotesChange: (String) -> Unit = remember(state.screenEvent) {
+                    { value ->
+                        state.screenEvent(SlotSelectionScreenEvent.OnDeliveryNotesChange(value))
                     }
                 }
 
-            }
+                DeliveryNotes(
+                    modifier = Modifier.padding(top = 8.dp),
+                    text = state.deliveryNotes,
+                    onValueChange = onDeliveryNotesChange
+                )
 
-            val onDeliveryNotesChange: (String) -> Unit = remember(state.screenEvent) {
-                { value ->
-                    state.screenEvent(SlotSelectionScreenEvent.OnDeliveryNotesChange(value))
+
+                val isEnabled by remember(state.pickupTimeSelectedId, state.dropTimeSelectedId) {
+                    derivedStateOf {
+                        state.pickupTimeSelectedId != null && state.dropTimeSelectedId != null
+                    }
                 }
+                PrimaryButton(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "BOOK ORDER",
+                    enabled = isEnabled
+                )
+
             }
 
-            DeliveryNotes(
-                modifier = Modifier.padding(top = 8.dp),
-                text = state.deliveryNotes,
-                onValueChange = onDeliveryNotesChange
-            )
-
-
-            val isEnabled by remember(state.pickupTimeSelectedId, state.dropTimeSelectedId) {
-                derivedStateOf {
-                    state.pickupTimeSelectedId != null && state.dropTimeSelectedId != null
-                }
-            }
-            PrimaryButton(
-                modifier = Modifier.fillMaxWidth(),
-                text = "BOOK ORDER",
-                enabled = isEnabled
-            )
 
         }
-
-
     }
 }
 

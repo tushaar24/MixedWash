@@ -5,13 +5,16 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -28,6 +31,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -38,16 +42,17 @@ import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
 import coil3.request.crossfade
-import com.mixedwash.presentation.components.ShimmerText
-import com.mixedwash.presentation.models.SnackbarHandler
-import com.mixedwash.presentation.models.SnackbarPayload
+import com.mixedwash.WindowInsetsContainer
 import com.mmk.kmpauth.firebase.apple.AppleButtonUiContainer
 import com.mmk.kmpauth.firebase.google.GoogleButtonUiContainerFirebase
-import com.mmk.kmpauth.uihelper.apple.AppleSignInButton
-import com.mmk.kmpauth.uihelper.google.GoogleSignInButton
 import dev.gitlive.firebase.auth.FirebaseUser
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import mixedwash.composeapp.generated.resources.Res
+import mixedwash.composeapp.generated.resources.ic_logo_apple
+import mixedwash.composeapp.generated.resources.ic_logo_google
+import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.vectorResource
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -73,8 +78,9 @@ fun SignInScreen(
     val item by remember { derivedStateOf { carouselItems[pagerState.currentPage] } }
 
     LaunchedEffect(Unit) {
+        var millis = 2000L
         while (true) {
-            delay(4000)
+            delay(millis)
             scope.launch {
                 pagerState.animateScrollToPage(
                     page = (pagerState.currentPage + 1) % pagerState.pageCount,
@@ -84,97 +90,122 @@ fun SignInScreen(
                     )
                 )
             }
+            millis = 5000
         }
     }
 
-
-    Column(
-        modifier = modifier.fillMaxHeight().background(Color.Black).fillMaxWidth()
-            .padding(horizontal = 45.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
+    WindowInsetsContainer(
+        modifier = Modifier.background(Color.Black),
+        statusBarIconsLight = false
     ) {
-        ShimmerText(
-            text = "Mixed Wash",
-            style = TextStyle(
-                fontSize = 24.sp,
-                fontWeight = FontWeight.ExtraLight,
-            ),
-            color = Color.Black,
-            shimmerColor = BrandTheme.colors.gray.normalDark,
-            durationMillis = 2000,
-            delayMillis = 12000,
-            isShimmering = true
-        )
+        Column(
+            modifier = modifier.fillMaxSize()
+                .padding(horizontal = 45.dp, vertical = 56.dp),
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text(
+                text = "Mixed Wash",
+                style = TextStyle(
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.ExtraLight,
+                ),
+                color = BrandTheme.colors.gray.normalDark,
+            )
 
-        Spacer(Modifier.height(72.dp))
+            Column {
+                HorizontalPager(
+                    state = pagerState,
+                    beyondViewportPageCount = 1,
+                    // Use a stable key based on your data to help preserve individual page state.
+                    key = { page -> carouselItems[page].uid },
+                    pageSpacing = 100.dp,
+                    userScrollEnabled = false
+                ) { index ->
+                    // Should move in from the top, y-offset = -32.dp
+                    Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                        Crossfade(targetState = carouselItems[index].imageUrl) {
+                            AsyncImage(
+                                modifier = Modifier.size(240.dp),
+                                model = ImageRequest.Builder(LocalPlatformContext.current)
+                                    .data(it)
+                                    .crossfade(true)
+                                    .build(),
+                                contentDescription = null,
+                                // TODO: Placeholder
+                            )
+                        }
+                    }
 
-        HorizontalPager(
-            state = pagerState,
-            beyondViewportPageCount = 1,
-            // Use a stable key based on your data to help preserve individual page state.
-            key = { page -> carouselItems[page].uid },
-            pageSpacing = 100.dp,
-            userScrollEnabled = false
-        ) { index ->
-            // Should move in from the top, y-offset = -32.dp
-            Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                Crossfade(targetState = carouselItems[index].imageUrl) {
-                    AsyncImage(
-                        modifier = Modifier.size(240.dp),
-                        model = ImageRequest.Builder(LocalPlatformContext.current)
-                            .data(it)
-                            .crossfade(true)
-                            .build(),
-                        contentDescription = null,
-                        // TODO: Placeholder
-                    )
+                }
+
+                Spacer(Modifier.height(32.dp))
+                item.title?.let {
+                    Crossfade(targetState = it) {
+                        Text(
+                            modifier = Modifier.animateContentSize().fillMaxWidth(),
+                            text = it,
+                            style = TextStyle(
+                                color = BrandTheme.colors.gray.normal,
+                                fontSize = 24.sp,
+                                textAlign = TextAlign.Center,
+
+                                fontWeight = FontWeight.SemiBold,
+                                lineHeight = 26.sp,
+                            )
+                        )
+                    }
+                }
+                Spacer(Modifier.height(4.dp))
+                item.description?.let {
+                    Crossfade(targetState = it) {
+                        Text(
+                            text = it,
+                            color = BrandTheme.colors.gray.normalDark,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.animateContentSize().fillMaxWidth(),
+                            fontSize = 16.sp,
+                            lineHeight = 24.sp,
+                            fontWeight = FontWeight.Normal
+                        )
+                    }
                 }
             }
 
-        }
 
-
-
-        Spacer(Modifier.height(32.dp))
-        // should move in from the bottom, y-offst = +32.dp
-        item.title?.let {
-            Crossfade(targetState = it) {
-                Text(
-                    modifier = Modifier.animateContentSize().fillMaxWidth(),
-                    text = it,
-                    style = TextStyle(
-                        color = BrandTheme.colors.gray.normal,
-                        fontSize = 24.sp,
-                        textAlign = TextAlign.Center,
-
-                        fontWeight = FontWeight.SemiBold,
-                        lineHeight = 28.sp,
+            Column {
+                GoogleButtonUiContainerFirebase(
+                    modifier = Modifier.fillMaxWidth(),
+                    onResult = onFirebaseResult,
+                    linkAccount = false
+                ) {
+                    SignInButton(
+                        modifier = Modifier.fillMaxWidth(),
+                        borderColor = Color.Transparent,
+                        containerColor = Color.White,
+                        contentColor = Color.Black,
+                        logo = Res.drawable.ic_logo_google,
+                        text = "Sign in with Google",
+                        onClick = ::onClick
                     )
-                )
+                }
+
+                Spacer(Modifier.height(16.dp))
+
+                AppleButtonUiContainer(onResult = onFirebaseResult, linkAccount = false) {
+                    SignInButton(
+                        modifier = Modifier.fillMaxWidth(),
+                        borderColor = BrandTheme.colors.gray.darker,
+                        containerColor = Color.Black,
+                        contentColor = Color.White,
+                        logo = Res.drawable.ic_logo_apple,
+                        text = "Sign in with Apple",
+                        onClick = ::onClick
+                    )
+
+                }
             }
         }
-        Spacer(Modifier.height(4.dp))
-        item.description?.let {
-            Crossfade(targetState = it) {
-                Text(
-                    text = it,
-                    color = BrandTheme.colors.gray.normalDark,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.animateContentSize().fillMaxWidth(),
-                    fontSize = 16.sp,
-                    lineHeight = 24.sp,
-                    fontWeight = FontWeight.Normal
-                )
-            }
-        }
-        Spacer(Modifier.height(138.dp))
-
-        AuthUiHelperButtonsAndFirebaseAuth(
-            modifier = Modifier.width(IntrinsicSize.Max),
-            onFirebaseResult = onFirebaseResult
-        )
-
     }
 
 }
@@ -188,25 +219,41 @@ data class CarouselItem @OptIn(ExperimentalUuidApi::class) constructor(
 )
 
 @Composable
-fun AuthUiHelperButtonsAndFirebaseAuth(
+fun SignInButton(
     modifier: Modifier = Modifier,
-    onFirebaseResult: (Result<FirebaseUser?>) -> Unit,
+    borderColor: Color,
+    containerColor: Color,
+    contentColor: Color,
+    logo: DrawableResource,
+    text: String,
+    onClick: () -> Unit
 ) {
-    Column(modifier = Modifier, verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        GoogleButtonUiContainerFirebase(onResult = onFirebaseResult, linkAccount = false) {
-            GoogleSignInButton(
-                modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp).height(44.dp),
-                fontSize = 19.sp
-            ) { this.onClick() }
-        }
-
-        AppleButtonUiContainer(onResult = onFirebaseResult, linkAccount = false) {
-            AppleSignInButton(
-                modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp).height(44.dp)
-            ) { this.onClick() }
-        }
-
+    Row(
+        modifier
+            .clip(BrandTheme.shapes.button)
+            .border(width = 0.5.dp, color = borderColor, shape = BrandTheme.shapes.button)
+            .background(containerColor)
+            .clickable(onClick = onClick)
+            .height(64.dp)
+            .padding(horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Image(
+            modifier = Modifier.height(22.dp),
+            imageVector = vectorResource(logo),
+            contentDescription = null
+        )
+        Spacer(Modifier.width(12.dp))
+        Text(
+            text = text,
+            style = TextStyle(
+                fontSize = 16.sp,
+                lineHeight = 24.sp,
+                fontWeight = FontWeight.Medium
+            ),
+            color = contentColor
+        )
     }
-
 }
 

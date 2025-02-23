@@ -3,6 +3,7 @@ package com.mixedwash.ui.theme
 import BrandTheme
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 
 @Composable
 fun MixedWashTheme(

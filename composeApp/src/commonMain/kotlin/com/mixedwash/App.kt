@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContent
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Scaffold
@@ -96,10 +98,7 @@ fun App() {
                         SnackbarHost(scaffoldState.snackbarHostState) { snackbarData ->
                             val (type, message) = decodeSnackBar(snackbarData.visuals.message)
                             val imeOffset = WindowInsets.ime.getBottom(LocalDensity.current)
-                             /**
-                              * TODO : FIX ME : Popup doesn't show on top of modal
-                              * https://medium.com/@stefanoq21/accompanist-system-ui-controller-deprecated-a3678ba3f244
-                              */
+                            // TODO : FIX ME : Popup doesn't show on top of modal
                             Popup(
                                 alignment = Alignment.BottomCenter,
                                 offset = IntOffset(x = 0, y = -imeOffset),
@@ -121,13 +120,10 @@ fun App() {
                     },
                     contentColor = LocalContentColor.current,
                     containerColor = BrandTheme.colors.background,
-                ) { innerPadding ->
+                ) {
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(innerPadding)
-                            .consumeWindowInsets(innerPadding)
-                            .imePadding()
                     ) {
 
                         val navController = rememberNavController()
@@ -160,9 +156,7 @@ fun App() {
                             startDestination = startDestination
                         ) {
 
-                            AuthNav(
-                                snackbarHandler = snackbarHandler,
-                            )
+                            AuthNav(snackbarHandler = snackbarHandler)
 
                             composable<Route.LoadingRoute>(
                                 enterTransition = { scaleIn(initialScale = 0.8f) },

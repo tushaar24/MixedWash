@@ -36,17 +36,17 @@ fun NavGraphBuilder.AuthNav(
                 carouselItems = listOf(
                     CarouselItem(
                         imageUrl = "https://assets-aac.pages.dev/assets/wooden_laundry_basket_next_to_pile_clothing.png",
-                        title = "Laundry in 24 hrs.\nFree delivery",
+                        title = "New Startup\nSame Laundry",
                         description = "no AI. no machine learning.\njust washing machine go brrr"
                     ),
                     CarouselItem(
                         imageUrl = "https://assets-aac.pages.dev/assets/washing_machine_sunglases.png",
-                        title = "Do laundry the \nRight Way",
+                        title = "Do laundry the \nRIGHT WAY",
                         description = "seriously. stop sun-drying your dark clothes. baka."
                     ),
                     CarouselItem(
                         imageUrl = "https://assets-aac.pages.dev/assets/man_meditating.png",
-                        title = "Save more time & \ndo more laundry",
+                        title = "Save more time & \nDo more laundry",
                         description = "meditate. practice breathing. \ncontrol your chakra. learn rizz jutsu"
                     ),
 

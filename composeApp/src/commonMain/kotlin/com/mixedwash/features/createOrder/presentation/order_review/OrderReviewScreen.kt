@@ -37,6 +37,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import com.mixedwash.WindowInsetsContainer
 import com.mixedwash.domain.util.capitalize
 import com.mixedwash.features.createOrder.presentation.address.model.Address
 import com.mixedwash.features.createOrder.presentation.slot_selection.Offer
@@ -80,131 +81,136 @@ fun OrderReviewScreen(
     modifier: Modifier = Modifier,
     state: OrderReviewScreenState,
 ) {
-    Column(modifier = modifier) {
-        DefaultHeader(
-            title = "Review your booking",
-            headingSize = HeadingSize.Subtitle1,
-            headingAlign = HeadingAlign.Start,
-            navigationButton = {
-                HeaderIconButton(
-                    imageVector = Icons.Rounded.KeyboardArrowLeft,
-                    onClick = {}
-                )
-            }
-        )
-
-        Column(
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = modifier
-                .padding(
-                    start = screenHorizontalPadding,
-                    end = screenHorizontalPadding,
-                )
-                .verticalScroll(rememberScrollState())
-        ) {
-
-            Spacer(Modifier.height(2.dp))
-            Text(text = "Service Details", style = BrandTheme.typography.subtitle2)
-            Column(
-                modifier = Modifier
-                    .clip(BrandTheme.shapes.card)
-                    .background(BrandTheme.colors.gray.light)
-                    .padding(horizontal = 16.dp, vertical = 18.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                state.items.forEachIndexed { index, item ->
-                    ServiceItemContainer(
-                        title = item.title,
-                        description = item.description,
-                        price = item.price,
-                        unit = item.unit,
-                        actionLabel = item.actionLabel,
-                        onAction = item.action,
-                        modifier = Modifier.fillMaxWidth()
+    WindowInsetsContainer {
+        Column(modifier = modifier) {
+            DefaultHeader(
+                title = "Review your booking",
+                headingSize = HeadingSize.Subtitle1,
+                headingAlign = HeadingAlign.Start,
+                navigationButton = {
+                    HeaderIconButton(
+                        imageVector = Icons.Rounded.KeyboardArrowLeft,
+                        onClick = {}
                     )
-                    if (index < state.items.size - 1) {
-                        HorizontalDivider(color = dividerBlack, modifier = Modifier.fillMaxWidth())
+                }
+            )
+
+            Column(
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = modifier
+                    .padding(
+                        start = screenHorizontalPadding,
+                        end = screenHorizontalPadding,
+                    )
+                    .verticalScroll(rememberScrollState())
+            ) {
+
+                Spacer(Modifier.height(2.dp))
+                Text(text = "Service Details", style = BrandTheme.typography.subtitle2)
+                Column(
+                    modifier = Modifier
+                        .clip(BrandTheme.shapes.card)
+                        .background(BrandTheme.colors.gray.light)
+                        .padding(horizontal = 16.dp, vertical = 18.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    state.items.forEachIndexed { index, item ->
+                        ServiceItemContainer(
+                            title = item.title,
+                            description = item.description,
+                            price = item.price,
+                            unit = item.unit,
+                            actionLabel = item.actionLabel,
+                            onAction = item.action,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        if (index < state.items.size - 1) {
+                            HorizontalDivider(
+                                color = dividerBlack,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
                     }
                 }
-            }
-            Text(text = "Order Details", style = BrandTheme.typography.subtitle2)
-            OrderDetailsSummary(
-                modifier = Modifier.fillMaxWidth(),
-                pickupSlot = state.pickupSlot,
-                dropSlot = state.dropSlot,
-                deliveryAddress = state.deliveryAddress,
-                onEditAddress = state.onEditAddress,
-                onEditSlot = state.onEditSlot
-            )
-            Text(text = "Payment Summary*", style = BrandTheme.typography.subtitle2)
-            Text(
-                text = buildAnnotatedString {
-                    withStyle(style = ParagraphStyle(lineHeight = 1.2.em)) {
-                        withStyle(style = SpanStyle(fontSize = 12.sp)) {
-                            append("Estimate based on the minimum allowed quantity per item. Items exceeding in weight are priced separately per kg.")
+                Text(text = "Order Details", style = BrandTheme.typography.subtitle2)
+                OrderDetailsSummary(
+                    modifier = Modifier.fillMaxWidth(),
+                    pickupSlot = state.pickupSlot,
+                    dropSlot = state.dropSlot,
+                    deliveryAddress = state.deliveryAddress,
+                    onEditAddress = state.onEditAddress,
+                    onEditSlot = state.onEditSlot
+                )
+                Text(text = "Payment Summary*", style = BrandTheme.typography.subtitle2)
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(style = ParagraphStyle(lineHeight = 1.2.em)) {
+                            withStyle(style = SpanStyle(fontSize = 12.sp)) {
+                                append("Estimate based on the minimum allowed quantity per item. Items exceeding in weight are priced separately per kg.")
+                            }
+                            withStyle(
+                                style = SpanStyle(
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Medium
+                                )
+                            ) {
+                                withLink(link = LinkAnnotation.Url("#")) { append("\nCheck pricing details") }
+                            }
                         }
-                        withStyle(
-                            style = SpanStyle(
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.Medium
-                            )
+                    })
+                Column(
+                    modifier = Modifier
+                        .clip(BrandTheme.shapes.card)
+                        .background(BrandTheme.colors.gray.light)
+                        .padding(horizontal = 16.dp, vertical = 18.dp)
+                        .fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    state.paymentBreakup.forEach { pair ->
+                        val (item, cost) = pair
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            withLink(link = LinkAnnotation.Url("#")) { append("\nCheck pricing details") }
+                            Text(text = item, style = BrandTheme.typography.body3)
+                            Text(text = cost, style = BrandTheme.typography.body3)
                         }
+
                     }
-                })
-            Column(
-                modifier = Modifier
-                    .clip(BrandTheme.shapes.card)
-                    .background(BrandTheme.colors.gray.light)
-                    .padding(horizontal = 16.dp, vertical = 18.dp)
-                    .fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                state.paymentBreakup.forEach { pair ->
-                    val (item, cost) = pair
+
+                    HorizontalDivider(color = dividerBlack)
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(text = item, style = BrandTheme.typography.body3)
-                        Text(text = cost, style = BrandTheme.typography.body3)
+                        Text(
+                            text = "Estimated Total (minimum)",
+                            style = BrandTheme.typography.body3,
+                            fontWeight = FontWeight.Medium
+                        )
+                        Text(
+                            text = "$150.00",
+                            style = BrandTheme.typography.body3,
+                            fontWeight = FontWeight.Medium
+                        )
                     }
 
                 }
 
-                HorizontalDivider(color = dividerBlack)
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = "Estimated Total (minimum)",
-                        style = BrandTheme.typography.body3,
-                        fontWeight = FontWeight.Medium
-                    )
-                    Text(
-                        text = "$150.00",
-                        style = BrandTheme.typography.body3,
-                        fontWeight = FontWeight.Medium
-                    )
-                }
+                PrimaryButton(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp),
+                    text = "CONFIRM ORDER",
+                )
+
+
+                Spacer(Modifier.height(2.dp))
+
 
             }
 
-            PrimaryButton(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp),
-                text = "CONFIRM ORDER",
-            )
-
-
-            Spacer(Modifier.height(2.dp))
-
-
         }
-
     }
 }
 

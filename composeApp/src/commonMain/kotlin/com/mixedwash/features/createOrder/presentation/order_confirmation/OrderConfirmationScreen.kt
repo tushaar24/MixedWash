@@ -19,10 +19,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
-import com.mixedwash.ui.theme.screenHorizontalPadding
+import com.mixedwash.WindowInsetsContainer
 import com.mixedwash.ui.theme.Green
 import com.mixedwash.ui.theme.components.SecondaryButton
 import com.mixedwash.ui.theme.components.SecondaryTextButton
+import com.mixedwash.ui.theme.screenHorizontalPadding
 
 
 data class OrderConfirmationScreenState(
@@ -37,42 +38,44 @@ fun OrderConfirmationScreen(
     modifier: Modifier = Modifier,
     state: OrderConfirmationScreenState
 ) {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(48.dp, Alignment.CenterVertically),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.fillMaxSize().background(Color.Black)
-            .padding(horizontal = screenHorizontalPadding)
-    ) {
+    WindowInsetsContainer(modifier = Modifier.background(Color.Black), statusBarIconsLight = true) {
         Column(
-            verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
-            horizontalAlignment = Alignment.CenterHorizontally
+            verticalArrangement = Arrangement.spacedBy(48.dp, Alignment.CenterVertically),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = modifier.fillMaxSize()
+                .padding(horizontal = screenHorizontalPadding)
         ) {
-            Icon(
-                imageVector = Icons.Rounded.CheckCircle,
-                contentDescription = "check-circle",
-                modifier = Modifier
-                    .requiredSize(size = 120.dp).background(Color.White),
-                tint = Green
-            )
-            Text(
-                text = state.title,
-                textAlign = TextAlign.Center,
-                style = BrandTheme.typography.h5,
-                color = Color.White
-            )
-            Text(
-                text = state.description,
-                textAlign = TextAlign.Center,
-                lineHeight = 1.5.em,
-                color = Color.White,
-                modifier = Modifier
-                    .fillMaxWidth()
-            )
+            Column(
+                verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Icon(
+                    imageVector = Icons.Rounded.CheckCircle,
+                    contentDescription = "check-circle",
+                    modifier = Modifier
+                        .requiredSize(size = 120.dp).background(Color.White),
+                    tint = Green
+                )
+                Text(
+                    text = state.title,
+                    textAlign = TextAlign.Center,
+                    style = BrandTheme.typography.h5,
+                    color = Color.White
+                )
+                Text(
+                    text = state.description,
+                    textAlign = TextAlign.Center,
+                    lineHeight = 1.5.em,
+                    color = Color.White,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                )
 
-            SecondaryTextButton(text = "Check Order Status", onClick = state.onCheckOrderStatus)
+                SecondaryTextButton(text = "Check Order Status", onClick = state.onCheckOrderStatus)
 
+            }
+            SecondaryButton(text = "Back Home", onClick = state.onBackHome)
         }
-        SecondaryButton(text = "Back Home", onClick = state.onBackHome)
     }
 }
 
