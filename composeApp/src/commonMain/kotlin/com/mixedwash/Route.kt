@@ -52,12 +52,24 @@ sealed class Route {
     @Serializable
     data object ProfileEditRoute : Route()
 
+    @Serializable
+    data object ServicesRoute : Route()
+
+    @Serializable
+    data object HomeRoute : Route()
+
+    @Serializable
+    data object HistoryRoute : Route()
+
     // Graph Routes
     @Serializable
     data object AuthNav : Route()
 
     @Serializable
     data object HomeNav : Route()
+
+    @Serializable
+    data object ProfileNav : Route()
 
 }
 

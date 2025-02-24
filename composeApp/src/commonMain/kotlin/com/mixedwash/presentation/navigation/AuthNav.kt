@@ -11,10 +11,10 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.mixedwash.Route
-import com.mixedwash.features.createOrder.presentation.phone.PhoneScreen
-import com.mixedwash.features.createOrder.presentation.phone.PhoneScreenViewModel
-import com.mixedwash.features.createOrder.signin.CarouselItem
-import com.mixedwash.features.createOrder.signin.SignInScreen
+import com.mixedwash.features.common.presentation.phone.PhoneScreen
+import com.mixedwash.features.common.presentation.phone.PhoneScreenViewModel
+import com.mixedwash.features.common.presentation.signin.CarouselItem
+import com.mixedwash.features.common.presentation.signin.SignInScreen
 import com.mixedwash.presentation.models.SnackbarHandler
 import com.mixedwash.presentation.models.SnackbarPayload
 import kotlinx.coroutines.launch
