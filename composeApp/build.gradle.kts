@@ -150,9 +150,22 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    signingConfigs {
+        create("sharedDebug") {
+            storeFile = rootProject.file("debug_keystore.jks")
+            storePassword = "emmawatson"
+            keyAlias = "key0"
+            keyPassword = "emmawatson"
+        }
+    }
+
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
+        }
+        getByName("debug") {
+            isMinifyEnabled = false
+            signingConfig = signingConfigs.getByName("sharedDebug")
         }
     }
     buildFeatures {
