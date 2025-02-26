@@ -57,7 +57,7 @@ import kotlin.uuid.Uuid
 
 class AddressScreenViewModel(
     private val addressUseCases: AddressUseCases,
-    private val locationServiceManager: LocationService,
+    private val locationService: LocationService,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -299,7 +299,7 @@ class AddressScreenViewModel(
             }
 
             AddressSearchEvent.OnLocationClick -> viewModelScope.launch {
-                if (!locationServiceManager.isLocationEnabled()) {
+                if (!locationService.isLocationEnabled()) {
                     snackbarEvent(
                         message = "Please turn on device location",
                         type = SnackBarType.WARNING
@@ -340,7 +340,7 @@ class AddressScreenViewModel(
                     }
                     onSearchEvent(AddressSearchEvent.OnClear)
 
-                    val result = locationServiceManager.getPlaceByPlaceId(event.place.placeId)
+                    val result = locationService.getPlaceByPlaceId(event.place.placeId)
 
                     if (result !is GeocoderResult.Success) {
                         snackbarEvent(
@@ -380,7 +380,7 @@ class AddressScreenViewModel(
                 }
                 autocompleteJob = viewModelScope.launch {
                     delay(200)
-                    val result = locationServiceManager.searchAutoComplete(event.value)
+                    val result = locationService.searchAutoComplete(event.value)
                     if (result !is AutocompleteResult.Success) {
 
                     } else {
@@ -397,14 +397,14 @@ class AddressScreenViewModel(
 
     private suspend fun getCurrentAddressOrNull(): Address? {
 
-        val result = locationServiceManager.getCurrentLocation()
+        val result = locationService.getCurrentLocation()
         val address: Address? = if (result !is GeolocatorResult.Success) {
             if (result is GeolocatorResult.PermissionDenied) {
                 if (result.forever) {
                     snackbarEvent(
                         message = "Please grant location permission",
                         type = SnackBarType.WARNING,
-                        action = locationServiceManager::openSettings,
+                        action = locationService::openSettings,
                         actionText = "Open Settings"
                     )
                 } else {
@@ -422,7 +422,7 @@ class AddressScreenViewModel(
             null
         } else {
             val placeResult =
-                locationServiceManager.getPlaceByCoordinates(result.data.coordinates)
+                locationService.getPlaceByCoordinates(result.data.coordinates)
             val addressResult: Address? =
                 if (placeResult !is GeocoderResult.Success<Place> || placeResult.data.isEmpty()) {
                     snackbarEvent("Fetching location failed", SnackBarType.ERROR)

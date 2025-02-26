@@ -50,7 +50,7 @@ import mixedwash.composeapp.generated.resources.ic_history
 import org.jetbrains.compose.resources.vectorResource
 
 @Composable
-fun ServiceDetailsCard(
+fun ServiceDetail(
     serviceItem: ServiceItem,
     onEvent: (ServicesScreenEvent) -> Unit,
     serviceVariants: List<ServiceVariant>?,

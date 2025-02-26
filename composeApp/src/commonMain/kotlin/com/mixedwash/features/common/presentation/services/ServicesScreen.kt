@@ -13,7 +13,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.mixedwash.features.common.presentation.services.components.ServiceDetailsCard
+import com.mixedwash.features.common.presentation.services.components.ServiceDetail
 import com.mixedwash.features.common.presentation.services.components.ServiceTab
 import com.mixedwash.features.common.presentation.services.components.ServicesFooter
 
@@ -33,15 +33,15 @@ fun ServicesScreen(
                 itemsIndexed(state.serviceItems) { index, item ->
                     ServiceTab(
                         serviceItem = item,
-                        isOpted = state.selectedServices.contains(item.id),
-                        isCurrent = index == state.currentServiceId,
+                        addedToCart = state.selectedServices.contains(item.id),
+                        isSelected = index == state.currentServiceId,
                         onClick = { onEvent(ServicesScreenEvent.ToggleCurrentService(index)) },
                         modifier = Modifier.padding(horizontal = 16.dp),
                     )
                 }
             }
 
-            ServiceDetailsCard(
+            ServiceDetail(
                 serviceItem = state.serviceItems[state.currentServiceId],
                 onEvent = onEvent,
                 currentVariant = state.currentVariant,

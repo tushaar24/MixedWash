@@ -35,14 +35,14 @@ import com.mixedwash.ui.theme.Green
 @Composable
 fun ServiceTab(
     serviceItem: ServiceItem,
-    isOpted: Boolean,
-    isCurrent: Boolean,
+    addedToCart: Boolean,
+    isSelected: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(
         modifier = modifier.fillMaxHeight().width(100.dp).clip(RoundedCornerShape(12.dp))
-            .background(if (isCurrent) Gray900 else Gray50)
+            .background(if (isSelected) Gray900 else Gray50)
             .clickable { onClick() }
     ) {
         Column(
@@ -53,7 +53,7 @@ fun ServiceTab(
             Box {
                 Box(
                     modifier = Modifier.clip(CircleShape)
-                        .background(if (isCurrent) Gray800 else Gray100),
+                        .background(if (isSelected) Gray800 else Gray100),
                     contentAlignment = Alignment.Center
                 ) {
                     AsyncImageLoader(
@@ -62,11 +62,11 @@ fun ServiceTab(
                     )
                 }
 
-                if (isOpted) {
+                if (addedToCart) {
 
                     Box(
                         modifier = Modifier.clip(CircleShape)
-                            .background(if (isCurrent) Gray900 else Gray50)
+                            .background(if (isSelected) Gray900 else Gray50)
                             .align(Alignment.BottomEnd)
                     ) {
                         Box(modifier = Modifier.padding(4.dp).clip(CircleShape).background(Green)) {
@@ -83,7 +83,7 @@ fun ServiceTab(
 
             Text(
                 text = serviceItem.title,
-                color = if (isCurrent) Gray300 else Gray700,
+                color = if (isSelected) Gray300 else Gray700,
                 lineHeight = 16.sp,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Medium
