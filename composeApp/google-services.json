@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "241995325784-sh8ar7ols7thqgoa8co59rf2t8ldj1fg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mixedwash",
+            "certificate_hash": "90b7048d32db3584b011c4363e905a320aad0373"
+          }
+        },
+        {
           "client_id": "241995325784-opejcpg0g2bu25oj04e14skpmhabf2nd.apps.googleusercontent.com",
           "client_type": 3
         }

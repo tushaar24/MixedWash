@@ -163,7 +163,7 @@ android {
         getByName("release") {
             isMinifyEnabled = false
         }
-        getByName("debug") {
+        debug {
             isMinifyEnabled = false
             signingConfig = signingConfigs.getByName("sharedDebug")
         }
