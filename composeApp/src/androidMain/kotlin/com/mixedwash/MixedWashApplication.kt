@@ -27,7 +27,7 @@ class MixedWashApplication : Application() {
 
         GoogleAuthProvider.create(
             credentials = GoogleAuthCredentials(
-                serverId = "241995325784-sh8ar7ols7thqgoa8co59rf2t8ldj1fg.apps.googleusercontent.com"
+                serverId = "241995325784-opejcpg0g2bu25oj04e14skpmhabf2nd.apps.googleusercontent.com"
             )
         )
 
