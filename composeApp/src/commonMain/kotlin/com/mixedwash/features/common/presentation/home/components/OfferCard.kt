@@ -19,10 +19,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.mixedwash.presentation.components.dump.AppButton
-import com.mixedwash.presentation.components.dump.AsyncImageLoader
-import com.mixedwash.presentation.components.gradient
-import com.mixedwash.presentation.components.dropShadow
+import com.mixedwash.core.presentation.components.dump.AppButton
+import com.mixedwash.core.presentation.components.dump.AsyncImageLoader
+import com.mixedwash.core.presentation.components.gradient
+import com.mixedwash.core.presentation.components.dropShadow
 import com.mixedwash.ui.theme.Gray100
 import com.mixedwash.ui.theme.Gray400
 import com.mixedwash.ui.theme.Gray800

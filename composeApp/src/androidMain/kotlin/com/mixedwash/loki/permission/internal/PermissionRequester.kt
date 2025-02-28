@@ -1,4 +1,4 @@
-package com.mixedwash.services.loki.permission.internal
+package com.mixedwash.libs.loki.permission.internal
 
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
@@ -7,7 +7,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.launch
-import com.mixedwash.services.loki.permission.PermissionState
+import com.mixedwash.libs.loki.permission.PermissionState
 
 /**
  * Request the location permissions using the Activity Result API.

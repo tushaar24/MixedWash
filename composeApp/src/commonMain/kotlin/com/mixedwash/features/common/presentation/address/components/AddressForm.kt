@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mixedwash.features.common.presentation.address.AddressFormState
 import com.mixedwash.features.common.presentation.address.FormMode
-import com.mixedwash.presentation.components.clearFocusOnKeyboardDismiss
+import com.mixedwash.core.presentation.components.clearFocusOnKeyboardDismiss
 import com.mixedwash.ui.theme.smallPadding
 import com.mixedwash.ui.theme.RedDark
 import com.mixedwash.ui.theme.components.IconButton

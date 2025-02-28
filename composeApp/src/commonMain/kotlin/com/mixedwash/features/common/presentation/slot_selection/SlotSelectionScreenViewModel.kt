@@ -2,11 +2,11 @@ package com.mixedwash.features.common.presentation.slot_selection
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mixedwash.domain.models.Result
+import com.mixedwash.core.domain.models.Result
 import com.mixedwash.features.common.domain.usecases.slots.LoadSlotsWithOffersUseCase
 import com.mixedwash.features.common.domain.usecases.slots.SelectSlotAndOffersUseCase
 import com.mixedwash.features.common.data.entities.SlotAndOfferSelectionRequestEntity
-import com.mixedwash.presentation.models.SnackBarType
+import com.mixedwash.core.presentation.models.SnackBarType
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

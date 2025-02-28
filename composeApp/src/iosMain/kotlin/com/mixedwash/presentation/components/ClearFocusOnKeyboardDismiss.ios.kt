@@ -1,4 +1,4 @@
-package com.mixedwash.presentation.components
+package com.mixedwash.core.presentation.components
 
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.runtime.Composable

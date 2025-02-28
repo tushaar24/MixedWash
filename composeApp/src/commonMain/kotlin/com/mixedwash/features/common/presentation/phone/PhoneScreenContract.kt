@@ -1,7 +1,7 @@
 package com.mixedwash.features.common.presentation.phone
 
-import com.mixedwash.presentation.models.FormField
-import com.mixedwash.presentation.models.SnackbarPayload
+import com.mixedwash.core.presentation.models.FormField
+import com.mixedwash.core.presentation.models.SnackbarPayload
 
 
 data class PhoneScreenState(
@@ -11,7 +11,7 @@ data class PhoneScreenState(
     val phoneNumberError: String? = null,
     val buttonText: String,
     val buttonEnabled: Boolean,
-    val formField: FormField,
+    val formField: _root_ide_package_.com.mixedwash.core.presentation.models.FormField,
     val isLoading: Boolean
 )
 

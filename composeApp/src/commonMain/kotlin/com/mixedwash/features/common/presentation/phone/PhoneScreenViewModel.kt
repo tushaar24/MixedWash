@@ -6,12 +6,12 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mixedwash.core.data.UserService
-import com.mixedwash.domain.models.Result
-import com.mixedwash.domain.validation.PhoneValidationUseCase
-import com.mixedwash.presentation.models.FieldID
-import com.mixedwash.presentation.models.FormField
-import com.mixedwash.presentation.models.InputState
-import com.mixedwash.presentation.models.SnackbarPayload
+import com.mixedwash.core.domain.models.Result
+import com.mixedwash.core.domain.validation.PhoneValidationUseCase
+import com.mixedwash.core.presentation.models.FieldID
+import com.mixedwash.core.presentation.models.FormField
+import com.mixedwash.core.presentation.models.InputState
+import com.mixedwash.core.presentation.models.SnackbarPayload
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -32,10 +32,10 @@ class PhoneScreenViewModel  constructor(
         phoneNumberError = null,
         buttonText = "Next",
         buttonEnabled = true,
-        formField = FormField(
+        formField = _root_ide_package_.com.mixedwash.core.presentation.models.FormField(
             value = "",
-            id = FieldID.PHONE,
-            inputState = InputState.Enabled,
+            id = _root_ide_package_.com.mixedwash.core.presentation.models.FieldID.PHONE,
+            inputState = _root_ide_package_.com.mixedwash.core.presentation.models.InputState.Enabled,
             singleLine = true,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Phone,
@@ -111,7 +111,7 @@ class PhoneScreenViewModel  constructor(
 
     private fun allowFormInput(enable: Boolean) = updateState {
         copy(
-            formField = formField.copy(inputState = if (enable) InputState.ReadOnly else InputState.Enabled),
+            formField = formField.copy(inputState = if (enable) _root_ide_package_.com.mixedwash.core.presentation.models.InputState.ReadOnly else _root_ide_package_.com.mixedwash.core.presentation.models.InputState.Enabled),
             buttonEnabled = enable
         )
 

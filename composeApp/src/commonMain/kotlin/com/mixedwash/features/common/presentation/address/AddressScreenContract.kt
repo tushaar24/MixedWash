@@ -2,11 +2,9 @@ package com.mixedwash.features.common.presentation.address
 
 import androidx.compose.runtime.Immutable
 import com.mixedwash.features.common.presentation.address.model.Address
-import com.mixedwash.presentation.components.DialogPopupData
-import com.mixedwash.presentation.models.FieldID
-import com.mixedwash.presentation.models.FormField
-import com.mixedwash.presentation.models.SnackbarPayload
-import com.mixedwash.services.loki.autocomplete.AutocompletePlace
+import com.mixedwash.core.presentation.components.DialogPopupData
+import com.mixedwash.core.presentation.models.SnackbarPayload
+import com.mixedwash.libs.loki.autocomplete.AutocompletePlace
 
 
 @Immutable
@@ -36,7 +34,7 @@ data class AddressScreenState(
 
 data class AddressFormState(
     val title: String,
-    val fields: List<FormField>,
+    val fields: List<_root_ide_package_.com.mixedwash.core.presentation.models.FormField>,
     val mode: FormMode,
     val isLoading: Boolean = false
 )
@@ -82,7 +80,7 @@ sealed class AddressScreenEvent {
 }
 
 sealed class AddressFormEvent {
-    data class OnFieldUpdate(val fieldId: FieldID, val value: String) : AddressFormEvent()
+    data class OnFieldUpdate(val fieldId: _root_ide_package_.com.mixedwash.core.presentation.models.FieldID, val value: String) : AddressFormEvent()
     data object OnFormEditSave : AddressFormEvent()
     data object OnFormEditCancel : AddressFormEvent()
     data object OnFormCreate : AddressFormEvent()

@@ -39,9 +39,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.mixedwash.presentation.util.Logger
-import com.mixedwash.presentation.components.clearFocusOnKeyboardDismiss
-import com.mixedwash.services.loki.autocomplete.AutocompletePlace
+import com.mixedwash.core.presentation.util.Logger
+import com.mixedwash.core.presentation.components.clearFocusOnKeyboardDismiss
+import com.mixedwash.libs.loki.autocomplete.AutocompletePlace
 import mixedwash.composeapp.generated.resources.Res
 import mixedwash.composeapp.generated.resources.ic_current_location
 import org.jetbrains.compose.resources.vectorResource

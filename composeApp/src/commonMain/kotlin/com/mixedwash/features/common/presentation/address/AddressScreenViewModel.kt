@@ -12,8 +12,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.mixedwash.Route
-import com.mixedwash.domain.models.Result
-import com.mixedwash.domain.validation.PinCodeValidationUseCase
+import com.mixedwash.core.domain.models.Result
+import com.mixedwash.core.domain.validation.PinCodeValidationUseCase
 import com.mixedwash.features.common.data.entities.AddressEntity
 import com.mixedwash.features.common.data.service.local.LocationService
 import com.mixedwash.features.common.domain.usecases.address.AddressUseCases
@@ -21,23 +21,23 @@ import com.mixedwash.features.common.presentation.address.model.Address
 import com.mixedwash.features.common.presentation.address.model.toAddress
 import com.mixedwash.features.common.presentation.address.model.toAddressEntity
 import com.mixedwash.features.common.presentation.address.model.toFieldIDValueMap
-import com.mixedwash.presentation.components.ButtonData
-import com.mixedwash.presentation.components.DialogPopupData
-import com.mixedwash.presentation.models.FieldID
-import com.mixedwash.presentation.models.FieldID.ADDRESS_LINE_1
-import com.mixedwash.presentation.models.FieldID.ADDRESS_LINE_2
-import com.mixedwash.presentation.models.FieldID.ADDRESS_LINE_3
-import com.mixedwash.presentation.models.FieldID.ADDRESS_TITLE
-import com.mixedwash.presentation.models.FieldID.PIN_CODE
-import com.mixedwash.presentation.models.FormField
-import com.mixedwash.presentation.models.InputState
-import com.mixedwash.presentation.models.SnackBarType
-import com.mixedwash.presentation.models.SnackbarPayload
-import com.mixedwash.presentation.util.Logger
-import com.mixedwash.services.loki.autocomplete.AutocompleteResult
-import com.mixedwash.services.loki.core.Place
-import com.mixedwash.services.loki.geocoder.GeocoderResult
-import com.mixedwash.services.loki.geolocation.GeolocatorResult
+import com.mixedwash.core.presentation.components.ButtonData
+import com.mixedwash.core.presentation.components.DialogPopupData
+import com.mixedwash.core.presentation.models.FieldID
+import com.mixedwash.core.presentation.models.FieldID.ADDRESS_LINE_1
+import com.mixedwash.core.presentation.models.FieldID.ADDRESS_LINE_2
+import com.mixedwash.core.presentation.models.FieldID.ADDRESS_LINE_3
+import com.mixedwash.core.presentation.models.FieldID.ADDRESS_TITLE
+import com.mixedwash.core.presentation.models.FieldID.PIN_CODE
+import com.mixedwash.core.presentation.models.FormField
+import com.mixedwash.core.presentation.models.InputState
+import com.mixedwash.core.presentation.models.SnackBarType
+import com.mixedwash.core.presentation.models.SnackbarPayload
+import com.mixedwash.core.presentation.util.Logger
+import com.mixedwash.libs.loki.autocomplete.AutocompleteResult
+import com.mixedwash.libs.loki.core.Place
+import com.mixedwash.libs.loki.geocoder.GeocoderResult
+import com.mixedwash.libs.loki.geolocation.GeolocatorResult
 import com.mixedwash.ui.theme.RedDark
 import com.mixedwash.ui.theme.Yellow400
 import kotlinx.coroutines.Job
@@ -267,7 +267,7 @@ class AddressScreenViewModel(
                                 address = address,
                                 baseFormFields = emptyCreateFormState.fields,
                                 excludeFields = emptyList(),
-                                inputState = InputState.Enabled,
+                                inputState = _root_ide_package_.com.mixedwash.core.presentation.models.InputState.Enabled,
                                 excludeEmptyFields = false
                             ), mode = FormMode.Edit(address = address, onSave = {
 
@@ -468,7 +468,7 @@ class AddressScreenViewModel(
                 address = this,
                 baseFormFields = emptyCreateFormState.fields,
                 excludeFields = listOf(ADDRESS_TITLE),
-                inputState = InputState.ReadOnly,
+                inputState = _root_ide_package_.com.mixedwash.core.presentation.models.InputState.ReadOnly,
                 excludeEmptyFields = true
             ),
         )
@@ -515,11 +515,11 @@ class AddressScreenViewModel(
      * */
     private fun formFieldsFrom(
         address: Address,
-        baseFormFields: List<FormField>,
-        excludeFields: List<FieldID> = emptyList(),
+        baseFormFields: List<_root_ide_package_.com.mixedwash.core.presentation.models.FormField>,
+        excludeFields: List<_root_ide_package_.com.mixedwash.core.presentation.models.FieldID> = emptyList(),
         excludeEmptyFields: Boolean,
-        inputState: InputState = InputState.Enabled,
-    ): List<FormField> {
+        inputState: _root_ide_package_.com.mixedwash.core.presentation.models.InputState = _root_ide_package_.com.mixedwash.core.presentation.models.InputState.Enabled,
+    ): List<_root_ide_package_.com.mixedwash.core.presentation.models.FormField> {
         val fieldIdValueMap = address.toFieldIDValueMap()
         return baseFormFields.mapNotNull { field ->
             if (excludeFields.contains(field.id) && field.id == ADDRESS_TITLE) return@mapNotNull null
@@ -601,7 +601,7 @@ class AddressScreenViewModel(
         title = "Create Address",
         mode = FormMode.Create(onCreate = { onFormEvent(AddressFormEvent.OnFormCreate) }),
         fields = listOf(
-            FormField(
+            _root_ide_package_.com.mixedwash.core.presentation.models.FormField(
                 value = "",
                 id = ADDRESS_TITLE,
                 label = "Address Title ${if (requiredFields.contains(ADDRESS_TITLE)) "*" else ""}",
@@ -614,7 +614,7 @@ class AddressScreenViewModel(
                         )
                     )
                 },
-            ), FormField(
+            ), _root_ide_package_.com.mixedwash.core.presentation.models.FormField(
                 value = "",
                 id = ADDRESS_LINE_1,
                 label = "Address Line 1${if (requiredFields.contains(ADDRESS_LINE_1)) "*" else ""}",
@@ -627,7 +627,7 @@ class AddressScreenViewModel(
                         )
                     )
                 },
-            ), FormField(value = "",
+            ), _root_ide_package_.com.mixedwash.core.presentation.models.FormField(value = "",
                 id = ADDRESS_LINE_2,
                 label = "Address Line 2${if (requiredFields.contains(ADDRESS_LINE_2)) "*" else ""}",
                 placeholder = "Landmark, Locality",
@@ -638,7 +638,7 @@ class AddressScreenViewModel(
                             fieldId = ADDRESS_LINE_2, value = it
                         )
                     )
-                }), FormField(value = "",
+                }), _root_ide_package_.com.mixedwash.core.presentation.models.FormField(value = "",
                 id = ADDRESS_LINE_3,
                 label = "Address Line 3${if (requiredFields.contains(ADDRESS_LINE_3)) "*" else ""}",
                 placeholder = "City, State",
@@ -649,7 +649,7 @@ class AddressScreenViewModel(
                             fieldId = ADDRESS_LINE_3, value = it
                         )
                     )
-                }), FormField(
+                }), _root_ide_package_.com.mixedwash.core.presentation.models.FormField(
                 value = "",
                 id = PIN_CODE,
                 label = "Pin Code${if (requiredFields.contains(PIN_CODE)) "*" else ""}",

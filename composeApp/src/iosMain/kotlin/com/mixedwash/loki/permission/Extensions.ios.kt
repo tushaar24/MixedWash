@@ -1,4 +1,4 @@
-package com.mixedwash.services.loki.permission
+package com.mixedwash.libs.loki.permission
 
 import platform.Foundation.NSURL
 import platform.UIKit.UIApplication

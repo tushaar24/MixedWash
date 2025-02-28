@@ -4,7 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.mixedwash.presentation.models.SnackBarType
+import com.mixedwash.core.presentation.models.SnackBarType
 import kotlin.random.Random
 
 @Immutable

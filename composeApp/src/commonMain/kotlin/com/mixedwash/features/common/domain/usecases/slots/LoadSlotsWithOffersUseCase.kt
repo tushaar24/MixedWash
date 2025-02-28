@@ -1,6 +1,6 @@
 package com.mixedwash.features.common.domain.usecases.slots
 
-import com.mixedwash.domain.models.Result
+import com.mixedwash.core.domain.models.Result
 import com.mixedwash.features.common.data.entities.SlotsAndOffersEntity
 import com.mixedwash.features.common.presentation.slot_selection.DateSlot
 import com.mixedwash.features.common.presentation.slot_selection.Offer

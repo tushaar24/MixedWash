@@ -18,8 +18,8 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mixedwash.features.common.presentation.history.model.OrderDeliveryStatus
-import com.mixedwash.presentation.components.dump.AppOutlinedButton
-import com.mixedwash.presentation.components.dump.IndicationChip
+import com.mixedwash.core.presentation.components.dump.AppOutlinedButton
+import com.mixedwash.core.presentation.components.dump.IndicationChip
 import com.mixedwash.ui.theme.Gray100
 import com.mixedwash.ui.theme.Gray50
 import com.mixedwash.ui.theme.Gray800

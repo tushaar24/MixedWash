@@ -34,15 +34,15 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.mixedwash.core.data.AuthState
 import com.mixedwash.core.data.UserService
-import com.mixedwash.presentation.components.BrandSnackbar
-import com.mixedwash.presentation.components.ShimmerText
-import com.mixedwash.presentation.components.noRippleClickable
-import com.mixedwash.presentation.components.rememberSnackbarHandler
-import com.mixedwash.presentation.models.decodeSnackBar
-import com.mixedwash.presentation.navigation.AuthNav
-import com.mixedwash.presentation.navigation.HomeNav
-import com.mixedwash.presentation.navigation.ProfileNav
-import com.mixedwash.presentation.util.Logger
+import com.mixedwash.core.presentation.components.BrandSnackbar
+import com.mixedwash.core.presentation.components.ShimmerText
+import com.mixedwash.core.presentation.components.noRippleClickable
+import com.mixedwash.core.presentation.components.rememberSnackbarHandler
+import com.mixedwash.core.presentation.models.decodeSnackBar
+import com.mixedwash.core.presentation.navigation.AuthNav
+import com.mixedwash.core.presentation.navigation.HomeNav
+import com.mixedwash.core.presentation.navigation.ProfileNav
+import com.mixedwash.core.presentation.util.Logger
 import com.mixedwash.ui.theme.MixedWashTheme
 import org.koin.compose.KoinContext
 import org.koin.compose.koinInject
@@ -125,9 +125,9 @@ fun App() {
                             )
 
                             HomeNav(
-                                userService = userService,
                                 snackbarHandler = snackbarHandler,
                                 navController = navController,
+                                userService = userService
                             )
 
                             ProfileNav(

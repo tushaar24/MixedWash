@@ -1,7 +1,7 @@
 package com.mixedwash.core.data
 
-import com.mixedwash.domain.models.ErrorType
-import com.mixedwash.domain.models.Result
+import com.mixedwash.core.domain.models.ErrorType
+import com.mixedwash.core.domain.models.Result
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
 import dev.gitlive.firebase.firestore.firestore

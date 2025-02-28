@@ -23,7 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.mixedwash.presentation.components.dump.LocationSlab
+import com.mixedwash.core.presentation.components.dump.LocationSlab
 import com.mixedwash.ui.theme.Gray700
 
 @Composable

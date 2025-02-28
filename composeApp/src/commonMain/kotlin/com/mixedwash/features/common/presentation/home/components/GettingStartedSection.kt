@@ -23,8 +23,8 @@ import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
 import coil3.request.crossfade
-import com.mixedwash.presentation.components.dump.AppButton
-import com.mixedwash.presentation.components.dump.AppOutlinedButton
+import com.mixedwash.core.presentation.components.dump.AppButton
+import com.mixedwash.core.presentation.components.dump.AppOutlinedButton
 import com.mixedwash.ui.theme.Gray100
 import com.mixedwash.ui.theme.Gray700
 import com.mixedwash.ui.theme.Gray800

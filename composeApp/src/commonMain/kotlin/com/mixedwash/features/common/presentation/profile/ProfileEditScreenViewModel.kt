@@ -11,18 +11,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mixedwash.core.data.UserMetadata
 import com.mixedwash.core.data.UserService
-import com.mixedwash.domain.models.Result
-import com.mixedwash.domain.validation.EmailValidationUseCase
-import com.mixedwash.domain.validation.PhoneValidationUseCase
-import com.mixedwash.presentation.components.ButtonData
-import com.mixedwash.presentation.components.DialogPopupData
-import com.mixedwash.presentation.models.FieldID.EMAIL
-import com.mixedwash.presentation.models.FieldID.NAME
-import com.mixedwash.presentation.models.FieldID.PHONE
-import com.mixedwash.presentation.models.FormField
-import com.mixedwash.presentation.models.SnackBarType
-import com.mixedwash.presentation.models.SnackbarPayload
-import com.mixedwash.presentation.util.Logger
+import com.mixedwash.core.domain.models.Result
+import com.mixedwash.core.domain.validation.EmailValidationUseCase
+import com.mixedwash.core.domain.validation.PhoneValidationUseCase
+import com.mixedwash.core.presentation.components.ButtonData
+import com.mixedwash.core.presentation.components.DialogPopupData
+import com.mixedwash.core.presentation.models.FieldID.EMAIL
+import com.mixedwash.core.presentation.models.FieldID.NAME
+import com.mixedwash.core.presentation.models.FieldID.PHONE
+import com.mixedwash.core.presentation.models.FormField
+import com.mixedwash.core.presentation.models.SnackBarType
+import com.mixedwash.core.presentation.models.SnackbarPayload
+import com.mixedwash.core.presentation.util.Logger
 import com.mixedwash.ui.theme.RedDark
 import com.mixedwash.ui.theme.Yellow400
 import kotlinx.coroutines.channels.Channel
@@ -230,8 +230,8 @@ class ProfileEditScreenViewModel(
         }
     }
 
-    private fun emptyFieldS(): List<FormField> = listOf(
-        FormField(
+    private fun emptyFieldS(): List<_root_ide_package_.com.mixedwash.core.presentation.models.FormField> = listOf(
+        _root_ide_package_.com.mixedwash.core.presentation.models.FormField(
             value = "",
             id = NAME,
             label = "Name",
@@ -248,7 +248,7 @@ class ProfileEditScreenViewModel(
                 )
             },
         ),
-        FormField(
+        _root_ide_package_.com.mixedwash.core.presentation.models.FormField(
             value = "",
             id = PHONE,
             label = "Phone Number",
@@ -268,7 +268,7 @@ class ProfileEditScreenViewModel(
                 )
             }
         ),
-        FormField(
+        _root_ide_package_.com.mixedwash.core.presentation.models.FormField(
             value = "",
             id = EMAIL,
             label = "Email",

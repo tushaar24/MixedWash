@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.mixedwash.features.common.presentation.home.model.HomeHeaderData
-import com.mixedwash.presentation.components.gradient
+import com.mixedwash.core.presentation.components.gradient
 
 @Composable
 fun HomeScreenHeader(

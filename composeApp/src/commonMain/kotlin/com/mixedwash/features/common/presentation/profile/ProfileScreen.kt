@@ -40,10 +40,10 @@ import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.mixedwash.WindowInsetsContainer
-import com.mixedwash.presentation.components.DefaultHeader
-import com.mixedwash.presentation.components.HeadingAlign
-import com.mixedwash.presentation.components.HeadingSize
-import com.mixedwash.presentation.components.noRippleClickable
+import com.mixedwash.core.presentation.components.DefaultHeader
+import com.mixedwash.core.presentation.components.HeadingAlign
+import com.mixedwash.core.presentation.components.HeadingSize
+import com.mixedwash.core.presentation.components.noRippleClickable
 import com.mixedwash.ui.theme.MixedWashTheme
 import com.mixedwash.ui.theme.RedDark
 import com.mixedwash.ui.theme.Typography.Companion.Poppins

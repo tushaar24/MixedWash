@@ -1,7 +1,7 @@
 package com.mixedwash.features.common.domain.usecases
 
-import com.mixedwash.domain.models.ErrorType
-import com.mixedwash.domain.models.Result
+import com.mixedwash.core.domain.models.ErrorType
+import com.mixedwash.core.domain.models.Result
 import kotlinx.coroutines.delay
 import kotlin.random.Random
 

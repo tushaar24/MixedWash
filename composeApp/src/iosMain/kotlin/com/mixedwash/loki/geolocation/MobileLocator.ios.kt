@@ -1,17 +1,15 @@
-package com.mixedwash.services.loki.geolocation
+package com.mixedwash.libs.loki.geolocation
 
-import com.mixedwash.services.loki.geolocation.internal.toModel
+import com.mixedwash.libs.loki.geolocation.internal.toModel
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import com.mixedwash.services.loki.core.Location
-import com.mixedwash.services.loki.core.Priority
-import com.mixedwash.services.loki.geolocation.exception.GeolocationException
-import com.mixedwash.services.loki.geolocation.internal.LocationManagerDelegate
-import com.mixedwash.services.loki.geolocation.internal.toIosPriority
-import com.mixedwash.services.loki.permission.LocationPermissionController
-import com.mixedwash.services.loki.permission.PermissionState
-import com.mixedwash.services.loki.permission.throwOnError
+import com.mixedwash.libs.loki.core.Location
+import com.mixedwash.libs.loki.geolocation.internal.LocationManagerDelegate
+import com.mixedwash.libs.loki.geolocation.internal.toIosPriority
+import com.mixedwash.libs.loki.permission.LocationPermissionController
+import com.mixedwash.libs.loki.permission.PermissionState
+import com.mixedwash.libs.loki.permission.throwOnError
 import platform.CoreLocation.CLLocationManager
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -50,7 +48,7 @@ internal class IosLocator(
         return permissionController.hasPermission()
     }
 
-    override suspend fun current(priority: com.mixedwash.services.loki.core.Priority): Location {
+    override suspend fun current(priority: com.mixedwash.libs.loki.core.Priority): Location {
         requirePermission()
 
         return suspendCoroutine { continuation ->
@@ -60,7 +58,7 @@ internal class IosLocator(
                 } else {
                     val cause = error?.localizedDescription ?: "Unknown error"
                     continuation.resumeWithException(
-                        com.mixedwash.services.loki.geolocation.exception.GeolocationException(
+                        com.mixedwash.libs.loki.geolocation.exception.GeolocationException(
                             cause
                         )
                     )
@@ -78,7 +76,7 @@ internal class IosLocator(
                 else {
                     val cause = error.localizedDescription
                     continuation.resumeWithException(
-                        com.mixedwash.services.loki.geolocation.exception.GeolocationException(
+                        com.mixedwash.libs.loki.geolocation.exception.GeolocationException(
                             cause
                         )
                     )
@@ -94,7 +92,7 @@ internal class IosLocator(
     }
 
     private suspend fun requirePermission() {
-        val state = permissionController.requirePermissionFor(com.mixedwash.services.loki.core.Priority.Balanced)
+        val state = permissionController.requirePermissionFor(com.mixedwash.libs.loki.core.Priority.Balanced)
         if (state != PermissionState.Granted) {
             state.throwOnError()
         }

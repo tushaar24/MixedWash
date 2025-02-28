@@ -1,4 +1,4 @@
-package com.mixedwash.services.loki.geolocation.internal
+package com.mixedwash.libs.loki.geolocation.internal
 
 import platform.CoreLocation.CLLocation
 import platform.CoreLocation.CLLocationAccuracy

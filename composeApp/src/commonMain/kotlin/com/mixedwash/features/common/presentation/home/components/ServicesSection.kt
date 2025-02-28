@@ -24,11 +24,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mixedwash.features.common.presentation.services.model.ServiceItem
-import com.mixedwash.presentation.components.dump.AsyncImageLoader
+import com.mixedwash.core.presentation.components.dump.AsyncImageLoader
 import com.mixedwash.ui.theme.Gray100
 import com.mixedwash.ui.theme.Gray300
 import com.mixedwash.ui.theme.Gray700
-import com.mixedwash.presentation.components.gradient
+import com.mixedwash.core.presentation.components.gradient
 
 @Composable
 fun ServicesSection(

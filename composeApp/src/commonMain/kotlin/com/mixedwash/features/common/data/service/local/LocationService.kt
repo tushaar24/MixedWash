@@ -1,20 +1,20 @@
 package com.mixedwash.features.common.data.service.local
 
-import com.mixedwash.services.loki.autocomplete.Autocomplete
-import com.mixedwash.services.loki.autocomplete.AutocompletePlace
-import com.mixedwash.services.loki.autocomplete.AutocompleteResult
-import com.mixedwash.services.loki.core.Coordinates
-import com.mixedwash.services.loki.core.Location
-import com.mixedwash.services.loki.core.Place
-import com.mixedwash.services.loki.core.Priority
-import com.mixedwash.services.loki.geocoder.Geocoder
-import com.mixedwash.services.loki.geocoder.GeocoderResult
-import com.mixedwash.services.loki.geolocation.Geolocator
-import com.mixedwash.services.loki.geolocation.GeolocatorResult
-import com.mixedwash.services.loki.geolocation.LocationRequest
-import com.mixedwash.services.loki.geolocation.TrackingStatus
-import com.mixedwash.services.loki.permission.LocationPermissionController
-import com.mixedwash.services.loki.permission.openSettings
+import com.mixedwash.libs.loki.autocomplete.Autocomplete
+import com.mixedwash.libs.loki.autocomplete.AutocompletePlace
+import com.mixedwash.libs.loki.autocomplete.AutocompleteResult
+import com.mixedwash.libs.loki.core.Coordinates
+import com.mixedwash.libs.loki.core.Location
+import com.mixedwash.libs.loki.core.Place
+import com.mixedwash.libs.loki.core.Priority
+import com.mixedwash.libs.loki.geocoder.Geocoder
+import com.mixedwash.libs.loki.geocoder.GeocoderResult
+import com.mixedwash.libs.loki.geolocation.Geolocator
+import com.mixedwash.libs.loki.geolocation.GeolocatorResult
+import com.mixedwash.libs.loki.geolocation.LocationRequest
+import com.mixedwash.libs.loki.geolocation.TrackingStatus
+import com.mixedwash.libs.loki.permission.LocationPermissionController
+import com.mixedwash.libs.loki.permission.openSettings
 import kotlinx.coroutines.flow.Flow
 
 class LocationService(

@@ -15,7 +15,7 @@ import com.mixedwash.features.common.presentation.home.components.GettingStarted
 import com.mixedwash.features.common.presentation.home.components.HomeScreenHeader
 import com.mixedwash.features.common.presentation.home.components.OfferCard
 import com.mixedwash.features.common.presentation.home.components.ServicesSection
-import com.mixedwash.presentation.components.dump.OrderStatusCard
+import com.mixedwash.core.presentation.components.dump.OrderStatusCard
 import kotlinx.coroutines.flow.collectLatest
 
 /**

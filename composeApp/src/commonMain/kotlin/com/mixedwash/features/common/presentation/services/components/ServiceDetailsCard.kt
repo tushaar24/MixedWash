@@ -36,8 +36,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mixedwash.features.common.presentation.services.model.ServiceItem
 import com.mixedwash.features.common.presentation.services.model.ServiceVariant
-import com.mixedwash.presentation.components.dump.AppOutlinedButton
-import com.mixedwash.presentation.components.dump.AsyncImageLoader
+import com.mixedwash.core.presentation.components.dump.AppOutlinedButton
+import com.mixedwash.core.presentation.components.dump.AsyncImageLoader
 import com.mixedwash.features.common.presentation.services.CartEntry
 import com.mixedwash.features.common.presentation.services.ServicesScreenEvent
 import com.mixedwash.ui.theme.Gray100

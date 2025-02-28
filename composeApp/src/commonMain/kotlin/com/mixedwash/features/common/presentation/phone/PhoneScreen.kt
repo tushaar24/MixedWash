@@ -28,13 +28,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import com.mixedwash.domain.validation.PhoneValidationUseCase
-import com.mixedwash.presentation.components.fadeIn
-import com.mixedwash.presentation.models.FieldID
-import com.mixedwash.presentation.models.FormField
-import com.mixedwash.presentation.models.InputState
-import com.mixedwash.presentation.models.SnackbarHandler
-import com.mixedwash.presentation.util.ObserveAsEvents
+import com.mixedwash.core.domain.validation.PhoneValidationUseCase
+import com.mixedwash.core.presentation.components.fadeIn
+import com.mixedwash.core.presentation.models.FieldID
+import com.mixedwash.core.presentation.models.FormField
+import com.mixedwash.core.presentation.models.InputState
+import com.mixedwash.core.presentation.models.SnackbarHandler
+import com.mixedwash.core.presentation.util.ObserveAsEvents
 import com.mixedwash.ui.theme.MixedWashTheme
 import com.mixedwash.ui.theme.components.DefaultCircularProgressIndicator
 import com.mixedwash.ui.theme.components.SecondaryButton
@@ -181,10 +181,10 @@ fun PreviewPhoneNumberScreen() {
                 phoneNumberError = null,
                 buttonText = "Next",
                 buttonEnabled = true,
-                formField = FormField(
+                formField = _root_ide_package_.com.mixedwash.core.presentation.models.FormField(
                     value = "",
-                    id = FieldID.PHONE,
-                    inputState = InputState.Enabled,
+                    id = _root_ide_package_.com.mixedwash.core.presentation.models.FieldID.PHONE,
+                    inputState = _root_ide_package_.com.mixedwash.core.presentation.models.InputState.Enabled,
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Phone

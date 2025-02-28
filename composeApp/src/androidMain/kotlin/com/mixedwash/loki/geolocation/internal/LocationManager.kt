@@ -1,4 +1,4 @@
-package com.mixedwash.services.loki.geolocation.internal
+package com.mixedwash.libs.loki.geolocation.internal
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -21,7 +21,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import com.mixedwash.services.loki.core.exception.NotFoundException
+import com.mixedwash.libs.loki.core.exception.NotFoundException
 import kotlinx.coroutines.tasks.await
 
 

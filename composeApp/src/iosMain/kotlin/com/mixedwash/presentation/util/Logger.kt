@@ -1,4 +1,4 @@
-package com.mixedwash.presentation.util
+package com.mixedwash.core.presentation.util
 
 import platform.Foundation.NSLog
 

@@ -1,12 +1,11 @@
-package com.mixedwash.services.loki.permission
+package com.mixedwash.libs.loki.permission
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import com.mixedwash.services.loki.core.Priority
-import com.mixedwash.services.loki.permission.internal.LocationPermissionManagerDelegate
-import com.mixedwash.services.loki.permission.internal.toPermissionState
+import com.mixedwash.libs.loki.permission.internal.LocationPermissionManagerDelegate
+import com.mixedwash.libs.loki.permission.internal.toPermissionState
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -34,7 +33,7 @@ internal class IosLocationPermissionController(
         return _permissionsStatus.value == PermissionState.Granted
     }
 
-    override suspend fun requirePermissionFor(priority: com.mixedwash.services.loki.core.Priority): PermissionState {
+    override suspend fun requirePermissionFor(priority: com.mixedwash.libs.loki.core.Priority): PermissionState {
         val currentState = locationDelegate.currentPermissionStatus().toPermissionState
         return when {
             currentState == PermissionState.Granted ||

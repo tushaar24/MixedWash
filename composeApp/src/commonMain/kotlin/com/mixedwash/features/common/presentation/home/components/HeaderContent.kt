@@ -20,8 +20,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mixedwash.features.common.presentation.home.model.HomeHeaderData
-import com.mixedwash.presentation.components.dump.AppOutlinedButton
-import com.mixedwash.presentation.components.dump.AsyncImageLoader
+import com.mixedwash.core.presentation.components.dump.AppOutlinedButton
+import com.mixedwash.core.presentation.components.dump.AsyncImageLoader
 
 @Composable
 fun HeaderContent(

@@ -1,9 +1,8 @@
 package com.mixedwash
 
 import android.app.Application
-import com.google.firebase.FirebaseApp
 import com.mixedwash.core.data.util.AppCoroutineScope
-import com.mixedwash.services.loki.permission.internal.context.LokiService
+import com.mixedwash.libs.loki.permission.internal.context.LokiService
 import com.mmk.kmpauth.google.GoogleAuthCredentials
 import com.mmk.kmpauth.google.GoogleAuthProvider
 import kotlinx.coroutines.CoroutineScope

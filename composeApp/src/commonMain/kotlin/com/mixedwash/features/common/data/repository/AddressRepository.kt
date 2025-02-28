@@ -1,7 +1,7 @@
 package com.mixedwash.features.common.data.repository
 
-import com.mixedwash.domain.models.ErrorType
-import com.mixedwash.domain.models.Result
+import com.mixedwash.core.domain.models.ErrorType
+import com.mixedwash.core.domain.models.Result
 import com.mixedwash.features.common.data.entities.AddressEntity
 import com.mixedwash.features.common.data.service.local.AddressDataStore
 import com.mixedwash.features.common.data.service.local.AddressDatabase
@@ -48,7 +48,7 @@ class AddressRepositoryImpl(
         }
     }
 
-    override suspend fun deleteAddress(address: AddressEntity) : Result<Unit>  {
+    override suspend fun deleteAddress(address: AddressEntity) : Result<Unit> {
         return try {
             Result.Success(db.addressDao().deleteAddress(address))
         } catch(e: Exception) {

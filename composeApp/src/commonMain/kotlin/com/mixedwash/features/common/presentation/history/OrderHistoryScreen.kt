@@ -13,8 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.mixedwash.features.common.presentation.history.components.OrderSummaryCard
 import com.mixedwash.features.common.presentation.history.components.StatisticCard
-import com.mixedwash.presentation.components.dump.TitleWithIcon
-import com.mixedwash.presentation.util.formatTimestamp
+import com.mixedwash.core.presentation.components.dump.TitleWithIcon
+import com.mixedwash.core.presentation.util.formatTimestamp
 import com.mixedwash.ui.theme.dividerBlack
 import mixedwash.composeapp.generated.resources.Res
 import mixedwash.composeapp.generated.resources.ic_clothes_hanger

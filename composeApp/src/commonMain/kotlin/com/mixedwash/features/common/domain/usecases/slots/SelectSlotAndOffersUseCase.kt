@@ -1,7 +1,7 @@
 package com.mixedwash.features.common.domain.usecases.slots
 
-import com.mixedwash.domain.models.ErrorType
-import com.mixedwash.domain.models.Result
+import com.mixedwash.core.domain.models.ErrorType
+import com.mixedwash.core.domain.models.Result
 import com.mixedwash.features.common.data.entities.SlotAndOfferSelectionRequestEntity
 import kotlinx.coroutines.delay
 import kotlin.random.Random

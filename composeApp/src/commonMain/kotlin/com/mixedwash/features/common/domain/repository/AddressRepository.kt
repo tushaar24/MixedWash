@@ -1,6 +1,6 @@
 package com.mixedwash.features.common.domain.repository
 
-import com.mixedwash.domain.models.Result
+import com.mixedwash.core.domain.models.Result
 import com.mixedwash.features.common.data.entities.AddressEntity
 import kotlinx.coroutines.flow.Flow
 

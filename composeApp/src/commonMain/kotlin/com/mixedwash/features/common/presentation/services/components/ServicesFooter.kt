@@ -22,8 +22,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.mixedwash.presentation.components.dump.AppButton
-import com.mixedwash.presentation.components.dump.UnderlineBox
+import com.mixedwash.core.presentation.components.dump.AppButton
+import com.mixedwash.core.presentation.components.dump.UnderlineBox
 import com.mixedwash.ui.theme.Gray100
 import com.mixedwash.ui.theme.Gray50
 import com.mixedwash.ui.theme.Gray500

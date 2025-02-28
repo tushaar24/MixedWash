@@ -1,4 +1,4 @@
-package com.mixedwash.services.loki.permission.internal.activity
+package com.mixedwash.libs.loki.permission.internal.activity
 
 import androidx.startup.Initializer
 

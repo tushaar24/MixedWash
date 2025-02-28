@@ -37,17 +37,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.mixedwash.WindowInsetsContainer
-import com.mixedwash.presentation.components.DefaultHeader
-import com.mixedwash.presentation.components.DialogPopup
-import com.mixedwash.presentation.components.DialogPopupData
-import com.mixedwash.presentation.components.HeadingAlign
-import com.mixedwash.presentation.components.HeadingSize
-import com.mixedwash.presentation.components.clearFocusOnKeyboardDismiss
-import com.mixedwash.presentation.models.FieldID
-import com.mixedwash.presentation.models.FormField
-import com.mixedwash.presentation.models.SnackbarHandler
-import com.mixedwash.presentation.models.SnackbarPayload
-import com.mixedwash.presentation.util.ObserveAsEvents
+import com.mixedwash.core.presentation.components.DefaultHeader
+import com.mixedwash.core.presentation.components.DialogPopup
+import com.mixedwash.core.presentation.components.DialogPopupData
+import com.mixedwash.core.presentation.components.HeadingAlign
+import com.mixedwash.core.presentation.components.HeadingSize
+import com.mixedwash.core.presentation.components.clearFocusOnKeyboardDismiss
+import com.mixedwash.core.presentation.models.FieldID
+import com.mixedwash.core.presentation.models.FormField
+import com.mixedwash.core.presentation.models.SnackbarHandler
+import com.mixedwash.core.presentation.models.SnackbarPayload
+import com.mixedwash.core.presentation.util.ObserveAsEvents
 import com.mixedwash.ui.theme.components.HeaderIconButton
 import com.mixedwash.ui.theme.components.PrimaryButton
 import com.mixedwash.ui.theme.headerContentSpacing
@@ -63,7 +63,7 @@ import org.jetbrains.compose.resources.vectorResource
 data class ProfileEditScreenState(
     val imageUrl: String?,
     val saveEnabled: Boolean = true,
-    val fields: List<FormField>,
+    val fields: List<_root_ide_package_.com.mixedwash.core.presentation.models.FormField>,
     val isLoading: Boolean = false
 ) {
     companion object {
@@ -79,7 +79,7 @@ sealed interface ProfileEditScreenEvent {
     data object OnBackClicked : ProfileEditScreenEvent
     data class OnChangePicture(val url: String) : ProfileEditScreenEvent
     data object OnSave : ProfileEditScreenEvent
-    data class OnFieldUpdate(val fieldId: FieldID, val value: String) : ProfileEditScreenEvent
+    data class OnFieldUpdate(val fieldId: _root_ide_package_.com.mixedwash.core.presentation.models.FieldID, val value: String) : ProfileEditScreenEvent
 }
 
 sealed interface ProfileEditScreenUiEvent {
@@ -219,8 +219,8 @@ fun ProfileEditScreen(
                             onValueChange = field.onValueChange,
                             prefix = {
                                 val resource = when (it.id) {
-                                    FieldID.PHONE -> Res.drawable.ic_phone
-                                    FieldID.EMAIL -> Res.drawable.ic_email
+                                    _root_ide_package_.com.mixedwash.core.presentation.models.FieldID.PHONE -> Res.drawable.ic_phone
+                                    _root_ide_package_.com.mixedwash.core.presentation.models.FieldID.EMAIL -> Res.drawable.ic_email
                                     else -> Res.drawable.ic_badge
                                 }
                                 Row {

@@ -8,12 +8,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
-import com.mixedwash.domain.validation.PinCodeValidationUseCase
+import com.mixedwash.core.domain.validation.PinCodeValidationUseCase
 import com.mixedwash.features.common.presentation.address.components.AddressForm
 import com.mixedwash.features.common.presentation.address.AddressFormState
 import com.mixedwash.features.common.presentation.address.FormMode
-import com.mixedwash.presentation.models.FieldID
-import com.mixedwash.presentation.models.FormField
+import com.mixedwash.core.presentation.models.FieldID
+import com.mixedwash.core.presentation.models.FormField
 import com.mixedwash.ui.theme.screenHorizontalPadding
 import com.mixedwash.ui.theme.screenVerticalPadding
 import com.mixedwash.ui.theme.MixedWashTheme
@@ -23,35 +23,35 @@ import com.mixedwash.ui.theme.MixedWashTheme
 private fun AddressFormPreview() {
     val baseCreateFormState = AddressFormState(
         title = "Create Address", mode = FormMode.Create(onCreate = { }), fields = listOf(
-            FormField(
+            com.mixedwash.core.presentation.models.FormField(
                 value = "",
-                id = FieldID.ADDRESS_TITLE,
+                id = com.mixedwash.core.presentation.models.FieldID.ADDRESS_TITLE,
                 label = "Address Title",
                 placeholder = "Home Address",
                 keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words),
                 onValueChange = {},
-            ), FormField(
+            ), com.mixedwash.core.presentation.models.FormField(
                 value = "",
-                id = FieldID.ADDRESS_LINE_1,
+                id = com.mixedwash.core.presentation.models.FieldID.ADDRESS_LINE_1,
                 label = "Address Line 1",
                 placeholder = "Flat No, House, Building Name",
                 keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words),
                 onValueChange = {},
-            ), FormField(value = "",
-                id = FieldID.ADDRESS_LINE_2,
+            ), com.mixedwash.core.presentation.models.FormField(value = "",
+                id = com.mixedwash.core.presentation.models.FieldID.ADDRESS_LINE_2,
                 label = "Address Line 2",
                 placeholder = "Landmark, Locality",
                 keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words),
                 onValueChange = {
 
-                }), FormField(value = "",
-                id = FieldID.ADDRESS_LINE_3,
+                }), com.mixedwash.core.presentation.models.FormField(value = "",
+                id = com.mixedwash.core.presentation.models.FieldID.ADDRESS_LINE_3,
                 label = "Address Line 3",
                 placeholder = "City, State",
                 keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words),
-                onValueChange = { }), FormField(
+                onValueChange = { }), com.mixedwash.core.presentation.models.FormField(
                 value = "",
-                id = FieldID.PIN_CODE,
+                id = com.mixedwash.core.presentation.models.FieldID.PIN_CODE,
                 label = "Pin Code",
                 placeholder = "6 digit pin code",
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
