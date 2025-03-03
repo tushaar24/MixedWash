@@ -77,7 +77,12 @@ fun App() {
                                         },
                                     contentAlignment = Alignment.BottomCenter
                                 ) {
-                                    BrandSnackbar(message = message, snackbarType = type, actionText = snackbarData.visuals.actionLabel, action = snackbarData::performAction)
+                                    BrandSnackbar(
+                                        message = message,
+                                        snackbarType = type,
+                                        actionText = snackbarData.visuals.actionLabel,
+                                        action = snackbarData::performAction
+                                    )
                                 }
                             }
                         }
@@ -96,7 +101,10 @@ fun App() {
                             AuthState.Loading
                         )
                         val userState by userService.userStateFlow.collectAsStateWithLifecycle()
-                        Logger.d("TAG", "App.kt > userState : $userState \nauthState : $authState \nuserMetadata : ${userState?.userMetadata}")
+                        Logger.d(
+                            "TAG",
+                            "App.kt > userState : $userState \nauthState : $authState \nuserMetadata : ${userState?.userMetadata}"
+                        )
 
                         var startDestination: Route by remember { mutableStateOf(Route.LoadingRoute) }
                         when (authState) {
@@ -156,8 +164,15 @@ fun App() {
                                 }
                             }
 
-
-
+//                            composable<Route.FaqRoute> {
+//                                val viewModel = koinViewModel<FaqScreenViewModel>()
+//                                val state by viewModel.state.collectAsStateWithLifecycle()
+//                                FaqScreen(
+//                                    state = state,
+//                                    onEvent = viewModel::onEvent,
+//                                    modifier = Modifier.fillMaxSize()
+//                                )
+//                            }
                         }
                     }
                 }

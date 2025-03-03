@@ -38,7 +38,8 @@ datastore = "1.1.2"
 playServicesAuth = "21.3.0"
 firebaseAuthCommon = "9.8.0"
 firebaseAuthKtx = "23.2.0"
-firebaseGitlive = "1.13.0"  # CAUTION! : newer version requires jvm target 17 which breaks the kotlin serializer 😭
+firebaseGitlive = "1.13.0"
+datastoreCoreAndroid = "1.1.2"  # CAUTION! : newer version requires jvm target 17 which breaks the kotlin serializer 😭
 
 
 
@@ -110,6 +111,7 @@ firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx",
 
 #Firebase Kotlin SDK
 gitlive-firebase-firestore = { group = "dev.gitlive", name = "firebase-firestore", version.ref = "firebaseGitlive" }
+androidx-datastore-core-android = { group = "androidx.datastore", name = "datastore-core-android", version.ref = "datastoreCoreAndroid" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

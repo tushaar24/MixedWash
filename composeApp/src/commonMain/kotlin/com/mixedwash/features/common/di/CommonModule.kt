@@ -9,12 +9,14 @@ import com.mixedwash.features.common.domain.usecases.address.AddressUseCases
 import com.mixedwash.features.common.domain.usecases.slots.LoadSlotsWithOffersUseCase
 import com.mixedwash.features.common.domain.usecases.slots.SelectSlotAndOffersUseCase
 import com.mixedwash.features.common.presentation.address.AddressScreenViewModel
+import com.mixedwash.features.common.presentation.faq.FaqScreenViewModel
 import com.mixedwash.features.common.presentation.history.OrderHistoryScreenViewModel
 import com.mixedwash.features.common.presentation.phone.PhoneScreenViewModel
 import com.mixedwash.features.common.presentation.profile.ProfileEditScreenViewModel
 import com.mixedwash.features.common.presentation.services.ServicesScreenViewModel
 import com.mixedwash.features.common.presentation.slot_selection.SlotSelectionScreenViewModel
 import com.mixedwash.features.location_availability.di.LocationAvailabilityModule
+import com.mixedwash.features.support.di.SupportModule
 import com.mixedwash.libs.loki.autocomplete.Autocomplete
 import com.mixedwash.libs.loki.autocomplete.AutocompleteOptions
 import com.mixedwash.libs.loki.autocomplete.AutocompletePlace
@@ -24,6 +26,7 @@ import com.mixedwash.libs.loki.geocoder.googlemaps.googleMaps
 import com.mixedwash.libs.loki.geolocation.Geolocator
 import com.mixedwash.libs.loki.geolocation.MobileGeolocator
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
@@ -31,7 +34,7 @@ import org.koin.dsl.module
 
 val commonModule = module {
 
-    includes(CommonDataModule, LocationAvailabilityModule)
+    includes(CommonDataModule, LocationAvailabilityModule, SupportModule)
 
     single { FindUserByPhoneUseCase }
     single { LoadSlotsWithOffersUseCase() }
@@ -59,6 +62,7 @@ val commonModule = module {
     viewModelOf(::ProfileEditScreenViewModel)
     viewModelOf(::ServicesScreenViewModel)
     viewModelOf(::OrderHistoryScreenViewModel)
+    viewModel { FaqScreenViewModel(get()) }
 
 }
 

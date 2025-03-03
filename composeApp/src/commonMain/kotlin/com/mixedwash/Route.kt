@@ -61,6 +61,9 @@ sealed class Route {
     @Serializable
     data object HistoryRoute : Route()
 
+    @Serializable
+    data object FaqRoute : Route()
+
     // Graph Routes
     @Serializable
     data object AuthNav : Route()
