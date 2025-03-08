@@ -1,0 +1,386 @@
+{
+  "services": [
+    {
+      "service_id": "service_wash_and_fold",
+      "title": "Wash & Fold",
+      "description": "Best for shirts, t-shirts, trousers, inner-wears & regular daily wears",
+      "image_url": "https://assets-aac.pages.dev/assets/sku_wash_and_fold.png",
+      "items": [
+        {
+          "item_id": "item_service_wash_and_fold",
+          "name": "Wash & Fold Service",
+          "item_pricing": {
+            "type": "service_item_pricing",
+            "price_per_unit": 9500,
+            "unit": "kg",
+            "minimum_units": 4,
+            "minimum_price": 39500
+          }
+        }
+      ],
+      "pricing_metadata": {
+        "type": "service_pricing",
+        "price_per_unit": 9500,
+        "unit": "kg",
+        "minimum_units": 4,
+        "minimum_price": 39500
+      },
+      "inclusions": "Washing, tumble drying, and ironing of regular wear items",
+      "exclusions": "Delicate fabrics, leather, and special care garments",
+      "delivery_time_min_in_hrs": 24,
+      "delivery_time_max_in_hrs": 24,
+      "details": [
+        {
+          "key": "Wash Temperature",
+          "value": "30° - 35°C"
+        },
+        {
+          "key": "Detergent",
+          "value": "Eco friendly"
+        },
+        {
+          "key": "Drying",
+          "value": "Tumble dry"
+        }
+      ]
+    },
+    {
+      "service_id": "service_dry_clean",
+      "title": "Dry Clean",
+      "description": "Professional cleaning for formal and delicate garments",
+      "image_url": "https://assets-aac.pages.dev/assets/sku_dry_clean.png",
+      "items": [
+        {
+          "item_id": "item_dry_clean_kurti_top",
+          "name": "Kurti / Top",
+          "metadata": {
+            "gender": "female"
+          },
+          "item_pricing": {
+            "type": "sub_item_fixed_pricing",
+            "fixed_price": 20000
+          }
+        },
+        {
+          "item_id": "item_dry_clean_bottom",
+          "name": "Bottom",
+          "metadata": {
+            "gender": "female"
+          },
+          "item_pricing": {
+            "type": "sub_item_fixed_pricing",
+            "fixed_price": 18000
+          }
+        },
+        {
+          "item_id": "item_dry_clean_anarkali",
+          "name": "Anarkali",
+          "metadata": {
+            "gender": "female"
+          },
+          "item_pricing": {
+            "type": "sub_item_ranged_pricing",
+            "min_price": 30000,
+            "max_price": 40000
+          }
+        },
+        {
+          "item_id": "item_dry_clean_shirt_tshirt",
+          "name": "Shirt / T-Shirt",
+          "metadata": {
+            "gender": "male"
+          },
+          "item_pricing": {
+            "type": "sub_item_fixed_pricing",
+            "fixed_price": 15000
+          }
+        },
+        {
+          "item_id": "item_dry_clean_kurta",
+          "name": "Kurta",
+          "metadata": {
+            "gender": "male"
+          },
+          "item_pricing": {
+            "type": "sub_item_fixed_pricing",
+            "fixed_price": 18000
+          }
+        },
+        {
+          "item_id": "item_dry_clean_pyjama",
+          "name": "Pyjama",
+          "metadata": {
+            "gender": "male"
+          },
+          "item_pricing": {
+            "type": "sub_item_ranged_pricing",
+            "min_price": 18000,
+            "max_price": 30000
+          }
+        },
+        {
+          "item_id": "item_dry_clean_dress",
+          "name": "Dress",
+          "metadata": {
+            "gender": "female"
+          },
+          "item_pricing": {
+            "type": "sub_item_ranged_pricing",
+            "min_price": 30000,
+            "max_price": 35000
+          }
+        },
+        {
+          "item_id": "item_dry_clean_salwar",
+          "name": "Salwar",
+          "metadata": {
+            "gender": "female"
+          },
+          "item_pricing": {
+            "type": "sub_item_ranged_pricing",
+            "min_price": 20000,
+            "max_price": 35000
+          }
+        },
+        {
+          "item_id": "item_dry_clean_blouse",
+          "name": "Blouse",
+          "metadata": {
+            "gender": "female"
+          },
+          "item_pricing": {
+            "type": "sub_item_fixed_pricing",
+            "fixed_price": 12000
+          }
+        },
+        {
+          "item_id": "item_dry_clean_blazer",
+          "name": "Blazer",
+          "metadata": {
+            "gender": "male"
+          },
+          "item_pricing": {
+            "type": "sub_item_fixed_pricing",
+            "fixed_price": 30000
+          }
+        },
+        {
+          "item_id": "item_dry_clean_sherwani",
+          "name": "Sherwani",
+          "metadata": {
+            "gender": "male"
+          },
+          "item_pricing": {
+            "type": "sub_item_ranged_pricing",
+            "min_price": 40000,
+            "max_price": 75000
+          }
+        },
+        {
+          "item_id": "item_dry_clean_jacket",
+          "name": "Jacket",
+          "metadata": {
+            "gender": "both"
+          },
+          "item_pricing": {
+            "type": "sub_item_fixed_pricing",
+            "fixed_price": 40000
+          }
+        },
+        {
+          "item_id": "item_dry_clean_kameez",
+          "name": "Kameez",
+          "metadata": {
+            "gender": "female"
+          },
+          "item_pricing": {
+            "type": "sub_item_ranged_pricing",
+            "min_price": 20000,
+            "max_price": 32000
+          }
+        },
+        {
+          "item_id": "item_dry_clean_saree",
+          "name": "Saree",
+          "metadata": {
+            "gender": "female"
+          },
+          "item_pricing": {
+            "type": "sub_item_ranged_pricing",
+            "min_price": 35000,
+            "max_price": 60000
+          }
+        },
+        {
+          "item_id": "item_dry_clean_lehenga",
+          "name": "Lehenga",
+          "metadata": {
+            "gender": "female"
+          },
+          "item_pricing": {
+            "type": "sub_item_ranged_pricing",
+            "min_price": 45000,
+            "max_price": 80000
+          }
+        },
+        {
+          "item_id": "item_dry_clean_long_coat",
+          "name": "Long Coat",
+          "metadata": {
+            "gender": "both"
+          },
+          "item_pricing": {
+            "type": "sub_item_fixed_pricing",
+            "fixed_price": 51000
+          }
+        },
+        {
+          "item_id": "item_dry_clean_dhoti",
+          "name": "Dhoti",
+          "metadata": {
+            "gender": "male"
+          },
+          "item_pricing": {
+            "type": "sub_item_fixed_pricing",
+            "fixed_price": 25000
+          }
+        },
+        {
+          "item_id": "item_dry_clean_waist_coat",
+          "name": "Waist Coat",
+          "metadata": {
+            "gender": "male"
+          },
+          "item_pricing": {
+            "type": "sub_item_fixed_pricing",
+            "fixed_price": 20000
+          }
+        }
+      ],
+      "pricing_metadata": {
+        "type": "sub_items_pricing",
+        "starting_price": 12000
+      },
+      "inclusions": "Cleaning, pressing, and minor repairs",
+      "exclusions": "Heavily stained or damaged garments",
+      "delivery_time_min_in_hrs": 24,
+      "delivery_time_max_in_hrs": 48,
+      "details": [
+        {
+          "key": "Cleaning Method",
+          "value": "Professional Dry Cleaning"
+        }
+      ]
+    },
+    {
+      "service_id": "service_wash_and_iron",
+      "title": "Wash and Iron",
+      "description": "Comprehensive washing and ironing service",
+      "image_url": "https://assets-aac.pages.dev/assets/sku_wash_and_iron.png",
+      "items": [
+        {
+          "item_id": "item_service_wash_and_iron",
+          "name": "Wash and Iron Service",
+          "item_pricing": {
+            "type": "service_item_pricing",
+            "price_per_unit": 15000,
+            "unit": "kg",
+            "minimum_units": 3,
+            "minimum_price": 45000
+          }
+        }
+      ],
+      "pricing_metadata": {
+        "type": "service_pricing",
+        "price_per_unit": 15000,
+        "unit": "kg",
+        "minimum_units": 3,
+        "minimum_price": 45000
+      },
+      "inclusions": "Washing whites and colored clothes separately, tumble drying, and ironing",
+      "exclusions": "Delicate fabrics requiring special care",
+      "delivery_time_min_in_hrs": 24,
+      "delivery_time_max_in_hrs": 24,
+      "details": [
+        {
+          "key": "Wash Type",
+          "value": "Separate wash for whites and colored clothes"
+        }
+      ]
+    },
+    {
+      "service_id": "service_heavy_wash",
+      "title": "Heavy Wash",
+      "description": "Special washing for heavy and bulky items",
+      "image_url": "https://assets-aac.pages.dev/assets/sku_heavy_wash.png",
+      "items": [
+        {
+          "item_id": "item_service_heavy_wash",
+          "name": "Heavy Wash Service",
+          "item_pricing": {
+            "type": "service_item_pricing",
+            "price_per_unit": 14000,
+            "unit": "kg",
+            "minimum_units": 4,
+            "minimum_price": 56000
+          }
+        }
+      ],
+      "pricing_metadata": {
+        "type": "service_pricing",
+        "price_per_unit": 14000,
+        "unit": "kg",
+        "minimum_units": 4,
+        "minimum_price": 56000
+      },
+      "inclusions": "Washing and tumble drying of heavy fabrics",
+      "exclusions": "Extremely delicate or special care items",
+      "delivery_time_min_in_hrs": 24,
+      "delivery_time_max_in_hrs": 48,
+      "details": [
+        {
+          "key": "Wash Type",
+          "value": "Tumble dry for heavy fabrics"
+        }
+      ]
+    },
+    {
+      "service_id": "service_shoe_cleaning",
+      "title": "Shoe Cleaning",
+      "description": "Professional shoe cleaning service",
+      "image_url" : "https://assets-aac.pages.dev/assets/sku_shoe_clean.png",
+      "items": [
+        {
+          "item_id": "item_service_shoe_cleaning",
+          "name": "Shoe Cleaning Service",
+          "item_pricing": {
+            "type": "service_item_pricing",
+            "price_per_unit": 35000,
+            "unit": "pair",
+            "minimum_units": 1,
+            "minimum_price": 35000
+          }
+        }
+      ],
+      "pricing_metadata": {
+        "type": "service_pricing",
+        "price_per_unit": 35000,
+        "unit": "pair",
+        "minimum_units": 1,
+        "minimum_price": 35000
+      },
+      "inclusions": "Hand washing and air drying of shoes",
+      "exclusions": "Heavily damaged or special material shoes",
+      "delivery_time_min_in_hrs": 24,
+      "delivery_time_max_in_hrs": 48,
+      "details": [
+        {
+          "key": "Cleaning Method",
+          "value": "Hand wash with air dry"
+        }
+      ]
+    }
+  ],
+  "schema_version" : "1"
+}
+

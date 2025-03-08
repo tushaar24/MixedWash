@@ -1,0 +1,94 @@
+{
+  "home_banner": {
+    "heading": "Laundry piling up?",
+    "image_url": "https://assets-aac.pages.dev/assets/white_washbaskt_overflow.png",
+    "description": "Get laundry at your door-step in 24 hours",
+    "button": "Order Pickup",
+    "link": "pickup_screen",
+    "ui_text_color": "#7B7B7B",
+    "content_text_color": "#7B7B7B",
+    "gradient": {
+      "gradient_colors": [
+        {
+          "color_hex": "#E5E5E5",
+          "color_stop": 0.0
+        },
+        {
+          "color_hex": "#FBFBFB",
+          "color_stop": 1.0
+        }
+      ],
+      "angle": -70.999
+    }
+  },
+  "offer_cards": [
+    {
+      "text": "Flat 20% OFF with coupon code WELCOME20 on your first order",
+      "offer_id": "WELCOME20",
+      "image_url": "https://assets-aac.pages.dev/assets/basket_overflow_black.png",
+      "button_label": "Add to cart",
+      "link": "add_to_cart",
+      "content_text_color": "#263D1E",
+      "button_text_color" : "#FBFBFB",
+      "gradient": {
+        "gradient_colors": [
+          {
+            "color_hex": "#E6EAE3",
+            "color_stop": 0.0
+          },
+          {
+            "color_hex": "#E2EBDF",
+            "color_stop": 1.0
+          }
+        ],
+        "angle": 0.0
+      }
+    }
+  ],
+  "home_services": [
+    {
+      "service_id": "wash_and_iron",
+      "title": "Wash & Iron",
+      "image_url": "https://assets-aac.pages.dev/assets/sku_wash_and_iron.png"
+    },
+    {
+      "service_id": "wash_and_fold",
+      "title": "Wash & Fold",
+      "image_url": "https://assets-aac.pages.dev/assets/sku_wash_and_fold.png"
+    },
+    {
+      "service_id": "dry_clean",
+      "title": "Dry Clean",
+      "image_url": "https://assets-aac.pages.dev/assets/sku_dry_clean.png"
+    },
+    {
+      "service_id": "heavy_wash",
+      "title": "Heavy Wash",
+      "image_url": "https://assets-aac.pages.dev/assets/sku_heavy_wash.png"
+    },
+    {
+      "service_id": "shoe_clean",
+      "title": "Shoe Clean",
+      "image_url": "https://assets-aac.pages.dev/assets/sku_shoe_clean.png"
+    }
+  ],
+  "active_orders": [],
+  "intro_section": {
+    "heading": "Getting Started?",
+    "image_url": "https://assets-aac.pages.dev/assets/basket_woman.png",
+    "description": "See how MixedWash works and learn more about our services.",
+    "button_text": "Take Tour >>",
+    "content_text_color": "#262626",
+    "button_text_color" : "#F4F4F4",
+    "gradient": {
+      "gradient_colors": [
+        {
+          "color_hex": "#F4F4F4",
+          "color_stop": 0.0
+        }
+      ],
+      "angle": 0.0
+    }
+  },
+  "schema_version": "1"
+}

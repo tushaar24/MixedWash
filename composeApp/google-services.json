@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "241995325784",
+    "project_id": "mixedwash-655c7",
+    "storage_bucket": "mixedwash-655c7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:241995325784:android:7be4cc51606b3101bdc52d",
+        "android_client_info": {
+          "package_name": "com.mixedwash"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "241995325784-1h3mfnluvrt63fhafpjv8aibpb7evms6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mixedwash",
+            "certificate_hash": "768ae19c92b16ee9512446eddf1b0ab28e387397"
+          }
+        },
+        {
+          "client_id": "241995325784-sh8ar7ols7thqgoa8co59rf2t8ldj1fg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mixedwash",
+            "certificate_hash": "90b7048d32db3584b011c4363e905a320aad0373"
+          }
+        },
+        {
+          "client_id": "241995325784-opejcpg0g2bu25oj04e14skpmhabf2nd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPtvyl19m2Y3FKrfZPkHGB8q1AMNgNPYA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "241995325784-opejcpg0g2bu25oj04e14skpmhabf2nd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
