@@ -136,12 +136,12 @@ class ServicesScreenViewModel(
                     type = SnackBarType.ERROR
                 )
             } else {
-                services.getOrNull()?.let {
+                services.getOrNull()?.let { res ->
                     updateState {
                         copy(
-                            services = it.services.map { serviceDto: ServiceDto -> serviceDto.toPresentation() },
+                            services = res.services.map { serviceDto: ServiceDto -> serviceDto.toPresentation() },
                             isLoading = false,
-                            selectedServiceId = selectedServiceId
+                            selectedServiceId = selectedServiceId ?: res.services.firstOrNull()?.serviceId
                         )
                     }
                 }

@@ -149,7 +149,6 @@ fun SignInScreen(
                                 color = BrandTheme.colors.gray.normal,
                                 fontSize = 24.sp,
                                 textAlign = TextAlign.Center,
-
                                 fontWeight = FontWeight.SemiBold,
                                 lineHeight = 26.sp,
                             )
@@ -159,11 +158,11 @@ fun SignInScreen(
                 Spacer(Modifier.height(4.dp))
                 item.description?.let {
                     Crossfade(targetState = it) {
-                        Text(
+                        Text (
                             text = it,
                             color = BrandTheme.colors.gray.normalDark,
                             textAlign = TextAlign.Center,
-                            modifier = Modifier.animateContentSize().fillMaxWidth(),
+                            modifier = Modifier.fillMaxWidth(),
                             fontSize = 16.sp,
                             lineHeight = 24.sp,
                             fontWeight = FontWeight.Normal
