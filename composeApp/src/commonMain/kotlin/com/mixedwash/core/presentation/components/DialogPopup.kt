@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
@@ -22,18 +23,27 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.mixedwash.ui.theme.largePadding
 import com.mixedwash.ui.theme.Gray400
 import com.mixedwash.ui.theme.Gray900
 import com.mixedwash.ui.theme.MixedWashTheme
 import com.mixedwash.ui.theme.components.OutlinedButton
+import com.mixedwash.ui.theme.components.PrimaryButton
 
 @Composable
 fun DialogPopup(
     data: DialogPopupData,
-    onDismissRequest: () -> Unit
+    onDismissRequest: () -> Unit,
+    dismissOnBackPress: Boolean = true,
+    dismissOnClickOutside: Boolean = true
 ) {
-    Dialog(onDismissRequest = onDismissRequest, properties = DialogProperties(dismissOnBackPress = true, usePlatformDefaultWidth = false)) {
+    Dialog(
+        onDismissRequest = onDismissRequest,
+        properties = DialogProperties(
+            dismissOnBackPress = dismissOnBackPress,
+            usePlatformDefaultWidth = false,
+            dismissOnClickOutside = dismissOnClickOutside
+        )
+    ) {
         val dialogShape = BrandTheme.shapes.roundCard
         Column(
             modifier = Modifier
@@ -52,7 +62,6 @@ fun DialogPopup(
             data.apply {
                 Column(
                     modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(largePadding),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     icon?.let {
@@ -63,6 +72,7 @@ fun DialogPopup(
                             tint = iconColor
                         )
                     }
+                    Spacer(Modifier.height(24.dp))
                     Text(
                         text = title,
                         modifier = Modifier.fillMaxWidth(),
@@ -70,16 +80,17 @@ fun DialogPopup(
                         style = BrandTheme.typography.subtitle1,
                         textAlign = TextAlign.Center
                     )
-
+                    Spacer(Modifier.height(8.dp))
                     subtitle?.let {
                         Text(
                             it,
-                            modifier = Modifier.fillMaxWidth(),
                             style = BrandTheme.typography.body1,
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center
                         )
                     }
                 }
-                Spacer(Modifier.padding(8.dp))
+                Spacer(Modifier.height(8.dp))
 
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally),
@@ -96,12 +107,10 @@ fun DialogPopup(
                         )
                     }
                     if (primaryButton != null) {
-                        OutlinedButton(
+                        PrimaryButton(
                             text = primaryButton.text,
                             iconBefore = primaryButton.iconBefore,
                             iconAfter = primaryButton.iconAfter,
-                            contentColor = primaryButton.contentColor,
-                            outlineColor = primaryButton.contentColor,
                             onClick = primaryButton.onClick
                         )
                     }

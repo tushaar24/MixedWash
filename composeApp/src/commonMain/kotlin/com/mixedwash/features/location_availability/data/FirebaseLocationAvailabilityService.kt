@@ -6,14 +6,15 @@ import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.firestore.firestore
 import kotlinx.coroutines.CancellationException
 import com.mixedwash.core.domain.models.Result
+import com.mixedwash.features.location_availability.domain.LocationAvailabilityService
 
 private const val COLLECTION_API_LOCATION_AVAILABILITY = "API_LOCATION_AVAILABILITY"
 private const val DOCUMENT_LOCATION_DATA = "location_data"
 
-class FirebaseLocationAvailabilityService() {
+class FirebaseLocationAvailabilityService() : LocationAvailabilityService{
 
     private val db = Firebase.firestore
-    suspend fun fetchLocationData(): Result<LocationAvailabilityDTO> {
+    override suspend fun fetchLocationData(): Result<LocationAvailabilityDTO> {
         return try{
             val dto = db.collection(COLLECTION_API_LOCATION_AVAILABILITY)
                 .document(DOCUMENT_LOCATION_DATA)

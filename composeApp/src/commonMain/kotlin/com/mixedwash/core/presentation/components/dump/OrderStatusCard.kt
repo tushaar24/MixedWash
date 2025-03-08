@@ -31,6 +31,7 @@ import com.mixedwash.ui.theme.Gray700
 import com.mixedwash.ui.theme.Green
 import com.mixedwash.ui.theme.dividerBlack
 import com.mixedwash.core.presentation.components.gradient
+import com.mixedwash.features.home.presentation.model.Gradient
 import mixedwash.composeapp.generated.resources.Res
 import mixedwash.composeapp.generated.resources.ic_progress_completed
 import mixedwash.composeapp.generated.resources.ic_progress_pending
@@ -52,7 +53,7 @@ fun OrderStatusCard(
 
         Box(
             modifier = Modifier.fillMaxWidth()
-                .gradient(colorStops = arrayOf(Pair(0f, Gray100), Pair(1f, Gray300)))
+//                .gradient(gradient = Gradient(gradientColors = emptyList(), angle = 0f))
         ) {
             Column(
                 modifier = Modifier.fillMaxWidth()

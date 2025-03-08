@@ -38,7 +38,9 @@ datastore = "1.1.2"
 playServicesAuth = "21.3.0"
 firebaseAuthCommon = "9.8.0"
 firebaseAuthKtx = "23.2.0"
-firebaseGitlive = "1.13.0"  # CAUTION! : newer version requires jvm target 17 which breaks the kotlin serializer 😭
+firebaseGitlive = "1.13.0"
+kotlinx-coroutines = "1.10.0"
+
 
 
 
@@ -59,6 +61,10 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
 androidx-lifecycle-viewmodel = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-runtime-compose = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
+
+kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
+
 
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }

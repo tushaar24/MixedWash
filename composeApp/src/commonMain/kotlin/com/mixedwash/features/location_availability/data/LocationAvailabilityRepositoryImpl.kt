@@ -1,12 +1,21 @@
 package com.mixedwash.features.location_availability.data
 
+import com.mixedwash.core.domain.config.AppConfig
 import com.mixedwash.core.domain.models.Result
+import com.mixedwash.core.presentation.util.Logger
 import com.mixedwash.features.location_availability.domain.LocationAvailabilityRepository
+import com.mixedwash.features.location_availability.domain.LocationAvailabilityService
 import com.mixedwash.features.location_availability.domain.model.LocationAvailabilityDTO
 import com.mixedwash.libs.loki.core.calculateDistance
 
-class LocationAvailabilityRepositoryImpl(private val locationService: FirebaseLocationAvailabilityService) :
-    LocationAvailabilityRepository {
+private const val TAG = "LocationAvailabilityRepository"
+
+class LocationAvailabilityRepositoryImpl(
+    private val locationService: LocationAvailabilityService,
+    private val appConfig: AppConfig
+) : LocationAvailabilityRepository {
+
+    override val bypassLocationCheck: Boolean = appConfig.bypassLocationCheck
 
     private suspend fun fetchLocationAvailability(): Result<LocationAvailabilityDTO> {
         return locationService.fetchLocationData()
@@ -17,6 +26,10 @@ class LocationAvailabilityRepositoryImpl(private val locationService: FirebaseLo
         currentLon: Double,
         currentPincode: String
     ): Result<Boolean> {
+        if (bypassLocationCheck) {
+            Logger.d(TAG, "location check bypassed")
+            return Result.Success(true)
+        }
         val availabilityResponse = fetchLocationAvailability()
         if (availabilityResponse is Result.Error) {
             return availabilityResponse

@@ -10,4 +10,5 @@ sealed class Result<out T> {
             is Error -> null
         }
     }
+
 }

@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -36,7 +37,7 @@ fun LocationSlab(
             imageVector = Icons.Default.LocationOn,
             contentDescription = "Location",
             tint = contentColor,
-            modifier = Modifier.size(18.dp),
+            modifier = Modifier.size(24.dp),
         )
 
         Column {
@@ -49,6 +50,7 @@ fun LocationSlab(
                     color = contentColor,
                     fontWeight = FontWeight.Medium,
                     fontSize = 14.sp
+                    , lineHeight = 18.sp
                 )
 
                 Icon(

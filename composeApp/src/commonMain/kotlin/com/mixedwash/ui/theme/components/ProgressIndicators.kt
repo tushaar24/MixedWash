@@ -18,7 +18,7 @@ fun DefaultCircularProgressIndicator(modifier: Modifier = Modifier) {
     CircularProgressIndicator(
         modifier = modifier,
         trackColor = Color.Transparent,
-        color = BrandTheme.colors.primary.normalDark,
+        color = BrandTheme.colors.gray.darker,
     )
 }
 

@@ -12,8 +12,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.mixedwash.Route
 import com.mixedwash.core.data.UserService
+import com.mixedwash.core.presentation.models.SnackbarHandler
 import com.mixedwash.features.common.presentation.address.model.Address
-import com.mixedwash.features.common.presentation.home.HomeScreen
 import com.mixedwash.features.common.presentation.order_confirmation.OrderConfirmationScreen
 import com.mixedwash.features.common.presentation.order_confirmation.OrderConfirmationScreenState
 import com.mixedwash.features.common.presentation.order_review.OrderReviewScreen
@@ -23,11 +23,10 @@ import com.mixedwash.features.common.presentation.slot_selection.Offer
 import com.mixedwash.features.common.presentation.slot_selection.SlotSelectionScreen
 import com.mixedwash.features.common.presentation.slot_selection.SlotSelectionScreenViewModel
 import com.mixedwash.features.common.presentation.slot_selection.TimeSlot
-import com.mixedwash.features.common.presentation.services.ServicesScreen
-import com.mixedwash.features.common.presentation.services.ServicesScreenViewModel
-import com.mixedwash.core.presentation.models.SnackbarHandler
-import com.mixedwash.features.location_availability.domain.LocationAvailabilityRepository
-import org.koin.compose.koinInject
+import com.mixedwash.features.home.presentation.HomeScreen
+import com.mixedwash.features.home.presentation.HomeScreenViewModel
+import com.mixedwash.features.services.presentation.ServicesScreen
+import com.mixedwash.features.services.presentation.ServicesScreenViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
 fun NavGraphBuilder.HomeNav(
@@ -42,14 +41,20 @@ fun NavGraphBuilder.HomeNav(
     ) {
 
         composable<Route.HomeRoute> {
-            val availabilityRepository = koinInject<LocationAvailabilityRepository>()
-//            val viewModel = koinViewModel<HomeScreenViewModel>()
-            HomeScreen()
+            val viewModel = koinViewModel<HomeScreenViewModel>()
+            val state by viewModel.state.collectAsStateWithLifecycle()
+            HomeScreen(
+                state = state,
+                onEvent = viewModel::onEvent,
+                uiEvents = viewModel.uiEventsFlow,
+                snackbarHandler = snackbarHandler,
+                navController = navController,
+            )
         }
 
         composable<Route.ServicesRoute>{
             val viewmodel = koinViewModel<ServicesScreenViewModel>()
-            val state by viewmodel.uiState.collectAsStateWithLifecycle()
+            val state by viewmodel.state.collectAsStateWithLifecycle()
             ServicesScreen(
                 state = state,
                 onEvent = viewmodel::onEvent,

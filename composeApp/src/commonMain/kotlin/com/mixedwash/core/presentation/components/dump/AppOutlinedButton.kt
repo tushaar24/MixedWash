@@ -6,6 +6,7 @@ import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -32,9 +33,10 @@ fun AppOutlinedButton(
     fontWeight: FontWeight = FontWeight.Normal,
     lineHeight: TextUnit = TextUnit.Unspecified,
     letterSpacing: TextUnit = TextUnit.Unspecified,
+    containerColor: Color = Color.Transparent,
     interactionSource: MutableInteractionSource = MutableInteractionSource(),
 ) {
-    TextButton(
+    Button(
         modifier = modifier,
         contentPadding = contentPadding,
         onClick = onClick,

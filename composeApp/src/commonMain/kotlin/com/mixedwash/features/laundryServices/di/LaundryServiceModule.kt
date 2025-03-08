@@ -8,7 +8,7 @@ import com.mixedwash.features.laundryServices.domain.useCases.impl.FetchAllLaund
 import org.koin.dsl.module
 
 
-val laundryServiceModule = module {
+val LaundryServiceModule = module {
     single { LaundryServicesService(get()) }
     single<LaundryServiceRepository> { LaundryServicesRepositoryImpl(get()) }
     single<FetchAllLaundryServicesUseCase> { FetchAllLaundryServicesUseCaseImpl(get()) }

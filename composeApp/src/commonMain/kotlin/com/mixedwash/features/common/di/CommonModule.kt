@@ -1,6 +1,7 @@
 package com.mixedwash.features.common.di
 
 import com.mixedwash.TestApiKeyConfig
+import com.mixedwash.core.presentation.navigation.NavigationModule
 import com.mixedwash.features.common.data.repository.AddressRepositoryImpl
 import com.mixedwash.features.common.data.service.local.LocationService
 import com.mixedwash.features.common.domain.repository.AddressRepository
@@ -12,9 +13,11 @@ import com.mixedwash.features.common.presentation.address.AddressScreenViewModel
 import com.mixedwash.features.common.presentation.history.OrderHistoryScreenViewModel
 import com.mixedwash.features.common.presentation.phone.PhoneScreenViewModel
 import com.mixedwash.features.common.presentation.profile.ProfileEditScreenViewModel
-import com.mixedwash.features.common.presentation.services.ServicesScreenViewModel
 import com.mixedwash.features.common.presentation.slot_selection.SlotSelectionScreenViewModel
+import com.mixedwash.features.home.di.HomeModule
+import com.mixedwash.features.local_cart.di.LocalCartModule
 import com.mixedwash.features.location_availability.di.LocationAvailabilityModule
+import com.mixedwash.features.services.di.ServicesModule
 import com.mixedwash.libs.loki.autocomplete.Autocomplete
 import com.mixedwash.libs.loki.autocomplete.AutocompleteOptions
 import com.mixedwash.libs.loki.autocomplete.AutocompletePlace
@@ -29,9 +32,16 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 
 
-val commonModule = module {
+val CommonModule = module {
 
-    includes(CommonDataModule, LocationAvailabilityModule)
+    includes(
+        CommonDataModule,
+        LocationAvailabilityModule,
+        NavigationModule,
+        HomeModule,
+        ServicesModule,
+        LocalCartModule
+    )
 
     single { FindUserByPhoneUseCase }
     single { LoadSlotsWithOffersUseCase() }
@@ -57,8 +67,8 @@ val commonModule = module {
     viewModelOf(::SlotSelectionScreenViewModel)
     viewModelOf(::PhoneScreenViewModel)
     viewModelOf(::ProfileEditScreenViewModel)
-    viewModelOf(::ServicesScreenViewModel)
     viewModelOf(::OrderHistoryScreenViewModel)
+
 
 }
 

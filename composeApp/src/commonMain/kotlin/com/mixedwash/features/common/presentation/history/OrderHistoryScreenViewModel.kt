@@ -8,6 +8,7 @@ import com.mixedwash.features.common.data.service.local.DummyData
 
 class OrderHistoryScreenViewModel : ViewModel() {
 
+/*
     private val initialState = OrderHistoryState(
         orders = DummyData.orderHistoryMock,
         insights = DummyData.insightMetrics
@@ -19,4 +20,5 @@ class OrderHistoryScreenViewModel : ViewModel() {
     fun onEvent(orderHistoryEvent: OrderHistoryEvent) {
 
     }
+*/
 }

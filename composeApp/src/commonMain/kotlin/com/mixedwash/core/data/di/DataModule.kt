@@ -8,7 +8,7 @@ import org.koin.dsl.module
 
 expect fun platformDataModule(): Module
 
-val dataModule = module {
+val DataModule = module {
     includes(platformDataModule())
     single { FirebaseUserService( get() ) } bind UserService::class
 }

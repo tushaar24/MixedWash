@@ -44,6 +44,7 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.kotlinx.coroutines.android)
 
             // koin
             implementation(libs.koin.android)
@@ -78,6 +79,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
             api(libs.kotlinx.serialization.json)
+            implementation(libs.kotlinx.coroutines.core)
 
 
             // ktor
@@ -162,10 +164,12 @@ android {
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
+            buildConfigField(type= "boolean", name = "BYPASS_LOCATION_CHECK", value = "false" )
         }
         debug {
             isMinifyEnabled = false
             signingConfig = signingConfigs.getByName("sharedDebug")
+            buildConfigField(type= "boolean", name = "BYPASS_LOCATION_CHECK", value = "true" )
         }
     }
     buildFeatures {
@@ -192,13 +196,13 @@ dependencies {
 
 }
 
-val localProperties = Properties()
-val localPropertiesFile = rootProject.file("test_api_keys.properties")
-localProperties.load(localPropertiesFile.inputStream())
+val apiKeys = Properties()
+val testApiKeysFile = rootProject.file("test_api_keys.properties")
+apiKeys.load(testApiKeysFile.inputStream())
 
-val googleApiKey = localProperties.getProperty("loki_test_google_api_key") ?: ""
-val rzrpayTestKeyId = localProperties.getProperty("rzrpay_test_key_id") ?: ""
-val rzrpayTestKeySecret = localProperties.getProperty("rzrpay_test_key_secret") ?: ""
+val googleApiKey = apiKeys.getProperty("loki_test_google_api_key") ?: ""
+val rzrpayTestKeyId = apiKeys.getProperty("rzrpay_test_key_id") ?: ""
+val rzrpayTestKeySecret = apiKeys.getProperty("rzrpay_test_key_secret") ?: ""
 
 buildkonfig {
     packageName = "com.mixedwash"

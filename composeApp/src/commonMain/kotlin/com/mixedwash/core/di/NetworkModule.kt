@@ -7,7 +7,7 @@ import kotlinx.serialization.json.Json
 import org.koin.dsl.module
 
 
-val networkModule = module {
+val NetworkModule = module {
     single {
         HttpClient {
             install(ContentNegotiation) {

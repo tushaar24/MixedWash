@@ -62,7 +62,6 @@ fun App() {
                         SnackbarHost(scaffoldState.snackbarHostState) { snackbarData ->
                             val (type, message) = decodeSnackBar(snackbarData.visuals.message)
                             val imeOffset = WindowInsets.ime.getBottom(LocalDensity.current)
-                            // TODO : FIX ME : Popup doesn't show on top of modal
                             Popup(
                                 alignment = Alignment.BottomCenter,
                                 offset = IntOffset(x = 0, y = -imeOffset),
@@ -155,8 +154,6 @@ fun App() {
                                     )
                                 }
                             }
-
-
 
                         }
                     }

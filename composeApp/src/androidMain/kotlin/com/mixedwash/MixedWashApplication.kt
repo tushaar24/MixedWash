@@ -22,7 +22,7 @@ class MixedWashApplication : Application() {
         initKoin {
             androidLogger()
             androidContext(this@MixedWashApplication)
-        }
+                    }
 
         GoogleAuthProvider.create(
             credentials = GoogleAuthCredentials(

@@ -53,7 +53,7 @@ sealed class Route {
     data object ProfileEditRoute : Route()
 
     @Serializable
-    data object ServicesRoute : Route()
+    data class ServicesRoute(val serviceId: String? = null) : Route()
 
     @Serializable
     data object HomeRoute : Route()

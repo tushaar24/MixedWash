@@ -14,3 +14,4 @@ data class ServiceResponseEntity(
     @SerialName("unit")
     val unit: String
 )
+

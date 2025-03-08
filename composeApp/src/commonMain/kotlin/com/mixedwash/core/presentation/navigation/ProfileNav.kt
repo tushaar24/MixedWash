@@ -13,7 +13,6 @@ import com.mixedwash.Route
 import com.mixedwash.core.data.UserService
 import com.mixedwash.features.common.presentation.address.AddressScreen
 import com.mixedwash.features.common.presentation.address.AddressScreenViewModel
-import com.mixedwash.features.common.presentation.history.OrderHistoryScreen
 import com.mixedwash.features.common.presentation.history.OrderHistoryScreenViewModel
 import com.mixedwash.features.common.presentation.profile.ProfileEditScreen
 import com.mixedwash.features.common.presentation.profile.ProfileEditScreenViewModel
@@ -148,11 +147,13 @@ fun NavGraphBuilder.ProfileNav(
         composable<Route.HistoryRoute> {
 
             val viewModel = koinViewModel<OrderHistoryScreenViewModel>()
+/*
             val state by viewModel.uiState.collectAsStateWithLifecycle()
             OrderHistoryScreen(
                 state = state,
                 modifier = Modifier
             )
+*/
         }
 
     }

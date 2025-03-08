@@ -440,7 +440,6 @@ class AddressScreenViewModel(
         addressFlow.collect { addressList ->
             updateState { copy(addressList = addressList.map { it.toAddress() }) }
         }
-        Logger.d("TAG", "Should be called once the flow stops being collected")
     }
 
 

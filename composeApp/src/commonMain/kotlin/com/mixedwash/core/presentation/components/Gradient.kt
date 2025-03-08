@@ -5,6 +5,8 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import com.mixedwash.features.common.util.parse
+import com.mixedwash.features.home.presentation.model.Gradient
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.hypot
@@ -12,12 +14,11 @@ import kotlin.math.sin
 
 
 fun Modifier.gradient(
-    colorStops: Array<Pair<Float, Color>>,
-    angle: Float = 0f, // Angle in degrees
+    gradient: Gradient,
 ): Modifier = this.then(
     drawBehind {
         // Convert the angle to radians
-        val angleRad = toRadians(angle.toDouble())
+        val angleRad = toRadians(gradient.angle.toDouble())
         // Find the center of the drawing area
         val center = Offset(size.width / 2, size.height / 2)
         // Calculate half the diagonal length to ensure the gradient covers the full area
@@ -31,9 +32,22 @@ fun Modifier.gradient(
         val start = center - offset
         val end = center + offset
 
+        var colorStopsArray = gradient.gradientColors.map {
+            Pair(it.colorStop, Color.parse(it.colorHex))
+        }.toTypedArray()
+
+        if (colorStopsArray.isEmpty()) {
+            colorStopsArray = arrayOf(Pair(0f, Color.Transparent), Pair(1f, Color.Transparent))
+        }
+
+        if(colorStopsArray.size == 1) {
+            val color = colorStopsArray[0].second
+            colorStopsArray = arrayOf(Pair(0f,color), Pair(1f,color))
+        }
+
         drawRect(
             brush = Brush.linearGradient(
-                colorStops = colorStops,
+                colorStops = colorStopsArray,
                 start = start,
                 end = end
             ),
