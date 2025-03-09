@@ -6,6 +6,6 @@ import com.mixedwash.features.support.domain.FaqRepository
 import org.koin.dsl.module
 
 val SupportModule = module {
-    single<FaqService> { FaqService() }
-    single<FaqRepository> { FaqRepositoryImpl(get()) }
+    single<FaqService> { FaqService(get()) }
+    single<FaqRepository> { FaqRepositoryImpl() }
 }
