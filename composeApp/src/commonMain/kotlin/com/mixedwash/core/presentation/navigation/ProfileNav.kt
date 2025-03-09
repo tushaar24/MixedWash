@@ -13,8 +13,8 @@ import com.mixedwash.Route
 import com.mixedwash.core.data.UserService
 import com.mixedwash.features.common.presentation.address.AddressScreen
 import com.mixedwash.features.common.presentation.address.AddressScreenViewModel
-import com.mixedwash.features.common.presentation.history.OrderHistoryScreen
-import com.mixedwash.features.common.presentation.history.OrderHistoryScreenViewModel
+import com.mixedwash.features.history.presentation.OrderHistoryScreen
+import com.mixedwash.features.history.presentation.OrderHistoryScreenViewModel
 import com.mixedwash.features.common.presentation.profile.ProfileEditScreen
 import com.mixedwash.features.common.presentation.profile.ProfileEditScreenViewModel
 import com.mixedwash.features.common.presentation.profile.ProfileScreen

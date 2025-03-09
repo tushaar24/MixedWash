@@ -1,4 +1,4 @@
-package com.mixedwash.features.common.presentation.history.model
+package com.mixedwash.features.history.domain.model
 
 enum class OrderDeliveryStatus {
     Processing, Delivered, Cancelled

@@ -1,9 +1,9 @@
 package com.mixedwash.features.common.data.service.local
 
 import androidx.compose.ui.graphics.Color
-import com.mixedwash.features.common.presentation.history.model.InsightMetric
-import com.mixedwash.features.common.presentation.history.model.OrderDeliveryStatus
-import com.mixedwash.features.common.presentation.history.model.OrderHistoryData
+import com.mixedwash.features.history.domain.model.InsightMetricDTO
+import com.mixedwash.features.history.domain.model.OrderDeliveryStatus
+import com.mixedwash.features.history.domain.model.OrderHistoryDTO
 import com.mixedwash.features.common.presentation.home.model.HomeHeaderData
 import com.mixedwash.features.common.presentation.services.model.ServiceItem
 import com.mixedwash.features.common.presentation.services.model.ServiceVariant
@@ -169,13 +169,13 @@ object DummyData {
     )
 
     val insightMetrics = listOf(
-        InsightMetric("time saved", "hrs", Res.drawable.ic_hourglass),
-        InsightMetric("washed", "kgs", Res.drawable.ic_washing_machine),
-        InsightMetric("water saved", "ltr", Res.drawable.ic_drop),
+        InsightMetricDTO("time saved", "hrs", Res.drawable.ic_hourglass),
+        InsightMetricDTO("washed", "kgs", Res.drawable.ic_washing_machine),
+        InsightMetricDTO("water saved", "ltr", Res.drawable.ic_drop),
     )
 
     val orderHistoryMock = listOf(
-        OrderHistoryData(
+        OrderHistoryDTO(
             orderId = 1022154,
             serviceItems = listOf(washAndFoldServiceItem, dryClean, shoeCleanServiceItem),
             orderedTimestamp = 1708464000000L,
@@ -183,7 +183,7 @@ object DummyData {
             price = 1024,
             orderDeliveryStatus = OrderDeliveryStatus.Cancelled
         ),
-        OrderHistoryData(
+        OrderHistoryDTO(
             orderId = 1024298,
             serviceItems = listOf(
                 washAndIronServiceItem,
@@ -196,7 +196,7 @@ object DummyData {
             price = 2048,
             orderDeliveryStatus = OrderDeliveryStatus.Processing
         ),
-        OrderHistoryData(
+        OrderHistoryDTO(
             orderId = 1000245,
             serviceItems = listOf(washAndFoldServiceItem),
             orderedTimestamp = 1708464000000L,

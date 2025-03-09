@@ -1,5 +1,6 @@
 package com.mixedwash.core.presentation.components.dump
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -26,8 +27,9 @@ fun IndicationChip(
         shape = RoundedCornerShape(6.dp),
         colors = CardDefaults.cardColors(
             contentColor = textColor,
-            containerColor = backgroundColor
-        )
+            containerColor = backgroundColor,
+        ),
+        border = BorderStroke(1.dp, borderColor)
     ) {
         Text(
             modifier = Modifier.padding(6.dp),

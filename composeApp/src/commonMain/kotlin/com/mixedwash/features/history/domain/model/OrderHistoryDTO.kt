@@ -1,9 +1,9 @@
-package com.mixedwash.features.common.presentation.history.model
+package com.mixedwash.features.history.domain.model
 
 import com.mixedwash.features.common.presentation.services.model.ServiceItem
 import org.jetbrains.compose.resources.DrawableResource
 
-data class OrderHistoryData(
+data class OrderHistoryDTO(
     val orderId: Long,
     val serviceItems: List<ServiceItem>,
     val orderedTimestamp: Long,
@@ -12,7 +12,7 @@ data class OrderHistoryData(
     val price: Int,
 )
 
-data class InsightMetric(
+data class InsightMetricDTO(
     val metric: String,
     val unit: String,
     val icon: DrawableResource

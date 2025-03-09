@@ -10,11 +10,12 @@ import com.mixedwash.features.common.domain.usecases.slots.LoadSlotsWithOffersUs
 import com.mixedwash.features.common.domain.usecases.slots.SelectSlotAndOffersUseCase
 import com.mixedwash.features.common.presentation.address.AddressScreenViewModel
 import com.mixedwash.features.support.presentation.FaqScreenViewModel
-import com.mixedwash.features.common.presentation.history.OrderHistoryScreenViewModel
+import com.mixedwash.features.history.presentation.OrderHistoryScreenViewModel
 import com.mixedwash.features.common.presentation.phone.PhoneScreenViewModel
 import com.mixedwash.features.common.presentation.profile.ProfileEditScreenViewModel
 import com.mixedwash.features.common.presentation.services.ServicesScreenViewModel
 import com.mixedwash.features.common.presentation.slot_selection.SlotSelectionScreenViewModel
+import com.mixedwash.features.history.di.HistoryModule
 import com.mixedwash.features.location_availability.di.LocationAvailabilityModule
 import com.mixedwash.features.support.di.SupportModule
 import com.mixedwash.libs.loki.autocomplete.Autocomplete
@@ -33,7 +34,7 @@ import org.koin.dsl.module
 
 val commonModule = module {
 
-    includes(CommonDataModule, LocationAvailabilityModule, SupportModule)
+    includes(CommonDataModule, LocationAvailabilityModule, SupportModule, HistoryModule)
 
     single { FindUserByPhoneUseCase }
     single { LoadSlotsWithOffersUseCase() }

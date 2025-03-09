@@ -43,6 +43,8 @@ import com.mixedwash.core.presentation.navigation.AuthNav
 import com.mixedwash.core.presentation.navigation.HomeNav
 import com.mixedwash.core.presentation.navigation.ProfileNav
 import com.mixedwash.core.presentation.util.Logger
+import com.mixedwash.features.history.presentation.OrderHistoryScreen
+import com.mixedwash.features.history.presentation.OrderHistoryScreenViewModel
 import com.mixedwash.features.support.presentation.FaqScreen
 import com.mixedwash.features.support.presentation.FaqScreenViewModel
 import com.mixedwash.ui.theme.MixedWashTheme
@@ -128,7 +130,7 @@ fun App() {
 
                         NavHost(
                             navController = navController,
-                            startDestination = Route.FaqRoute
+                            startDestination = Route.HistoryRoute
                         ) {
 
                             AuthNav(
@@ -174,6 +176,18 @@ fun App() {
                                     state = state,
                                     onEvent = viewModel::onEvent,
                                     modifier = Modifier.fillMaxSize()
+                                )
+                            }
+
+
+                            // todo: remove
+                            composable<Route.HistoryRoute> {
+
+                                val viewModel = koinViewModel<OrderHistoryScreenViewModel>()
+                                val state by viewModel.uiState.collectAsStateWithLifecycle()
+                                OrderHistoryScreen(
+                                    state = state,
+                                    modifier = Modifier
                                 )
                             }
                         }

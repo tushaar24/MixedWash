@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mixedwash.features.support.data.FaqService
 import com.mixedwash.features.support.domain.model.FaqItemCategoryDto
-import com.mixedwash.features.support.domain.model.FaqItemDTO
 import com.mixedwash.features.support.domain.model.FaqItemTagDto
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

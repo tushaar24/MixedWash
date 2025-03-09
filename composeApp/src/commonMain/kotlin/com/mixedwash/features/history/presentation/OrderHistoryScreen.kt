@@ -1,4 +1,4 @@
-package com.mixedwash.features.common.presentation.history
+package com.mixedwash.features.history.presentation
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -7,12 +7,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.mixedwash.features.common.presentation.history.components.OrderSummaryCard
-import com.mixedwash.features.common.presentation.history.components.StatisticCard
+import com.mixedwash.features.history.presentation.components.OrderSummaryCard
+import com.mixedwash.features.history.presentation.components.StatisticCard
 import com.mixedwash.core.presentation.components.dump.TitleWithIcon
 import com.mixedwash.core.presentation.util.formatTimestamp
 import com.mixedwash.ui.theme.dividerBlack
@@ -60,7 +60,7 @@ fun OrderHistoryScreen(state: OrderHistoryState, modifier: Modifier = Modifier) 
                     onDetails = {},
                 )
 
-                Divider(color = dividerBlack)
+                HorizontalDivider(color = dividerBlack)
             }
         }
     }

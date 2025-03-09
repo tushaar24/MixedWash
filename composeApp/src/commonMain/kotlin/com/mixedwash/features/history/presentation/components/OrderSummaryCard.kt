@@ -1,4 +1,4 @@
-package com.mixedwash.features.common.presentation.history.components
+package com.mixedwash.features.history.presentation.components
 
 import BrandTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -17,7 +17,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.mixedwash.features.common.presentation.history.model.OrderDeliveryStatus
+import com.mixedwash.features.history.domain.model.OrderDeliveryStatus
 import com.mixedwash.core.presentation.components.dump.AppOutlinedButton
 import com.mixedwash.core.presentation.components.dump.IndicationChip
 import com.mixedwash.ui.theme.Gray100
@@ -83,7 +83,11 @@ fun OrderSummaryCard(
 
             Text(
                 text = "₹${cost ?: "-"}",
-                style = BrandTheme.typography.h5
+                style = BrandTheme.typography.h5,
+                color = when (status) {
+                    OrderDeliveryStatus.Delivered -> Green
+                    else -> Gray800
+                }
             )
         }
 
