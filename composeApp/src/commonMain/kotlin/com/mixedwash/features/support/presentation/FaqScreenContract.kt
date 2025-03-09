@@ -1,4 +1,4 @@
-package com.mixedwash.features.common.presentation.faq
+package com.mixedwash.features.support.presentation
 
 import com.mixedwash.features.support.domain.model.FaqItemDTO
 import com.mixedwash.features.support.domain.model.FaqItemCategory

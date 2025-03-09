@@ -1,4 +1,4 @@
-package com.mixedwash.features.common.presentation.faq
+package com.mixedwash.features.support.presentation
 
 import androidx.lifecycle.ViewModel
 import com.mixedwash.features.support.domain.FaqRepository
