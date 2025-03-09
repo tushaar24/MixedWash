@@ -55,7 +55,7 @@ fun OrderHistoryScreen(state: OrderHistoryState, modifier: Modifier = Modifier) 
                     titles = order.serviceItems.map { it.title },
                     ordered = formatTimestamp(order.orderedTimestamp),
                     delivery = if (order.deliveryTimestamp != null) formatTimestamp(order.deliveryTimestamp) else null,
-                    status = order.orderDeliveryStatus,
+                    status = order.orderDeliveryStatusDto,
                     cost = order.price,
                     onDetails = {},
                 )

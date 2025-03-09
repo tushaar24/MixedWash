@@ -17,7 +17,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.mixedwash.features.history.domain.model.OrderDeliveryStatus
+import com.mixedwash.features.history.domain.model.OrderDeliveryStatusDto
 import com.mixedwash.core.presentation.components.dump.AppOutlinedButton
 import com.mixedwash.core.presentation.components.dump.IndicationChip
 import com.mixedwash.ui.theme.Gray100
@@ -37,7 +37,7 @@ fun OrderSummaryCard(
     titles: List<String>,
     ordered: String,
     delivery: String?,
-    status: OrderDeliveryStatus,
+    status: OrderDeliveryStatusDto,
     cost: Int?,
     onDetails: () -> Unit,
     modifier: Modifier = Modifier
@@ -62,20 +62,20 @@ fun OrderSummaryCard(
                 )
 
                 IndicationChip(
-                    text = status.toString() ,
+                    text = status.toString().lowercase().replaceFirstChar { it.uppercase() },
                     textColor = when (status) {
-                        OrderDeliveryStatus.Processing -> Yellow
-                        OrderDeliveryStatus.Delivered -> Gray100
-                        OrderDeliveryStatus.Cancelled -> Gray800
+                        OrderDeliveryStatusDto.PROCESSING -> Yellow
+                        OrderDeliveryStatusDto.DELIVERED -> Gray100
+                        OrderDeliveryStatusDto.Cancelled -> Gray800
                     },
                     backgroundColor = when (status) {
-                        OrderDeliveryStatus.Delivered -> Green
+                        OrderDeliveryStatusDto.DELIVERED -> Green
                         else -> Gray50
                     },
                     borderColor = when (status) {
-                        OrderDeliveryStatus.Processing -> Yellow
-                        OrderDeliveryStatus.Delivered -> Green
-                        OrderDeliveryStatus.Cancelled -> Gray800
+                        OrderDeliveryStatusDto.PROCESSING -> Yellow
+                        OrderDeliveryStatusDto.DELIVERED -> Green
+                        OrderDeliveryStatusDto.Cancelled -> Gray800
                     },
                     leadingIcon = '•'
                 )
@@ -85,7 +85,7 @@ fun OrderSummaryCard(
                 text = "₹${cost ?: "-"}",
                 style = BrandTheme.typography.h5,
                 color = when (status) {
-                    OrderDeliveryStatus.Delivered -> Green
+                    OrderDeliveryStatusDto.DELIVERED -> Green
                     else -> Gray800
                 }
             )
@@ -114,7 +114,7 @@ fun OrderSummaryCard(
                 )
 
                 TimeTracker(
-                    action = if (status == OrderDeliveryStatus.Delivered) "Delivered" else "Est. Delivery",
+                    action = if (status == OrderDeliveryStatusDto.DELIVERED) "Delivered" else "Est. Delivery",
                     datetime = delivery ?: "-",
                     textColor = Gray800,
                 )

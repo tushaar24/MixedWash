@@ -156,6 +156,7 @@ fun FaqScreen(
 
                     items(state.faqItems) {
                         FaqItemCard(
+                            modifier = Modifier.padding(vertical = 8.dp),
                             item = it
                         )
                     }

@@ -2,7 +2,7 @@ package com.mixedwash.features.common.data.service.local
 
 import androidx.compose.ui.graphics.Color
 import com.mixedwash.features.history.domain.model.InsightMetricDTO
-import com.mixedwash.features.history.domain.model.OrderDeliveryStatus
+import com.mixedwash.features.history.domain.model.OrderDeliveryStatusDto
 import com.mixedwash.features.history.domain.model.OrderHistoryDTO
 import com.mixedwash.features.common.presentation.home.model.HomeHeaderData
 import com.mixedwash.features.common.presentation.services.model.ServiceItem
@@ -181,7 +181,7 @@ object DummyData {
             orderedTimestamp = 1708464000000L,
             deliveryTimestamp = 1708464000000L,
             price = 1024,
-            orderDeliveryStatus = OrderDeliveryStatus.Cancelled
+            orderDeliveryStatusDto = OrderDeliveryStatusDto.Cancelled
         ),
         OrderHistoryDTO(
             orderId = 1024298,
@@ -194,7 +194,7 @@ object DummyData {
             orderedTimestamp = 1708464000000L,
             deliveryTimestamp = null,
             price = 2048,
-            orderDeliveryStatus = OrderDeliveryStatus.Processing
+            orderDeliveryStatusDto = OrderDeliveryStatusDto.PROCESSING
         ),
         OrderHistoryDTO(
             orderId = 1000245,
@@ -202,7 +202,7 @@ object DummyData {
             orderedTimestamp = 1708464000000L,
             deliveryTimestamp = 1808464000000L,
             price = 1024,
-            orderDeliveryStatus = OrderDeliveryStatus.Delivered
+            orderDeliveryStatusDto = OrderDeliveryStatusDto.DELIVERED
         ),
     )
 }
