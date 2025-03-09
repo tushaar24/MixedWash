@@ -1,90 +1,90 @@
 package com.mixedwash.features.support.data
 
 import com.mixedwash.features.support.domain.model.FaqItemDTO
-import com.mixedwash.features.support.domain.model.FaqItemCategory
-import com.mixedwash.features.support.domain.model.FaqItemTag
+import com.mixedwash.features.support.domain.model.FaqItemCategoryDto
+import com.mixedwash.features.support.domain.model.FaqItemTagDto
 
 private val faqData = listOf(
     FaqItemDTO(
         "How do I manage all the notifications on the App?",
         "In the Profile section, go to Notification Settings. Here, you can turn all notifications on or off collectively. You can also customize notification for specific categories, such as Orders, Purchases, Promotions, and Offers, based on your preferences.",
-        listOf(FaqItemCategory.All)
+        listOf(FaqItemCategoryDto.All)
     ),
     FaqItemDTO(
         "How do I check my booked tickets on the district app?",
         "After booking, you'll receive all the ticket details via Whatsapp and email. You can also view your booking by going to the movie tickets section in your profile on the district app",
-        listOf(FaqItemCategory.All, FaqItemCategory.Pickup)
+        listOf(FaqItemCategoryDto.All, FaqItemCategoryDto.Pickup)
     ),
     FaqItemDTO(
         "Where can I set my event tickets?",
         "Head to your profile on the app and find event tickets to view all your event bookings.",
-        listOf(FaqItemCategory.General, FaqItemCategory.All, FaqItemCategory.Processing)
+        listOf(FaqItemCategoryDto.General, FaqItemCategoryDto.All, FaqItemCategoryDto.Processing)
     ),
     FaqItemDTO(
         "How do I pay my dining bill using the District app?",
         "After dining at a partner restaurant, simply open the restaurant's page in the district app and use the pay bill option. Alternatively, you can scan the district qr code if available at the restaurant",
-        listOf(FaqItemCategory.Delivery, FaqItemCategory.Pickup, FaqItemCategory.All)
+        listOf(FaqItemCategoryDto.Delivery, FaqItemCategoryDto.Pickup, FaqItemCategoryDto.All)
     ),
     FaqItemDTO(
         "How do I manage all the notifications on the App?",
         "In the Profile section, go to Notification Settings. Here, you can turn all notifications on or off collectively. You can also customize notification for specific categories, such as Orders, Purchases, Promotions, and Offers, based on your preferences.",
-        listOf(FaqItemCategory.All)
+        listOf(FaqItemCategoryDto.All)
     ),
     FaqItemDTO(
         "How do I check my booked tickets on the district app?",
         "After booking, you'll receive all the ticket details via Whatsapp and email. You can also view your booking by going to the movie tickets section in your profile on the district app",
-        listOf(FaqItemCategory.All, FaqItemCategory.Pickup)
+        listOf(FaqItemCategoryDto.All, FaqItemCategoryDto.Pickup)
     ),
     FaqItemDTO(
         "Where can I set my event tickets?",
         "Head to your profile on the app and find event tickets to view all your event bookings.",
-        listOf(FaqItemCategory.General, FaqItemCategory.All, FaqItemCategory.Processing)
+        listOf(FaqItemCategoryDto.General, FaqItemCategoryDto.All, FaqItemCategoryDto.Processing)
     ),
     FaqItemDTO(
         "How do I pay my dining bill using the District app?",
         "After dining at a partner restaurant, simply open the restaurant's page in the district app and use the pay bill option. Alternatively, you can scan the district qr code if available at the restaurant",
-        listOf(FaqItemCategory.Delivery, FaqItemCategory.Pickup, FaqItemCategory.All)
+        listOf(FaqItemCategoryDto.Delivery, FaqItemCategoryDto.Pickup, FaqItemCategoryDto.All)
     ),
     FaqItemDTO(
         "How do I manage all the notifications on the App?",
         "In the Profile section, go to Notification Settings. Here, you can turn all notifications on or off collectively. You can also customize notification for specific categories, such as Orders, Purchases, Promotions, and Offers, based on your preferences.",
-        listOf(FaqItemCategory.All)
+        listOf(FaqItemCategoryDto.All)
     ),
     FaqItemDTO(
         "How do I check my booked tickets on the district app?",
         "After booking, you'll receive all the ticket details via Whatsapp and email. You can also view your booking by going to the movie tickets section in your profile on the district app",
-        listOf(FaqItemCategory.All, FaqItemCategory.Pickup)
+        listOf(FaqItemCategoryDto.All, FaqItemCategoryDto.Pickup)
     ),
     FaqItemDTO(
         "Where can I set my event tickets?",
         "Head to your profile on the app and find event tickets to view all your event bookings.",
-        listOf(FaqItemCategory.General, FaqItemCategory.All, FaqItemCategory.Processing)
+        listOf(FaqItemCategoryDto.General, FaqItemCategoryDto.All, FaqItemCategoryDto.Processing)
     ),
     FaqItemDTO(
         "How do I pay my dining bill using the District app?",
         "After dining at a partner restaurant, simply open the restaurant's page in the district app and use the pay bill option. Alternatively, you can scan the district qr code if available at the restaurant",
-        listOf(FaqItemCategory.Delivery, FaqItemCategory.Pickup, FaqItemCategory.All)
+        listOf(FaqItemCategoryDto.Delivery, FaqItemCategoryDto.Pickup, FaqItemCategoryDto.All)
     ),
     FaqItemDTO(
         "How do I manage all the notifications on the App?",
         "In the Profile section, go to Notification Settings. Here, you can turn all notifications on or off collectively. You can also customize notification for specific categories, such as Orders, Purchases, Promotions, and Offers, based on your preferences.",
-        listOf(FaqItemCategory.All)
+        listOf(FaqItemCategoryDto.All)
     ),
     FaqItemDTO(
         "How do I check my booked tickets on the district app?",
         "After booking, you'll receive all the ticket details via Whatsapp and email. You can also view your booking by going to the movie tickets section in your profile on the district app",
-        listOf(FaqItemCategory.All, FaqItemCategory.Pickup)
+        listOf(FaqItemCategoryDto.All, FaqItemCategoryDto.Pickup)
     ),
     FaqItemDTO(
         "Where can I set my event tickets?",
         "Head to your profile on the app and find event tickets to view all your event bookings.",
-        listOf(FaqItemCategory.General, FaqItemCategory.All, FaqItemCategory.Processing)
+        listOf(FaqItemCategoryDto.General, FaqItemCategoryDto.All, FaqItemCategoryDto.Processing)
     ),
     FaqItemDTO(
         "How do I pay my dining bill using the District app?",
         "After dining at a partner restaurant, simply open the restaurant's page in the district app and use the pay bill option. Alternatively, you can scan the district qr code if available at the restaurant",
-        listOf(FaqItemCategory.Delivery, FaqItemCategory.Pickup, FaqItemCategory.All),
-        listOf(FaqItemTag.login_issue)
+        listOf(FaqItemCategoryDto.Delivery, FaqItemCategoryDto.Pickup, FaqItemCategoryDto.All),
+        listOf(FaqItemTagDto.LOGIN_ISSUE)
     ),
 )
 
@@ -94,7 +94,7 @@ class FaqService {
         return Result.success(faqData)
     }
 
-    fun getFaqsByLabel(label: FaqItemCategory): Result<List<FaqItemDTO>> {
+    fun getFaqsByLabel(label: FaqItemCategoryDto): Result<List<FaqItemDTO>> {
         return Result.success(faqData.filter { it.categories.contains(label) })
     }
 

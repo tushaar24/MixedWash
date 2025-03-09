@@ -1,7 +1,7 @@
 package com.mixedwash.features.support.data
 
 import com.mixedwash.features.support.domain.FaqRepository
-import com.mixedwash.features.support.domain.model.FaqItemCategory
+import com.mixedwash.features.support.domain.model.FaqItemCategoryDto
 import com.mixedwash.features.support.domain.model.FaqItemDTO
 
 class FaqRepositoryImpl(private val faqService: FaqService) : FaqRepository {
@@ -9,7 +9,7 @@ class FaqRepositoryImpl(private val faqService: FaqService) : FaqRepository {
         return faqService.getAllFaqs()
     }
 
-    override fun getFaqsByLabel(label: FaqItemCategory): Result<List<FaqItemDTO>> {
+    override fun getFaqsByLabel(label: FaqItemCategoryDto): Result<List<FaqItemDTO>> {
         return faqService.getFaqsByLabel(label)
     }
 

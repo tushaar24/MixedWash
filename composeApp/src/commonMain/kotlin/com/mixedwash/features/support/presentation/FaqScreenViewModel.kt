@@ -2,8 +2,8 @@ package com.mixedwash.features.support.presentation
 
 import androidx.lifecycle.ViewModel
 import com.mixedwash.features.support.domain.FaqRepository
-import com.mixedwash.features.support.domain.model.FaqItemCategory
-import com.mixedwash.features.support.domain.model.FaqItemTag
+import com.mixedwash.features.support.domain.model.FaqItemCategoryDto
+import com.mixedwash.features.support.domain.model.FaqItemTagDto
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,10 +16,10 @@ class FaqScreenViewModel(
 
     private val initialState = FaqScreenState(
         faqItems = faqRepository.getAllFaqs().getOrNull() ?: emptyList(),
-        currentCategory = FaqItemCategory.All,
-        faqCategories = FaqItemCategory.entries,
+        currentCategory = FaqItemCategoryDto.All,
+        faqCategories = FaqItemCategoryDto.entries,
         searchString = "",
-        faqTags = FaqItemTag.entries
+        faqTags = FaqItemTagDto.entries
     )
 
     private val _state = MutableStateFlow(initialState)
@@ -62,7 +62,7 @@ class FaqScreenViewModel(
         }
     }
 
-    private fun updateLabel(newLabel: FaqItemCategory) {
+    private fun updateLabel(newLabel: FaqItemCategoryDto) {
         _state.update {
             it.copy(currentCategory = newLabel, faqItems = faqRepository.getFaqsByLabel(newLabel).getOrNull() ?: emptyList())
         }
