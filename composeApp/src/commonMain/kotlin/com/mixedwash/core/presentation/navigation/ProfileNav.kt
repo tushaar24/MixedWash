@@ -151,6 +151,7 @@ fun NavGraphBuilder.ProfileNav(
             val state by viewModel.uiState.collectAsStateWithLifecycle()
             OrderHistoryScreen(
                 state = state,
+                onEvent = viewModel::onEvent,
                 modifier = Modifier
             )
         }

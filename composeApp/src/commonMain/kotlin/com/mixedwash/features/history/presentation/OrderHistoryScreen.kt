@@ -21,7 +21,10 @@ import mixedwash.composeapp.generated.resources.ic_clothes_hanger
 import mixedwash.composeapp.generated.resources.ic_insights
 
 @Composable
-fun OrderHistoryScreen(state: OrderHistoryState, modifier: Modifier = Modifier) {
+fun OrderHistoryScreen(
+    state: OrderHistoryState,
+    onEvent: (OrderHistoryEvent) -> Unit,
+    modifier: Modifier = Modifier) {
     LazyColumn(
         modifier = modifier.fillMaxSize().padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -57,7 +60,7 @@ fun OrderHistoryScreen(state: OrderHistoryState, modifier: Modifier = Modifier) 
                     delivery = if (order.deliveryTimestamp != null) formatTimestamp(order.deliveryTimestamp) else null,
                     status = order.orderDeliveryStatusDto,
                     cost = order.price,
-                    onDetails = {},
+                    onDetails = { onEvent(OrderHistoryEvent.OnOrderDetails(order.orderId))  },
                 )
 
                 HorizontalDivider(color = dividerBlack)

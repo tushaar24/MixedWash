@@ -179,7 +179,7 @@ object DummyData {
             orderId = 1022154,
             serviceItems = listOf(washAndFoldServiceItem, dryClean, shoeCleanServiceItem),
             orderedTimestamp = 1708464000000L,
-            deliveryTimestamp = 1708464000000L,
+            deliveryTimestamp = null,
             price = 1024,
             orderDeliveryStatusDto = OrderDeliveryStatusDto.Cancelled
         ),
@@ -192,7 +192,7 @@ object DummyData {
                 washAndFoldServiceItem
             ),
             orderedTimestamp = 1708464000000L,
-            deliveryTimestamp = null,
+            deliveryTimestamp = 1708464000000L,
             price = 2048,
             orderDeliveryStatusDto = OrderDeliveryStatusDto.PROCESSING
         ),

@@ -9,5 +9,6 @@ data class OrderHistoryState(
 )
 
 sealed interface OrderHistoryEvent {
+    data class OnOrderDetails(val orderId: Long) : OrderHistoryEvent
 
 }

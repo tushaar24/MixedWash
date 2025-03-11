@@ -187,6 +187,7 @@ fun App() {
                                 val state by viewModel.uiState.collectAsStateWithLifecycle()
                                 OrderHistoryScreen(
                                     state = state,
+                                    onEvent = viewModel::onEvent,
                                     modifier = Modifier
                                 )
                             }

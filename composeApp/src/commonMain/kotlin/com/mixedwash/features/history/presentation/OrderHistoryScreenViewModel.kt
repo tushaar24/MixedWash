@@ -24,8 +24,10 @@ class OrderHistoryScreenViewModel(private val historyService: HistoryService) : 
         loadInitialData()
     }
 
-    fun onEvent(orderHistoryEvent: OrderHistoryEvent) {
-
+    fun onEvent(event: OrderHistoryEvent) {
+        when (event) {
+            is OrderHistoryEvent.OnOrderDetails -> {}
+        }
     }
 
     private fun loadInitialData() = viewModelScope.launch {
