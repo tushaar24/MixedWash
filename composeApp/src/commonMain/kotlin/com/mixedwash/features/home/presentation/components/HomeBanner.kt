@@ -77,7 +77,7 @@ fun HomeBanner(
                     Text(
                         text = banner.heading,
                         color = contentColor,
-                        fontWeight = FontWeight.Medium,
+                        fontWeight = FontWeight.SemiBold,
                         fontSize = 18.sp,
                     )
 

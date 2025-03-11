@@ -4,12 +4,12 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed class PricingMetadataDTO {
+sealed class PricingMetadataDto {
     @Serializable
     @SerialName("sub_items_pricing")
     data class SubItemsPricingDTO(
         @SerialName("starting_price") val startingPrice: Int
-    ) : PricingMetadataDTO()
+    ) : PricingMetadataDto()
     @Serializable
     @SerialName("service_pricing")
     data class ServicePricingDTO(
@@ -17,5 +17,5 @@ sealed class PricingMetadataDTO {
         @SerialName("unit") val unit: String,
         @SerialName("minimum_units") val minimumUnits: Int,
         @SerialName("minimum_price") val minimumPrice: Int
-    ) : PricingMetadataDTO()
+    ) : PricingMetadataDto()
 }

@@ -242,7 +242,7 @@ class HomeScreenViewModel(
         updateState {
             copy(
                 cartAddress = CartAddressState.LocationFetched(
-                    address = fetchedAddress.copy(title = fetchedAddress.addressLine1)
+                    address = fetchedAddress.copy(title = fetchedAddress.addressLine2)
                 )
             )
         }

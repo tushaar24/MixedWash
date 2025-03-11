@@ -14,6 +14,6 @@ internal const val cartDbFileName = "cart.db"
 fun RoomDatabase.Builder<CartDatabase>.create(): CartDatabase =
     this.setDriver(BundledSQLiteDriver())
 //        .addMigrations(MIGRATIONS)    // TODO : ADD MIGRATIONS
-//        .fallbackToDestructiveMigrationOnDowngrade()
+        .fallbackToDestructiveMigration(true)
         .setQueryCoroutineContext(Dispatchers.IO)
         .build()

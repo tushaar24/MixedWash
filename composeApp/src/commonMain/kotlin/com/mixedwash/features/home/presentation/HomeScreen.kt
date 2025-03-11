@@ -31,6 +31,7 @@ import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import com.mixedwash.core.presentation.components.DialogPopup
 import com.mixedwash.core.presentation.components.DialogPopupData
+import com.mixedwash.core.presentation.components.noRippleClickable
 import com.mixedwash.core.presentation.models.SnackbarHandler
 import com.mixedwash.core.presentation.navigation.AppCloser
 import com.mixedwash.core.presentation.util.ObserveAsEvents
@@ -164,7 +165,6 @@ fun HomeScreen(
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
 
-
             state.introSection?.let {
 
                 IntroSection(
@@ -183,13 +183,14 @@ fun HomeScreen(
             val offerCard = state.offerCards?.get(0)
             offerCard?.let {
                 OfferCard(
-                    details = offerCard.text,
+                    text = offerCard.text,
+                    bigText = offerCard.bigText,
                     imageUrl = offerCard.imageUrl,
                     buttonLabel = offerCard.buttonLabel,
                     gradient = offerCard.gradient,
                     contentColor = offerCard.contentTextColor,
                     buttonTextColor = offerCard.buttonTextColor,
-                    onClick = { onEvent(HomeScreenEvent.OnOfferClick(offerCard.offerId)) },
+                    onClick = { onEvent(HomeScreenEvent.OnOfferClick(offerCard.offerId)) }
                 )
             }
 
@@ -197,6 +198,7 @@ fun HomeScreen(
                 ServicesSection(
                     serviceItems = it,
                     onSeeAll = { onEvent(HomeScreenEvent.OnSeeAllServicesClicked) },
+                    onServiceClicked = { serviceId -> onEvent(HomeScreenEvent.OnServiceClicked(serviceId)) }
                 )
             }
         }
@@ -212,8 +214,12 @@ fun HomeScreen(
     Crossfade(targetState = loading) {
         when (loading) {
             true -> Box(
-                modifier = Modifier.fillMaxSize().zIndex(1f)
-                    .background(Color.Black.copy(alpha = 0.5f)), contentAlignment = Alignment.Center
+                modifier = Modifier
+                    .fillMaxSize()
+                    .zIndex(1f)
+                    .background(Color.Black.copy(alpha = 0.5f))
+                    .noRippleClickable(enabled = false, onClick = {}),
+                contentAlignment = Alignment.Center
             ) {
                 DefaultCircularProgressIndicator()
             }

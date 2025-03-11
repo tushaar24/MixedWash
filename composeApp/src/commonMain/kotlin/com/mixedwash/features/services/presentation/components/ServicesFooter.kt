@@ -1,5 +1,7 @@
 package com.mixedwash.features.services.presentation.components
 
+import BrandTheme
+import androidx.compose.foundation.BasicTooltipBox
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -104,7 +106,7 @@ fun ServicesFooter(
             SmallButton(
                 onClick = onProceed,
                 text = "Proceed",
-                shape = RoundedCornerShape(6.dp),
+                shape = BrandTheme.shapes.button,
                 contentPadding = PaddingValues(horizontal = 26.dp, 12.dp),
                 containerColor = Gray900,
                 contentColor = Gray100,

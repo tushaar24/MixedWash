@@ -58,7 +58,8 @@ fun NavGraphBuilder.HomeNav(
             ServicesScreen(
                 state = state,
                 onEvent = viewmodel::onEvent,
-                modifier = Modifier
+                uiEventsFlow = viewmodel.uiEventsFlow,
+                snackbarHandler = snackbarHandler
             )
         }
 

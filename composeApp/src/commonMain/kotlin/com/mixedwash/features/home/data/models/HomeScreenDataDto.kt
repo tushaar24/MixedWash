@@ -29,6 +29,7 @@ data class HomeBannerDto(
 @Serializable
 data class HomeOfferCardDto(
     @SerialName("text") val text: String,
+    @SerialName("big_text") val bigText: List<String>,
     @SerialName("offer_id") val offerId: String,
     @SerialName("image_url") val imageUrl: String,
     @SerialName("button_label") val buttonLabel: String,

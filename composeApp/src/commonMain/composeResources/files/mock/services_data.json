@@ -8,7 +8,7 @@
       "items": [
         {
           "item_id": "item_service_wash_and_fold",
-          "name": "Wash & Fold Service",
+          "name": "Wash & Fold",
           "item_pricing": {
             "type": "service_item_pricing",
             "price_per_unit": 9500,
@@ -25,11 +25,15 @@
         "minimum_units": 4,
         "minimum_price": 39500
       },
-      "inclusions": "Washing, tumble drying, and ironing of regular wear items",
-      "exclusions": "Delicate fabrics, leather, and special care garments",
+      "inclusions": "You could include everyday laundry items like Shirts, Trousers, T-Shirts, Innerwear, Leggings, Regular wear kurtis and other items which can be machine washed and tumble dried. Apart from regular clothes you could also include a Bedsheet and 2-3 pillow covers in a 4 kg load.",
+      "exclusions": "Blazers, Doormats, Sarees, Blouses, shoes, chappals, heavily embroided items, blankets and other bulky items. Also, do not include DRY CLEAN ONLY items and items that are not suitable for tumble dryer.",
       "delivery_time_min_in_hrs": 24,
-      "delivery_time_max_in_hrs": 24,
       "details": [
+        {
+          "key": "Wash Type",
+          "value": "Machine wash"
+        },
+
         {
           "key": "Wash Temperature",
           "value": "30° - 35°C"
@@ -45,10 +49,58 @@
       ]
     },
     {
+      "service_id": "service_wash_and_iron",
+      "title": "Wash & Iron",
+      "description": "Best for shirts, t-shirts, trousers & office-wear",
+      "image_url": "https://assets-aac.pages.dev/assets/sku_wash_and_iron.png",
+      "items": [
+        {
+          "item_id": "item_service_wash_and_iron",
+          "name": "Wash & Iron",
+          "item_pricing": {
+            "type": "service_item_pricing",
+            "price_per_unit": 15000,
+            "unit": "kg",
+            "minimum_units": 3,
+            "minimum_price": 45000
+          }
+        }
+      ],
+      "pricing_metadata": {
+        "type": "service_pricing",
+        "price_per_unit": 15000,
+        "unit": "kg",
+        "minimum_units": 3,
+        "minimum_price": 45000
+      },
+      "inclusions": "You could include everyday laundry items like Shirts, Trousers, T-Shirts, Leggings, Regular wear kurtis and other items which can be machine washed and tumble dried.",
+      "exclusions": "Blazers, Doormats, Sarees, Blouses, shoes, chappals, heavily embroided items, blankets and other bulky items. Also, do not include DRY CLEAN ONLY items and items that are not suitable for tumble dryer.",
+      "delivery_time_min_in_hrs": 24,
+      "details": [
+        {
+          "key": "Wash Temperature",
+          "value": "30° - 35°C"
+        },
+        {
+          "key": "Ironing",
+          "value": "Steam Iron"
+        },
+        {
+          "key": "Detergent",
+          "value": "Eco friendly"
+        },
+        {
+          "key": "Drying",
+          "value": "Tumble dry"
+        }
+      ]
+    },
+    {
       "service_id": "service_dry_clean",
       "title": "Dry Clean",
-      "description": "Professional cleaning for formal and delicate garments",
+      "description": "Best for stained items & delicate garments",
       "image_url": "https://assets-aac.pages.dev/assets/sku_dry_clean.png",
+      "note": "A Service Charge of ₹50 will be charged on orders below ₹200",
       "items": [
         {
           "item_id": "item_dry_clean_kurti_top",
@@ -267,56 +319,24 @@
       "delivery_time_max_in_hrs": 48,
       "details": [
         {
-          "key": "Cleaning Method",
-          "value": "Professional Dry Cleaning"
-        }
-      ]
-    },
-    {
-      "service_id": "service_wash_and_iron",
-      "title": "Wash and Iron",
-      "description": "Comprehensive washing and ironing service",
-      "image_url": "https://assets-aac.pages.dev/assets/sku_wash_and_iron.png",
-      "items": [
-        {
-          "item_id": "item_service_wash_and_iron",
-          "name": "Wash and Iron Service",
-          "item_pricing": {
-            "type": "service_item_pricing",
-            "price_per_unit": 15000,
-            "unit": "kg",
-            "minimum_units": 3,
-            "minimum_price": 45000
-          }
-        }
-      ],
-      "pricing_metadata": {
-        "type": "service_pricing",
-        "price_per_unit": 15000,
-        "unit": "kg",
-        "minimum_units": 3,
-        "minimum_price": 45000
-      },
-      "inclusions": "Washing whites and colored clothes separately, tumble drying, and ironing",
-      "exclusions": "Delicate fabrics requiring special care",
-      "delivery_time_min_in_hrs": 24,
-      "delivery_time_max_in_hrs": 24,
-      "details": [
-        {
           "key": "Wash Type",
-          "value": "Separate wash for whites and colored clothes"
+          "value": "Dry Cleaning "
+        },
+        {
+          "key": "Ironing",
+          "value": "Steam Iron"
         }
       ]
     },
     {
       "service_id": "service_heavy_wash",
       "title": "Heavy Wash",
-      "description": "Special washing for heavy and bulky items",
+      "description": "Best for blankets, towels, bedsheets & fabric mats",
       "image_url": "https://assets-aac.pages.dev/assets/sku_heavy_wash.png",
       "items": [
         {
           "item_id": "item_service_heavy_wash",
-          "name": "Heavy Wash Service",
+          "name": "Heavy Wash",
           "item_pricing": {
             "type": "service_item_pricing",
             "price_per_unit": 14000,
@@ -333,26 +353,30 @@
         "minimum_units": 4,
         "minimum_price": 56000
       },
-      "inclusions": "Washing and tumble drying of heavy fabrics",
-      "exclusions": "Extremely delicate or special care items",
+      "inclusions": "Sneakers, Loafers, Sandals, Flip flops and Sports Shoes",
+      "exclusions": "Any Leather Footwear",
       "delivery_time_min_in_hrs": 24,
-      "delivery_time_max_in_hrs": 48,
       "details": [
         {
           "key": "Wash Type",
-          "value": "Tumble dry for heavy fabrics"
+          "value": "Machine Wash"
+        },
+        {
+          "key": "Drying",
+          "value": "Tumble Dry"
         }
+
       ]
     },
     {
-      "service_id": "service_shoe_cleaning",
+      "service_id": "service_shoe_clean",
       "title": "Shoe Cleaning",
-      "description": "Professional shoe cleaning service",
+      "description": "Best for sneakers, sports & casual shoes",
       "image_url" : "https://assets-aac.pages.dev/assets/sku_shoe_clean.png",
       "items": [
         {
           "item_id": "item_service_shoe_cleaning",
-          "name": "Shoe Cleaning Service",
+          "name": "Shoe Cleaning",
           "item_pricing": {
             "type": "service_item_pricing",
             "price_per_unit": 35000,
@@ -369,15 +393,19 @@
         "minimum_units": 1,
         "minimum_price": 35000
       },
-      "inclusions": "Hand washing and air drying of shoes",
-      "exclusions": "Heavily damaged or special material shoes",
-      "delivery_time_min_in_hrs": 24,
-      "delivery_time_max_in_hrs": 48,
+      "inclusions": "Sneakers, Loafers, Sandals, Flip flops and Sports Shoes",
+      "exclusions": "Any Leather Footwear",
+      "delivery_time_min_in_hrs": 36,
       "details": [
         {
-          "key": "Cleaning Method",
-          "value": "Hand wash with air dry"
+          "key": "Wash Type",
+          "value": "Hand Wash"
+        },
+        {
+          "key": "Drying",
+          "value": "Air Dry"
         }
+
       ]
     }
   ],

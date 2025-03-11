@@ -26,14 +26,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
-import com.mixedwash.ui.theme.Gray700
 import com.mixedwash.features.home.presentation.model.HomeService
+import com.mixedwash.ui.theme.Gray700
 
 @Composable
 fun ServicesSection(
     serviceItems: List<HomeService>,
     modifier: Modifier = Modifier,
     onSeeAll: () -> Unit,
+    onServiceClicked: (String) -> Unit,
     textColor: Color = Gray700
 ) {
     Column(modifier = modifier) {
@@ -55,8 +56,8 @@ fun ServicesSection(
         Spacer(Modifier.height(18.dp))
 
         LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            items(serviceItems) {
-                ServiceCard(it, onClick = {})
+            items(serviceItems) { service ->
+                ServiceCard(service, onClick = { onServiceClicked(service.serviceID) })
             }
         }
     }
@@ -65,7 +66,12 @@ fun ServicesSection(
 @Composable
 fun ServiceCard(serviceItem: HomeService, onClick: () -> Unit, modifier: Modifier = Modifier) {
     Box(
-        modifier = modifier.width(130.dp).height(160.dp).clip(RoundedCornerShape(12.dp)).background(BrandTheme.colors.gray.light).clickable { onClick() }
+        modifier = modifier
+            .width(130.dp)
+            .height(160.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .background(BrandTheme.colors.gray.light)
+            .clickable (onClick = onClick)
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),

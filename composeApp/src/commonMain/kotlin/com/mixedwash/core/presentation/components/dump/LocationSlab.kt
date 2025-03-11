@@ -19,6 +19,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import mixedwash.composeapp.generated.resources.Res
+import mixedwash.composeapp.generated.resources.ic_location
+import org.jetbrains.compose.resources.vectorResource
 
 @Composable
 fun LocationSlab(
@@ -34,16 +37,16 @@ fun LocationSlab(
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Icon(
-            imageVector = Icons.Default.LocationOn,
+            imageVector = vectorResource(Res.drawable.ic_location),
             contentDescription = "Location",
             tint = contentColor,
-            modifier = Modifier.size(24.dp),
+            modifier = Modifier.size(18.dp),
         )
 
         Column {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(6.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
                     text = addressKey,
@@ -57,7 +60,7 @@ fun LocationSlab(
                     imageVector = Icons.Default.KeyboardArrowDown,
                     contentDescription = "Expand",
                     tint = contentColor,
-                    modifier = Modifier.size(18.dp).clickable {
+                    modifier = Modifier.size(16.dp).clickable {
                         onExpand()
                     }
                 )
@@ -68,7 +71,7 @@ fun LocationSlab(
                 fontSize = 12.sp,
                 lineHeight = 15.sp,
                 color = contentColor,
-                style = BrandTheme.typography.subtitle1
+                fontWeight = FontWeight.Normal
             )
         }
     }

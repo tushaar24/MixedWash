@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.safeGestures
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 
 /**
  * A composable function that provides a container for content, applying specified window insets and handling system bar appearance.
@@ -33,6 +34,7 @@ fun WindowInsetsContainer(
     modifier: Modifier = Modifier,
     insetType: InsetType = InsetType.SafeDrawing,
     statusBarIconsLight: Boolean = true,
+    imePadding: Boolean = true,
     content: @Composable BoxScope.() -> Unit
 ) {
 
@@ -48,6 +50,20 @@ fun WindowInsetsContainer(
         ,
         content = content
     )
+
+}
+
+fun Modifier.windowInsetsContainer(
+    insetType: InsetType = InsetType.SafeDrawing,
+    statusBarIconsLight: Boolean = true,
+    imePadding: Boolean = true
+) = composed {
+    SetStatusBarColor(statusBarIconsLight)
+    val paddingValues = insetType.toWindowInsets().asPaddingValues()
+    this.fillMaxSize()
+        .padding(paddingValues)
+        .consumeWindowInsets(paddingValues)
+        .apply { if (imePadding) this.imePadding() }
 
 }
 

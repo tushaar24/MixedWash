@@ -4,10 +4,10 @@ import com.mixedwash.features.local_cart.data.model.CartItemEntity
 import com.mixedwash.features.local_cart.data.model.GenderEntity
 import com.mixedwash.features.local_cart.data.model.ItemPricingEntity
 import com.mixedwash.features.local_cart.data.model.PricingTypeEntity
-import com.mixedwash.features.local_cart.data.model.ServiceItemMetadataEntity
+import com.mixedwash.features.local_cart.data.model.ItemMetadataEntity
 import com.mixedwash.features.services.data.remote.model.GenderDto
 import com.mixedwash.features.services.data.remote.model.ItemPricingDto
-import com.mixedwash.features.services.data.remote.model.PricingMetadataDTO
+import com.mixedwash.features.services.data.remote.model.PricingMetadataDto
 import com.mixedwash.features.services.data.remote.model.ServiceDto
 import com.mixedwash.features.services.data.remote.model.ServiceDetailDto
 import com.mixedwash.features.services.data.remote.model.ServiceItemDto
@@ -51,6 +51,7 @@ fun ServiceDto.toPresentation(): ServicePresentation = ServicePresentation(
     title = this.title,
     description = this.description,
     imageUrl = this.imageUrl,
+    note = this.note,
     items = this.items?.map { it.toPresentation(serviceId = serviceId) },
     pricingMetadata = this.pricingMetadata?.toPresentation(),
     inclusions = this.inclusions,
@@ -67,11 +68,11 @@ fun ServiceDetailDto.toPresentation(): ServiceDetailPresentation =
     )
 
 // PricingMetadata mapping
-fun PricingMetadataDTO.toPresentation(): PricingMetadataPresentation = when (this) {
-    is PricingMetadataDTO.SubItemsPricingDTO -> PricingMetadataPresentation.SubItemsPricingPresentation(
+fun PricingMetadataDto.toPresentation(): PricingMetadataPresentation = when (this) {
+    is PricingMetadataDto.SubItemsPricingDTO -> PricingMetadataPresentation.SubItemsPricingPresentation(
         startingPrice = this.startingPrice
     )
-    is PricingMetadataDTO.ServicePricingDTO -> PricingMetadataPresentation.ServicePricingPresentation(
+    is PricingMetadataDto.ServicePricingDTO -> PricingMetadataPresentation.ServicePricingPresentation(
         pricePerUnit = this.pricePerUnit,
         unit = this.unit,
         minimumUnits = this.minimumUnits,
@@ -85,19 +86,21 @@ fun GenderDto.toPresentation() : GenderPresentation = when (this) {
     GenderDto.BOTH -> GenderPresentation.BOTH
 }
 
-fun ServiceItemPresentation.toCartItemEntity() : CartItemEntity {
+fun ServiceItemPresentation.toCartItemEntity(deliveryTimeMinInHrs: Int, deliveryTimeMaxInHrs: Int?) : CartItemEntity {
     return CartItemEntity(
         itemId = itemId,
         serviceId = serviceId,
         name = name,
         metadata = metadata?.toEntity(),
         itemPricing = itemPricing.toItemPricingEntity(),
-        quantity = 1
+        quantity = 1,
+        deliveryTimeMinInHrs = deliveryTimeMinInHrs,
+        deliveryTimeMaxInHrs = deliveryTimeMaxInHrs
     )
 }
 
-fun ServiceItemMetadataPresentation.toEntity() : ServiceItemMetadataEntity {
-    return ServiceItemMetadataEntity(
+fun ServiceItemMetadataPresentation.toEntity() : ItemMetadataEntity {
+    return ItemMetadataEntity(
         imageUrl = imageUrl,
         gender = when(gender) {
             GenderPresentation.MALE -> GenderEntity.MALE

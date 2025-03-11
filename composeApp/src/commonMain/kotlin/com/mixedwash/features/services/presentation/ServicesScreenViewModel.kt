@@ -4,12 +4,19 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
+import com.mixedwash.Route
 import com.mixedwash.core.presentation.models.SnackBarType
 import com.mixedwash.core.presentation.models.SnackbarPayload
+import com.mixedwash.core.presentation.util.Logger
 import com.mixedwash.features.local_cart.data.model.CartItemEntity
 import com.mixedwash.features.local_cart.domain.LocalCartRepository
+import com.mixedwash.features.local_cart.domain.error.onCartError
+import com.mixedwash.features.local_cart.presentation.model.CartItemPresentation
+import com.mixedwash.features.local_cart.presentation.model.toPresentation
 import com.mixedwash.features.services.data.remote.model.ServiceDto
 import com.mixedwash.features.services.domain.ServicesDataRepository
+import com.mixedwash.features.services.presentation.model.ServicePresentation
 import com.mixedwash.features.services.presentation.model.toCartItemEntity
 import com.mixedwash.features.services.presentation.model.toPresentation
 import kotlinx.coroutines.channels.Channel
@@ -40,7 +47,7 @@ class ServicesScreenViewModel(
         _state,
         cartRepository.getCartItemFlow().getOrElse { flowOf(emptyList()) }
     ) { currentState, cartItems ->
-        currentState.copy(cartItems = cartItems)
+        currentState.copy(cartItems = cartItems.map { it.toPresentation() })
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000),
@@ -48,20 +55,14 @@ class ServicesScreenViewModel(
     )
 
     init {
-        reload()
+        val selectedServiceId =
+            runCatching { savedStateHandle.toRoute<Route.ServicesRoute>().serviceId }.getOrNull()
+        reload(selectedServiceId)
     }
 
 
     fun onEvent(event: ServicesScreenEvent) {
         when (event) {
-            is ServicesScreenEvent.OnItemAdd -> {
-                viewModelScope.launch {
-                    val item = cartItem(event.itemId)?.let { it.copy(quantity = it.quantity + 1) }
-                        ?: serviceItem(event.itemId) ?: return@launch
-
-                    cartRepository.upsertCartItem(item)
-                }
-            }
 
             is ServicesScreenEvent.OnServiceClick -> {
                 updateState {
@@ -69,15 +70,36 @@ class ServicesScreenViewModel(
                 }
             }
 
-            is ServicesScreenEvent.OnItemRemove -> {
+            is ServicesScreenEvent.OnItemIncrement -> {
                 viewModelScope.launch {
-                    val item = cartItem(event.itemId) ?: return@launch
-                    cartRepository.deleteCartItem(item).onFailure { e ->
+                    cartRepository.incrementCartItem(event.itemId).onCartError(itemNotFound = {
+                        snackbarEvent(
+                            "Quantity Increment Failed: Item Not Found", SnackBarType.ERROR
+                        )
+                    })
+                }
+            }
+
+            is ServicesScreenEvent.OnItemDecrement -> {
+                viewModelScope.launch {
+                    cartRepository.decrementCartItem(event.itemId).onCartError(itemNotFound = {
+                        snackbarEvent(
+                            message = "Quantity Decrement Failed: Item Not Found",
+                            type = SnackBarType.ERROR
+                        )
+                    })
+                }
+            }
+
+            is ServicesScreenEvent.OnItemDelete -> {
+                viewModelScope.launch {
+                    cartRepository.deleteCartItem(event.itemId).onFailure { e ->
                         snackbarEvent(message = "Error removing item", type = SnackBarType.ERROR)
                         e.printStackTrace()
                     }
                 }
             }
+
 
             is ServicesScreenEvent.OnOpenServiceItemsBottomSheet -> {
                 viewModelScope.launch {
@@ -89,19 +111,45 @@ class ServicesScreenViewModel(
                         )
                 }
             }
+
+            ServicesScreenEvent.OnProcessingDetailsClicked -> {
+                viewModelScope.launch {
+                    _uiEventsChannel.send(ServicesScreenUiEvent.OpenProcessingDetailsBottomSheet)
+                }
+            }
+
+            is ServicesScreenEvent.OnItemAdd -> {
+                viewModelScope.launch {
+                    Logger.d("TAG", "Creating Cart Item ${event.itemId}")
+                    createCartItemById(event.itemId)?.let { cartItem ->
+                        Logger.d("TAG", "Created $cartItem")
+                        cartRepository.upsertCartItem(cartItem).onFailure { e ->
+                            snackbarEvent(message = "Error adding item", type = SnackBarType.ERROR)
+                            e.printStackTrace()
+                        }
+                    }
+                }
+            }
         }
     }
 
-    private fun cartItem(itemId: String): CartItemEntity? {
+    private fun getCartItemById(itemId: String): CartItemPresentation? {
         return state.value.cartItems.firstOrNull { item ->
             item.itemId == itemId
         }
     }
 
-    private fun serviceItem(itemId: String): CartItemEntity? {
+    private fun createCartItemById(itemId: String): CartItemEntity? {
         return state.value.services.firstNotNullOfOrNull { service ->
-            service.items?.firstOrNull { item -> item.itemId == itemId }?.toCartItemEntity()
+            service.items?.firstOrNull { item -> item.itemId == itemId }?.toCartItemEntity(
+                deliveryTimeMinInHrs = service.deliveryTimeMinInHrs,
+                deliveryTimeMaxInHrs = service.deliveryTimeMaxInHrs
+            )
         }
+    }
+
+    private fun getServiceById(serviceId: String): ServicePresentation? {
+        return state.value.services.firstOrNull { it.serviceId == serviceId }
     }
 
     private fun snackbarEvent(
@@ -130,6 +178,7 @@ class ServicesScreenViewModel(
     private fun reload(selectedServiceId: String? = null) {
         viewModelScope.launch {
             val services = servicesDataRepository.getServices()
+            val preselectedService = services.getOrNull()?.services?.firstOrNull { it.serviceId == selectedServiceId }?.serviceId
             if (services.isFailure) {
                 snackbarEvent(
                     message = "Error fetching services",
@@ -141,7 +190,8 @@ class ServicesScreenViewModel(
                         copy(
                             services = res.services.map { serviceDto: ServiceDto -> serviceDto.toPresentation() },
                             isLoading = false,
-                            selectedServiceId = selectedServiceId ?: res.services.firstOrNull()?.serviceId
+                            selectedServiceId = preselectedService
+                                ?: res.services.firstOrNull()?.serviceId
                         )
                     }
                 }

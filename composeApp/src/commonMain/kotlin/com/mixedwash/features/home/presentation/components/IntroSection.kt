@@ -65,6 +65,9 @@ fun IntroSection(
             Column(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
+
+
+
                 Text(
                     text = title,
                     color = contentColor,
@@ -78,7 +81,7 @@ fun IntroSection(
                     color = contentColor,
                     lineHeight = 16.sp,
                     fontSize = 12.sp,
-                    fontWeight = FontWeight.Light
+                    fontWeight = FontWeight.Normal
                 )
 
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {

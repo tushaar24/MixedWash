@@ -24,6 +24,7 @@
   "offer_cards": [
     {
       "text": "Flat 20% OFF with coupon code WELCOME20 on your first order",
+      "big_text": ["20% OFF"],
       "offer_id": "WELCOME20",
       "image_url": "https://assets-aac.pages.dev/assets/basket_overflow_black.png",
       "button_label": "Add to cart",
@@ -47,27 +48,27 @@
   ],
   "home_services": [
     {
-      "service_id": "wash_and_iron",
+      "service_id": "service_wash_and_iron",
       "title": "Wash & Iron",
       "image_url": "https://assets-aac.pages.dev/assets/sku_wash_and_iron.png"
     },
     {
-      "service_id": "wash_and_fold",
+      "service_id": "service_wash_and_fold",
       "title": "Wash & Fold",
       "image_url": "https://assets-aac.pages.dev/assets/sku_wash_and_fold.png"
     },
     {
-      "service_id": "dry_clean",
+      "service_id": "service_dry_clean",
       "title": "Dry Clean",
       "image_url": "https://assets-aac.pages.dev/assets/sku_dry_clean.png"
     },
     {
-      "service_id": "heavy_wash",
+      "service_id": "service_heavy_wash",
       "title": "Heavy Wash",
       "image_url": "https://assets-aac.pages.dev/assets/sku_heavy_wash.png"
     },
     {
-      "service_id": "shoe_clean",
+      "service_id": "service_shoe_clean",
       "title": "Shoe Clean",
       "image_url": "https://assets-aac.pages.dev/assets/sku_shoe_clean.png"
     }

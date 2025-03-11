@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.Color
 
 val Gray50 = Color(0xFFfbfbfb)      // Lighter
 val Gray100 = Color(0xFFF4F4F4)     // Light
-val Gray200 = Color(0xFFf1f1f1)
+val Gray200 = Color(0xFFeeeeee)
 val Gray300 = Color(0xFFe5e5e5)
 val Gray400 = Color(0xFFc3c3c3)     // Normal
 val Gray500 = Color(0xFFa5a5a5)     // NormalDark

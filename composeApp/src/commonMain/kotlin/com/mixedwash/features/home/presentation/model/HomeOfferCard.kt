@@ -2,9 +2,9 @@ package com.mixedwash.features.home.presentation.model
 
 import com.mixedwash.features.home.data.models.HomeOfferCardDto
 
-// HomeOfferCard.kt
 data class HomeOfferCard(
     val text: String,
+    val bigText: List<String>,
     val offerId: String,
     val imageUrl: String,
     val buttonLabel: String,
@@ -17,6 +17,7 @@ data class HomeOfferCard(
 // Converter from HomeOfferCardDto to HomeOfferCard
 fun HomeOfferCardDto.toPresentation(): HomeOfferCard = HomeOfferCard(
     text = text,
+    bigText= bigText,
     offerId = offerId,
     imageUrl = imageUrl,
     buttonLabel = buttonLabel,
