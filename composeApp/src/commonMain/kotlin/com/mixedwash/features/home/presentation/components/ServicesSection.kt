@@ -26,6 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import com.mixedwash.core.presentation.components.noRippleClickable
 import com.mixedwash.features.home.presentation.model.HomeService
 import com.mixedwash.ui.theme.Gray700
 
@@ -48,7 +49,7 @@ fun ServicesSection(
             Text(
                 text = "See All",
                 color = textColor,
-                modifier = Modifier.clickable { onSeeAll() },
+                modifier = Modifier.noRippleClickable(onClick = onSeeAll),
                 fontSize = 12.sp
             )
         }

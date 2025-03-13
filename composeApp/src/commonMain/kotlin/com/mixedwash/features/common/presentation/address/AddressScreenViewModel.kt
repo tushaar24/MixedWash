@@ -63,7 +63,7 @@ class AddressScreenViewModel(
 
     private val addressRoute = savedStateHandle.toRoute<Route.AddressRoute>()
     private val addressFlow = addressUseCases.getAddressesFlow().run {
-        return@run if (this !is Result.Success) {
+        if (this !is Result.Success) {
             snackbarEvent(
                 "Error fetching addresses", SnackBarType.ERROR
             )

@@ -47,11 +47,12 @@ fun ServicesFooter(
     ) {
         Row(
             modifier = Modifier.fillMaxWidth().background(Gray50)
-                .padding(start = 22.dp, top = 22.dp, end = 16.dp, bottom = 4.dp),
+                .padding(horizontal = 16.dp, vertical = 24.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Column {
+/*
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically
@@ -81,6 +82,7 @@ fun ServicesFooter(
                         }
                     }
                 }
+*/
 
                 Spacer(Modifier.height(12.dp))
 
@@ -93,6 +95,7 @@ fun ServicesFooter(
                         fontWeight = FontWeight.SemiBold
                     )
 
+/*
                     IconButton(onClick = {}) {
                         Icon(
                             imageVector = Icons.Default.KeyboardArrowUp,
@@ -100,17 +103,13 @@ fun ServicesFooter(
                             modifier = Modifier.size(18.dp)
                         )
                     }
+*/
                 }
             }
 
-            SmallButton(
+            DefaultButton(
                 onClick = onProceed,
                 text = "Proceed",
-                shape = BrandTheme.shapes.button,
-                contentPadding = PaddingValues(horizontal = 26.dp, 12.dp),
-                containerColor = Gray900,
-                contentColor = Gray100,
-                fontWeight = FontWeight.SemiBold
             )
         }
     }

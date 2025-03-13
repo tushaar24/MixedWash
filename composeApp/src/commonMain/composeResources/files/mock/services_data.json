@@ -18,6 +18,7 @@
           }
         }
       ],
+      "note": "final cost is calculated as per order weight before delivery",
       "pricing_metadata": {
         "type": "service_pricing",
         "price_per_unit": 9500,
@@ -66,6 +67,7 @@
           }
         }
       ],
+      "note": "final cost is calculated as per order weight before delivery",
       "pricing_metadata": {
         "type": "service_pricing",
         "price_per_unit": 15000,
@@ -332,6 +334,7 @@
       "service_id": "service_heavy_wash",
       "title": "Heavy Wash",
       "description": "Best for blankets, towels, bedsheets & fabric mats",
+      "note": "final cost is calculated as per order weight before delivery",
       "image_url": "https://assets-aac.pages.dev/assets/sku_heavy_wash.png",
       "items": [
         {
@@ -372,6 +375,7 @@
       "service_id": "service_shoe_clean",
       "title": "Shoe Cleaning",
       "description": "Best for sneakers, sports & casual shoes",
+      "note": "final cost is calculated as per order weight before delivery",
       "image_url" : "https://assets-aac.pages.dev/assets/sku_shoe_clean.png",
       "items": [
         {

@@ -1,6 +1,7 @@
 package com.mixedwash.features.services.presentation
 
 import androidx.compose.material3.SnackbarDuration
+import androidx.compose.ui.util.fastMap
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,9 +14,11 @@ import com.mixedwash.features.local_cart.data.model.CartItemEntity
 import com.mixedwash.features.local_cart.domain.LocalCartRepository
 import com.mixedwash.features.local_cart.domain.error.onCartError
 import com.mixedwash.features.local_cart.presentation.model.CartItemPresentation
+import com.mixedwash.features.local_cart.presentation.model.toCartItemPresentation
 import com.mixedwash.features.local_cart.presentation.model.toPresentation
 import com.mixedwash.features.services.data.remote.model.ServiceDto
 import com.mixedwash.features.services.domain.ServicesDataRepository
+import com.mixedwash.features.services.presentation.model.GenderPresentation
 import com.mixedwash.features.services.presentation.model.ServicePresentation
 import com.mixedwash.features.services.presentation.model.toCartItemEntity
 import com.mixedwash.features.services.presentation.model.toPresentation
@@ -30,6 +33,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+private const val TAG = "ServicesScreenViewModel"
 
 class ServicesScreenViewModel(
     private val servicesDataRepository: ServicesDataRepository,
@@ -43,11 +47,27 @@ class ServicesScreenViewModel(
 
     private val _state = MutableStateFlow(ServicesScreenState(isLoading = true))
 
+
     val state = combine(
         _state,
-        cartRepository.getCartItemFlow().getOrElse { flowOf(emptyList()) }
+        cartRepository.getCartItemFlow().getOrElse { flowOf(emptyList()) },
     ) { currentState, cartItems ->
-        currentState.copy(cartItems = cartItems.map { it.toPresentation() })
+        currentState.copy(
+            cartItems = cartItems.map { it.toPresentation() },
+            subItemsListState = currentState.subItemsListState?.let {
+                it.copy(
+                    items = it.items.fastMap { subItem ->
+                        cartItems.firstOrNull { cartItem ->
+                            cartItem.itemId == subItem.itemId
+                        }?.let { cartItem ->
+                            if (cartItem.quantity != subItem.quantity)
+                                subItem.copy(quantity = cartItem.quantity)
+                            else subItem
+                        } ?: subItem
+                    }
+                )
+            }
+        )
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000),
@@ -101,21 +121,31 @@ class ServicesScreenViewModel(
             }
 
 
-            is ServicesScreenEvent.OnOpenServiceItemsBottomSheet -> {
+            is ServicesScreenEvent.OnOpenSubItemsSheet -> {
                 viewModelScope.launch {
-                    _uiEventsChannel
-                        .send(
-                            ServicesScreenUiEvent.OpenServiceItemsBottomSheet(
-                                serviceId = event.serviceId
+                    val service = getServiceById(event.serviceId) ?: return@launch
+                    val subItemsListState = ServiceSubItemsListState(
+                        title = "${service.title} Services",
+                        description = "add the service items below to your order",
+                        placeHolder = "search for an item",
+                        query = "",
+                        items = service.items?.map {
+                            it.toCartItemPresentation(
+                                service.deliveryTimeMinInHrs,
+                                service.deliveryTimeMaxInHrs
                             )
-                        )
+                        } ?: emptyList(),
+                        filters = emptyList()
+                    )
+
+                    updateState {
+                        copy(subItemsListState = subItemsListState)
+                    }
                 }
             }
 
             ServicesScreenEvent.OnProcessingDetailsClicked -> {
-                viewModelScope.launch {
-                    _uiEventsChannel.send(ServicesScreenUiEvent.OpenProcessingDetailsBottomSheet)
-                }
+                sendUiEvent(ServicesScreenUiEvent.OpenProcessingDetailsBottomSheet)
             }
 
             is ServicesScreenEvent.OnItemAdd -> {
@@ -130,7 +160,103 @@ class ServicesScreenViewModel(
                     }
                 }
             }
+
+            ServicesScreenEvent.OnCloseSubItemsSheet -> {
+                sendUiEvent(ServicesScreenUiEvent.CloseSubItemsSheet)
+            }
+
+            is ServicesScreenEvent.OnFilterClicked -> {
+                state.value.subItemsListState?.filters?.let { list ->
+                    val updatedFilters = if (list.contains(event.gender)) {
+                        list - event.gender
+                    } else {
+                        list + event.gender
+                    }
+                    updateState {
+                        val updatedList = selectedServiceId?.let {
+                            filterSubItemsList(
+                                serviceId = it,
+                                searchQuery = state.value.subItemsListState?.query ?: "",
+                                filters = updatedFilters,
+                            ).getOrNull()
+                        } ?: emptyList()
+                        copy(
+                            subItemsListState = subItemsListState?.copy(
+                                filters = updatedFilters,
+                                items = updatedList
+                            )
+                        )
+                    }
+                }
+            }
+
+            is ServicesScreenEvent.OnSubItemsQuery -> {
+                viewModelScope.launch {
+                    updateState {
+                        val updatedCartItems = selectedServiceId?.let {
+                            filterSubItemsList(
+                                serviceId =  it,
+                                searchQuery = event.query,
+                                filters = state.value.subItemsListState?.filters ?: emptyList()
+                            ).getOrNull()
+                        } ?: emptyList()
+                        copy(
+                            subItemsListState = subItemsListState?.copy(
+                                query = event.query, items = updatedCartItems
+                            )
+                        )
+                    }
+                }
+            }
+
+            ServicesScreenEvent.OnClosedSubItemsSheet -> {
+                updateState {
+                    copy(subItemsListState = null)
+                }
+            }
         }
+    }
+
+    private fun filterSubItemsList(
+        serviceId: String,
+        searchQuery: String = "",
+        filters: List<GenderPresentation>
+    ): Result<List<CartItemPresentation>> {
+        val result = runCatching {
+            state.value.subItemsListState?.run {
+                val service = getServiceById(serviceId)
+                    ?: throw IllegalStateException("Service not found for ID: $serviceId")
+
+                val itemsList = service.items?.map {
+                    it.toCartItemPresentation(
+                        service.deliveryTimeMinInHrs,
+                        service.deliveryTimeMaxInHrs
+                    )
+                }?.toMutableList() ?: throw IllegalStateException(
+                    "Items list is null for service ID: $serviceId"
+                )
+
+                val queriedList = if (searchQuery.isNotBlank()) {
+                    itemsList.filter { it.name.contains(searchQuery, ignoreCase = true) }
+                } else {
+                    itemsList
+                }
+                val queriedFilteredList = if (filters.isNotEmpty()) {
+                    queriedList.filter { item ->
+                        filters.any {
+                            it == item.metadata?.gender || item.metadata?.gender == GenderPresentation.BOTH
+                        }
+                    }
+                } else {
+                    queriedList
+                }
+                queriedFilteredList
+            } ?: throw IllegalStateException("SubItemsListState is null")
+
+        }.onFailure { e ->
+            Logger.e(TAG, e.message ?: "Sub Items Filtering Failed")
+        }
+        return result
     }
 
     private fun getCartItemById(itemId: String): CartItemPresentation? {
@@ -152,6 +278,11 @@ class ServicesScreenViewModel(
         return state.value.services.firstOrNull { it.serviceId == serviceId }
     }
 
+    private fun sendUiEvent(event: ServicesScreenUiEvent) {
+        viewModelScope.launch {
+            _uiEventsChannel.send(event)
+        }
+    }
     private fun snackbarEvent(
         message: String,
         type: SnackBarType,

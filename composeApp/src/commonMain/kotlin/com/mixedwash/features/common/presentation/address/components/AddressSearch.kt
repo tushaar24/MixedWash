@@ -69,7 +69,7 @@ fun AddressSearch(
         expanded = expanded,
         onExpandedChange = {},
     ) {
-        SearchBar(
+        AddressSearchBar(
             modifier = Modifier.menuAnchor(type = MenuAnchorType.PrimaryEditable),
             onLocationClick = onLocationClick,
             onValueChange = onValueChange,
@@ -114,7 +114,7 @@ fun AddressSearch(
 
 
 @Composable
-fun SearchBar(
+fun AddressSearchBar(
     modifier: Modifier,
     query: String,
     placeHolder: String,

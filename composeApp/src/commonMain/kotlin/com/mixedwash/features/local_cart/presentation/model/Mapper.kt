@@ -8,6 +8,7 @@ import com.mixedwash.features.local_cart.data.model.PricingTypeEntity
 import com.mixedwash.features.services.presentation.model.GenderPresentation
 import com.mixedwash.features.services.presentation.model.ItemPricingPresentation
 import com.mixedwash.features.services.presentation.model.ServiceItemMetadataPresentation
+import com.mixedwash.features.services.presentation.model.ServiceItemPresentation
 
 fun CartItemEntity.toPresentation() = CartItemPresentation(
     itemId = itemId,
@@ -46,3 +47,17 @@ fun GenderEntity.toPresentation() = when (this) {
     GenderEntity.MALE -> GenderPresentation.MALE
     GenderEntity.BOTH -> GenderPresentation.BOTH
 }
+
+fun ServiceItemPresentation.toCartItemPresentation(deliveryTimeMinInHrs: Int, deliveryTimeMaxInHrs: Int?) = CartItemPresentation(
+    itemId = itemId,
+    name = name,
+    metadata = metadata,
+    itemPricing = itemPricing,
+    serviceId = serviceId,
+    deliveryTimeMinInHrs = deliveryTimeMinInHrs,
+    deliveryTimeMaxInHrs = deliveryTimeMaxInHrs,
+    quantity = 0
+)
+
+
+

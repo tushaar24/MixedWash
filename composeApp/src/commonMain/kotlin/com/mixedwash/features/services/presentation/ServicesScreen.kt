@@ -1,5 +1,6 @@
 package com.mixedwash.features.services.presentation
 
+import BrandTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,7 +13,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.KeyboardArrowLeft
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.mixedwash.core.presentation.components.DefaultHeader
@@ -23,11 +29,14 @@ import com.mixedwash.core.presentation.util.ObserveAsEvents
 import com.mixedwash.features.services.presentation.components.ServiceDetail
 import com.mixedwash.features.services.presentation.components.ServiceTab
 import com.mixedwash.features.services.presentation.components.ServicesFooter
+import com.mixedwash.features.services.presentation.components.SubItemsList
 import com.mixedwash.ui.theme.components.HeaderIconButton
 import com.mixedwash.ui.theme.headerContentSpacing
 import com.mixedwash.windowInsetsContainer
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ServicesScreen(
     state: ServicesScreenState,
@@ -37,19 +46,54 @@ fun ServicesScreen(
     modifier: Modifier = Modifier,
 ) {
 
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val scope = rememberCoroutineScope()
+
+    state.subItemsListState?.let { subItemsListState ->
+        ModalBottomSheet(
+            onDismissRequest = { onEvent(ServicesScreenEvent.OnClosedSubItemsSheet) },
+            sheetState = sheetState,
+            dragHandle = {},
+            containerColor = BrandTheme.colors.background,
+            contentColor = LocalContentColor.current,
+            shape = BrandTheme.shapes.bottomSheet
+        ) {
+            SubItemsList(
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 36.dp)
+                    .fillMaxHeight(0.85f),
+                state = subItemsListState,
+                onQuery = { onEvent(ServicesScreenEvent.OnSubItemsQuery(it)) },
+                onItemIncrement = { onEvent(ServicesScreenEvent.OnItemIncrement(it)) },
+                onItemDecrement = { onEvent(ServicesScreenEvent.OnItemDecrement(it)) },
+                onItemAdd = { onEvent(ServicesScreenEvent.OnItemAdd(it)) },
+                onFilterClick = { onEvent(ServicesScreenEvent.OnFilterClicked(it)) }
+            )
+        }
+    }
+
     ObserveAsEvents(uiEventsFlow) { event ->
         when (event) {
             ServicesScreenUiEvent.OpenProcessingDetailsBottomSheet -> {
 
             }
-            is ServicesScreenUiEvent.OpenServiceItemsBottomSheet -> {
 
-            }
             is ServicesScreenUiEvent.ShowSnackbar -> {
                 snackbarHandler(event.payload)
             }
+
+            ServicesScreenUiEvent.CloseSubItemsSheet -> {
+                scope.launch {
+                    if (sheetState.isVisible) {
+                        sheetState.hide()
+                    }
+                }.invokeOnCompletion {
+                    onEvent(ServicesScreenEvent.OnClosedSubItemsSheet)
+                }
+            }
         }
     }
+
+
 
     Column(modifier = modifier.fillMaxSize().windowInsetsContainer()) {
 
@@ -68,7 +112,7 @@ fun ServicesScreen(
 
             Row(modifier = Modifier.weight(1f)) {
                 LazyColumn(verticalArrangement = Arrangement.spacedBy(32.dp)) {
-                    itemsIndexed(state.services) { index, service ->
+                    itemsIndexed(state.services) { _, service ->
                         ServiceTab(
                             service = service,
                             addedToCart = state.cartItems.any { it.serviceId == service.serviceId },
