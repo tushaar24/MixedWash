@@ -1,12 +1,13 @@
-package com.mixedwash.features.common.presentation.history.components
+package com.mixedwash.features.history.presentation.components
 
-import BrandTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,15 +18,17 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.mixedwash.features.common.presentation.history.model.OrderDeliveryStatus
 import com.mixedwash.core.presentation.components.dump.AppOutlinedButton
 import com.mixedwash.core.presentation.components.dump.IndicationChip
+import com.mixedwash.features.history.domain.model.OrderDeliveryStatusDto
 import com.mixedwash.ui.theme.Gray100
 import com.mixedwash.ui.theme.Gray50
 import com.mixedwash.ui.theme.Gray800
-
 import com.mixedwash.ui.theme.Green
 import com.mixedwash.ui.theme.Yellow
+import mixedwash.composeapp.generated.resources.Res
+import mixedwash.composeapp.generated.resources.ic_verified
+import org.jetbrains.compose.resources.vectorResource
 
 /**
  * @param status 0 - Processing, 1 - Delivered, 2 - Cancelled, else - Unknown
@@ -37,7 +40,7 @@ fun OrderSummaryCard(
     titles: List<String>,
     ordered: String,
     delivery: String?,
-    status: OrderDeliveryStatus,
+    status: OrderDeliveryStatusDto,
     cost: Int?,
     onDetails: () -> Unit,
     modifier: Modifier = Modifier
@@ -62,29 +65,52 @@ fun OrderSummaryCard(
                 )
 
                 IndicationChip(
-                    text = status.toString() ,
+                    text = status.toString().lowercase().replaceFirstChar { it.uppercase() },
                     textColor = when (status) {
-                        OrderDeliveryStatus.Processing -> Yellow
-                        OrderDeliveryStatus.Delivered -> Gray100
-                        OrderDeliveryStatus.Cancelled -> Gray800
+                        OrderDeliveryStatusDto.PROCESSING -> Yellow
+                        OrderDeliveryStatusDto.DELIVERED -> Gray100
+                        OrderDeliveryStatusDto.Cancelled -> Gray800
                     },
                     backgroundColor = when (status) {
-                        OrderDeliveryStatus.Delivered -> Green
+                        OrderDeliveryStatusDto.DELIVERED -> Green
                         else -> Gray50
                     },
                     borderColor = when (status) {
-                        OrderDeliveryStatus.Processing -> Yellow
-                        OrderDeliveryStatus.Delivered -> Green
-                        OrderDeliveryStatus.Cancelled -> Gray800
+                        OrderDeliveryStatusDto.PROCESSING -> Yellow
+                        OrderDeliveryStatusDto.DELIVERED -> Green
+                        OrderDeliveryStatusDto.Cancelled -> Gray800
                     },
                     leadingIcon = '•'
                 )
             }
 
-            Text(
-                text = "₹${cost ?: "-"}",
-                style = BrandTheme.typography.h5
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(2.dp)
+            ) {
+                Text(
+                    text = "₹ " + when (status) {
+                        OrderDeliveryStatusDto.PROCESSING -> "TBD"
+                        OrderDeliveryStatusDto.DELIVERED -> cost
+                        OrderDeliveryStatusDto.Cancelled -> "-"
+                    },
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = when (status) {
+                        OrderDeliveryStatusDto.DELIVERED -> Green
+                        else -> Gray800
+                    }
+                )
+
+                if (status == OrderDeliveryStatusDto.DELIVERED) {
+                    Icon(
+                        imageVector = vectorResource(Res.drawable.ic_verified),
+                        contentDescription = null,
+                        tint = Green,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+            }
         }
 
         Text(
@@ -110,7 +136,7 @@ fun OrderSummaryCard(
                 )
 
                 TimeTracker(
-                    action = if (status == OrderDeliveryStatus.Delivered) "Delivered" else "Est. Delivery",
+                    action = if (status == OrderDeliveryStatusDto.DELIVERED) "Delivered" else "Est. Delivery",
                     datetime = delivery ?: "-",
                     textColor = Gray800,
                 )
@@ -141,14 +167,13 @@ fun TimeTracker(
             text = action,
             color = textColor,
             fontSize = fontSize,
-            style = BrandTheme.typography.subtitle1
         )
 
         Text(
             text = datetime,
             color = textColor,
             fontSize = fontSize,
-            style = BrandTheme.typography.subtitle1
+            fontWeight = FontWeight.Medium
         )
     }
 }

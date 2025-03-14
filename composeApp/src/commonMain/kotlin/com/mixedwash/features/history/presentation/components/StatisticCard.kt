@@ -1,4 +1,4 @@
-package com.mixedwash.features.common.presentation.history.components
+package com.mixedwash.features.history.presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

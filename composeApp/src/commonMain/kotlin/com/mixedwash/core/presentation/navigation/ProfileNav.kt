@@ -13,7 +13,6 @@ import com.mixedwash.Route
 import com.mixedwash.core.data.UserService
 import com.mixedwash.features.common.presentation.address.AddressScreen
 import com.mixedwash.features.common.presentation.address.AddressScreenViewModel
-import com.mixedwash.features.common.presentation.history.OrderHistoryScreenViewModel
 import com.mixedwash.features.common.presentation.profile.ProfileEditScreen
 import com.mixedwash.features.common.presentation.profile.ProfileEditScreenViewModel
 import com.mixedwash.features.common.presentation.profile.ProfileScreen
@@ -21,6 +20,7 @@ import com.mixedwash.features.common.presentation.profile.ProfileScreenState
 import com.mixedwash.features.common.presentation.profile.ProfileSection
 import com.mixedwash.features.common.presentation.profile.ProfileSectionItem
 import com.mixedwash.core.presentation.models.SnackbarHandler
+import com.mixedwash.features.history.presentation.OrderHistoryScreenViewModel
 import kotlinx.coroutines.launch
 import mixedwash.composeapp.generated.resources.Res
 import mixedwash.composeapp.generated.resources.ic_chat

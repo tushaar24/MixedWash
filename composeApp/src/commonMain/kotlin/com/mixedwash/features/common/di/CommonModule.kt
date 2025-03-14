@@ -10,7 +10,6 @@ import com.mixedwash.features.common.domain.usecases.address.AddressUseCases
 import com.mixedwash.features.common.domain.usecases.slots.LoadSlotsWithOffersUseCase
 import com.mixedwash.features.common.domain.usecases.slots.SelectSlotAndOffersUseCase
 import com.mixedwash.features.common.presentation.address.AddressScreenViewModel
-import com.mixedwash.features.common.presentation.history.OrderHistoryScreenViewModel
 import com.mixedwash.features.common.presentation.phone.PhoneScreenViewModel
 import com.mixedwash.features.common.presentation.profile.ProfileEditScreenViewModel
 import com.mixedwash.features.common.presentation.slot_selection.SlotSelectionScreenViewModel
@@ -67,8 +66,6 @@ val CommonModule = module {
     viewModelOf(::SlotSelectionScreenViewModel)
     viewModelOf(::PhoneScreenViewModel)
     viewModelOf(::ProfileEditScreenViewModel)
-    viewModelOf(::OrderHistoryScreenViewModel)
-
 
 }
 
