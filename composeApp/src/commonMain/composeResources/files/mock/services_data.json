@@ -26,8 +26,8 @@
         "minimum_units": 4,
         "minimum_price": 39500
       },
-      "inclusions": "You could include everyday laundry items like Shirts, Trousers, T-Shirts, Innerwear, Leggings, Regular wear kurtis and other items which can be machine washed and tumble dried. Apart from regular clothes you could also include a Bedsheet and 2-3 pillow covers in a 4 kg load.",
-      "exclusions": "Blazers, Doormats, Sarees, Blouses, shoes, chappals, heavily embroided items, blankets and other bulky items. Also, do not include DRY CLEAN ONLY items and items that are not suitable for tumble dryer.",
+      "inclusions": "You could include everyday laundry items like Shirts, Trousers, T-Shirts, Inner-wear, Leggings, Regular wear kurtis and other items which can be machine washed and tumble dried. Apart from regular clothes you could also include a Bedsheet and 2-3 pillow covers in a 4 kg load.",
+      "exclusions": "Blazers, Doormats, Sarees, Blouses, shoes, chappals, heavily embroidered items, blankets and other bulky items. Also, do not include DRY CLEAN ONLY items and items that are not suitable for tumble dryer.",
       "delivery_time_min_in_hrs": 24,
       "details": [
         {
@@ -76,7 +76,7 @@
         "minimum_price": 45000
       },
       "inclusions": "You could include everyday laundry items like Shirts, Trousers, T-Shirts, Leggings, Regular wear kurtis and other items which can be machine washed and tumble dried.",
-      "exclusions": "Blazers, Doormats, Sarees, Blouses, shoes, chappals, heavily embroided items, blankets and other bulky items. Also, do not include DRY CLEAN ONLY items and items that are not suitable for tumble dryer.",
+      "exclusions": "Blazers, Doormats, Sarees, Blouses, shoes, chappals, heavily embroidered items, blankets and other bulky items. Also, do not include DRY CLEAN ONLY items and items that are not suitable for tumble dryer.",
       "delivery_time_min_in_hrs": 24,
       "details": [
         {
@@ -108,7 +108,8 @@
           "item_id": "item_dry_clean_kurti_top",
           "name": "Kurti / Top",
           "metadata": {
-            "gender": "female"
+            "gender": "female",
+            "image_url": "https://assets-aac.pages.dev/assets/sku_dry_clean_item_kurti.png"
           },
           "item_pricing": {
             "type": "sub_item_fixed_pricing",
@@ -119,7 +120,8 @@
           "item_id": "item_dry_clean_bottom",
           "name": "Bottom",
           "metadata": {
-            "gender": "female"
+            "gender": "female",
+            "image_url": "https://assets-aac.pages.dev/assets/sku_dry_clean_item_bottom.png"
           },
           "item_pricing": {
             "type": "sub_item_fixed_pricing",
@@ -130,7 +132,8 @@
           "item_id": "item_dry_clean_anarkali",
           "name": "Anarkali",
           "metadata": {
-            "gender": "female"
+            "gender": "female",
+            "image_url": "https://assets-aac.pages.dev/assets/sku_dry_clean_item_anarkali.png"
           },
           "item_pricing": {
             "type": "sub_item_ranged_pricing",
@@ -142,7 +145,8 @@
           "item_id": "item_dry_clean_shirt_tshirt",
           "name": "Shirt / T-Shirt",
           "metadata": {
-            "gender": "male"
+            "gender": "male",
+            "image_url": "https://assets-aac.pages.dev/assets/sku_dry_clean_item_shirt.png"
           },
           "item_pricing": {
             "type": "sub_item_fixed_pricing",
@@ -153,7 +157,8 @@
           "item_id": "item_dry_clean_kurta",
           "name": "Kurta",
           "metadata": {
-            "gender": "male"
+            "gender": "male",
+            "image_url": "https://assets-aac.pages.dev/assets/sku_dry_clean_item_kurta_1.png"
           },
           "item_pricing": {
             "type": "sub_item_fixed_pricing",
@@ -164,7 +169,8 @@
           "item_id": "item_dry_clean_pyjama",
           "name": "Pyjama",
           "metadata": {
-            "gender": "male"
+            "gender": "male",
+            "image_url": "https://assets-aac.pages.dev/assets/sku_dry_clean_item_kurta_2.png"
           },
           "item_pricing": {
             "type": "sub_item_ranged_pricing",
@@ -176,7 +182,8 @@
           "item_id": "item_dry_clean_dress",
           "name": "Dress",
           "metadata": {
-            "gender": "female"
+            "gender": "female",
+            "image_url": "https://assets-aac.pages.dev/assets/sku_dry_clean_item_dress.png"
           },
           "item_pricing": {
             "type": "sub_item_ranged_pricing",
@@ -188,7 +195,8 @@
           "item_id": "item_dry_clean_salwar",
           "name": "Salwar",
           "metadata": {
-            "gender": "female"
+            "gender": "female",
+            "image_url": "https://assets-aac.pages.dev/assets/sku_dry_clean_item_salwar.png"
           },
           "item_pricing": {
             "type": "sub_item_ranged_pricing",
@@ -200,7 +208,8 @@
           "item_id": "item_dry_clean_blouse",
           "name": "Blouse",
           "metadata": {
-            "gender": "female"
+            "gender": "female",
+            "image_url": "https://assets-aac.pages.dev/assets/sku_dry_clean_item_blouse_2.png"
           },
           "item_pricing": {
             "type": "sub_item_fixed_pricing",
@@ -211,7 +220,8 @@
           "item_id": "item_dry_clean_blazer",
           "name": "Blazer",
           "metadata": {
-            "gender": "male"
+            "gender": "male",
+            "image_url": "https://assets-aac.pages.dev/assets/sku_dry_clean_item_blazer_1.png"
           },
           "item_pricing": {
             "type": "sub_item_fixed_pricing",
@@ -222,7 +232,8 @@
           "item_id": "item_dry_clean_sherwani",
           "name": "Sherwani",
           "metadata": {
-            "gender": "male"
+            "gender": "male",
+            "image_url": "https://assets-aac.pages.dev/assets/sku_dry_clean_item_sherwani_1.png"
           },
           "item_pricing": {
             "type": "sub_item_ranged_pricing",
@@ -234,7 +245,8 @@
           "item_id": "item_dry_clean_jacket",
           "name": "Jacket",
           "metadata": {
-            "gender": "both"
+            "gender": "both",
+            "image_url": "https://assets-aac.pages.dev/assets/sku_dry_clean_item_jacket_2.png"
           },
           "item_pricing": {
             "type": "sub_item_fixed_pricing",
@@ -245,7 +257,8 @@
           "item_id": "item_dry_clean_kameez",
           "name": "Kameez",
           "metadata": {
-            "gender": "female"
+            "gender": "female",
+            "image_url": "https://assets-aac.pages.dev/assets/sku_dry_clean_item_kameez_2.png"
           },
           "item_pricing": {
             "type": "sub_item_ranged_pricing",
@@ -257,7 +270,8 @@
           "item_id": "item_dry_clean_saree",
           "name": "Saree",
           "metadata": {
-            "gender": "female"
+            "gender": "female",
+            "image_url": "https://assets-aac.pages.dev/assets/sku_dry_clean_item_saree_2.png"
           },
           "item_pricing": {
             "type": "sub_item_ranged_pricing",
@@ -269,7 +283,8 @@
           "item_id": "item_dry_clean_lehenga",
           "name": "Lehenga",
           "metadata": {
-            "gender": "female"
+            "gender": "female",
+            "image_url": "https://assets-aac.pages.dev/assets/sku_dry_clean_item_lehenga.png"
           },
           "item_pricing": {
             "type": "sub_item_ranged_pricing",
@@ -281,7 +296,8 @@
           "item_id": "item_dry_clean_long_coat",
           "name": "Long Coat",
           "metadata": {
-            "gender": "both"
+            "gender": "both",
+            "image_url": "https://assets-aac.pages.dev/assets/sku_dry_clean_item_long_coat_1.png"
           },
           "item_pricing": {
             "type": "sub_item_fixed_pricing",
@@ -292,7 +308,8 @@
           "item_id": "item_dry_clean_dhoti",
           "name": "Dhoti",
           "metadata": {
-            "gender": "male"
+            "gender": "male",
+            "image_url": "https://assets-aac.pages.dev/assets/sku_dry_clean_item_dhoti.png"
           },
           "item_pricing": {
             "type": "sub_item_fixed_pricing",
@@ -303,7 +320,8 @@
           "item_id": "item_dry_clean_waist_coat",
           "name": "Waist Coat",
           "metadata": {
-            "gender": "male"
+            "gender": "male",
+            "image_url": "https://assets-aac.pages.dev/assets/sku_dry_clean_item_waist_coat_2.png"
           },
           "item_pricing": {
             "type": "sub_item_fixed_pricing",
