@@ -45,6 +45,8 @@ import com.mixedwash.core.presentation.navigation.ProfileNav
 import com.mixedwash.core.presentation.util.Logger
 import com.mixedwash.features.history.presentation.OrderHistoryScreen
 import com.mixedwash.features.history.presentation.OrderHistoryScreenViewModel
+import com.mixedwash.features.order_confirmation.presentation.OrderConfirmationScreen
+import com.mixedwash.features.order_confirmation.presentation.OrderConfirmationScreenViewModel
 import com.mixedwash.features.support.presentation.FaqScreen
 import com.mixedwash.features.support.presentation.FaqScreenViewModel
 import com.mixedwash.ui.theme.MixedWashTheme
@@ -81,7 +83,12 @@ fun App() {
                                         },
                                     contentAlignment = Alignment.BottomCenter
                                 ) {
-                                    BrandSnackbar(message = message, snackbarType = type, actionText = snackbarData.visuals.actionLabel, action = snackbarData::performAction)
+                                    BrandSnackbar(
+                                        message = message,
+                                        snackbarType = type,
+                                        actionText = snackbarData.visuals.actionLabel,
+                                        action = snackbarData::performAction
+                                    )
                                 }
                             }
                         }
@@ -100,7 +107,10 @@ fun App() {
                             AuthState.Loading
                         )
                         val userState by userService.userStateFlow.collectAsStateWithLifecycle()
-                        Logger.d("TAG", "App.kt > userState : $userState \nauthState : $authState \nuserMetadata : ${userState?.userMetadata}")
+                        Logger.d(
+                            "TAG",
+                            "App.kt > userState : $userState \nauthState : $authState \nuserMetadata : ${userState?.userMetadata}"
+                        )
 
                         var startDestination: Route by remember { mutableStateOf(Route.LoadingRoute) }
                         when (authState) {
@@ -121,7 +131,7 @@ fun App() {
 
                         NavHost(
                             navController = navController,
-                            startDestination = startDestination
+                            startDestination = Route.OrderConfirmationRoute
                         ) {
 
                             AuthNav(
@@ -175,6 +185,17 @@ fun App() {
                                 FaqScreen(
                                     state = state,
                                     onEvent = viewModel::onEvent
+                                )
+                            }
+
+                            composable<Route.OrderConfirmationRoute> {
+                                val viewModel = koinViewModel<OrderConfirmationScreenViewModel>()
+                                val state by viewModel.state.collectAsStateWithLifecycle()
+                                OrderConfirmationScreen(
+                                    state = state,
+                                    onEvent = viewModel::onEvent,
+                                    uiEvents = viewModel.uiEventsFlow,
+                                    navController = navController
                                 )
                             }
 

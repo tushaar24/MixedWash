@@ -14,8 +14,6 @@ import com.mixedwash.Route
 import com.mixedwash.core.data.UserService
 import com.mixedwash.core.presentation.models.SnackbarHandler
 import com.mixedwash.features.common.presentation.address.model.Address
-import com.mixedwash.features.common.presentation.order_confirmation.OrderConfirmationScreen
-import com.mixedwash.features.common.presentation.order_confirmation.OrderConfirmationScreenState
 import com.mixedwash.features.common.presentation.order_review.OrderReviewScreen
 import com.mixedwash.features.common.presentation.order_review.OrderReviewScreenState
 import com.mixedwash.features.common.presentation.order_review.ServiceSummary
@@ -25,6 +23,8 @@ import com.mixedwash.features.common.presentation.slot_selection.SlotSelectionSc
 import com.mixedwash.features.common.presentation.slot_selection.TimeSlot
 import com.mixedwash.features.home.presentation.HomeScreen
 import com.mixedwash.features.home.presentation.HomeScreenViewModel
+import com.mixedwash.features.order_confirmation.presentation.OrderConfirmationScreen
+import com.mixedwash.features.order_confirmation.presentation.OrderConfirmationScreenViewModel
 import com.mixedwash.features.services.presentation.ServicesScreen
 import com.mixedwash.features.services.presentation.ServicesScreenViewModel
 import org.koin.compose.viewmodel.koinViewModel
@@ -161,13 +161,14 @@ fun NavGraphBuilder.HomeNav(
         }
 
         composable<Route.OrderConfirmationRoute> {
-            val state = OrderConfirmationScreenState(
-                onBackHome = { },
-                title = "Order Placed!",
-                description = "Thank you for placing an order with us. You will receive an email confirmation shortly.",
-                onCheckOrderStatus = { }
+            val viewModel = koinViewModel<OrderConfirmationScreenViewModel>()
+            val state by viewModel.state.collectAsStateWithLifecycle()
+            OrderConfirmationScreen(
+                state = state,
+                onEvent = viewModel::onEvent,
+                uiEvents = viewModel.uiEventsFlow,
+                navController = navController
             )
-            OrderConfirmationScreen(state = state)
         }
 
 
