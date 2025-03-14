@@ -159,18 +159,36 @@ android {
             keyAlias = "key0"
             keyPassword = "emmawatson"
         }
+        create("release") {
+            storeFile = rootProject.file("release_keystore.jks")
+            storePassword = "emmastone"
+            keyAlias = "key0"
+            keyPassword = "emmastone"
+        }
+
     }
 
     buildTypes {
-        getByName("release") {
-            isMinifyEnabled = false
+        create("prod") {
+            applicationIdSuffix = ".prod"
+            isMinifyEnabled = true
             buildConfigField(type= "boolean", name = "BYPASS_LOCATION_CHECK", value = "false" )
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            signingConfig = signingConfigs.getByName("release")
+        }
+        release {
+            applicationIdSuffix = ".release"
+            isMinifyEnabled = false
+            buildConfigField(type= "boolean", name = "BYPASS_LOCATION_CHECK", value = "true" )
+            signingConfig = signingConfigs.getByName("release")
         }
         debug {
+            applicationIdSuffix = ".debug"
             isMinifyEnabled = false
-            signingConfig = signingConfigs.getByName("sharedDebug")
             buildConfigField(type= "boolean", name = "BYPASS_LOCATION_CHECK", value = "true" )
+            signingConfig = signingConfigs.getByName("sharedDebug")
         }
+
     }
     buildFeatures {
         compose = true
@@ -183,8 +201,6 @@ android {
 }
 
 dependencies {
-//    implementation(libs.firebase.auth.common)
-//    implementation(libs.firebase.auth.ktx)
     debugImplementation(compose.uiTooling)
     debugImplementation(libs.androidx.ui.tooling)
 
@@ -207,7 +223,6 @@ val rzrpayTestKeySecret = apiKeys.getProperty("rzrpay_test_key_secret") ?: ""
 buildkonfig {
     packageName = "com.mixedwash"
     objectName = "TestApiKeyConfig"
-    // exposeObjectWithName = "YourAwesomePublicConfig"
 
     defaultConfigs {
         buildConfigField(STRING, "googleApiKey", googleApiKey)

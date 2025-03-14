@@ -2,6 +2,7 @@ package com.mixedwash.features.services.presentation.components
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -29,12 +30,17 @@ fun ServiceCartItemsList(
         modifier = Modifier.padding(top = 8.dp)
     )
 
-
-    LazyColumn(
-        modifier = Modifier.fillMaxWidth().heightIn(min = 36.dp, max = 2000.dp),
-        verticalArrangement = Arrangement.spacedBy(18.dp)
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        if (serviceCartItems.isNotEmpty()) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = 0.dp, max = 2000.dp)
+                .animateContentSize(),
+            verticalArrangement = Arrangement.spacedBy(18.dp)
+        ) {
             items(serviceCartItems, key = { item -> item.itemId }) { item ->
                 CartItemEntry(
                     modifier = Modifier.animateItem(),
@@ -46,35 +52,34 @@ fun ServiceCartItemsList(
                     onAdd = { onEvent(ServicesScreenEvent.OnItemAdd(item.itemId)) }
                 )
             }
-        }
 
+        }
         if (serviceCartItems.isEmpty() ||
             service.pricingMetadata is PricingMetadataPresentation.SubItemsPricingPresentation
         ) {
             service.pricingMetadata?.let { pricingMetadata ->
-                item {
-                    AddItemButton(onClick = {
-                        when (pricingMetadata) {
-                            is PricingMetadataPresentation.ServicePricingPresentation -> {
-                                onEvent(
-                                    ServicesScreenEvent.OnItemAdd(
-                                        itemId = service.items?.first()?.itemId ?: ""
-                                    )
+                AddItemButton(onClick = {
+                    when (pricingMetadata) {
+                        is PricingMetadataPresentation.ServicePricingPresentation -> {
+                            onEvent(
+                                ServicesScreenEvent.OnItemAdd(
+                                    itemId = service.items?.first()?.itemId ?: ""
                                 )
-                            }
-
-                            is PricingMetadataPresentation.SubItemsPricingPresentation -> {
-                                onEvent(
-                                    ServicesScreenEvent.OnOpenSubItemsSheet(
-                                        serviceId = service.serviceId
-                                    )
-                                )
-                            }
+                            )
                         }
-                    })
+
+                        is PricingMetadataPresentation.SubItemsPricingPresentation -> {
+                            onEvent(
+                                ServicesScreenEvent.OnOpenSubItemsSheet(
+                                    serviceId = service.serviceId
+                                )
+                            )
+                        }
+                    }
+                })
+
                 }
             }
-        }
     }
 
     HorizontalDivider(

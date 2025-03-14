@@ -1,0 +1,1 @@
+-keep class com.mixedwash.Route$AddressRoute$ScreenType { *; }

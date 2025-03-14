@@ -216,6 +216,13 @@ class ServicesScreenViewModel(
             }
 
             ServicesScreenEvent.OnProceedClick -> {
+                if(state.value.cartItems.isEmpty()) {
+                    snackbarEvent(
+                        message = "No items in cart",
+                        type = SnackBarType.ERROR
+                    )
+                    return
+                }
                 sendUiEvent(ServicesScreenUiEvent.ProceedToSlotSelection)
             }
         }

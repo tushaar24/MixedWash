@@ -107,7 +107,7 @@ fun ServiceDetail(
         ) {
             Spacer(Modifier.height(16.dp))
             Column(
-                modifier = Modifier.width(200.dp).animateContentSize(),
+                modifier = Modifier.width(200.dp),
                 verticalArrangement = Arrangement.spacedBy(18.dp)
             ) {
 

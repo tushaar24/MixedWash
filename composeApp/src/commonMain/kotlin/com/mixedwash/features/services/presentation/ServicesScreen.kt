@@ -144,6 +144,7 @@ fun ServicesScreen(
             ServicesFooter(
                 selectedItemsSize = state.cartItems.fold(initial = 0) { acc, cartItem -> acc + cartItem.quantity },
                 onProceed = { onEvent(ServicesScreenEvent.OnProceedClick) },
+                allowProceed = state.cartItems.isNotEmpty()
             )
         }
     }
