@@ -67,7 +67,7 @@ fun FaqScreen(
             ) {
                 Text(
                     text = "How can we help you?",
-                    style = BrandTheme.typography.h5.copy(fontSize = 22.sp)
+                    style = BrandTheme.typography.h5.copy(fontSize = 20.sp)
                 )
 
                 SearchBarWithIcon(
