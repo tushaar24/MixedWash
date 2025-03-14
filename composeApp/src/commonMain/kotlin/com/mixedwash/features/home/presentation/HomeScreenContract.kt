@@ -77,7 +77,8 @@ sealed class HomeScreenEvent {
     data object OnDismissPermanentBottomSheet : HomeScreenEvent()
     data class OnServiceClicked(val serviceId: String) : HomeScreenEvent()
     data object OnSeeAllServicesClicked : HomeScreenEvent()
-
+    data object OnNavigateToProfile : HomeScreenEvent()
+    data object OnNavigateToFaqs : HomeScreenEvent()
 }
 
 sealed class HomeScreenUiEvent {

@@ -121,7 +121,7 @@ fun App() {
 
                         NavHost(
                             navController = navController,
-                            startDestination = Route.FaqRoute
+                            startDestination = startDestination
                         ) {
 
                             AuthNav(

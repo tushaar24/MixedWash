@@ -31,7 +31,9 @@ import com.mixedwash.features.home.presentation.model.HomeBanner
 fun HomeBanner(
     banner: HomeBanner,
     address: Address?,
-    onClick: () -> Unit,
+    onBannerButtonClicked: () -> Unit,
+    onNavigateToProfile: () -> Unit,
+    onNavigateToFaqs: () -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -48,8 +50,8 @@ fun HomeBanner(
                 addressTitle = address?.title ?: "",
                 addressLine = address?.pinCode ?: "",
                 onExpand = {},
-                onNotificationClick = {},
-                onFAQsClick = {},
+                onProfileClick = onNavigateToProfile,
+                onFAQsClick = onNavigateToFaqs,
                 contentColor = Color.parse(banner.uiTextColor)
             )
 
@@ -90,7 +92,7 @@ fun HomeBanner(
 
                     banner.button?.let {
                         SmallButton(
-                            onClick = onClick,
+                            onClick = onBannerButtonClicked,
                             text = it,
                             contentColor = contentColor,
                             borderColor = contentColor

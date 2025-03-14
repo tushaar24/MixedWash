@@ -99,6 +99,18 @@ class HomeScreenViewModel(
                     _uiEventsChannel.send(HomeScreenUiEvent.Navigate(Route.ServicesRoute(serviceId = event.serviceId)))
                 }
             }
+
+            HomeScreenEvent.OnNavigateToFaqs ->  {
+                viewModelScope.launch {
+                    _uiEventsChannel.send(HomeScreenUiEvent.Navigate(Route.FaqRoute))
+                }
+            }
+
+            HomeScreenEvent.OnNavigateToProfile ->  {
+                viewModelScope.launch {
+                    _uiEventsChannel.send(HomeScreenUiEvent.Navigate(Route.ProfileRoute))
+                }
+            }
         }
     }
 

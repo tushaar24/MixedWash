@@ -1,17 +1,14 @@
 package com.mixedwash.core.presentation.components.dump
 
-import BrandTheme
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,7 +40,7 @@ fun LocationSlab(
             modifier = Modifier.size(18.dp),
         )
 
-        Column {
+        Column(modifier = Modifier.clickable { onExpand() }) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -52,17 +49,15 @@ fun LocationSlab(
                     text = addressKey,
                     color = contentColor,
                     fontWeight = FontWeight.Medium,
-                    fontSize = 14.sp
-                    , lineHeight = 18.sp
+                    fontSize = 14.sp,
+                    lineHeight = 18.sp
                 )
 
                 Icon(
                     imageVector = Icons.Default.KeyboardArrowDown,
                     contentDescription = "Expand",
                     tint = contentColor,
-                    modifier = Modifier.size(16.dp).clickable {
-                        onExpand()
-                    }
+                    modifier = Modifier.size(16.dp)
                 )
             }
 

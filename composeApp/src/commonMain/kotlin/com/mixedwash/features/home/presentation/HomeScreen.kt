@@ -144,7 +144,9 @@ fun HomeScreen(
             HomeBanner(
                 banner = banner,
                 address = if (state.cartAddress is CartAddressState.LocationFetched) state.cartAddress.address else null,
-                onClick = { onEvent(HomeScreenEvent.OnBannerClick) }
+                onBannerButtonClicked = { onEvent(HomeScreenEvent.OnBannerClick) },
+                onNavigateToProfile = { onEvent(HomeScreenEvent.OnNavigateToProfile) },
+                onNavigateToFaqs = { onEvent(HomeScreenEvent.OnNavigateToFaqs) }
             )
         }
 

@@ -60,14 +60,14 @@ fun FaqScreen(
     modifier: Modifier = Modifier
 ) {
     WindowInsetsContainer {
-        Box(modifier = modifier.fillMaxSize()) {
+        Box(modifier = modifier.fillMaxSize().padding(16.dp)) {
             Column(
                 modifier = Modifier.fillMaxHeight(),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Text(
                     text = "How can we help you?",
-                    style = BrandTheme.typography.h5
+                    style = BrandTheme.typography.h5.copy(fontSize = 22.sp)
                 )
 
                 SearchBarWithIcon(
