@@ -40,14 +40,14 @@ import androidx.compose.ui.unit.sp
 import com.mixedwash.WindowInsetsContainer
 import com.mixedwash.core.domain.util.capitalize
 import com.mixedwash.features.common.presentation.address.model.Address
-import com.mixedwash.features.common.presentation.slot_selection.Offer
-import com.mixedwash.features.common.presentation.slot_selection.TimeSlot
 import com.mixedwash.core.presentation.components.DefaultHeader
 import com.mixedwash.core.presentation.components.HeadingAlign
 import com.mixedwash.core.presentation.components.HeadingSize
 import com.mixedwash.core.presentation.components.noRippleClickable
 import com.mixedwash.core.presentation.util.formatTime
 import com.mixedwash.core.presentation.util.getDayAndDate
+import com.mixedwash.features.slot_selection.presentation.model.OfferPresentation
+import com.mixedwash.features.slot_selection.presentation.model.TimeSlotPresentation
 import com.mixedwash.ui.theme.screenHorizontalPadding
 import com.mixedwash.ui.theme.Gray800
 import com.mixedwash.ui.theme.MixedWashTheme
@@ -58,8 +58,8 @@ import kotlin.random.Random
 
 data class OrderReviewScreenState(
     val items: List<ServiceSummary>,
-    val pickupSlot: TimeSlot,
-    val dropSlot: TimeSlot,
+    val pickupSlot: TimeSlotPresentation,
+    val dropSlot: TimeSlotPresentation,
     val deliveryAddress: Address,
     val paymentBreakup: List<Pair<String, String>>,
     val onEditSlot: () -> Unit,
@@ -327,8 +327,8 @@ private fun ActionText(modifier: Modifier = Modifier, text: String, action: () -
 @Composable
 private fun OrderDetailsSummary(
     modifier: Modifier = Modifier,
-    pickupSlot: TimeSlot,
-    dropSlot: TimeSlot,
+    pickupSlot: TimeSlotPresentation,
+    dropSlot: TimeSlotPresentation,
     deliveryAddress: Address,
     onEditAddress: () -> Unit,
     onEditSlot: () -> Unit
@@ -502,22 +502,22 @@ private fun PreviewOrderDetailsSummary() {
                     pinCode = "560100",
                     uid = "asnak"
                 ),
-                pickupSlot = TimeSlot(
+                pickupSlot = TimeSlotPresentation(
                     startTimeStamp = 1736933400L, // 9:30 AM
                     endTimeStamp = 1736944200L,   // 12:00 PM
                     isAvailable = true, offersAvailable = listOf(
-                        Offer(
+                        OfferPresentation(
                             title = "Flat 10% OFF",
                             subtitle = "10% off on SBI Credit Card",
                             code = "10%OFFSBI"
                         )
                     )
                 ),
-                dropSlot = TimeSlot(
+                dropSlot = TimeSlotPresentation(
                     startTimeStamp = 1736933400L, // 9:30 AM
                     endTimeStamp = 1736944200L,   // 12:00 PM
                     isAvailable = true, offersAvailable = listOf(
-                        Offer(
+                        OfferPresentation(
                             title = "Flat 10% OFF",
                             subtitle = "10% off on SBI Credit Card",
                             code = "10%OFFSBI"

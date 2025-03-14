@@ -1,12 +1,15 @@
-package com.mixedwash.features.common.presentation.slot_selection
+package com.mixedwash.features.slot_selection.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mixedwash.core.domain.models.Result
-import com.mixedwash.features.common.domain.usecases.slots.LoadSlotsWithOffersUseCase
-import com.mixedwash.features.common.domain.usecases.slots.SelectSlotAndOffersUseCase
-import com.mixedwash.features.common.data.entities.SlotAndOfferSelectionRequestEntity
+import com.mixedwash.features.slot_selection.domain.LoadSlotsWithOffersUseCase
+import com.mixedwash.features.slot_selection.domain.SelectSlotAndOffersUseCase
+import com.mixedwash.features.slot_selection.data.model.request.SlotsSelectionRequestEntity
 import com.mixedwash.core.presentation.models.SnackBarType
+import com.mixedwash.features.slot_selection.presentation.mapper.SlotSelectionMapper.toDto
+import com.mixedwash.features.slot_selection.presentation.mapper.SlotSelectionMapper.toPresentation
+import com.mixedwash.features.slot_selection.presentation.model.TimeSlotPresentation
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -17,7 +20,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class SlotSelectionScreenViewModel  constructor(
+class SlotSelectionScreenViewModel constructor(
     private val loadSlotsWithOffersUseCase: LoadSlotsWithOffersUseCase,
     private val selectSlotAndOffersUseCase: SelectSlotAndOffersUseCase,
 ) : ViewModel() {
@@ -120,9 +123,9 @@ class SlotSelectionScreenViewModel  constructor(
                 viewModelScope.launch {
                     if (!submitValidation()) return@launch
                     selectSlotAndOffersUseCase(
-                        SlotAndOfferSelectionRequestEntity(
-                            pickupSlot = getTimeSlotById(state.value.pickupTimeSelectedId!!)!!,
-                            dropSlot = getTimeSlotById(state.value.dropTimeSelectedId!!)!!,
+                        SlotsSelectionRequestEntity(
+                            pickupSlot = getTimeSlotById(state.value.pickupTimeSelectedId!!)!!.toDto(),
+                            dropSlot = getTimeSlotById(state.value.dropTimeSelectedId!!)!!.toDto(),
                             offer = state.value.selectedOfferCode,
                             deliveryNotes = state.value.deliveryNotes
                         )
@@ -141,7 +144,7 @@ class SlotSelectionScreenViewModel  constructor(
         }
     }
 
-    private fun getTimeSlotById(id: Int): TimeSlot? {
+    private fun getTimeSlotById(id: Int): TimeSlotPresentation? {
         state.value.run {
             for (dateSlot in pickupSlots) {
                 for (timeSlot in dateSlot.timeSlots) {
@@ -205,12 +208,13 @@ class SlotSelectionScreenViewModel  constructor(
             }
             when (val result = loadSlotsWithOffersUseCase.invoke()) {
                 is Result.Success -> {
+                    val presentationData = result.data.toPresentation()
                     updateState {
                         copy(
                             isLoading = false,
-                            pickupSlots = result.data.pickupSlots,
-                            dropSlots = result.data.dropSlots,
-                            commonOffers = result.data.commonOffers,
+                            pickupSlots = presentationData.pickupSlots,
+                            dropSlots = presentationData.dropSlots,
+                            commonOffers = presentationData.commonOffers,
                             selectedOfferCode = null,
                             dropDateSelectedId = null,
                             dropTimeSelectedId = null,
@@ -219,9 +223,8 @@ class SlotSelectionScreenViewModel  constructor(
                         )
                     }
 
-                    onEvent(event = SlotSelectionScreenEvent.OnPickupDateSelected(result.data.pickupSlots.first { it.isAvailable() }))
-                    onEvent(event = SlotSelectionScreenEvent.OnDropDateSelect(result.data.dropSlots.first { it.isAvailable() }))
-
+                    onEvent(event = SlotSelectionScreenEvent.OnPickupDateSelected(presentationData.pickupSlots.first { it.isAvailable() }))
+                    onEvent(event = SlotSelectionScreenEvent.OnDropDateSelect(presentationData.dropSlots.first { it.isAvailable() }))
                 }
 
                 is Result.Error -> {
@@ -240,5 +243,4 @@ class SlotSelectionScreenViewModel  constructor(
     private fun updateState(action: SlotSelectionScreenState.() -> SlotSelectionScreenState) {
         _state.update(action)
     }
-
 }

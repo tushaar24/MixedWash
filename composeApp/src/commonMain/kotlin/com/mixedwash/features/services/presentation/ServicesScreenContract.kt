@@ -37,10 +37,12 @@ sealed class ServicesScreenEvent {
     data object OnCloseSubItemsSheet : ServicesScreenEvent()
     data object OnClosedSubItemsSheet : ServicesScreenEvent()
     data object OnProcessingDetailsClicked : ServicesScreenEvent()
+    data object OnProceedClick : ServicesScreenEvent()
 }
 
 sealed class ServicesScreenUiEvent {
     data class ShowSnackbar(val payload: SnackbarPayload) : ServicesScreenUiEvent()
     data object OpenProcessingDetailsBottomSheet : ServicesScreenUiEvent()
     data object CloseSubItemsSheet : ServicesScreenUiEvent()
+    data object ProceedToSlotSelection : ServicesScreenUiEvent()
 }

@@ -21,6 +21,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.mixedwash.Route
 import com.mixedwash.core.presentation.components.DefaultHeader
 import com.mixedwash.core.presentation.components.HeadingAlign
 import com.mixedwash.core.presentation.components.HeadingSize
@@ -44,6 +46,7 @@ fun ServicesScreen(
     uiEventsFlow: Flow<ServicesScreenUiEvent>,
     snackbarHandler: SnackbarHandler,
     modifier: Modifier = Modifier,
+    navController: NavController
 ) {
 
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -89,6 +92,10 @@ fun ServicesScreen(
                 }.invokeOnCompletion {
                     onEvent(ServicesScreenEvent.OnClosedSubItemsSheet)
                 }
+            }
+
+            ServicesScreenUiEvent.ProceedToSlotSelection -> {
+                navController.navigate(Route.SlotSelectionRoute)
             }
         }
     }
@@ -136,7 +143,7 @@ fun ServicesScreen(
 
             ServicesFooter(
                 selectedItemsSize = state.cartItems.fold(initial = 0) { acc, cartItem -> acc + cartItem.quantity },
-                onProceed = { },
+                onProceed = { onEvent(ServicesScreenEvent.OnProceedClick) },
             )
         }
     }

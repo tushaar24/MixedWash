@@ -214,6 +214,10 @@ class ServicesScreenViewModel(
                     copy(subItemsListState = null)
                 }
             }
+
+            ServicesScreenEvent.OnProceedClick -> {
+                sendUiEvent(ServicesScreenUiEvent.ProceedToSlotSelection)
+            }
         }
     }
 

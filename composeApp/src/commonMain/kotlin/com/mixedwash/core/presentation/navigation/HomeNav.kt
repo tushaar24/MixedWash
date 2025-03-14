@@ -17,16 +17,16 @@ import com.mixedwash.features.common.presentation.address.model.Address
 import com.mixedwash.features.common.presentation.order_review.OrderReviewScreen
 import com.mixedwash.features.common.presentation.order_review.OrderReviewScreenState
 import com.mixedwash.features.common.presentation.order_review.ServiceSummary
-import com.mixedwash.features.common.presentation.slot_selection.Offer
-import com.mixedwash.features.common.presentation.slot_selection.SlotSelectionScreen
-import com.mixedwash.features.common.presentation.slot_selection.SlotSelectionScreenViewModel
-import com.mixedwash.features.common.presentation.slot_selection.TimeSlot
 import com.mixedwash.features.home.presentation.HomeScreen
 import com.mixedwash.features.home.presentation.HomeScreenViewModel
 import com.mixedwash.features.order_confirmation.presentation.OrderConfirmationScreen
 import com.mixedwash.features.order_confirmation.presentation.OrderConfirmationScreenViewModel
 import com.mixedwash.features.services.presentation.ServicesScreen
 import com.mixedwash.features.services.presentation.ServicesScreenViewModel
+import com.mixedwash.features.slot_selection.presentation.SlotSelectionScreen
+import com.mixedwash.features.slot_selection.presentation.SlotSelectionScreenViewModel
+import com.mixedwash.features.slot_selection.presentation.model.OfferPresentation
+import com.mixedwash.features.slot_selection.presentation.model.TimeSlotPresentation
 import org.koin.compose.viewmodel.koinViewModel
 
 fun NavGraphBuilder.HomeNav(
@@ -59,7 +59,8 @@ fun NavGraphBuilder.HomeNav(
                 state = state,
                 onEvent = viewmodel::onEvent,
                 uiEventsFlow = viewmodel.uiEventsFlow,
-                snackbarHandler = snackbarHandler
+                snackbarHandler = snackbarHandler,
+                navController = navController
             )
         }
 
@@ -120,22 +121,22 @@ fun NavGraphBuilder.HomeNav(
                     pinCode = "560100",
                     uid = "asnak"
                 ),
-                pickupSlot = TimeSlot(
+                pickupSlot = TimeSlotPresentation(
                     startTimeStamp = 1736933400L, // 9:30 AM
                     endTimeStamp = 1736944200L,   // 12:00 PM
                     isAvailable = true, offersAvailable = listOf(
-                        Offer(
+                        OfferPresentation(
                             title = "Flat 10% OFF",
                             subtitle = "10% off on SBI Credit Card",
                             code = "10%OFFSBI"
                         )
                     )
                 ),
-                dropSlot = TimeSlot(
+                dropSlot = TimeSlotPresentation(
                     startTimeStamp = 1736933400L, // 9:30 AM
                     endTimeStamp = 1736944200L,   // 12:00 PM
                     isAvailable = true, offersAvailable = listOf(
-                        Offer(
+                        OfferPresentation(
                             title = "Flat 10% OFF",
                             subtitle = "10% off on SBI Credit Card",
                             code = "10%OFFSBI"

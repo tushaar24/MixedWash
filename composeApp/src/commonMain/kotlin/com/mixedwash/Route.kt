@@ -24,8 +24,8 @@ sealed class Route {
 
         init {
             if (screenType == ScreenType.SelectAddress) {
-                requireNotNull(submitText,
-                    { "Submit text cannot be null for screen type SelectAddress" })
+                requireNotNull(submitText
+                ) { "Submit text cannot be null for screen type SelectAddress" }
             }
         }
     }
