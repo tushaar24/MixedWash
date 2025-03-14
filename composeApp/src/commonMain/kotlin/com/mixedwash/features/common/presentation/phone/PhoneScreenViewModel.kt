@@ -21,10 +21,11 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 
-class PhoneScreenViewModel  constructor(
+class PhoneScreenViewModel(
     private val userService: UserService,
     userAuthService: UserService
 ) : ViewModel() {
+
     private val initialState = PhoneScreenState(
         title = "Hi ${userService.currentUser?.userMetadata?.name ?: ""} 👋",
         subtitle = "Enter your phone number to get started",
@@ -32,10 +33,10 @@ class PhoneScreenViewModel  constructor(
         phoneNumberError = null,
         buttonText = "Next",
         buttonEnabled = true,
-        formField = _root_ide_package_.com.mixedwash.core.presentation.models.FormField(
+        formField = FormField(
             value = "",
-            id = _root_ide_package_.com.mixedwash.core.presentation.models.FieldID.PHONE,
-            inputState = _root_ide_package_.com.mixedwash.core.presentation.models.InputState.Enabled,
+            id = FieldID.PHONE,
+            inputState = InputState.Enabled,
             singleLine = true,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Phone,
@@ -85,6 +86,7 @@ class PhoneScreenViewModel  constructor(
                         is Result.Success -> {
                             sendUiEvent(PhoneScreenUiEvent.OnSubmitSuccess)
                         }
+
                         is Result.Error -> snackbarEvent(SnackbarPayload("Updating Phone Number Failed"))
                     }
                     allowFormInput(true)

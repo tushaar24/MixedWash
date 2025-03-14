@@ -1,4 +1,4 @@
-package com.mixedwash.features.common.presentation.profile
+package com.mixedwash.features.profile
 
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -19,7 +19,6 @@ import com.mixedwash.core.presentation.components.DialogPopupData
 import com.mixedwash.core.presentation.models.FieldID.EMAIL
 import com.mixedwash.core.presentation.models.FieldID.NAME
 import com.mixedwash.core.presentation.models.FieldID.PHONE
-import com.mixedwash.core.presentation.models.FormField
 import com.mixedwash.core.presentation.models.SnackBarType
 import com.mixedwash.core.presentation.models.SnackbarPayload
 import com.mixedwash.core.presentation.util.Logger

@@ -1,4 +1,4 @@
-package com.mixedwash.features.common.presentation.profile
+package com.mixedwash.features.profile
 
 import BrandTheme
 import androidx.compose.foundation.background
@@ -15,9 +15,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.KeyboardArrowLeft
-import androidx.compose.material.icons.rounded.KeyboardArrowRight
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -35,6 +35,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
@@ -44,6 +45,7 @@ import com.mixedwash.core.presentation.components.DefaultHeader
 import com.mixedwash.core.presentation.components.HeadingAlign
 import com.mixedwash.core.presentation.components.HeadingSize
 import com.mixedwash.core.presentation.components.noRippleClickable
+import com.mixedwash.core.presentation.util.ObserveAsEvents
 import com.mixedwash.ui.theme.MixedWashTheme
 import com.mixedwash.ui.theme.RedDark
 import com.mixedwash.ui.theme.Typography.Companion.Poppins
@@ -53,6 +55,7 @@ import com.mixedwash.ui.theme.dividerBlack
 import com.mixedwash.ui.theme.headerContentSpacing
 import com.mixedwash.ui.theme.screenBottomSpacing
 import com.mixedwash.ui.theme.screenHorizontalPadding
+import kotlinx.coroutines.flow.Flow
 import mixedwash.composeapp.generated.resources.Res
 import mixedwash.composeapp.generated.resources.ic_clothes_hanger
 import org.jetbrains.compose.resources.DrawableResource
@@ -70,23 +73,21 @@ data class ProfileSectionItem(
     val comingSoon: Boolean = false
 )
 
-data class ProfileScreenState(
-    val sections: List<ProfileSection>,
-    val imageUrl: String? = null,
-    val name: String?,
-    val email: String? = null,
-    val phone: String?,
-    val appName: String,
-    val appVersion: String,
-    val onLogout: () -> Unit,
-    val onEditProfile: () -> Unit,
-)
-
 @Composable
 fun ProfileScreen(
     modifier: Modifier = Modifier,
-    state: ProfileScreenState
+    state: ProfileScreenState,
+    onEvent: (ProfileScreenEvent) -> Unit,
+    uiEvents: Flow<ProfileScreenUiEvent>,
+    navController: NavController
 ) {
+    ObserveAsEvents(uiEvents) { event ->
+        when (event) {
+            is ProfileScreenUiEvent.Navigate -> {
+                navController.navigate(event.route)
+            }
+        }
+    }
     WindowInsetsContainer {
         Column(modifier = modifier) {
             DefaultHeader(
@@ -178,7 +179,7 @@ fun ProfileScreen(
                         ),
                         iconSize = 16.dp,
                         paddingSize = 8.dp,
-                        onClick = state.onEditProfile
+                        onClick = { onEvent(ProfileScreenEvent.OnEditProfile) }
                     )
 
                 }
@@ -208,7 +209,8 @@ fun ProfileScreen(
                                         enabled = profileScreenItem.onClick != null,
                                         onClick = profileScreenItem.onClick
                                     ),
-                                comingSoon = profileScreenItem.comingSoon
+                                comingSoon = profileScreenItem.comingSoon,
+                                onClick = profileScreenItem.onClick ?: {}
                             )
                             if (index < section.items.size - 1) {
                                 HorizontalDivider(color = dividerBlack)
@@ -230,7 +232,7 @@ fun ProfileScreen(
                     )
                     Spacer(modifier = Modifier.height(24.dp))
                     Text(
-                        modifier = Modifier.noRippleClickable(onClick = state.onLogout),
+                        modifier = Modifier.noRippleClickable(onClick = { onEvent(ProfileScreenEvent.OnLogout) }),
                         text = "Logout",
                         style = BrandTheme.typography.subtitle2.copy(fontWeight = FontWeight.SemiBold),
                         color = RedDark
@@ -250,6 +252,7 @@ fun ProfileScreen(
 @Composable
 fun ProfileScreenItem(
     modifier: Modifier = Modifier,
+    onClick: () -> Unit,
     resource: DrawableResource,
     text: String,
     comingSoon: Boolean = false
@@ -258,12 +261,14 @@ fun ProfileScreenItem(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
+            .noRippleClickable { onClick() }
             .padding(vertical = 6.dp)
             .alpha(if (comingSoon) 0.6f else 1f)
+
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.Start),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(
                 imageVector = vectorResource(resource),
@@ -295,7 +300,7 @@ fun ProfileScreenItem(
             )
         }
         Icon(
-            imageVector = Icons.Rounded.KeyboardArrowRight,
+            imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
             contentDescription = "Frame",
             tint = BrandTheme.colors.gray.normal,
             modifier = Modifier.size(24.dp)
@@ -313,7 +318,8 @@ private fun PreviewProfileScreenItem() {
             ProfileScreenItem(
                 Modifier.align(Center),
                 resource = Res.drawable.ic_clothes_hanger,
-                text = "Order Hisotry"
+                text = "Order History",
+                onClick = {}
             )
         }
     }

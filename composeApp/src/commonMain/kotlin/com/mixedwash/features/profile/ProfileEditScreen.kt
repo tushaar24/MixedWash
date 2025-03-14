@@ -1,4 +1,4 @@
-package com.mixedwash.features.common.presentation.profile
+package com.mixedwash.features.profile
 
 import BrandTheme
 import androidx.compose.animation.animateContentSize
@@ -43,8 +43,6 @@ import com.mixedwash.core.presentation.components.DialogPopupData
 import com.mixedwash.core.presentation.components.HeadingAlign
 import com.mixedwash.core.presentation.components.HeadingSize
 import com.mixedwash.core.presentation.components.clearFocusOnKeyboardDismiss
-import com.mixedwash.core.presentation.models.FieldID
-import com.mixedwash.core.presentation.models.FormField
 import com.mixedwash.core.presentation.models.SnackbarHandler
 import com.mixedwash.core.presentation.models.SnackbarPayload
 import com.mixedwash.core.presentation.util.ObserveAsEvents
@@ -79,7 +77,8 @@ sealed interface ProfileEditScreenEvent {
     data object OnBackClicked : ProfileEditScreenEvent
     data class OnChangePicture(val url: String) : ProfileEditScreenEvent
     data object OnSave : ProfileEditScreenEvent
-    data class OnFieldUpdate(val fieldId: _root_ide_package_.com.mixedwash.core.presentation.models.FieldID, val value: String) : ProfileEditScreenEvent
+    data class OnFieldUpdate(val fieldId: _root_ide_package_.com.mixedwash.core.presentation.models.FieldID, val value: String) :
+        ProfileEditScreenEvent
 }
 
 sealed interface ProfileEditScreenUiEvent {

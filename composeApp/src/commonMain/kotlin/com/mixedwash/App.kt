@@ -43,16 +43,9 @@ import com.mixedwash.core.presentation.navigation.AuthNav
 import com.mixedwash.core.presentation.navigation.HomeNav
 import com.mixedwash.core.presentation.navigation.ProfileNav
 import com.mixedwash.core.presentation.util.Logger
-import com.mixedwash.features.history.presentation.OrderHistoryScreen
-import com.mixedwash.features.history.presentation.OrderHistoryScreenViewModel
-import com.mixedwash.features.order_confirmation.presentation.OrderConfirmationScreen
-import com.mixedwash.features.order_confirmation.presentation.OrderConfirmationScreenViewModel
-import com.mixedwash.features.support.presentation.FaqScreen
-import com.mixedwash.features.support.presentation.FaqScreenViewModel
 import com.mixedwash.ui.theme.MixedWashTheme
 import org.koin.compose.KoinContext
 import org.koin.compose.koinInject
-import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -131,7 +124,7 @@ fun App() {
 
                         NavHost(
                             navController = navController,
-                            startDestination = Route.OrderConfirmationRoute
+                            startDestination = startDestination
                         ) {
 
                             AuthNav(
@@ -145,7 +138,6 @@ fun App() {
                             )
 
                             ProfileNav(
-                                userService = userService,
                                 snackbarHandler = snackbarHandler,
                                 navController = navController
                             )
@@ -169,36 +161,6 @@ fun App() {
                                     )
                                 }
                             }
-
-                            composable<Route.HistoryRoute> {
-                                val viewModel = koinViewModel<OrderHistoryScreenViewModel>()
-                                val state by viewModel.state.collectAsStateWithLifecycle()
-                                OrderHistoryScreen(
-                                    state = state,
-                                    onEvent = viewModel::onEvent
-                                )
-                            }
-
-                            composable<Route.FaqRoute> {
-                                val viewModel = koinViewModel<FaqScreenViewModel>()
-                                val state by viewModel.state.collectAsStateWithLifecycle()
-                                FaqScreen(
-                                    state = state,
-                                    onEvent = viewModel::onEvent
-                                )
-                            }
-
-                            composable<Route.OrderConfirmationRoute> {
-                                val viewModel = koinViewModel<OrderConfirmationScreenViewModel>()
-                                val state by viewModel.state.collectAsStateWithLifecycle()
-                                OrderConfirmationScreen(
-                                    state = state,
-                                    onEvent = viewModel::onEvent,
-                                    uiEvents = viewModel.uiEventsFlow,
-                                    navController = navController
-                                )
-                            }
-
                         }
                     }
                 }
