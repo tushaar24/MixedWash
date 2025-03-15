@@ -10,7 +10,6 @@ import com.mixedwash.features.common.domain.usecases.address.AddressUseCases
 import com.mixedwash.features.slot_selection.domain.LoadSlotsWithOffersUseCase
 import com.mixedwash.features.slot_selection.domain.SelectSlotAndOffersUseCase
 import com.mixedwash.features.common.presentation.address.AddressScreenViewModel
-import com.mixedwash.features.common.presentation.history.OrderHistoryScreenViewModel
 import com.mixedwash.features.common.presentation.phone.PhoneScreenViewModel
 import com.mixedwash.features.slot_selection.presentation.SlotSelectionScreenViewModel
 import com.mixedwash.features.home.di.HomeModule
