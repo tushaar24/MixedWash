@@ -1,4 +1,4 @@
-package com.mixedwash.features.profile
+package com.mixedwash.features.profile.profile_edit
 
 import BrandTheme
 import androidx.compose.animation.animateContentSize

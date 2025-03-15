@@ -1,4 +1,4 @@
-package com.mixedwash.features.profile
+package com.mixedwash.features.profile.presentation
 
 import BrandTheme
 import androidx.compose.foundation.background

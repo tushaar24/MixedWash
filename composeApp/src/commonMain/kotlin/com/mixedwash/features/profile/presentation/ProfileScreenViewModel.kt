@@ -1,4 +1,4 @@
-package com.mixedwash.features.profile
+package com.mixedwash.features.profile.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

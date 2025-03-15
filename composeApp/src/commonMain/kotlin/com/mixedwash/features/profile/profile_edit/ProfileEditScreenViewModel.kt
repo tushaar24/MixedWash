@@ -1,4 +1,4 @@
-package com.mixedwash.features.profile
+package com.mixedwash.features.profile.profile_edit
 
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons

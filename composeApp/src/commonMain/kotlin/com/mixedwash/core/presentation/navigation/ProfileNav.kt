@@ -14,10 +14,10 @@ import com.mixedwash.features.common.presentation.address.AddressScreen
 import com.mixedwash.features.common.presentation.address.AddressScreenViewModel
 import com.mixedwash.features.history.presentation.OrderHistoryScreen
 import com.mixedwash.features.history.presentation.OrderHistoryScreenViewModel
-import com.mixedwash.features.profile.ProfileEditScreen
-import com.mixedwash.features.profile.ProfileEditScreenViewModel
-import com.mixedwash.features.profile.ProfileScreen
-import com.mixedwash.features.profile.ProfileScreenViewModel
+import com.mixedwash.features.profile.profile_edit.ProfileEditScreen
+import com.mixedwash.features.profile.profile_edit.ProfileEditScreenViewModel
+import com.mixedwash.features.profile.presentation.ProfileScreen
+import com.mixedwash.features.profile.presentation.ProfileScreenViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
 fun NavGraphBuilder.ProfileNav(
