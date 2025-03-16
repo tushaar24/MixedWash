@@ -12,15 +12,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.mixedwash.Route
 import com.mixedwash.core.presentation.components.DefaultHeader
@@ -48,7 +51,7 @@ fun ServicesScreen(
     modifier: Modifier = Modifier,
     navController: NavController
 ) {
-
+    val processingDetailsSheetState = rememberModalBottomSheetState()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
 
@@ -74,10 +77,51 @@ fun ServicesScreen(
         }
     }
 
+    if (processingDetailsSheetState.isVisible && state.selectedServiceId != null) {
+        val service = state.services.first { it.serviceId == state.selectedServiceId }
+        ModalBottomSheet(
+            onDismissRequest = {},
+            sheetState = processingDetailsSheetState
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                Text(
+                    text = "Inclusions",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+
+                Text(
+                    text = service.inclusions ?: "none",
+                    fontSize = 12.sp,
+                )
+
+                Spacer(Modifier.height(8.dp))
+
+                Text(
+                    text = "Exclusions",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+
+                Text(
+                    text = service.exclusions,
+                    fontSize = 12.sp
+                )
+            }
+        }
+    }
+
     ObserveAsEvents(uiEventsFlow) { event ->
         when (event) {
             ServicesScreenUiEvent.OpenProcessingDetailsBottomSheet -> {
-
+                scope.launch {
+                    if (!processingDetailsSheetState.isVisible) {
+                        processingDetailsSheetState.show()
+                    }
+                }
             }
 
             is ServicesScreenUiEvent.ShowSnackbar -> {
@@ -108,7 +152,7 @@ fun ServicesScreen(
             headingSize = HeadingSize.Subtitle1,
             headingAlign = HeadingAlign.Start,
             navigationButton = {
-                HeaderIconButton(imageVector = Icons.Rounded.KeyboardArrowLeft, onClick = {})
+                HeaderIconButton(imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowLeft, onClick = {})
             }
         )
         Spacer(modifier = Modifier.height(headerContentSpacing))
