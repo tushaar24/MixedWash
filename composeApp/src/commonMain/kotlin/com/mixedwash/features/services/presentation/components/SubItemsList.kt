@@ -19,8 +19,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mixedwash.features.services.presentation.ServiceSubItemsListState
-import com.mixedwash.features.services.presentation.model.GenderPresentation
-import com.mixedwash.features.services.presentation.model.ItemPricingPresentation
+import com.mixedwash.features.services.presentation.model.Gender
+import com.mixedwash.features.services.presentation.model.ItemPricing
 import mixedwash.composeapp.generated.resources.Res
 import mixedwash.composeapp.generated.resources.ic_female
 import mixedwash.composeapp.generated.resources.ic_male
@@ -33,7 +33,7 @@ fun SubItemsList(
     onItemIncrement: (String) -> Unit,
     onItemDecrement: (String) -> Unit,
     onItemAdd: (String) -> Unit,
-    onFilterClick: (GenderPresentation) -> Unit,
+    onFilterClick: (Gender) -> Unit,
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -51,14 +51,14 @@ fun SubItemsList(
             ItemsFilterChip(
                 leadingIcon = Res.drawable.ic_male,
                 text = "men",
-                isSelected = state.filters.contains(GenderPresentation.MALE),
-                onClick = { onFilterClick(GenderPresentation.MALE) }
+                isSelected = state.filters.contains(Gender.MALE),
+                onClick = { onFilterClick(Gender.MALE) }
             )
             ItemsFilterChip(
                 leadingIcon = Res.drawable.ic_female,
                 text = "women",
-                isSelected = state.filters.contains(GenderPresentation.FEMALE),
-                onClick = { onFilterClick(GenderPresentation.FEMALE) }
+                isSelected = state.filters.contains(Gender.FEMALE),
+                onClick = { onFilterClick(Gender.FEMALE) }
             )
         }
 
@@ -73,19 +73,19 @@ fun SubItemsList(
             items(state.items, key = {item -> item.itemId}) { item ->
                 val pricingString = item.itemPricing.run {
                     when (this) {
-                        is ItemPricingPresentation.ServiceItemPricingPresentation -> "₹${
+                        is ItemPricing.ServiceItemPricingPresentation -> "₹${
                             this.minimumPrice.div(
                                 100
                             )
                         } (₹${this.pricePerUnit.div(100)}/${this.unit})"
 
-                        is ItemPricingPresentation.SubItemFixedPricingPresentation -> "₹${
+                        is ItemPricing.SubItemFixedPricingPresentation -> "₹${
                             this.fixedPrice.div(
                                 100
                             )
                         }"
 
-                        is ItemPricingPresentation.SubItemRangedPricingPresentation -> "₹${
+                        is ItemPricing.SubItemRangedPricingPresentation -> "₹${
                             this.minPrice.div(
                                 100
                             )

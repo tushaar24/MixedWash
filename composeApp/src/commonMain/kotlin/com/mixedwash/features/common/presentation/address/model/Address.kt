@@ -93,15 +93,15 @@ fun Place.toAddress(): Address {
  * Converts an [Address] to a [EnumMap] of [FieldID] to [String].
  * @return [EnumMap] of [FieldID] to [String]
  */
-fun Address.toFieldIDValueMap(): Map<_root_ide_package_.com.mixedwash.core.presentation.models.FieldID, String?> =
-    _root_ide_package_.com.mixedwash.core.presentation.models.FieldID.entries.associateWith<_root_ide_package_.com.mixedwash.core.presentation.models.FieldID, String?> {
+fun Address.toFieldIDValueMap(): Map<FieldID, String?> =
+    FieldID.entries.associateWith {
         when (it) {
-            _root_ide_package_.com.mixedwash.core.presentation.models.FieldID.ADDRESS_TITLE -> title
-            _root_ide_package_.com.mixedwash.core.presentation.models.FieldID.ADDRESS_LINE_1 -> addressLine1
-            _root_ide_package_.com.mixedwash.core.presentation.models.FieldID.ADDRESS_LINE_2 -> addressLine2 ?: ""
-            _root_ide_package_.com.mixedwash.core.presentation.models.FieldID.ADDRESS_LINE_3 -> addressLine3 ?: ""
-            _root_ide_package_.com.mixedwash.core.presentation.models.FieldID.PIN_CODE -> pinCode
-            _root_ide_package_.com.mixedwash.core.presentation.models.FieldID.PHONE, _root_ide_package_.com.mixedwash.core.presentation.models.FieldID.EMAIL, _root_ide_package_.com.mixedwash.core.presentation.models.FieldID.NAME -> null
+            FieldID.ADDRESS_TITLE -> title
+            FieldID.ADDRESS_LINE_1 -> addressLine1
+            FieldID.ADDRESS_LINE_2 -> addressLine2 ?: ""
+            FieldID.ADDRESS_LINE_3 -> addressLine3 ?: ""
+            FieldID.PIN_CODE -> pinCode
+            FieldID.PHONE, FieldID.EMAIL, FieldID.NAME -> null
         }
     }
 

@@ -18,3 +18,4 @@ data class CartItemEntity(
     val deliveryTimeMaxInHrs: Int? = null,
     val quantity: Int,
 )
+

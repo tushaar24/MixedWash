@@ -11,4 +11,5 @@ interface LocalCartRepository {
     suspend fun deleteCartItem(itemId: String): Result<Unit>
     suspend fun incrementCartItem(itemId: String): Result<Unit>
     suspend fun decrementCartItem(itemId: String): Result<Unit>
+    fun getMinimumProcessingDurationHrs(): Result<Flow<Int>>
 }

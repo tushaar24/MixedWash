@@ -13,12 +13,12 @@ import com.mixedwash.core.presentation.util.Logger
 import com.mixedwash.features.local_cart.data.model.CartItemEntity
 import com.mixedwash.features.local_cart.domain.LocalCartRepository
 import com.mixedwash.features.local_cart.domain.error.onCartError
-import com.mixedwash.features.local_cart.presentation.model.CartItemPresentation
-import com.mixedwash.features.local_cart.presentation.model.toCartItemPresentation
-import com.mixedwash.features.local_cart.presentation.model.toPresentation
+import com.mixedwash.features.local_cart.domain.model.CartItem
+import com.mixedwash.features.local_cart.domain.model.toCartItem
+import com.mixedwash.features.local_cart.domain.model.toDomain
 import com.mixedwash.features.services.data.remote.model.ServiceDto
 import com.mixedwash.features.services.domain.ServicesDataRepository
-import com.mixedwash.features.services.presentation.model.GenderPresentation
+import com.mixedwash.features.services.presentation.model.Gender
 import com.mixedwash.features.services.presentation.model.ServicePresentation
 import com.mixedwash.features.services.presentation.model.toCartItemEntity
 import com.mixedwash.features.services.presentation.model.toPresentation
@@ -53,7 +53,7 @@ class ServicesScreenViewModel(
         cartRepository.getCartItemFlow().getOrElse { flowOf(emptyList()) },
     ) { currentState, cartItems ->
         currentState.copy(
-            cartItems = cartItems.map { it.toPresentation() },
+            cartItems = cartItems.map { it.toDomain() },
             subItemsListState = currentState.subItemsListState?.let {
                 it.copy(
                     items = it.items.fastMap { subItem ->
@@ -130,7 +130,7 @@ class ServicesScreenViewModel(
                         placeHolder = "search for an item",
                         query = "",
                         items = service.items?.map {
-                            it.toCartItemPresentation(
+                            it.toCartItem(
                                 service.deliveryTimeMinInHrs,
                                 service.deliveryTimeMaxInHrs
                             )
@@ -231,15 +231,15 @@ class ServicesScreenViewModel(
     private fun filterSubItemsList(
         serviceId: String,
         searchQuery: String = "",
-        filters: List<GenderPresentation>
-    ): Result<List<CartItemPresentation>> {
+        filters: List<Gender>
+    ): Result<List<CartItem>> {
         val result = runCatching {
             state.value.subItemsListState?.run {
                 val service = getServiceById(serviceId)
                     ?: throw IllegalStateException("Service not found for ID: $serviceId")
 
                 val itemsList = service.items?.map {
-                    it.toCartItemPresentation(
+                    it.toCartItem(
                         service.deliveryTimeMinInHrs,
                         service.deliveryTimeMaxInHrs
                     )
@@ -255,7 +255,7 @@ class ServicesScreenViewModel(
                 val queriedFilteredList = if (filters.isNotEmpty()) {
                     queriedList.filter { item ->
                         filters.any {
-                            it == item.metadata?.gender || item.metadata?.gender == GenderPresentation.BOTH
+                            it == item.metadata?.gender || item.metadata?.gender == Gender.BOTH
                         }
                     }
                 } else {
@@ -270,7 +270,7 @@ class ServicesScreenViewModel(
         return result
     }
 
-    private fun getCartItemById(itemId: String): CartItemPresentation? {
+    private fun getCartItemById(itemId: String): CartItem? {
         return state.value.cartItems.firstOrNull { item ->
             item.itemId == itemId
         }

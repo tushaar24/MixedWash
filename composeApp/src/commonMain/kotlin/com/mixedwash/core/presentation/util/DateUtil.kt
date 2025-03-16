@@ -20,7 +20,7 @@ fun Long.formatTime(): Pair<String, String> {
 
 fun Long.getDayAndDate(): Pair<String, String> {
     val instant = Instant.fromEpochSeconds(this)
-    val localDate = instant.toLocalDateTime(TimeZone.UTC).date
+    val localDate = instant.toLocalDateTime(TimeZone.currentSystemDefault()).date
     val dayOfWeek = localDate.dayOfWeek.name.take(3)
     val dayOfMonth = localDate.dayOfMonth.toString().padStart(2, '0')
     return Pair(dayOfWeek, dayOfMonth)
@@ -28,13 +28,13 @@ fun Long.getDayAndDate(): Pair<String, String> {
 
 fun Long.getMonth(): String {
     val instant = Instant.fromEpochSeconds(this)
-    val localDate = instant.toLocalDateTime(TimeZone.UTC).date
+    val localDate = instant.toLocalDateTime(TimeZone.currentSystemDefault()).date
     return localDate.month.name.take(3)
 }
 
 fun formatTimestamp(timestamp: Long): String {
     val instant = Instant.fromEpochMilliseconds(timestamp)
-    val dateTime = instant.toLocalDateTime(TimeZone.UTC) // Change to your desired timezone
+    val dateTime = instant.toLocalDateTime(TimeZone.currentSystemDefault()) // Change to your desired timezone
 
     val monthAbbreviations = listOf(
         "Jan", "Feb", "Mar", "Apr", "May", "Jun",

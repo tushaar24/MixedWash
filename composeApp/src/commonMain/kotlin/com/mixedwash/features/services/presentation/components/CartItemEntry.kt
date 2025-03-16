@@ -14,43 +14,43 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.mixedwash.features.services.presentation.model.ItemPricingPresentation
+import com.mixedwash.features.services.presentation.model.ItemPricing
 
 @Composable
 fun CartItemEntry(
     modifier: Modifier = Modifier,
     name: String,
     quantity: Int,
-    pricing: ItemPricingPresentation,
+    pricing: ItemPricing,
     onIncrement: () -> Unit,
     onDecrement: () -> Unit,
     onAdd: () -> Unit
 ) {
 
     val description = when (pricing) {
-        is ItemPricingPresentation.ServiceItemPricingPresentation -> {
+        is ItemPricing.ServiceItemPricingPresentation -> {
             "1${pricing.unit} • ₹${pricing.pricePerUnit.div(100)}"
         }
 
-        is ItemPricingPresentation.SubItemFixedPricingPresentation -> {
+        is ItemPricing.SubItemFixedPricingPresentation -> {
             "1pc • ₹${pricing.fixedPrice.div(100)}"
         }
 
-        is ItemPricingPresentation.SubItemRangedPricingPresentation -> {
+        is ItemPricing.SubItemRangedPricingPresentation -> {
             "1pc • ₹${pricing.minPrice.div(100)} - ₹${pricing.maxPrice.div(100)}"
         }
     }
 
     val itemPrice = when (pricing) {
-        is ItemPricingPresentation.ServiceItemPricingPresentation -> {
+        is ItemPricing.ServiceItemPricingPresentation -> {
             "₹${pricing.minimumPrice.div(100)}"
         }
 
-        is ItemPricingPresentation.SubItemFixedPricingPresentation -> {
+        is ItemPricing.SubItemFixedPricingPresentation -> {
             "₹${pricing.fixedPrice.div(100) * quantity}"
         }
 
-        is ItemPricingPresentation.SubItemRangedPricingPresentation -> {
+        is ItemPricing.SubItemRangedPricingPresentation -> {
             "₹${pricing.minPrice.div(100) * quantity} - ₹${pricing.maxPrice.div(100) * quantity}"
         }
     }
@@ -74,7 +74,7 @@ fun CartItemEntry(
             horizontalAlignment = Alignment.End
         ) {
             ItemQuantityChip(
-                isServiceItem = pricing is ItemPricingPresentation.ServiceItemPricingPresentation,
+                isServiceItem = pricing is ItemPricing.ServiceItemPricingPresentation,
                 quantity = quantity,
                 showAddLabel = true,
                 onIncrement = onIncrement,

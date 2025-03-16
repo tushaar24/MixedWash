@@ -417,7 +417,7 @@
       },
       "inclusions": "Sneakers, Loafers, Sandals, Flip flops and Sports Shoes",
       "exclusions": "Any Leather Footwear",
-      "delivery_time_min_in_hrs": 36,
+      "delivery_time_min_in_hrs": 72,
       "details": [
         {
           "key": "Wash Type",

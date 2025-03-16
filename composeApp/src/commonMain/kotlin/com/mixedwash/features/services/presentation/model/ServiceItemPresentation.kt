@@ -4,6 +4,6 @@ data class ServiceItemPresentation(
     val itemId: String,
     val serviceId: String,
     val name: String,
-    val metadata: ServiceItemMetadataPresentation? = null,
-    val itemPricing: ItemPricingPresentation
+    val metadata: ServiceItemMetadata? = null,
+    val itemPricing: ItemPricing
 )

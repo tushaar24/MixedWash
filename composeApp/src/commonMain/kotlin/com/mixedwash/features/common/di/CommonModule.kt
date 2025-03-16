@@ -1,21 +1,20 @@
 package com.mixedwash.features.common.di
 
 import com.mixedwash.TestApiKeyConfig
+import com.mixedwash.core.booking.di.BookingsModule
 import com.mixedwash.core.presentation.navigation.NavigationModule
 import com.mixedwash.features.common.data.repository.AddressRepositoryImpl
 import com.mixedwash.features.common.data.service.local.LocationService
 import com.mixedwash.features.common.domain.repository.AddressRepository
 import com.mixedwash.features.common.domain.usecases.FindUserByPhoneUseCase
 import com.mixedwash.features.common.domain.usecases.address.AddressUseCases
-import com.mixedwash.features.slot_selection.domain.LoadSlotsWithOffersUseCase
-import com.mixedwash.features.slot_selection.domain.SelectSlotAndOffersUseCase
 import com.mixedwash.features.common.presentation.address.AddressScreenViewModel
 import com.mixedwash.features.common.presentation.phone.PhoneScreenViewModel
-import com.mixedwash.features.slot_selection.presentation.SlotSelectionScreenViewModel
 import com.mixedwash.features.home.di.HomeModule
 import com.mixedwash.features.local_cart.di.LocalCartModule
 import com.mixedwash.features.location_availability.di.LocationAvailabilityModule
 import com.mixedwash.features.services.di.ServicesModule
+import com.mixedwash.features.slot_selection.di.SlotSelectionModule
 import com.mixedwash.libs.loki.autocomplete.Autocomplete
 import com.mixedwash.libs.loki.autocomplete.AutocompleteOptions
 import com.mixedwash.libs.loki.autocomplete.AutocompletePlace
@@ -38,12 +37,12 @@ val CommonModule = module {
         NavigationModule,
         HomeModule,
         ServicesModule,
-        LocalCartModule
+        LocalCartModule,
+        BookingsModule,
+        SlotSelectionModule
     )
 
     single { FindUserByPhoneUseCase }
-    single { LoadSlotsWithOffersUseCase() }
-    single { SelectSlotAndOffersUseCase() }
 
     single<Geolocator> { MobileGeolocator() }
     single<Geocoder> { Geocoder.googleMaps(
@@ -57,12 +56,17 @@ val CommonModule = module {
             enableLogging = true,
         )
     }
-    single<LocationService> { LocationService(get(), get(), get()) }
+    single<LocationService> {
+        LocationService(
+            geolocator = get(),
+            geocoder = get(),
+            autocomplete = get()
+        )
+    }
     single { AddressRepositoryImpl(get(), get()) } bind AddressRepository::class
     singleOf(::AddressUseCases)
 
     viewModelOf(::AddressScreenViewModel)
-    viewModelOf(::SlotSelectionScreenViewModel)
     viewModelOf(::PhoneScreenViewModel)
 
 }

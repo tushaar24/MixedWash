@@ -12,7 +12,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.mixedwash.features.local_cart.presentation.model.CartItemPresentation
+import com.mixedwash.features.local_cart.domain.model.CartItem
 import com.mixedwash.features.services.presentation.ServicesScreenEvent
 import com.mixedwash.features.services.presentation.model.PricingMetadataPresentation
 import com.mixedwash.features.services.presentation.model.ServicePresentation
@@ -20,7 +20,7 @@ import com.mixedwash.ui.theme.dividerBlack
 
 @Composable
 fun ServiceCartItemsList(
-    serviceCartItems: List<CartItemPresentation>,
+    serviceCartItems: List<CartItem>,
     onEvent: (ServicesScreenEvent) -> Unit,
     service: ServicePresentation
 ) {

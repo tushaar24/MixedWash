@@ -5,6 +5,7 @@ import com.mixedwash.features.local_cart.data.model.CartItemEntity
 import com.mixedwash.features.local_cart.domain.LocalCartRepository
 import com.mixedwash.features.local_cart.domain.error.CartException
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
@@ -49,6 +50,15 @@ class LocalCartRepositoryImpl(private val cartDao : CartDao)  : LocalCartReposit
             val item = cartDao.getItemById(itemId) ?: return failure(CartException.ItemNotFoundException(itemId))
             if (item.quantity == 1) return@runCatching deleteItem(item).getOrThrow()
             cartDao.upsertItem(item.copy(quantity = item.quantity - 1))
+        }
+    }
+
+    override fun getMinimumProcessingDurationHrs(): Result<Flow<Int>> {
+        return runCatching {
+            getCartItemFlow().getOrThrow().map { items ->
+                if (items.isEmpty()) 0
+                else items.maxOf { it.deliveryTimeMaxInHrs ?: it.deliveryTimeMinInHrs }
+            }
         }
     }
 

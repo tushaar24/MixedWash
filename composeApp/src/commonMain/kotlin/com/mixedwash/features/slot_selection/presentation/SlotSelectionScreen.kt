@@ -9,12 +9,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.KeyboardArrowLeft
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,8 +21,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.mixedwash.WindowInsetsContainer
 import com.mixedwash.core.presentation.components.DefaultHeader
 import com.mixedwash.core.presentation.components.HeadingAlign
@@ -32,12 +30,9 @@ import com.mixedwash.core.presentation.components.HeadingSize
 import com.mixedwash.core.presentation.models.SnackbarHandler
 import com.mixedwash.core.presentation.models.SnackbarPayload
 import com.mixedwash.core.presentation.util.ObserveAsEvents
-import com.mixedwash.core.presentation.util.getDayAndDate
-import com.mixedwash.core.presentation.util.getMonth
 import com.mixedwash.features.slot_selection.presentation.components.Coupon
-import com.mixedwash.features.slot_selection.presentation.components.DateSlotButton
+import com.mixedwash.features.slot_selection.presentation.components.DateRow
 import com.mixedwash.features.slot_selection.presentation.components.DeliveryNotes
-import com.mixedwash.features.slot_selection.presentation.components.Month
 import com.mixedwash.features.slot_selection.presentation.components.TimeSlotGrid
 import com.mixedwash.features.slot_selection.presentation.model.DateSlotPresentation
 import com.mixedwash.ui.theme.components.HeaderIconButton
@@ -66,7 +61,6 @@ fun SlotSelectionScreen(
             )
         }
     }
-
 
     WindowInsetsContainer {
         Column(
@@ -101,7 +95,11 @@ fun SlotSelectionScreen(
             ) {
                 Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
 
-                    Text("Select Pickup Slot", style = BrandTheme.typography.subtitle1)
+                    Text(
+                        "Pickup Slot",
+                        style = BrandTheme.typography.subtitle1.copy(lineHeight = 24.sp)
+                    )
+                    Spacer(Modifier.height(2.dp))
 
                     val onPickupDateClick: (DateSlotPresentation) -> Unit = remember(state.screenEvent) {
                         { dateSlot ->
@@ -124,10 +122,13 @@ fun SlotSelectionScreen(
 
 
                 }
-                HorizontalDivider(color = Color.Black.copy(alpha = 0.05f))
 
                 Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                    Text("Select Drop Slot", style = BrandTheme.typography.subtitle1)
+                    Text(
+                        "Drop Slot",
+                        style = BrandTheme.typography.subtitle1.copy(lineHeight = 24.sp)
+                    )
+                    Spacer(Modifier.height(2.dp))
 
                     val onDropDateClick: (DateSlotPresentation) -> Unit = remember(state.screenEvent) {
                         { dateSlot ->
@@ -150,32 +151,33 @@ fun SlotSelectionScreen(
 
                 }
 
-                HorizontalDivider(color = Color.Black.copy(alpha = 0.05f))
+                val offers = state.getOffers()
+                if (offers.isNotEmpty()) {
+                    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                        Text("Offers", style = BrandTheme.typography.subtitle1)
 
-                Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                    Text("Pick offers available", style = BrandTheme.typography.subtitle1)
-
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier.animateContentSize()
-                    ) {
-                        state.getOffers().forEach { offer ->
-                            Coupon(
-                                title = offer.title,
-                                subtitle = offer.subtitle,
-                                selected = offer.code == state.selectedOfferCode,
-                                onClick = {
-                                    state.screenEvent(
-                                        SlotSelectionScreenEvent.OnOfferSelected(
-                                            offer
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                            modifier = Modifier.animateContentSize()
+                        ) {
+                            offers.forEach { offer ->
+                                Coupon(
+                                    title = offer.title,
+                                    subtitle = offer.subtitle,
+                                    selected = offer.code == state.selectedOfferCode,
+                                    onClick = {
+                                        state.screenEvent(
+                                            SlotSelectionScreenEvent.OnOfferSelected(
+                                                offer
+                                            )
                                         )
-                                    )
-                                },
-                                icon = offer.icon
-                            )
+                                    },
+                                    icon = offer.icon
+                                )
+                            }
                         }
-                    }
 
+                    }
                 }
 
                 val onDeliveryNotesChange: (String) -> Unit = remember(state.screenEvent) {
@@ -204,33 +206,6 @@ fun SlotSelectionScreen(
 
             }
 
-
         }
     }
-}
-
-@Composable
-fun DateRow(slots: List<DateSlotPresentation>, onClick: (DateSlotPresentation) -> Unit, selectedDateId: Int? = null) {
-    LazyRow(
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        val datesByMonth = slots.groupBy { it.timeStamp.getMonth() }
-        datesByMonth.forEach { (month, dates) ->
-            item {
-                Month(month = month)
-            }
-            items(dates.size, key = { index -> dates[index].timeStamp }) { index ->
-                val dateSlot = dates[index]
-                val (day, date) = dateSlot.timeStamp.getDayAndDate()
-                DateSlotButton(day = day,
-                    date = date,
-                    selected = dateSlot.id == selectedDateId,
-                    disabled = !dateSlot.isAvailable(),
-                    onClick = { onClick(dateSlot) }
-                )
-            }
-        }
-    }
-
 }

@@ -12,15 +12,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.mixedwash.Route
-import com.mixedwash.core.domain.models.Result
 import com.mixedwash.core.domain.validation.PinCodeValidationUseCase
-import com.mixedwash.features.common.data.entities.AddressEntity
-import com.mixedwash.features.common.data.service.local.LocationService
-import com.mixedwash.features.common.domain.usecases.address.AddressUseCases
-import com.mixedwash.features.common.presentation.address.model.Address
-import com.mixedwash.features.common.presentation.address.model.toAddress
-import com.mixedwash.features.common.presentation.address.model.toAddressEntity
-import com.mixedwash.features.common.presentation.address.model.toFieldIDValueMap
 import com.mixedwash.core.presentation.components.ButtonData
 import com.mixedwash.core.presentation.components.DialogPopupData
 import com.mixedwash.core.presentation.models.FieldID
@@ -33,7 +25,13 @@ import com.mixedwash.core.presentation.models.FormField
 import com.mixedwash.core.presentation.models.InputState
 import com.mixedwash.core.presentation.models.SnackBarType
 import com.mixedwash.core.presentation.models.SnackbarPayload
-import com.mixedwash.core.presentation.util.Logger
+import com.mixedwash.features.common.data.entities.AddressEntity
+import com.mixedwash.features.common.data.service.local.LocationService
+import com.mixedwash.features.common.domain.usecases.address.AddressUseCases
+import com.mixedwash.features.common.presentation.address.model.Address
+import com.mixedwash.features.common.presentation.address.model.toAddress
+import com.mixedwash.features.common.presentation.address.model.toAddressEntity
+import com.mixedwash.features.common.presentation.address.model.toFieldIDValueMap
 import com.mixedwash.libs.loki.autocomplete.AutocompleteResult
 import com.mixedwash.libs.loki.core.Place
 import com.mixedwash.libs.loki.geocoder.GeocoderResult
@@ -62,16 +60,12 @@ class AddressScreenViewModel(
 ) : ViewModel() {
 
     private val addressRoute = savedStateHandle.toRoute<Route.AddressRoute>()
-    private val addressFlow = addressUseCases.getAddressesFlow().run {
-        if (this !is Result.Success) {
+    private val addressFlow = addressUseCases.getAddressesFlow().onFailure {
             snackbarEvent(
                 "Error fetching addresses", SnackBarType.ERROR
             )
-            emptyFlow()
-        } else {
-            data
-        }
-    }
+    }.getOrDefault(emptyFlow())
+
 
     private val _state = MutableStateFlow(initialState())
     val state = addressFlow.combine(_state) { list : List<AddressEntity>, state: AddressScreenState ->
@@ -123,19 +117,17 @@ class AddressScreenViewModel(
             AddressScreenEvent.OnScreenSubmit -> {
                 viewModelScope.launch {
                     state.value.typeParams.asSelect()?.let { selectParams ->
-                        val result = state.value.run {
+                        state.value.run {
                             val uid =
                                 addressList[selectParams.selectedIndex].uid
                             addressUseCases.setDefaultAddress(uid)
-                        }
-                        when (result) {
-                            is Result.Error -> snackbarEvent(
-                                result.error.toString(), SnackBarType.ERROR
+                        }.onSuccess {
+                            _uiEventsChannel.send(AddressScreenUiEvent.NavigateOnSubmit)
+                        }.onFailure { e ->
+                            snackbarEvent(
+                                e.message ?: "Error Setting Default Address", SnackBarType.ERROR
                             )
-
-                            is Result.Success -> {
-                                _uiEventsChannel.send(AddressScreenUiEvent.NavigateOnSubmit)
-                            }
+                            e.printStackTrace()
                         }
                     }
                 }
@@ -152,15 +144,13 @@ class AddressScreenViewModel(
                             _uiEventsChannel.send(AddressScreenUiEvent.CloseForm)
                             return@launch
                         }
-                    val result = addressUseCases.deleteAddress(address.toAddressEntity())
+                    addressUseCases.deleteAddress(address.toAddressEntity()).onFailure { e ->
+                        snackbarEvent(e.message ?: "Error Deleting Address", SnackBarType.ERROR)
+                        e.printStackTrace()
+                    }.getOrNull() ?: return@launch
                     _uiEventsChannel.send(AddressScreenUiEvent.ClosePopup)
-
-                    if (result is Result.Error) {
-                        snackbarEvent(result.error.toString(), SnackBarType.ERROR)
-                    } else {
-                        _uiEventsChannel.send(AddressScreenUiEvent.CloseForm)
-                        snackbarEvent("Address has been deleted successfully", SnackBarType.SUCCESS)
-                    }
+                    _uiEventsChannel.send(AddressScreenUiEvent.CloseForm)
+                    snackbarEvent("Address deleted successfully", SnackBarType.SUCCESS)
                 }
             }
 
@@ -203,13 +193,17 @@ class AddressScreenViewModel(
                 if (!formSubmitValidation(newAddress = address)) return
                 viewModelScope.launch {
                     updateState { copy(formState = formState?.copy(isLoading = true)) }
-                    val result = addressUseCases.upsertAddress(address = address.toAddressEntity())
-                    if (result is Result.Error) {
-                        snackbarEvent(result.error.toString(), SnackBarType.ERROR)
-                    } else {
-                        _uiEventsChannel.send(AddressScreenUiEvent.CloseForm)
-                        snackbarEvent("Address has been updated successfully", SnackBarType.SUCCESS)
-                    }
+                    addressUseCases.upsertAddress(address = address.toAddressEntity())
+                        .onFailure { e ->
+                            snackbarEvent(
+                                e.message ?: "Address Could Not Be Saved",
+                                SnackBarType.ERROR
+                            )
+                            e.printStackTrace()
+                        }.getOrNull() ?: return@launch
+
+                    _uiEventsChannel.send(AddressScreenUiEvent.CloseForm)
+                    snackbarEvent("Address updated successfully", SnackBarType.SUCCESS)
                     updateState { copy(formState = formState?.copy(isLoading = false)) }
                 }
             }

@@ -1,5 +1,6 @@
 package com.mixedwash.core.data
 
+import com.mixedwash.core.data.util.AppCoroutineScope
 import com.mixedwash.core.domain.models.ErrorType
 import com.mixedwash.core.domain.models.Result
 import dev.gitlive.firebase.Firebase
@@ -67,7 +68,7 @@ interface UserService {
 private const val USER_COLLECTION = "USERS"
 
 
-class FirebaseUserService(applicationScope: CoroutineScope) : UserService {
+class FirebaseUserService(applicationScope: AppCoroutineScope) : UserService {
 
     private val db = Firebase.firestore
 

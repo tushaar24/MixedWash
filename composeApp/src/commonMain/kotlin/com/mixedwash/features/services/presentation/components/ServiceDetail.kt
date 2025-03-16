@@ -2,7 +2,6 @@ package com.mixedwash.features.services.presentation.components
 
 import BrandTheme
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
@@ -45,7 +44,7 @@ import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
 import coil3.request.crossfade
-import com.mixedwash.features.local_cart.presentation.model.CartItemPresentation
+import com.mixedwash.features.local_cart.domain.model.CartItem
 import com.mixedwash.features.services.presentation.ServicesScreenEvent
 import com.mixedwash.features.services.presentation.model.ServicePresentation
 import com.mixedwash.ui.theme.Gray100
@@ -60,7 +59,7 @@ fun ServiceDetail(
     service: ServicePresentation,
     onEvent: (ServicesScreenEvent) -> Unit,
     modifier: Modifier = Modifier,
-    serviceCartItems: List<CartItemPresentation>
+    serviceCartItems: List<CartItem>
 ) {
     Box(
         modifier = modifier.clip(RoundedCornerShape(18.dp)).background(Gray100)

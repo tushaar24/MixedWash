@@ -34,7 +34,7 @@ fun DateSlotButton(
     val containerColor = if (disabled || !selected) {
         Color.Transparent
     } else {
-        BrandTheme.colors.gray.dark
+        BrandTheme.colors.gray.darker
     }
     val contentColor = if (disabled) {
         BrandTheme.colors.gray.normal

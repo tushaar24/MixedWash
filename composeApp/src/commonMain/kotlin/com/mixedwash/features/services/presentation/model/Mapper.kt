@@ -22,22 +22,22 @@ fun ServiceItemDto.toPresentation(serviceId: String): ServiceItemPresentation = 
     serviceId = serviceId
 )
 
-fun ServiceItemMetadataDto.toPresentation(): ServiceItemMetadataPresentation =
-    ServiceItemMetadataPresentation(
+fun ServiceItemMetadataDto.toPresentation(): ServiceItemMetadata =
+    ServiceItemMetadata(
         imageUrl = this.imageUrl,
         gender = this.gender?.toPresentation()
     )
 
 // ItemPricing mapping
-fun ItemPricingDto.toPresentation(): ItemPricingPresentation = when (this) {
-    is ItemPricingDto.SubItemRangedPricingDto -> ItemPricingPresentation.SubItemRangedPricingPresentation(
+fun ItemPricingDto.toPresentation(): ItemPricing = when (this) {
+    is ItemPricingDto.SubItemRangedPricingDto -> ItemPricing.SubItemRangedPricingPresentation(
         minPrice = this.minPrice,
         maxPrice = this.maxPrice
     )
-    is ItemPricingDto.SubItemFixedPricingDto -> ItemPricingPresentation.SubItemFixedPricingPresentation(
+    is ItemPricingDto.SubItemFixedPricingDto -> ItemPricing.SubItemFixedPricingPresentation(
         fixedPrice = this.fixedPrice
     )
-    is ItemPricingDto.ServiceItemPricingDto -> ItemPricingPresentation.ServiceItemPricingPresentation(
+    is ItemPricingDto.ServiceItemPricingDto -> ItemPricing.ServiceItemPricingPresentation(
         pricePerUnit = this.pricePerUnit,
         unit = this.unit,
         minimumUnits = this.minimumUnits,
@@ -80,10 +80,10 @@ fun PricingMetadataDto.toPresentation(): PricingMetadataPresentation = when (thi
     )
 }
 
-fun GenderDto.toPresentation() : GenderPresentation = when (this) {
-    GenderDto.MALE -> GenderPresentation.MALE
-    GenderDto.FEMALE -> GenderPresentation.FEMALE
-    GenderDto.BOTH -> GenderPresentation.BOTH
+fun GenderDto.toPresentation() : Gender = when (this) {
+    GenderDto.MALE -> Gender.MALE
+    GenderDto.FEMALE -> Gender.FEMALE
+    GenderDto.BOTH -> Gender.BOTH
 }
 
 fun ServiceItemPresentation.toCartItemEntity(deliveryTimeMinInHrs: Int, deliveryTimeMaxInHrs: Int?) : CartItemEntity {
@@ -99,34 +99,34 @@ fun ServiceItemPresentation.toCartItemEntity(deliveryTimeMinInHrs: Int, delivery
     )
 }
 
-fun ServiceItemMetadataPresentation.toEntity() : ItemMetadataEntity {
+fun ServiceItemMetadata.toEntity() : ItemMetadataEntity {
     return ItemMetadataEntity(
         imageUrl = imageUrl,
         gender = when(gender) {
-            GenderPresentation.MALE -> GenderEntity.MALE
-            GenderPresentation.FEMALE -> GenderEntity.FEMALE
-            GenderPresentation.BOTH -> GenderEntity.BOTH
+            Gender.MALE -> GenderEntity.MALE
+            Gender.FEMALE -> GenderEntity.FEMALE
+            Gender.BOTH -> GenderEntity.BOTH
             null -> null
         }
     )
 }
 
-fun ItemPricingPresentation.toItemPricingEntity() : ItemPricingEntity {
+fun ItemPricing.toItemPricingEntity() : ItemPricingEntity {
     return when(this) {
-        is ItemPricingPresentation.SubItemRangedPricingPresentation -> ItemPricingEntity(
+        is ItemPricing.SubItemRangedPricingPresentation -> ItemPricingEntity(
             pricingType = PricingTypeEntity.RANGED,
             rangedMinPrice = minPrice,
             rangedMaxPrice = maxPrice,
         )
 
-        is ItemPricingPresentation.ServiceItemPricingPresentation -> ItemPricingEntity(
+        is ItemPricing.ServiceItemPricingPresentation -> ItemPricingEntity(
             pricingType = PricingTypeEntity.SERVICE,
             servicePricePerUnit = pricePerUnit,
             serviceUnit = unit,
             serviceMinimumUnits = minimumUnits,
             serviceMinimumPrice = minimumPrice,
         )
-        is ItemPricingPresentation.SubItemFixedPricingPresentation -> ItemPricingEntity(
+        is ItemPricing.SubItemFixedPricingPresentation -> ItemPricingEntity(
             pricingType = PricingTypeEntity.FIXED,
             fixedPrice = fixedPrice,
         )

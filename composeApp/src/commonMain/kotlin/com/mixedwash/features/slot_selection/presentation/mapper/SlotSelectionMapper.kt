@@ -3,17 +3,17 @@ package com.mixedwash.features.slot_selection.presentation.mapper
 import com.mixedwash.features.slot_selection.data.model.DateSlotDto
 import com.mixedwash.features.slot_selection.data.model.OfferDto
 import com.mixedwash.features.slot_selection.data.model.TimeSlotDto
-import com.mixedwash.features.slot_selection.data.model.response.SlotsResponseDto
+import com.mixedwash.features.slot_selection.data.model.response.AvailableSlotsResponseDto
 import com.mixedwash.features.slot_selection.presentation.model.DateSlotPresentation
 import com.mixedwash.features.slot_selection.presentation.model.OfferPresentation
 import com.mixedwash.features.slot_selection.presentation.model.SlotsResponsePresentation
 import com.mixedwash.features.slot_selection.presentation.model.TimeSlotPresentation
 
 object SlotSelectionMapper {
-    fun SlotsResponseDto.toPresentation() = SlotsResponsePresentation(
+    fun AvailableSlotsResponseDto.toPresentation() = SlotsResponsePresentation(
         pickupSlots = pickupSlots.map { it.toPresentation() },
         dropSlots = dropSlots.map { it.toPresentation() },
-        commonOffers = commonOffers.map { it.toPresentation() }
+        commonOffers = commonOffers?.map { it.toPresentation() }
     )
 
     fun DateSlotDto.toPresentation() = DateSlotPresentation(

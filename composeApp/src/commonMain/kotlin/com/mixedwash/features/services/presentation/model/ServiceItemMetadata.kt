@@ -1,6 +1,6 @@
 package com.mixedwash.features.services.presentation.model
 
-data class ServiceItemMetadataPresentation(
+data class ServiceItemMetadata(
     val imageUrl: String? = null,
-    val gender: GenderPresentation? = null,
+    val gender: Gender? = null,
 )
