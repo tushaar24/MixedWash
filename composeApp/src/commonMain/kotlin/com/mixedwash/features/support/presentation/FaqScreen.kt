@@ -24,6 +24,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -50,8 +51,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mixedwash.WindowInsetsContainer
+import com.mixedwash.core.presentation.components.DefaultHeader
+import com.mixedwash.core.presentation.components.HeadingAlign
+import com.mixedwash.core.presentation.components.HeadingSize
 import com.mixedwash.core.presentation.components.noRippleClickable
 import com.mixedwash.features.support.domain.model.FaqItemDTO
+import com.mixedwash.ui.theme.components.HeaderIconButton
 
 @Composable
 fun FaqScreen(
@@ -59,136 +64,159 @@ fun FaqScreen(
     onEvent: (FaqScreenEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
+
     WindowInsetsContainer {
-        Box(modifier = modifier.fillMaxSize().padding(16.dp)) {
-            Column(
-                modifier = Modifier.fillMaxHeight(),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                Text(
-                    text = "How can we help you?",
-                    style = BrandTheme.typography.h5.copy(fontSize = 20.sp)
-                )
-
-                SearchBarWithIcon(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = state.searchString,
-                    onValueChange = { onEvent(FaqScreenEvent.OnSearchStringValueChanged(it)) },
-                    leadingIcon = Icons.Default.Search,
-                    placeholder = "Search for FAQs",
-                )
-
-                Row(
-                    modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    for (label in state.faqCategories) {
-                        LabelChip(
-                            selected = state.currentCategory == label,
-                            onClick = { onEvent(FaqScreenEvent.OnFaqCategoryChipClicked(label)) },
-                            text = label.name
-                        )
-                    }
+        Column {
+            DefaultHeader(
+                title = "Help Center",
+                headingSize = HeadingSize.Subtitle1,
+                headingAlign = HeadingAlign.Start,
+                navigationButton = {
+                    HeaderIconButton(
+                        imageVector = Icons.AutoMirrored.Default.KeyboardArrowLeft,
+                        onClick = {}
+                    )
                 }
+            )
 
-                LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    if (state.searchString.isEmpty()) {
-                        item {
-                            Text(
-                                text = "Most Searched Questions",
-                                style = BrandTheme.typography.subtitle3.copy(
-                                    fontWeight = FontWeight.W500,
-                                    fontSize = 13.sp,
-                                    color = BrandTheme.colors.gray.normalDark
-                                ),
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Box(modifier = modifier.fillMaxSize().padding(horizontal = 16.dp)) {
+                Column(
+                    modifier = Modifier.fillMaxHeight(),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Text(
+                        text = "How can we help you?",
+                        style = BrandTheme.typography.h5.copy(fontSize = 20.sp)
+                    )
+
+                    SearchBarWithIcon(
+                        modifier = Modifier.fillMaxWidth(),
+                        value = state.searchString,
+                        onValueChange = { onEvent(FaqScreenEvent.OnSearchStringValueChanged(it)) },
+                        leadingIcon = Icons.Default.Search,
+                        placeholder = "Search for FAQs",
+                    )
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        for (label in state.faqCategories) {
+                            LabelChip(
+                                selected = state.currentCategory == label,
+                                onClick = { onEvent(FaqScreenEvent.OnFaqCategoryChipClicked(label)) },
+                                text = label.name
                             )
                         }
+                    }
 
-                        item {
-                            LazyRow(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                items(state.faqTags) {
-                                    Box(
-                                        modifier = Modifier.clip(CircleShape)
-                                            .background(BrandTheme.colors.gray.light)
-                                            .clickable { onEvent(FaqScreenEvent.OnFaqTagClicked(it.displayTag)) }
-                                    ) {
-                                        Text(
-                                            modifier = Modifier.padding(12.dp),
-                                            text = it.displayTag,
-                                            style = BrandTheme.typography.label.copy(
-                                                fontWeight = FontWeight.W600, lineHeight = 20.sp
+                    LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        if (state.searchString.isEmpty()) {
+                            item {
+                                Text(
+                                    text = "Most Searched Questions",
+                                    style = BrandTheme.typography.subtitle3.copy(
+                                        fontWeight = FontWeight.W500,
+                                        fontSize = 13.sp,
+                                        color = BrandTheme.colors.gray.normalDark
+                                    ),
+                                )
+                            }
+
+                            item {
+                                LazyRow(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    items(state.faqTags) {
+                                        Box(
+                                            modifier = Modifier.clip(CircleShape)
+                                                .background(BrandTheme.colors.gray.light)
+                                                .clickable {
+                                                    onEvent(
+                                                        FaqScreenEvent.OnFaqTagClicked(
+                                                            it.displayTag
+                                                        )
+                                                    )
+                                                }
+                                        ) {
+                                            Text(
+                                                modifier = Modifier.padding(12.dp),
+                                                text = it.displayTag,
+                                                style = BrandTheme.typography.label.copy(
+                                                    fontWeight = FontWeight.W600, lineHeight = 20.sp
+                                                )
                                             )
-                                        )
+                                        }
                                     }
                                 }
                             }
+
+                            item {
+                                Spacer(Modifier.height(4.dp))
+                            }
+
+                            item {
+                                Text(
+                                    text = "All Questions",
+                                    style = BrandTheme.typography.subtitle3.copy(
+                                        fontWeight = FontWeight.W500,
+                                        fontSize = 13.sp,
+                                        color = BrandTheme.colors.gray.normalDark
+                                    ),
+                                )
+                            }
+                        } else {
+                            item {
+                                Text(
+                                    text = "Search Results for \"${state.searchString}\"",
+                                    style = BrandTheme.typography.subtitle3.copy(
+                                        fontWeight = FontWeight.W500,
+                                        color = BrandTheme.colors.gray.normalDark
+                                    ),
+                                )
+
+                            }
                         }
 
-                        item {
-                            Spacer(Modifier.height(4.dp))
-                        }
-
-                        item {
-                            Text(
-                                text = "All Questions",
-                                style = BrandTheme.typography.subtitle3.copy(
-                                    fontWeight = FontWeight.W500,
-                                    fontSize = 13.sp,
-                                    color = BrandTheme.colors.gray.normalDark
-                                ),
+                        items(state.faqItems) {
+                            FaqItemCard(
+                                modifier = Modifier.padding(vertical = 8.dp),
+                                item = it
                             )
                         }
-                    } else {
+
+                        // to avoid the content being hidden by the bottom button
                         item {
-                            Text(
-                                text = "Search Results for \"${state.searchString}\"",
-                                style = BrandTheme.typography.subtitle3.copy(
-                                    fontWeight = FontWeight.W500,
-                                    color = BrandTheme.colors.gray.normalDark
-                                ),
-                            )
-
+                            Spacer(Modifier.height(64.dp))
                         }
-                    }
-
-                    items(state.faqItems) {
-                        FaqItemCard(
-                            modifier = Modifier.padding(vertical = 8.dp),
-                            item = it
-                        )
-                    }
-
-                    // to avoid the content being hidden by the bottom button
-                    item {
-                        Spacer(Modifier.height(64.dp))
                     }
                 }
-            }
 
-            Button(
-                modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter),
-                onClick = { onEvent(FaqScreenEvent.OnCallButtonClicked) },
-                shape = BrandTheme.shapes.button,
-                colors = ButtonDefaults.buttonColors(containerColor = BrandTheme.colors.gray.darker)
-            ) {
-                Row(
-                    modifier = Modifier.padding(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                Button(
+                    modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter),
+                    onClick = { onEvent(FaqScreenEvent.OnCallButtonClicked) },
+                    shape = BrandTheme.shapes.button,
+                    colors = ButtonDefaults.buttonColors(containerColor = BrandTheme.colors.gray.darker)
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Call,
-                        contentDescription = "Call"
-                    )
+                    Row(
+                        modifier = Modifier.padding(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Call,
+                            contentDescription = "Call"
+                        )
 
-                    Spacer(Modifier.width(8.dp))
+                        Spacer(Modifier.width(8.dp))
 
-                    Text(
-                        text = "Call Us",
-                        style = BrandTheme.typography.mediumButton
-                    )
+                        Text(
+                            text = "Call Us",
+                            style = BrandTheme.typography.mediumButton
+                        )
+                    }
                 }
             }
         }

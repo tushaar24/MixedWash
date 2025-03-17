@@ -43,9 +43,12 @@ import com.mixedwash.core.presentation.navigation.AuthNav
 import com.mixedwash.core.presentation.navigation.HomeNav
 import com.mixedwash.core.presentation.navigation.ProfileNav
 import com.mixedwash.core.presentation.util.Logger
+import com.mixedwash.features.support.presentation.FaqScreen
+import com.mixedwash.features.support.presentation.FaqScreenViewModel
 import com.mixedwash.ui.theme.MixedWashTheme
 import org.koin.compose.KoinContext
 import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -160,6 +163,15 @@ fun App() {
                                         shimmerColor = BrandTheme.colors.gray.normalDark
                                     )
                                 }
+                            }
+
+                            composable<Route.FaqRoute> {
+                                val viewModel = koinViewModel<FaqScreenViewModel>()
+                                val state by viewModel.state.collectAsStateWithLifecycle()
+                                FaqScreen(
+                                    state = state,
+                                    onEvent = viewModel::onEvent,
+                                )
                             }
                         }
                     }
