@@ -1,12 +1,14 @@
 package com.mixedwash
 
+import com.mixedwash.core.presentation.util.Logger
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+
+private const val TAG = "ROUTE"
 
 @Serializable
 sealed class Route {
 
-    // SCREEN ROUTES
     @Serializable
     data class AddressRoute(
         val title: String,
@@ -24,18 +26,37 @@ sealed class Route {
 
         init {
             if (screenType == ScreenType.SelectAddress) {
-                requireNotNull(submitText
-                ) { "Submit text cannot be null for screen type SelectAddress" }
+                Logger.e(TAG, "ERROR: Submit text cannot be null for screen type SelectAddress")
             }
         }
     }
 
     @Serializable
     data object SlotSelectionRoute : Route()
+
     @Serializable
-    data object OrderReviewRoute : Route()
+    data class BookingDetailsRoute(
+        val bookingId: String? = null,
+        val destinationType: DestinationType
+    ) : Route() {
+        @Serializable
+        enum class DestinationType {
+            @SerialName("confirm_draft_booking")
+            CONFIRM_DRAFT_BOOKING,
+
+            @SerialName("view_booking_by_id")
+            VIEW_BOOKING_BY_ID,
+        }
+
+        init {
+            if (destinationType == DestinationType.VIEW_BOOKING_BY_ID) {
+                Logger.e(TAG, "ERROR : Booking Id cannot be null for screen type ViewBookingById")
+            }
+        }
+    }
+
     @Serializable
-    data object OrderConfirmationRoute : Route()
+    data class BookingConfirmationRoute(@SerialName("booking_id") val bookingId: String) : Route()
 
     @Serializable
     data object ProfileRoute : Route()

@@ -3,6 +3,7 @@ package com.mixedwash.features.common.di
 import com.mixedwash.TestApiKeyConfig
 import com.mixedwash.core.booking.di.BookingsModule
 import com.mixedwash.core.presentation.navigation.NavigationModule
+import com.mixedwash.features.booking_details.di.BookingDetailsModule
 import com.mixedwash.features.common.data.repository.AddressRepositoryImpl
 import com.mixedwash.features.common.data.service.local.LocationService
 import com.mixedwash.features.common.domain.repository.AddressRepository
@@ -39,7 +40,8 @@ val CommonModule = module {
         ServicesModule,
         LocalCartModule,
         BookingsModule,
-        SlotSelectionModule
+        SlotSelectionModule,
+        BookingDetailsModule
     )
 
     single { FindUserByPhoneUseCase }

@@ -1,5 +1,6 @@
 package com.mixedwash.features.services.presentation.model
 
+import com.mixedwash.core.booking.domain.model.BookingItemPricing
 import com.mixedwash.features.local_cart.data.model.CartItemEntity
 import com.mixedwash.features.local_cart.data.model.GenderEntity
 import com.mixedwash.features.local_cart.data.model.ItemPricingEntity
@@ -132,5 +133,7 @@ fun ItemPricing.toItemPricingEntity() : ItemPricingEntity {
         )
     }
 }
+
+
 
 

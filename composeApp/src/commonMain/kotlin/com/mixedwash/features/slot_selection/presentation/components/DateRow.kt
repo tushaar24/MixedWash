@@ -8,10 +8,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.mixedwash.core.presentation.util.getDayAndDate
 import com.mixedwash.core.presentation.util.getMonth
-import com.mixedwash.features.slot_selection.presentation.model.DateSlotPresentation
+import com.mixedwash.features.slot_selection.domain.model.response.DateSlot
 
 @Composable
-fun DateRow(slots: List<DateSlotPresentation>, onClick: (DateSlotPresentation) -> Unit, selectedDateId: Int? = null) {
+fun DateRow(slots: List<DateSlot>, onClick: (DateSlot) -> Unit, selectedDateId: Int? = null) {
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier.fillMaxWidth()

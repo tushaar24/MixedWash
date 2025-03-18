@@ -10,15 +10,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.mixedwash.core.presentation.util.formatTime
-import com.mixedwash.features.slot_selection.presentation.model.DateSlotPresentation
-import com.mixedwash.features.slot_selection.presentation.model.TimeSlotPresentation
+import com.mixedwash.features.slot_selection.domain.model.response.DateSlot
+import com.mixedwash.features.slot_selection.domain.model.response.TimeSlot
 
 @Composable
 fun TimeSlotGrid(
     modifier: Modifier = Modifier,
-    dateSlot: DateSlotPresentation?,
+    dateSlot: DateSlot?,
     selectedTimeId: Int?,
-    onSlotSelected: (TimeSlotPresentation) -> Unit
+    onSlotSelected: (TimeSlot) -> Unit
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(14.dp),

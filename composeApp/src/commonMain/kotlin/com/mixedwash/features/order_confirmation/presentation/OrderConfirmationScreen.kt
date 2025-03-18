@@ -38,7 +38,12 @@ fun OrderConfirmationScreen(
 
     ObserveAsEvents(uiEvents) { event ->
         when (event) {
-            is OrderConfirmationScreenUiEvent.Navigate -> navController.navigate(event.route)
+            is OrderConfirmationScreenUiEvent.Navigate -> {
+                navController.navigate(event.route) {
+                    // pop everything else
+                    popUpTo(0)
+                }
+            }
         }
     }
 

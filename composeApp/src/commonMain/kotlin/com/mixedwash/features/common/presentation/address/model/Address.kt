@@ -5,10 +5,12 @@ import com.mixedwash.core.presentation.util.Logger
 import com.mixedwash.features.common.data.entities.AddressEntity
 import com.mixedwash.core.presentation.models.FieldID
 import com.mixedwash.libs.loki.core.Place
+import kotlinx.serialization.Serializable
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 @Immutable
+@Serializable
 data class Address @OptIn(ExperimentalUuidApi::class) constructor(
     val uid: String = Uuid.random().toHexString(),
     val title: String,

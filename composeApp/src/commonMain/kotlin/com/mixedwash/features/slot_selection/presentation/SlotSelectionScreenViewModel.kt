@@ -2,16 +2,17 @@ package com.mixedwash.features.slot_selection.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mixedwash.core.booking.domain.model.toBookingItem
+import com.mixedwash.core.booking.domain.model.toBookingTimeSlot
 import com.mixedwash.core.booking.domain.repository.BookingsRepository
 import com.mixedwash.core.presentation.models.SnackBarType
 import com.mixedwash.core.presentation.util.Logger
 import com.mixedwash.features.common.domain.repository.AddressRepository
 import com.mixedwash.features.local_cart.domain.LocalCartRepository
 import com.mixedwash.features.local_cart.domain.model.toDomain
+import com.mixedwash.features.slot_selection.domain.model.response.SlotSelectionMapper.toDomain
+import com.mixedwash.features.slot_selection.domain.model.response.TimeSlot
 import com.mixedwash.features.slot_selection.domain.repository.SlotsRepository
-import com.mixedwash.features.slot_selection.presentation.mapper.SlotSelectionMapper.toDto
-import com.mixedwash.features.slot_selection.presentation.mapper.SlotSelectionMapper.toPresentation
-import com.mixedwash.features.slot_selection.presentation.model.TimeSlotPresentation
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -59,13 +60,6 @@ class SlotSelectionScreenViewModel(
     private val _uiEventsChannel = Channel<SlotSelectionScreenUiEvent>()
     val uiEventsFlow = _uiEventsChannel.receiveAsFlow()
 
-    init {
-        viewModelScope.launch {
-            processingDurationInHrs.collect {
-                Logger.d("SlotSelectionScreenViewModel", "processingDurationInHrs: $it")
-            }
-        }
-    }
 
     private fun onEvent(event: SlotSelectionScreenEvent) {
         when (event) {
@@ -169,23 +163,40 @@ class SlotSelectionScreenViewModel(
 
             SlotSelectionScreenEvent.OnSubmit -> {
                 viewModelScope.launch {
-                    if (!submitValidation()) return@launch
+                    Logger.d("SlotSelectionScreenViewModel", "OnSubmit")
                     runCatching {
+                        if (!submitValidation()) {
+                            throw IllegalStateException("Invalid Slots")
+                        }
                         val address = addressRepository.run {
-                            val defaultAddress = getDefaultAddress().getOrThrow()
-                            getAddressByUid(defaultAddress).getOrThrow()
+//                            val defaultAddress = getDefaultAddress().getOrThrow()
+//                            getAddressByUid(defaultAddress).getOrThrow()
+                            getAddresses().getOrThrow().first()
                         }
                         val cartItems =
                             localCartRepository.getCartItems().getOrThrow().map { it.toDomain() }
-                        bookingsRepository.createBooking(
-                            pickupSlot = getTimeSlotById(state.value.pickupTimeSelectedId!!)!!.toDto(),
-                            dropSlot = getTimeSlotById(state.value.dropTimeSelectedId!!)!!.toDto(),
+                        bookingsRepository.setBookingDraft(
+                            pickupSlot = getTimeSlotById(state.value.pickupTimeSelectedId!!)!!.toBookingTimeSlot(),
+                            dropSlot = getTimeSlotById(state.value.dropTimeSelectedId!!)!!.toBookingTimeSlot(),
                             offer = state.value.selectedOfferCode,
                             deliveryNotes = state.value.deliveryNotes,
-                            cartItems = cartItems,
+                            bookingItems = cartItems.map { it.toBookingItem() },
                             address = address.toAddress()
-                        )
-
+                        ).onSuccess {
+                            _uiEventsChannel.send(SlotSelectionScreenUiEvent.NavigateToReview(it))
+                        }.onFailure {
+                            Logger.d("SlotSelectionScreenViewModel", "Error Booking")
+                            _uiEventsChannel.send(
+                                SlotSelectionScreenUiEvent.ShowSnackbar(
+                                    it.message ?: "Error Booking", type = SnackBarType.ERROR
+                                )
+                            )
+                        }
+                    }.onFailure { e ->
+                        val message = e.message ?: "Error Booking"
+                        snackbarEvent(message, type = SnackBarType.ERROR)
+                        Logger.e("SlotSelectionScreenViewModel", message)
+                        e.printStackTrace()
                     }
                 }
             }
@@ -193,7 +204,7 @@ class SlotSelectionScreenViewModel(
         }
     }
 
-    private fun getTimeSlotById(id: Int): TimeSlotPresentation? {
+    private fun getTimeSlotById(id: Int): TimeSlot? {
         state.value.run {
             for (dateSlot in pickupSlots) {
                 for (timeSlot in dateSlot.timeSlots) {
@@ -257,7 +268,7 @@ class SlotSelectionScreenViewModel(
             }
 
             slotsRepository.fetchAvailableSlots().onSuccess { slotsDto ->
-                val slots = slotsDto.toPresentation()
+                val slots = slotsDto.toDomain()
                 updateState {
                     copy(
                         isLoading = false,

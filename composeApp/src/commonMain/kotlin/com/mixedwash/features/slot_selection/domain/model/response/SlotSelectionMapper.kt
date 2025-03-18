@@ -1,37 +1,33 @@
-package com.mixedwash.features.slot_selection.presentation.mapper
+package com.mixedwash.features.slot_selection.domain.model.response
 
 import com.mixedwash.features.slot_selection.data.model.DateSlotDto
 import com.mixedwash.features.slot_selection.data.model.OfferDto
 import com.mixedwash.features.slot_selection.data.model.TimeSlotDto
 import com.mixedwash.features.slot_selection.data.model.response.AvailableSlotsResponseDto
-import com.mixedwash.features.slot_selection.presentation.model.DateSlotPresentation
-import com.mixedwash.features.slot_selection.presentation.model.OfferPresentation
-import com.mixedwash.features.slot_selection.presentation.model.SlotsResponsePresentation
-import com.mixedwash.features.slot_selection.presentation.model.TimeSlotPresentation
 
 object SlotSelectionMapper {
-    fun AvailableSlotsResponseDto.toPresentation() = SlotsResponsePresentation(
-        pickupSlots = pickupSlots.map { it.toPresentation() },
-        dropSlots = dropSlots.map { it.toPresentation() },
-        commonOffers = commonOffers?.map { it.toPresentation() }
+    fun AvailableSlotsResponseDto.toDomain() = SlotsResponse(
+        pickupSlots = pickupSlots.map { it.toDomain() },
+        dropSlots = dropSlots.map { it.toDomain() },
+        commonOffers = commonOffers?.map { it.toDomain() }
     )
 
-    fun DateSlotDto.toPresentation() = DateSlotPresentation(
+    fun DateSlotDto.toDomain() = DateSlot(
         id = id,
         timeStamp = timeStamp,
-        timeSlots = timeSlots.map { it.toPresentation() }
+        timeSlots = timeSlots.map { it.toDomain() }
     )
 
-    fun TimeSlotDto.toPresentation() = TimeSlotPresentation(
+    fun TimeSlotDto.toDomain() = TimeSlot(
         id = id,
         startTimeStamp = startTimeStamp,
         endTimeStamp = endTimeStamp,
         isAvailable = isAvailable,
         unavailableText = unavailableText,
-        offersAvailable = offersAvailable.map { it.toPresentation() }
+        offersAvailable = offersAvailable.map { it.toDomain() }
     )
 
-    fun OfferDto.toPresentation() = OfferPresentation(
+    fun OfferDto.toDomain() = Offer(
         code = code,
         icon = icon,
         title = title,
@@ -40,7 +36,7 @@ object SlotSelectionMapper {
         isAvailable = isAvailable
     )
 
-    fun TimeSlotPresentation.toDto() = TimeSlotDto(
+    fun TimeSlot.toDto() = TimeSlotDto(
         id = id,
         startTimeStamp = startTimeStamp,
         endTimeStamp = endTimeStamp,
@@ -49,7 +45,7 @@ object SlotSelectionMapper {
         offersAvailable = offersAvailable.map { it.toDto() }
     )
 
-    fun OfferPresentation.toDto() = OfferDto(
+    fun Offer.toDto() = OfferDto(
         code = code,
         icon = icon,
         title = title,

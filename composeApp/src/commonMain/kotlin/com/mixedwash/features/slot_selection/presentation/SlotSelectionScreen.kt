@@ -23,20 +23,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.mixedwash.Route
 import com.mixedwash.WindowInsetsContainer
 import com.mixedwash.core.presentation.components.DefaultHeader
 import com.mixedwash.core.presentation.components.HeadingAlign
 import com.mixedwash.core.presentation.components.HeadingSize
 import com.mixedwash.core.presentation.models.SnackbarHandler
 import com.mixedwash.core.presentation.models.SnackbarPayload
+import com.mixedwash.core.presentation.util.Logger
 import com.mixedwash.core.presentation.util.ObserveAsEvents
+import com.mixedwash.features.services.presentation.components.DefaultButtonLarge
+import com.mixedwash.features.slot_selection.domain.model.response.DateSlot
 import com.mixedwash.features.slot_selection.presentation.components.Coupon
 import com.mixedwash.features.slot_selection.presentation.components.DateRow
 import com.mixedwash.features.slot_selection.presentation.components.DeliveryNotes
 import com.mixedwash.features.slot_selection.presentation.components.TimeSlotGrid
-import com.mixedwash.features.slot_selection.presentation.model.DateSlotPresentation
 import com.mixedwash.ui.theme.components.HeaderIconButton
-import com.mixedwash.ui.theme.components.PrimaryButton
 import com.mixedwash.ui.theme.headerContentSpacing
 import com.mixedwash.ui.theme.screenHorizontalPadding
 import com.mixedwash.ui.theme.screenVerticalPadding
@@ -47,18 +50,33 @@ fun SlotSelectionScreen(
     modifier: Modifier = Modifier,
     state: SlotSelectionScreenState,
     uiEventsFlow: Flow<SlotSelectionScreenUiEvent>,
-    snackbarHandler: SnackbarHandler
+    snackbarHandler: SnackbarHandler,
+    navController: NavController
 ) {
 
     ObserveAsEvents(uiEventsFlow) { event ->
         when (event) {
-            is SlotSelectionScreenUiEvent.ShowSnackbar -> snackbarHandler(
-                snackbarPayload = SnackbarPayload(
-                    message = event.value,
-                    type = event.type,
-                    duration = SnackbarDuration.Short
+            is SlotSelectionScreenUiEvent.ShowSnackbar -> {
+                Logger.d("SlotSelectionScreen", "ShowSnackbar")
+                snackbarHandler(
+                    snackbarPayload = SnackbarPayload(
+                        message = event.value,
+                        type = event.type,
+                        duration = SnackbarDuration.Short
+                    )
                 )
-            )
+            }
+
+            is SlotSelectionScreenUiEvent.NavigateToReview -> {
+                Logger.d("SlotSelectionScreen", "NavigateToReview")
+                navController.navigate(
+                    Route.BookingDetailsRoute(
+                        bookingId = null,
+                        destinationType = Route.BookingDetailsRoute.DestinationType.CONFIRM_DRAFT_BOOKING
+                    )
+                )
+
+            }
         }
     }
 
@@ -101,7 +119,7 @@ fun SlotSelectionScreen(
                     )
                     Spacer(Modifier.height(2.dp))
 
-                    val onPickupDateClick: (DateSlotPresentation) -> Unit = remember(state.screenEvent) {
+                    val onPickupDateClick: (DateSlot) -> Unit = remember(state.screenEvent) {
                         { dateSlot ->
                             state.screenEvent(SlotSelectionScreenEvent.OnPickupDateSelected(dateSlot))
                         }
@@ -130,7 +148,7 @@ fun SlotSelectionScreen(
                     )
                     Spacer(Modifier.height(2.dp))
 
-                    val onDropDateClick: (DateSlotPresentation) -> Unit = remember(state.screenEvent) {
+                    val onDropDateClick: (DateSlot) -> Unit = remember(state.screenEvent) {
                         { dateSlot ->
                             state.screenEvent(SlotSelectionScreenEvent.OnDropDateSelect(dateSlot))
                         }
@@ -198,10 +216,11 @@ fun SlotSelectionScreen(
                         state.pickupTimeSelectedId != null && state.dropTimeSelectedId != null
                     }
                 }
-                PrimaryButton(
+                DefaultButtonLarge(
                     modifier = Modifier.fillMaxWidth(),
                     text = "BOOK ORDER",
-                    enabled = isEnabled
+                    enabled = isEnabled,
+                    onClick = { state.screenEvent(SlotSelectionScreenEvent.OnSubmit) }
                 )
 
             }

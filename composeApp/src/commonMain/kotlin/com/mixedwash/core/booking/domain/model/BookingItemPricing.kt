@@ -1,19 +1,29 @@
 package com.mixedwash.core.booking.domain.model
 
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
 sealed class BookingItemPricing {
+    @Serializable
+    @SerialName("sub_item_ranged_pricing")
     data class SubItemRangedPricing(
-        val minPrice: Int,
-        val maxPrice: Int
+        @SerialName("min_price") val minPrice: Int,
+        @SerialName("max_price") val maxPrice: Int
     ) : BookingItemPricing()
 
+    @Serializable
+    @SerialName("sub_item_fixed_pricing")
     data class SubItemFixedPricing(
-        val fixedPrice: Int
+        @SerialName("fixed_price") val fixedPrice: Int
     ) : BookingItemPricing()
 
+    @Serializable
+    @SerialName("service_item_pricing")
     data class ServiceItemPricing(
-        val pricePerUnit: Int,
-        val unit: String,
-        val minimumUnits: Int,
-        val minimumPrice: Int
+        @SerialName("price_per_unit") val pricePerUnit: Int,
+        @SerialName("unit") val unit: String,
+        @SerialName("minimum_units") val minimumUnits: Int,
+        @SerialName("minimum_price") val minimumPrice: Int
     ) : BookingItemPricing()
 }
