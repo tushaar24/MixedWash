@@ -27,16 +27,16 @@ fun BookingItem(
     Column(
         modifier = modifier.padding(vertical = 6.dp)
     ) {
-        // Top row: Title and Price
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.Top
         ) {
-            // Title with weight to take available space
-            Text(
+            Text (
                 text = title,
-                style = TextStyle(fontSize = 14.sp, lineHeight = 18.sp, fontWeight = FontWeight.Medium),
+                fontSize = 14.sp,
+                lineHeight = 18.sp,
+                fontWeight = FontWeight.Medium,
                 modifier = Modifier
                     .weight(1f, fill = true)
                     .padding(end = 16.dp)
@@ -50,7 +50,7 @@ fun BookingItem(
         }
 
         // Add space between rows
-        Spacer(modifier = Modifier.height(6.dp))
+//        Spacer(modifier = Modifier.height(6.dp))
 
         // Bottom row: Description and Action
         Row(
@@ -61,7 +61,7 @@ fun BookingItem(
             // Description with weight to take available space
             Text(
                 text = description,
-                style = TextStyle(fontSize = 12.sp),
+                fontSize = 12.sp,
                 modifier = Modifier
                     .weight(1f, fill = true)
                     .padding(end = 16.dp)

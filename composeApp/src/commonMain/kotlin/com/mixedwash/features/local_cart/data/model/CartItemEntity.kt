@@ -12,6 +12,7 @@ data class CartItemEntity(
     @ColumnInfo(index = true)
     val serviceId: String,
     val name: String,
+    val serviceName: String,
     @Embedded val metadata: ItemMetadataEntity? = null,
     @Embedded val itemPricing: ItemPricingEntity,
     val deliveryTimeMinInHrs: Int,

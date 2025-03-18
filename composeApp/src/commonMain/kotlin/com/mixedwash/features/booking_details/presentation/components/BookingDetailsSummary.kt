@@ -1,5 +1,6 @@
 package com.mixedwash.features.booking_details.presentation.components
 
+import BrandTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,7 +17,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
@@ -86,9 +86,8 @@ fun BookingDetailsSummary(
                     text = """
                         ${day.capitalize()}, $date 
                         $startTime - $endTime
-                    """.trimIndent(), lineHeight = 1.5.em, style = TextStyle(
+                    """.trimIndent(), lineHeight = 1.5.em,
                         fontSize = 12.sp
-                    )
                 )
             }
             Column(
@@ -111,9 +110,7 @@ fun BookingDetailsSummary(
                     text = """
                         ${day.capitalize()}, $date 
                         $startTime - $endTime
-                        """.trimIndent(), lineHeight = 1.5.em, style = TextStyle(
-                        fontSize = 12.sp
-                    )
+                        """.trimIndent(), lineHeight = 1.5.em, fontSize = 12.sp
                 )
             }
         }
@@ -164,9 +161,7 @@ fun BookingDetailsSummary(
                 Text(
                     text = deliveryText,
                     lineHeight = 1.5.em,
-                    style = TextStyle(
-                        fontSize = 12.sp
-                    )
+                    fontSize = 12.sp
                 )
             }
         }

@@ -1,6 +1,7 @@
 package com.mixedwash.core.presentation.components
 
 import BrandTheme
+import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,13 +17,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
+import com.mixedwash.ui.theme.components.HeaderIconButton
 import com.mixedwash.ui.theme.mediumPadding
 import com.mixedwash.ui.theme.screenHorizontalPadding
-import com.mixedwash.ui.theme.components.HeaderIconButton
 
 @Composable
 fun DefaultHeader(
@@ -31,12 +36,23 @@ fun DefaultHeader(
     navigationButton: (@Composable () -> Unit)? = null,
     headingSize: HeadingSize = HeadingSize.Subtitle1,
     headingAlign: HeadingAlign = HeadingAlign.Start,
+    backgroundColor: Color = BrandTheme.colors.background,
+    headerElevation: Dp = 0.dp,
+    shadowAlpha: Float = 0.02f,
     actionButtons: (@Composable() (RowScope.() -> Unit))? = null,
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical= 8.dp),
+            .dropShadow(
+                shape = RectangleShape,
+                offsetY = headerElevation,
+                color = Color.Black.copy(shadowAlpha),
+                spread = 0.dp,
+                blur = headerElevation
+            )
+            .background(backgroundColor)
+            .padding(vertical = 8.dp).zIndex(1f),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -49,8 +65,7 @@ fun DefaultHeader(
         Text(
             modifier = Modifier
                 .basicMarquee(velocity = 60.dp)
-                .weight(1f)
-            ,
+                .weight(1f),
             textAlign = headingAlign.textAlign,
             text = title ?: "",
             maxLines = 1,

@@ -4,6 +4,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.NativePaint
 import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.drawOutline
@@ -11,7 +12,10 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
-// Inspired by figma drop shadow feature
+// Platform-specific function declaration
+expect fun NativePaint.setMaskFilter(blurRadius: Float)
+
+// The modified dropShadow modifier
 fun Modifier.dropShadow(
     shape: Shape,
     color: Color = Color.Black.copy(0.25f),
@@ -20,23 +24,22 @@ fun Modifier.dropShadow(
     offsetX: Dp = 0.dp,
     spread: Dp = 0.dp
 ) = this.drawBehind {
-
-    val shadowSize = Size(size.width + spread.toPx(), size.height + spread.toPx())
+    val shadowSize = Size(size.width + spread.toPx() * 2, size.height + spread.toPx() * 2)
     val shadowOutline = shape.createOutline(shadowSize, layoutDirection, this)
 
     val paint = Paint()
     paint.color = color
 
     if (blur.toPx() > 0) {
-        paint.asFrameworkPaint().apply {
-//            TODO : Fix Me :(
-//            maskFilter = BlurMaskFilter(blur.toPx(), BlurMaskFilter.Blur.NORMAL)
-        }
+        paint.asFrameworkPaint().setMaskFilter(blur.toPx())
     }
 
     drawIntoCanvas { canvas ->
         canvas.save()
-        canvas.translate(offsetX.toPx(), offsetY.toPx())
+        canvas.translate(
+            offsetX.toPx() - spread.toPx(),
+            offsetY.toPx() - spread.toPx()
+        )
         canvas.drawOutline(shadowOutline, paint)
         canvas.restore()
     }

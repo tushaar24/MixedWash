@@ -21,7 +21,8 @@ fun CartItem.toBookingItem(
         itemId = itemId,
         quantity = quantity,
         createdMillis = createdMillis,
-        imageUrl = metadata?.imageUrl
+        imageUrl = metadata?.imageUrl,
+        serviceName = serviceName
     )
 }
 

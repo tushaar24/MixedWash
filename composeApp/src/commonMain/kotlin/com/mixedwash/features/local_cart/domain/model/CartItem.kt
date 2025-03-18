@@ -6,6 +6,7 @@ import com.mixedwash.features.services.presentation.model.ServiceItemMetadata
 data class CartItem(
     val itemId: String,
     val name: String,
+    val serviceName:String,
     val metadata: ServiceItemMetadata? = null,
     val itemPricing: ItemPricing,
     val serviceId: String,

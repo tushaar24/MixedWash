@@ -1,7 +1,5 @@
 package com.mixedwash.features.local_cart.domain.model
 
-import com.mixedwash.core.booking.domain.model.BookingItem
-import com.mixedwash.core.booking.domain.model.toBookingItemPricing
 import com.mixedwash.features.local_cart.data.model.CartItemEntity
 import com.mixedwash.features.local_cart.data.model.GenderEntity
 import com.mixedwash.features.local_cart.data.model.ItemMetadataEntity
@@ -20,7 +18,8 @@ fun CartItemEntity.toDomain() = CartItem(
     serviceId = serviceId,
     deliveryTimeMinInHrs = deliveryTimeMinInHrs,
     deliveryTimeMaxInHrs = deliveryTimeMaxInHrs,
-    quantity = quantity
+    quantity = quantity,
+    serviceName = serviceName
 )
 
 fun ItemMetadataEntity.toDomain() = ServiceItemMetadata(
@@ -58,5 +57,6 @@ fun ServiceItemPresentation.toCartItem(deliveryTimeMinInHrs: Int, deliveryTimeMa
     serviceId = serviceId,
     deliveryTimeMinInHrs = deliveryTimeMinInHrs,
     deliveryTimeMaxInHrs = deliveryTimeMaxInHrs,
-    quantity = 0
+    quantity = 0,
+    serviceName = serviceName
 )

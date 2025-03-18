@@ -2,6 +2,7 @@ package com.mixedwash.features.slot_selection.presentation
 
 import BrandTheme
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -26,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.mixedwash.Route
 import com.mixedwash.WindowInsetsContainer
+import com.mixedwash.core.presentation.components.BottomBox
 import com.mixedwash.core.presentation.components.DefaultHeader
 import com.mixedwash.core.presentation.components.HeadingAlign
 import com.mixedwash.core.presentation.components.HeadingSize
@@ -84,6 +86,7 @@ fun SlotSelectionScreen(
         Column(
             modifier = modifier
                 .fillMaxSize(),
+            verticalArrangement = Arrangement.Top
         ) {
             DefaultHeader(
                 title = state.title,
@@ -96,19 +99,20 @@ fun SlotSelectionScreen(
                     )
                 }
             )
-            Spacer(modifier = Modifier.height(headerContentSpacing))
 
-
+            val scrollState = rememberScrollState()
             Column(
                 modifier = Modifier
-                    .verticalScroll(rememberScrollState())
+                    .weight(1f)
+                    .verticalScroll(scrollState)
                     .padding(
+                        top = headerContentSpacing,
                         start = screenHorizontalPadding,
                         end = screenHorizontalPadding,
                         bottom = screenVerticalPadding
                     ),
                 verticalArrangement = Arrangement.spacedBy(
-                    32.dp, alignment = Alignment.CenterVertically
+                    32.dp, alignment = Alignment.Top
                 )
             ) {
                 Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
@@ -211,18 +215,20 @@ fun SlotSelectionScreen(
                 )
 
 
-                val isEnabled by remember(state.pickupTimeSelectedId, state.dropTimeSelectedId) {
-                    derivedStateOf {
-                        state.pickupTimeSelectedId != null && state.dropTimeSelectedId != null
-                    }
+            }
+            val isEnabled by remember(state.pickupTimeSelectedId, state.dropTimeSelectedId) {
+                derivedStateOf {
+                    state.pickupTimeSelectedId != null && state.dropTimeSelectedId != null
                 }
+            }
+            val elevation by animateDpAsState(if (scrollState.value < scrollState.maxValue) 4.dp else 0.dp)
+            BottomBox(elevation = elevation) {
                 DefaultButtonLarge(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = screenHorizontalPadding),
                     text = "BOOK ORDER",
                     enabled = isEnabled,
                     onClick = { state.screenEvent(SlotSelectionScreenEvent.OnSubmit) }
                 )
-
             }
 
         }

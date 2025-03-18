@@ -15,6 +15,7 @@ import mixedwash.composeapp.generated.resources.ic_chat
 import mixedwash.composeapp.generated.resources.ic_clothes_hanger
 import mixedwash.composeapp.generated.resources.ic_info
 import mixedwash.composeapp.generated.resources.ic_location
+import mixedwash.composeapp.generated.resources.ic_location_outlined
 import mixedwash.composeapp.generated.resources.ic_reward
 import mixedwash.composeapp.generated.resources.ic_share
 import mixedwash.composeapp.generated.resources.ic_thumbs
@@ -47,7 +48,7 @@ class ProfileScreenViewModel(
                             }
                         }),
                     ProfileSectionItem(
-                        resource = Res.drawable.ic_location,
+                        resource = Res.drawable.ic_location_outlined,
                         text = "Address Book",
                         onClick = {
                             viewModelScope.launch {

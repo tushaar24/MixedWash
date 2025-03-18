@@ -1,26 +1,27 @@
 package com.mixedwash.features.services.presentation.model
 
-import com.mixedwash.core.booking.domain.model.BookingItemPricing
 import com.mixedwash.features.local_cart.data.model.CartItemEntity
 import com.mixedwash.features.local_cart.data.model.GenderEntity
+import com.mixedwash.features.local_cart.data.model.ItemMetadataEntity
 import com.mixedwash.features.local_cart.data.model.ItemPricingEntity
 import com.mixedwash.features.local_cart.data.model.PricingTypeEntity
-import com.mixedwash.features.local_cart.data.model.ItemMetadataEntity
 import com.mixedwash.features.services.data.remote.model.GenderDto
 import com.mixedwash.features.services.data.remote.model.ItemPricingDto
 import com.mixedwash.features.services.data.remote.model.PricingMetadataDto
-import com.mixedwash.features.services.data.remote.model.ServiceDto
 import com.mixedwash.features.services.data.remote.model.ServiceDetailDto
+import com.mixedwash.features.services.data.remote.model.ServiceDto
 import com.mixedwash.features.services.data.remote.model.ServiceItemDto
 import com.mixedwash.features.services.data.remote.model.ServiceItemMetadataDto
 
 // ServiceItem mapping
-fun ServiceItemDto.toPresentation(serviceId: String): ServiceItemPresentation = ServiceItemPresentation(
+fun ServiceItemDto.toPresentation(serviceId: String, serviceName: String): ServiceItemPresentation =
+    ServiceItemPresentation(
     itemId = this.itemId,
     name = this.name,
     metadata = this.metadata?.toPresentation(),
     itemPricing = this.itemPricing.toPresentation(),
-    serviceId = serviceId
+    serviceId = serviceId,
+    serviceName = serviceName,
 )
 
 fun ServiceItemMetadataDto.toPresentation(): ServiceItemMetadata =
@@ -53,7 +54,7 @@ fun ServiceDto.toPresentation(): ServicePresentation = ServicePresentation(
     description = this.description,
     imageUrl = this.imageUrl,
     note = this.note,
-    items = this.items?.map { it.toPresentation(serviceId = serviceId) },
+    items = this.items?.map { it.toPresentation(serviceId = serviceId, serviceName = title) },
     pricingMetadata = this.pricingMetadata?.toPresentation(),
     inclusions = this.inclusions,
     exclusions = this.exclusions,
@@ -96,7 +97,8 @@ fun ServiceItemPresentation.toCartItemEntity(deliveryTimeMinInHrs: Int, delivery
         itemPricing = itemPricing.toItemPricingEntity(),
         quantity = 1,
         deliveryTimeMinInHrs = deliveryTimeMinInHrs,
-        deliveryTimeMaxInHrs = deliveryTimeMaxInHrs
+        deliveryTimeMaxInHrs = deliveryTimeMaxInHrs,
+        serviceName = serviceName
     )
 }
 

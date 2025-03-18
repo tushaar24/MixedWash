@@ -1,6 +1,9 @@
 package com.mixedwash.features.booking_details.presentation
 
 import BrandTheme
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,6 +20,7 @@ import androidx.compose.material.icons.rounded.KeyboardArrowLeft
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,6 +34,7 @@ import com.mixedwash.Route
 import com.mixedwash.WindowInsetsContainer
 import com.mixedwash.core.booking.domain.model.BookingItemPricing
 import com.mixedwash.core.booking.domain.model.BookingTimeSlot
+import com.mixedwash.core.presentation.components.BottomBox
 import com.mixedwash.core.presentation.components.DefaultHeader
 import com.mixedwash.core.presentation.components.HeadingAlign
 import com.mixedwash.core.presentation.components.HeadingSize
@@ -73,6 +78,17 @@ fun BookingDetailsScreen(
     }
 
     WindowInsetsContainer {
+
+        val scrollState = rememberScrollState()
+        val headerElevation by animateDpAsState(
+            if (scrollState.value > 0) 4.dp else 0.dp,
+            animationSpec = spring(stiffness = Spring.StiffnessLow)
+        )
+        val footerElevation by animateDpAsState(
+            if (scrollState.value < scrollState.maxValue) 4.dp else 0.dp,
+            animationSpec = spring(stiffness = Spring.StiffnessLow)
+        )
+
         Column(modifier = modifier) {
             DefaultHeader(
                 title = state.title,
@@ -83,22 +99,35 @@ fun BookingDetailsScreen(
                         imageVector = Icons.Rounded.KeyboardArrowLeft,
                         onClick = {}
                     )
-                }
+                },
+                headerElevation = headerElevation
             )
-            Spacer(modifier = Modifier.height(headerContentSpacing))
 
             Column(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = modifier
-                    .padding(
-                        start = screenHorizontalPadding,
-                        end = screenHorizontalPadding,
-                    )
-                    .verticalScroll(rememberScrollState())
+                modifier = modifier.weight(1f)
+                    .padding(horizontal = screenHorizontalPadding)
+                    .verticalScroll(scrollState)
+                    .padding(top = headerContentSpacing)
             ) {
 
-                Spacer(Modifier.height(2.dp))
-                Text(text = "Service Details", style = BrandTheme.typography.subtitle2)
+                if (state.pickupSlot != null && state.dropSlot != null && state.deliveryAddress != null) {
+                    Text(
+                        text = "Booking Details",
+                        style = BrandTheme.typography.subtitle2
+                    )
+                    BookingDetailsSummary(
+                        modifier = Modifier.fillMaxWidth(),
+                        pickupSlot = state.pickupSlot,
+                        dropSlot = state.dropSlot,
+                        deliveryAddress = state.deliveryAddress,
+                    )
+                }
+                Spacer(Modifier.height(16.dp))
+                Text(
+                    text = "Service Details",
+                    style = BrandTheme.typography.subtitle2
+                )
                 Column(
                     modifier = Modifier
                         .clip(BrandTheme.shapes.card)
@@ -110,7 +139,7 @@ fun BookingDetailsScreen(
 
                         val description = when (val pricing = item.itemPricing) {
                             is BookingItemPricing.ServiceItemPricing -> {
-                                "Min ${pricing.minimumPrice.div(100)} (${pricing.minimumUnits}${pricing.unit})"
+                                "Min ₹${pricing.minimumPrice.div(100)} (${pricing.minimumUnits}${pricing.unit})"
                             }
 
                             is BookingItemPricing.SubItemFixedPricing -> {
@@ -165,8 +194,13 @@ fun BookingDetailsScreen(
                             }
                         }
 
+                        val title = when (item.itemPricing) {
+                            is BookingItemPricing.ServiceItemPricing -> item.name
+                            else -> "${item.name} · ${item.serviceName}"
+                        }
+
                         BookingItem(
-                            title = item.name,
+                            title = title,
                             description = description,
                             annotatedPriceText = annotatedPriceText,
                             modifier = Modifier.fillMaxWidth()
@@ -181,28 +215,26 @@ fun BookingDetailsScreen(
                 }
 
                 state.note?.let {
-                    Text(text = it, modifier = Modifier.padding(vertical = 8.dp), fontSize = 12.sp, lineHeight = 16.sp)
-                }
-
-                if (state.pickupSlot != null && state.dropSlot != null && state.deliveryAddress != null) {
-                    Text(text = "Booking Details", style = BrandTheme.typography.subtitle2)
-                    BookingDetailsSummary(
-                        modifier = Modifier.fillMaxWidth(),
-                        pickupSlot = state.pickupSlot,
-                        dropSlot = state.dropSlot,
-                        deliveryAddress = state.deliveryAddress,
+                    Text(
+                        text = it,
+                        modifier = Modifier.padding(vertical = 8.dp),
+                        fontSize = 12.sp,
+                        lineHeight = 16.sp
                     )
                 }
 
-                if (state.screenType == BookingDetailsScreenType.CONFIRMATION) {
-                    Box(Modifier.padding(vertical = 16.dp)) {
-                        DefaultButtonLarge(
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            text = "CONFIRM ORDER",
-                            onClick = { onEvent(BookingDetailsScreenEvent.OnConfirmBooking) }
-                        )
-                    }
+                Spacer(Modifier.height(16.dp))
+
+            }
+            if (state.screenType == BookingDetailsScreenType.CONFIRMATION) {
+                BottomBox(elevation = footerElevation) {
+                    DefaultButtonLarge(
+                        modifier = Modifier
+                            .fillMaxWidth().padding(horizontal = screenHorizontalPadding),
+                        text = "CONFIRM ORDER",
+                        onClick = { onEvent(BookingDetailsScreenEvent.OnConfirmBooking) }
+                    )
+
                 }
             }
 

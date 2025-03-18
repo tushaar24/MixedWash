@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
 import com.mixedwash.features.local_cart.data.model.CartItemEntity
 
-@Database(entities = [CartItemEntity::class], version = 2)
+@Database(entities = [CartItemEntity::class], version = 3)
 abstract class CartDatabase: RoomDatabase() {
     abstract fun dao(): CartDao
 }

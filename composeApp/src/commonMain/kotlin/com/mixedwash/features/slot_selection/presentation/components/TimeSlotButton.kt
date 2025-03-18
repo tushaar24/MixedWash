@@ -21,7 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -134,9 +133,8 @@ fun TimeSlotButton(
                     text = it,
                     color = subtitleColor,
                     textAlign = TextAlign.Center,
-                    style = TextStyle(
-                        fontSize = 12.sp, lineHeight = 1.em
-                    ),
+                    fontSize = 12.sp,
+                    lineHeight = 1.em,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1,
                     modifier = Modifier.fillMaxWidth(0.6f)

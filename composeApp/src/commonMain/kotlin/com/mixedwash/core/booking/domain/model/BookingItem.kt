@@ -9,6 +9,8 @@ data class BookingItem(
     val itemId: String,
     @SerialName("name")
     val name: String,
+    @SerialName("service_name")
+    val serviceName: String,
     @SerialName("quantity")
     val quantity: Int,
     @SerialName("item_pricing")
@@ -16,7 +18,7 @@ data class BookingItem(
     @SerialName("service_id")
     val serviceId: String,
     @SerialName("image_url")
-    val imageUrl :String?=null,
+    val imageUrl: String? = null,
     @SerialName("created_millis")
     val createdMillis: Long
 )

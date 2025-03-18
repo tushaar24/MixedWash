@@ -6,7 +6,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
@@ -31,9 +30,8 @@ fun ActionText(modifier: Modifier = Modifier, text: String, action: () -> Unit) 
     ) {
         Text(
             text = text,
-            style = TextStyle(
-                fontSize = 12.sp, lineHeight = 1.em
-            ),
+            fontSize = 12.sp,
+            lineHeight = 1.em,
         )
     }
 

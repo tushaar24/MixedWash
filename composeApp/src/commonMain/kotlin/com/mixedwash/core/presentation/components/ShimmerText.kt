@@ -1,5 +1,6 @@
 package com.mixedwash.core.presentation.components
 
+import BrandTheme
 import androidx.compose.animation.core.DurationBasedAnimationSpec
 import androidx.compose.animation.core.EaseInOut
 import androidx.compose.animation.core.animateFloat
@@ -28,6 +29,7 @@ import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.mixedwash.ui.theme.Typography
 
 @Composable
 fun ShimmerText(
@@ -93,7 +95,7 @@ private fun ShimmeringTextExample() {
         ShimmerText(
             text = "Test Text",
             isShimmering = isShimmering,
-            style = TextStyle(fontSize = 28.sp),
+            style = TextStyle(fontSize = 28.sp, fontFamily = Typography.Poppins()),
             shimmerColor = Color.White
         )
         Button(onClick = { isShimmering = !isShimmering }) {
