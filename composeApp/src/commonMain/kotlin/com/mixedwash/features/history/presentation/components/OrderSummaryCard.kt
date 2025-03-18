@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mixedwash.core.presentation.components.dump.AppOutlinedButton
 import com.mixedwash.core.presentation.components.dump.IndicationChip
-import com.mixedwash.features.history.domain.model.OrderDeliveryStatusDto
+import com.mixedwash.features.history.domain.model.OrderDeliveryStatus
 import com.mixedwash.ui.theme.Gray100
 import com.mixedwash.ui.theme.Gray50
 import com.mixedwash.ui.theme.Gray800
@@ -30,17 +30,13 @@ import mixedwash.composeapp.generated.resources.Res
 import mixedwash.composeapp.generated.resources.ic_verified
 import org.jetbrains.compose.resources.vectorResource
 
-/**
- * @param status 0 - Processing, 1 - Delivered, 2 - Cancelled, else - Unknown
- *
- */
 @Composable
 fun OrderSummaryCard(
-    orderId: Long,
+    orderId: String,
     titles: List<String>,
     ordered: String,
-    delivery: String?,
-    status: OrderDeliveryStatusDto,
+    delivery: String,
+    status: OrderDeliveryStatus,
     cost: Int?,
     onDetails: () -> Unit,
     modifier: Modifier = Modifier
@@ -57,7 +53,7 @@ fun OrderSummaryCard(
         ) {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 IndicationChip(
-                    text = orderId.toString(),
+                    text = orderId,
                     textColor = Gray100,
                     backgroundColor = Gray800,
                     borderColor = Gray800,
@@ -67,18 +63,18 @@ fun OrderSummaryCard(
                 IndicationChip(
                     text = status.toString().lowercase().replaceFirstChar { it.uppercase() },
                     textColor = when (status) {
-                        OrderDeliveryStatusDto.PROCESSING -> Yellow
-                        OrderDeliveryStatusDto.DELIVERED -> Gray100
-                        OrderDeliveryStatusDto.Cancelled -> Gray800
+                        OrderDeliveryStatus.PROCESSING -> Yellow
+                        OrderDeliveryStatus.DELIVERED -> Gray100
+                        OrderDeliveryStatus.CANCELLED -> Gray800
                     },
                     backgroundColor = when (status) {
-                        OrderDeliveryStatusDto.DELIVERED -> Green
+                        OrderDeliveryStatus.DELIVERED -> Green
                         else -> Gray50
                     },
                     borderColor = when (status) {
-                        OrderDeliveryStatusDto.PROCESSING -> Yellow
-                        OrderDeliveryStatusDto.DELIVERED -> Green
-                        OrderDeliveryStatusDto.Cancelled -> Gray800
+                        OrderDeliveryStatus.PROCESSING -> Yellow
+                        OrderDeliveryStatus.DELIVERED -> Green
+                        OrderDeliveryStatus.CANCELLED -> Gray800
                     },
                     leadingIcon = '•'
                 )
@@ -90,19 +86,19 @@ fun OrderSummaryCard(
             ) {
                 Text(
                     text = "₹ " + when (status) {
-                        OrderDeliveryStatusDto.PROCESSING -> "TBD"
-                        OrderDeliveryStatusDto.DELIVERED -> cost
-                        OrderDeliveryStatusDto.Cancelled -> "-"
+                        OrderDeliveryStatus.PROCESSING -> "TBD"
+                        OrderDeliveryStatus.DELIVERED -> cost
+                        OrderDeliveryStatus.CANCELLED -> "-"
                     },
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
                     color = when (status) {
-                        OrderDeliveryStatusDto.DELIVERED -> Green
+                        OrderDeliveryStatus.DELIVERED -> Green
                         else -> Gray800
                     }
                 )
 
-                if (status == OrderDeliveryStatusDto.DELIVERED) {
+                if (status == OrderDeliveryStatus.DELIVERED) {
                     Icon(
                         imageVector = vectorResource(Res.drawable.ic_verified),
                         contentDescription = null,
@@ -136,8 +132,8 @@ fun OrderSummaryCard(
                 )
 
                 TimeTracker(
-                    action = if (status == OrderDeliveryStatusDto.DELIVERED) "Delivered" else "Est. Delivery",
-                    datetime = delivery ?: "-",
+                    action = if (status == OrderDeliveryStatus.DELIVERED) "Delivered" else "Est. Delivery",
+                    datetime = delivery ,
                     textColor = Gray800,
                 )
             }
