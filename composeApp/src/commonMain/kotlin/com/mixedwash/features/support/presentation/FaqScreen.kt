@@ -14,13 +14,16 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -38,6 +41,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,12 +49,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.mixedwash.WindowInsetsContainer
 import com.mixedwash.core.presentation.components.DefaultHeader
 import com.mixedwash.core.presentation.components.HeadingAlign
 import com.mixedwash.core.presentation.components.HeadingSize
@@ -64,55 +68,66 @@ fun FaqScreen(
     onEvent: (FaqScreenEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    // Create a LazyListState to observe scroll changes
+    val listState = rememberLazyListState()
+    // Derived state to check if the list is scrolled
+    val isScrolled by remember {
+        derivedStateOf { listState.firstVisibleItemIndex > 0 || listState.firstVisibleItemScrollOffset > 0 }
+    }
 
-    WindowInsetsContainer {
-        Column {
-            DefaultHeader(
-                title = "Help Center",
-                headingSize = HeadingSize.Subtitle1,
-                headingAlign = HeadingAlign.Start,
-                navigationButton = {
-                    HeaderIconButton(
-                        imageVector = Icons.AutoMirrored.Default.KeyboardArrowLeft,
-                        onClick = {}
-                    )
-                }
-            )
+    Column(modifier = Modifier.statusBarsPadding().navigationBarsPadding()) {
+        DefaultHeader(
+            title = "Help Center",
+            headingSize = HeadingSize.Subtitle1,
+            headingAlign = HeadingAlign.Start,
+            navigationButton = {
+                HeaderIconButton(
+                    imageVector = Icons.AutoMirrored.Default.KeyboardArrowLeft,
+                    onClick = {}
+                )
+            }
+        )
 
-            Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(4.dp))
 
-            Box(modifier = modifier.fillMaxSize().padding(horizontal = 16.dp)) {
-                Column(
-                    modifier = Modifier.fillMaxHeight(),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
+        Box(modifier = modifier.fillMaxSize().padding(horizontal = 16.dp)) {
+            Column(
+                modifier = Modifier.fillMaxHeight(),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+//                Text(
+//                    text = "How can we help you?",
+//                    style = BrandTheme.typography.h5.copy(fontSize = 20.sp)
+//                )
+
+                SearchBarWithIcon(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = state.searchString,
+                    onValueChange = { onEvent(FaqScreenEvent.OnSearchStringValueChanged(it)) },
+                    leadingIcon = Icons.Default.Search,
+                    placeholder = "Search for FAQs",
+                )
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    Text(
-                        text = "How can we help you?",
-                        style = BrandTheme.typography.h5.copy(fontSize = 20.sp)
-                    )
-
-                    SearchBarWithIcon(
-                        modifier = Modifier.fillMaxWidth(),
-                        value = state.searchString,
-                        onValueChange = { onEvent(FaqScreenEvent.OnSearchStringValueChanged(it)) },
-                        leadingIcon = Icons.Default.Search,
-                        placeholder = "Search for FAQs",
-                    )
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        for (label in state.faqCategories) {
-                            LabelChip(
-                                selected = state.currentCategory == label,
-                                onClick = { onEvent(FaqScreenEvent.OnFaqCategoryChipClicked(label)) },
-                                text = label.name
-                            )
-                        }
+                    for (label in state.faqCategories) {
+                        LabelChip(
+                            selected = state.currentCategory == label,
+                            onClick = { onEvent(FaqScreenEvent.OnFaqCategoryChipClicked(label)) },
+                            text = label.name
+                        )
                     }
+                }
 
-                    LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Box {
+                    LazyColumn(
+                        state = listState,
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
                         if (state.searchString.isEmpty()) {
                             item {
                                 Text(
@@ -132,7 +147,8 @@ fun FaqScreen(
                                 ) {
                                     items(state.faqTags) {
                                         Box(
-                                            modifier = Modifier.clip(CircleShape)
+                                            modifier = Modifier
+                                                .clip(CircleShape)
                                                 .background(BrandTheme.colors.gray.light)
                                                 .clickable {
                                                     onEvent(
@@ -146,7 +162,8 @@ fun FaqScreen(
                                                 modifier = Modifier.padding(12.dp),
                                                 text = it.displayTag,
                                                 style = BrandTheme.typography.label.copy(
-                                                    fontWeight = FontWeight.W600, lineHeight = 20.sp
+                                                    fontWeight = FontWeight.W600,
+                                                    lineHeight = 20.sp
                                                 )
                                             )
                                         }
@@ -154,9 +171,7 @@ fun FaqScreen(
                                 }
                             }
 
-                            item {
-                                Spacer(Modifier.height(4.dp))
-                            }
+                            item { Spacer(Modifier.height(4.dp)) }
 
                             item {
                                 Text(
@@ -177,7 +192,6 @@ fun FaqScreen(
                                         color = BrandTheme.colors.gray.normalDark
                                     ),
                                 )
-
                             }
                         }
 
@@ -188,40 +202,55 @@ fun FaqScreen(
                             )
                         }
 
-                        // to avoid the content being hidden by the bottom button
-                        item {
-                            Spacer(Modifier.height(64.dp))
-                        }
+                        // Avoid the content being hidden by the bottom button
+                        item { Spacer(Modifier.height(64.dp)) }
+                    }
+
+                    // Overlay a gradient drop shadow when the list is scrolled
+                    if (isScrolled) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(48.dp)
+                                .align(Alignment.TopCenter)
+                                .background(
+                                    Brush.verticalGradient(
+                                        colors = listOf(
+                                            BrandTheme.colors.gray.c300.copy(alpha = 0.70f),
+                                            Color.Transparent
+                                        )
+                                    )
+                                )
+                        )
                     }
                 }
+            }
 
-                Button(
-                    modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter),
-                    onClick = { onEvent(FaqScreenEvent.OnCallButtonClicked) },
-                    shape = BrandTheme.shapes.button,
-                    colors = ButtonDefaults.buttonColors(containerColor = BrandTheme.colors.gray.darker)
+            Button(
+                modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter),
+                onClick = { onEvent(FaqScreenEvent.OnCallButtonClicked) },
+                shape = BrandTheme.shapes.button,
+                colors = ButtonDefaults.buttonColors(containerColor = BrandTheme.colors.gray.darker)
+            ) {
+                Row(
+                    modifier = Modifier.padding(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Row(
-                        modifier = Modifier.padding(8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Call,
-                            contentDescription = "Call"
-                        )
-
-                        Spacer(Modifier.width(8.dp))
-
-                        Text(
-                            text = "Call Us",
-                            style = BrandTheme.typography.mediumButton
-                        )
-                    }
+                    Icon(
+                        imageVector = Icons.Default.Call,
+                        contentDescription = "Call"
+                    )
+                    Spacer(Modifier.width(8.dp))
+                    Text(
+                        text = "Call Us",
+                        style = BrandTheme.typography.mediumButton
+                    )
                 }
             }
         }
     }
 }
+
 
 @Composable
 fun FaqItemCard(item: FaqItemDTO, modifier: Modifier = Modifier) {
