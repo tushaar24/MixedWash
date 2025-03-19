@@ -152,7 +152,10 @@ fun ServicesScreen(
             headingSize = HeadingSize.Subtitle1,
             headingAlign = HeadingAlign.Start,
             navigationButton = {
-                HeaderIconButton(imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowLeft, onClick = {})
+                HeaderIconButton(
+                    imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowLeft,
+                    onClick = { navController.navigateUp() }
+                )
             }
         )
         Spacer(modifier = Modifier.height(headerContentSpacing))

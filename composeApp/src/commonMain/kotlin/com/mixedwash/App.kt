@@ -171,6 +171,7 @@ fun App() {
                                 FaqScreen(
                                     state = state,
                                     onEvent = viewModel::onEvent,
+                                    navController = navController
                                 )
                             }
                         }

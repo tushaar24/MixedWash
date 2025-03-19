@@ -58,6 +58,7 @@ fun NavGraphBuilder.ProfileNav(
                 state = state,
                 uiEventsFlow = addressViewModel.uiEventsFlow,
                 snackbarHandler = snackbarHandler,
+                navController = navController
             )
         }
 

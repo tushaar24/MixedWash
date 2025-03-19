@@ -15,9 +15,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
 import androidx.compose.material.icons.rounded.Edit
-import androidx.compose.material.icons.rounded.KeyboardArrowLeft
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -96,8 +96,8 @@ fun ProfileScreen(
                 headingAlign = HeadingAlign.Start,
                 navigationButton = {
                     HeaderIconButton(
-                        imageVector = Icons.Rounded.KeyboardArrowLeft,
-                        onClick = {}
+                        imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowLeft,
+                        onClick = { navController.navigateUp() }
                     )
                 }
             )

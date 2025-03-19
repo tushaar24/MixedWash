@@ -55,6 +55,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.mixedwash.core.presentation.components.DefaultHeader
 import com.mixedwash.core.presentation.components.HeadingAlign
 import com.mixedwash.core.presentation.components.HeadingSize
@@ -66,6 +67,7 @@ import com.mixedwash.ui.theme.components.HeaderIconButton
 fun FaqScreen(
     state: FaqScreenState,
     onEvent: (FaqScreenEvent) -> Unit,
+    navController: NavController,
     modifier: Modifier = Modifier
 ) {
     // Create a LazyListState to observe scroll changes
@@ -83,7 +85,7 @@ fun FaqScreen(
             navigationButton = {
                 HeaderIconButton(
                     imageVector = Icons.AutoMirrored.Default.KeyboardArrowLeft,
-                    onClick = {}
+                    onClick = { navController.navigateUp() }
                 )
             }
         )

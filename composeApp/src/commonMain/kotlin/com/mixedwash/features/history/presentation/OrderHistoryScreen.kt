@@ -53,7 +53,7 @@ fun OrderHistoryScreen(
     WindowInsetsContainer {
         Column {
             DefaultHeader(
-                title = "Help Center",
+                title = "Order History",
                 navigationButton = {
                     HeaderIconButton(
                         imageVector = Icons.AutoMirrored.Default.KeyboardArrowLeft,

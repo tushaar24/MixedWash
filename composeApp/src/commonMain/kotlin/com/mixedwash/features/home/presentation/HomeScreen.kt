@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -137,7 +138,7 @@ fun HomeScreen(
     }
 
     Column(
-        modifier = modifier.verticalScroll(rememberScrollState()),
+        modifier = modifier.navigationBarsPadding().verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(24.dp),
     ) {
         state.banner?.let { banner ->
@@ -198,6 +199,7 @@ fun HomeScreen(
 
             state.services?.let {
                 ServicesSection(
+                    modifier = Modifier.navigationBarsPadding(),
                     serviceItems = it,
                     onSeeAll = { onEvent(HomeScreenEvent.OnSeeAllServicesClicked) },
                     onServiceClicked = { serviceId -> onEvent(HomeScreenEvent.OnServiceClicked(serviceId)) }

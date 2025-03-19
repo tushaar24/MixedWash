@@ -10,8 +10,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
 import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.KeyboardArrowLeft
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.ModalBottomSheet
@@ -25,10 +25,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.mixedwash.WindowInsetsContainer
-import com.mixedwash.features.common.presentation.address.components.AddressForm
-import com.mixedwash.features.common.presentation.address.components.AddressList
-import com.mixedwash.features.common.presentation.address.model.Address
 import com.mixedwash.core.presentation.components.DefaultHeader
 import com.mixedwash.core.presentation.components.DialogPopup
 import com.mixedwash.core.presentation.components.DialogPopupData
@@ -36,6 +34,9 @@ import com.mixedwash.core.presentation.components.HeadingAlign
 import com.mixedwash.core.presentation.components.HeadingSize
 import com.mixedwash.core.presentation.models.SnackbarHandler
 import com.mixedwash.core.presentation.util.ObserveAsEvents
+import com.mixedwash.features.common.presentation.address.components.AddressForm
+import com.mixedwash.features.common.presentation.address.components.AddressList
+import com.mixedwash.features.common.presentation.address.model.Address
 import com.mixedwash.ui.theme.MixedWashTheme
 import com.mixedwash.ui.theme.bottomButtonPadding
 import com.mixedwash.ui.theme.components.HeaderIconButton
@@ -43,11 +44,8 @@ import com.mixedwash.ui.theme.components.OutlinedButton
 import com.mixedwash.ui.theme.components.PrimaryButton
 import com.mixedwash.ui.theme.headerContentSpacing
 import com.mixedwash.ui.theme.screenHorizontalPadding
-import com.mixedwash.ui.theme.screenVerticalPadding
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -56,6 +54,7 @@ fun AddressScreen(
     state: AddressScreenState,
     uiEventsFlow: Flow<AddressScreenUiEvent>,
     snackbarHandler: SnackbarHandler,
+    navController: NavController,
     onSubmitNavigate: (() -> Unit)? = null
 ) {
     state.typeParams.asSelect()
@@ -111,7 +110,10 @@ fun AddressScreen(
                 headingSize = HeadingSize.Subtitle1,
                 headingAlign = HeadingAlign.Start,
                 navigationButton = {
-                    HeaderIconButton(imageVector = Icons.Rounded.KeyboardArrowLeft, onClick = {})
+                    HeaderIconButton(
+                        imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowLeft,
+                        onClick = { navController.navigateUp() }
+                    )
                 }
             )
             Column(
@@ -247,11 +249,11 @@ private fun PreviewAddressScreen() {
         isLoading = false
     )
     MixedWashTheme {
-        AddressScreen(
-            modifier = Modifier.padding(vertical = screenVerticalPadding),
-            state = state,
-            uiEventsFlow = emptyFlow(),
-            snackbarHandler = { _ -> })
+//        AddressScreen(
+//            modifier = Modifier.padding(vertical = screenVerticalPadding),
+//            state = state,
+//            uiEventsFlow = emptyFlow(),
+//            snackbarHandler = { _ -> })
     }
 }
 
