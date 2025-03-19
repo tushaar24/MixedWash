@@ -15,6 +15,7 @@ sealed interface GettingStartedScreenEvent {
     data object OnNext : GettingStartedScreenEvent
     data object OnNavigateToHelpCenter : GettingStartedScreenEvent
     data object OnExplore : GettingStartedScreenEvent
+    data object OnSkip : GettingStartedScreenEvent
 }
 
 sealed interface GettingStartedScreenUiEvent {

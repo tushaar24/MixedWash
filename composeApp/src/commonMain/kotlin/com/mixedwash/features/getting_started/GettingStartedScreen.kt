@@ -1,6 +1,17 @@
 package com.mixedwash.features.getting_started
 
 import BrandTheme
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -11,12 +22,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -59,14 +72,22 @@ fun GettingStartedScreen(
     ObserveAsEvents(uiEvents) { event ->
         when (event) {
             is GettingStartedScreenUiEvent.Navigate -> {
+                navController.popBackStack()    // going back shouldn't return to this screen after navigating away
                 navController.navigate(event.route)
             }
         }
     }
 
+    val animatedBackgroundColor = animateColorAsState(
+        targetValue = state.currentItem.backgroundColor,
+        animationSpec = tween(durationMillis = 300)
+    )
+
     Column(
         modifier = modifier
             .fillMaxSize()
+            .statusBarsPadding()
+            .navigationBarsPadding()
             .padding(32.dp)
             .pointerInput(state.currentIndex) {
                 var totalDrag = 0f
@@ -83,85 +104,108 @@ fun GettingStartedScreen(
                     }
                 )
             },
-
-        verticalArrangement = Arrangement.spacedBy(32.dp),
+        verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // current page number (hidden on the last page)
-        Text(
-            text = "${state.currentIndex + 1}",
-            fontWeight = FontWeight.Bold,
-            letterSpacing = (-1).sp,
-            lineHeight = 48.sp,
-            fontSize = 48.sp,
-            color = if (state.lastPage) Color.Transparent else BrandTheme.colors.gray.c400,
+        AnimatedContent(
+            targetState = "${state.currentIndex + 1}",
+            transitionSpec = {
+                (slideInVertically { height -> height } + fadeIn()) togetherWith (slideOutVertically { height -> -height } + fadeOut())
+            },
             modifier = Modifier.align(Alignment.Start)
-        )
+        ) { text ->
 
-        // Image container
-        Box(contentAlignment = Alignment.Center) {
-            Box(
-                modifier = Modifier
-                    .clip(CircleShape)
-                    .size(250.dp)
-                    .background(state.currentItem.backgroundColor)
-            )
-            AsyncImage(
-                model = ImageRequest.Builder(LocalPlatformContext.current)
-                    .data(state.currentItem.imageUrl)
-                    .crossfade(true)
-                    .build(),
-                contentDescription = null,
-                error = painterResource(Res.drawable.ic_drop),
-                modifier = Modifier.size(250.dp).offset(y = 10.dp)
+            Text(
+                text = text,
+                fontWeight = FontWeight.Bold,
+                letterSpacing = (-1).sp,
+                lineHeight = 48.sp,
+                fontSize = 48.sp,
+                color = if (state.lastPage) Color.Transparent else BrandTheme.colors.gray.c400,
             )
         }
 
         // Title and description texts
-        Column(
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+        AnimatedContent(
+            targetState = state.currentIndex,
+            transitionSpec = {
+                // When moving forward, slide in from the right and slide out to the left.
+                (slideInHorizontally { width -> width } + fadeIn())
+                    .togetherWith(slideOutHorizontally { width -> -width } + fadeOut())
+                    .using(SizeTransform(clip = false))
+            }
         ) {
-            Text(
-                text = state.currentItem.title,
-                fontWeight = FontWeight.Medium,
-                fontSize = 24.sp,
-                lineHeight = 36.sp
-            )
-            Text(
-                textAlign = TextAlign.Center,
-                text = state.currentItem.description,
-                fontSize = 14.sp,
-                lineHeight = 24.sp
-            )
-        }
-
-        // Dots indicator
-        if (!state.lastPage) {
-            Spacer(Modifier.fillMaxHeight(0.5f))
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            // Retrieve the current item based on the index.
+            Column(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                (0 until state.items.size).forEach { idx ->
-                    if (idx <= state.currentIndex) {
-                        Icon(
-                            imageVector = vectorResource(Res.drawable.ic_dot_filled),
-                            contentDescription = null
-                        )
-                    } else {
-                        Icon(
-                            imageVector = vectorResource(Res.drawable.ic_dot_outlined),
-                            contentDescription = null,
-                            tint = BrandTheme.colors.gray.c400
-                        )
-                    }
+                Box(
+                    modifier = Modifier.padding(horizontal = 19.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    // Image container
+                    Box(
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .size(240.dp)
+                            .background(animatedBackgroundColor.value),
+                    )
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalPlatformContext.current)
+                            .data(state.currentItem.imageUrl)
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = null,
+                        error = painterResource(Res.drawable.ic_drop),
+                        modifier = Modifier.offset(y = 10.dp)
+                    )
                 }
+                Spacer(Modifier.height(16.dp))
+
+                // Title
+                Text(
+                    text = state.currentItem.title,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 24.sp,
+                    lineHeight = 36.sp
+                )
+                // Description
+                Text(
+                    textAlign = TextAlign.Center,
+                    text = state.currentItem.description,
+                    minLines = 4,
+                    maxLines = 4,
+                    color = BrandTheme.colors.gray.c700,
+                    fontSize = 14.sp,
+                    lineHeight = 24.sp
+                )
             }
         }
 
-        Spacer(Modifier.weight(1f))
+        // Dots indicator
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            (0 until state.items.size).forEach { idx ->
+                if (idx <= state.currentIndex) {
+                    Icon(
+                        imageVector = vectorResource(Res.drawable.ic_dot_filled),
+                        contentDescription = null,
+                        tint = if (state.lastPage) Color.Transparent else Color.Unspecified
+                    )
+                } else {
+                    Icon(
+                        imageVector = vectorResource(Res.drawable.ic_dot_outlined),
+                        contentDescription = null,
+                        tint = if (state.lastPage) Color.Transparent else BrandTheme.colors.gray.c400
+                    )
+                }
+            }
+        }
 
         // Action buttons (help center/explore or next arrow) based on the page state
         if (state.lastPage) {
@@ -195,22 +239,35 @@ fun GettingStartedScreen(
                 )
             }
         } else {
-            Box(
-                modifier = Modifier
-                    .align(Alignment.End)
-                    .height(52.dp)
-                    .aspectRatio(1f)
-                    .clip(CircleShape)
-                    .background(BrandTheme.colors.gray.darker)
-                    .clickable { onEvent(GettingStartedScreenEvent.OnNext) },
-                contentAlignment = Alignment.Center
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Default.KeyboardArrowRight,
-                    contentDescription = "next",
-                    modifier = Modifier.size(32.dp).padding(2.dp),
-                    tint = BrandTheme.colors.gray.c50
+                Text(
+                    text = "skip",
+                    fontSize = 14.sp,
+                    lineHeight = 18.sp,
+                    letterSpacing = (-1).sp,
+                    modifier = Modifier.noRippleClickable { onEvent(GettingStartedScreenEvent.OnSkip) }
                 )
+
+                Box(
+                    modifier = Modifier
+                        .height(52.dp)
+                        .aspectRatio(1f)
+                        .clip(CircleShape)
+                        .background(BrandTheme.colors.gray.darker)
+                        .clickable { onEvent(GettingStartedScreenEvent.OnNext) },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Default.KeyboardArrowRight,
+                        contentDescription = "next",
+                        modifier = Modifier.size(32.dp).padding(2.dp),
+                        tint = BrandTheme.colors.gray.c50
+                    )
+                }
             }
         }
     }

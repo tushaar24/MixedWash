@@ -29,20 +29,30 @@ class GettingStartedScreenViewModel : ViewModel() {
     fun onEvent(event: GettingStartedScreenEvent) {
         when (event) {
             GettingStartedScreenEvent.OnExplore -> {
-                viewModelScope.launch {
-                    _uiEventsChannel.send(GettingStartedScreenUiEvent.Navigate(Route.HomeRoute))
-                }
+                sendNavigationEvent(Route.ServicesRoute(null))
             }
+
             GettingStartedScreenEvent.OnNavigateToHelpCenter -> {
-                viewModelScope.launch {
-                    _uiEventsChannel.send(GettingStartedScreenUiEvent.Navigate(Route.FaqRoute))
-                }
+                sendNavigationEvent(Route.FaqRoute)
             }
+
             GettingStartedScreenEvent.OnNext -> {
                 _state.update {
                     it.copy(currentIndex = it.currentIndex.inc())
                 }
             }
+
+            GettingStartedScreenEvent.OnSkip -> {
+                _state.update {
+                    it.copy(currentIndex = it.items.size - 1)
+                }
+            }
+        }
+    }
+
+    private fun sendNavigationEvent(route: Route) {
+        viewModelScope.launch {
+            _uiEventsChannel.send(GettingStartedScreenUiEvent.Navigate(route))
         }
     }
 }
