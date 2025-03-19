@@ -8,6 +8,7 @@ data class GettingStartedScreenState(
     val currentIndex: Int,
 ) {
     val currentItem = items[currentIndex]
+    val lastPage = currentIndex + 1 == items.size
 }
 
 sealed interface GettingStartedScreenEvent {

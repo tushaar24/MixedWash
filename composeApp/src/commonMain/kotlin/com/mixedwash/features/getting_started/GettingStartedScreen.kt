@@ -26,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -67,15 +68,15 @@ fun GettingStartedScreen(
         verticalArrangement = Arrangement.spacedBy(32.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = "${state.currentIndex + 1}",
-            fontWeight = FontWeight.Bold,
-            letterSpacing = (-1).sp,
-            lineHeight = 48.sp,
-            fontSize = 48.sp,
-            color = BrandTheme.colors.gray.c400,
-            modifier = Modifier.align(Alignment.Start)
-        )
+            Text(
+                text = "${state.currentIndex + 1}",
+                fontWeight = FontWeight.Bold,
+                letterSpacing = (-1).sp,
+                lineHeight = 48.sp,
+                fontSize = 48.sp,
+                color = if (state.lastPage) Color.Transparent else BrandTheme.colors.gray.c400,
+                modifier = Modifier.align(Alignment.Start)
+            )
 
         Box(contentAlignment = Alignment.Center) {
 
@@ -116,48 +117,33 @@ fun GettingStartedScreen(
             )
         }
 
-        Spacer(Modifier.fillMaxHeight(0.5f))
+        if (!state.lastPage) {
+            Spacer(Modifier.fillMaxHeight(0.5f))
 
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            (0..<state.items.size).forEach { idx ->
-                if (idx <= state.currentIndex) {
-                    Icon(
-                        imageVector = vectorResource(Res.drawable.ic_dot_filled),
-                        contentDescription = null
-                    )
-                } else {
-                    Icon(
-                        imageVector = vectorResource(Res.drawable.ic_dot_outlined),
-                        contentDescription = null,
-                        tint = BrandTheme.colors.gray.c400
-                    )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                (0..<state.items.size).forEach { idx ->
+                    if (idx <= state.currentIndex) {
+                        Icon(
+                            imageVector = vectorResource(Res.drawable.ic_dot_filled),
+                            contentDescription = null
+                        )
+                    } else {
+                        Icon(
+                            imageVector = vectorResource(Res.drawable.ic_dot_outlined),
+                            contentDescription = null,
+                            tint = BrandTheme.colors.gray.c400
+                        )
+                    }
                 }
             }
         }
 
         Spacer(Modifier.weight(1f))
 
-        if (state.currentIndex + 1 < state.items.size) {
-            Box(
-                modifier = Modifier.align(Alignment.End)
-                    .height(52.dp)
-                    .aspectRatio(1f)
-                    .clip(CircleShape)
-                    .background(BrandTheme.colors.gray.darker)
-                    .clickable { onEvent(GettingStartedScreenEvent.OnNext) },
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Default.KeyboardArrowRight,
-                    contentDescription = "next",
-                    modifier = Modifier.size(32.dp).padding(2.dp),
-                    tint = BrandTheme.colors.gray.c50
-                )
-            }
-        } else {
+        if (state.lastPage) {
             Row(
                 modifier = Modifier.align(Alignment.End),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -185,6 +171,23 @@ fun GettingStartedScreen(
                         .background(BrandTheme.colors.gray.c900)
                         .padding(horizontal = 14.dp, vertical = 17.dp)
                         .noRippleClickable { onEvent(GettingStartedScreenEvent.OnExplore) }
+                )
+            }
+        } else {
+            Box(
+                modifier = Modifier.align(Alignment.End)
+                    .height(52.dp)
+                    .aspectRatio(1f)
+                    .clip(CircleShape)
+                    .background(BrandTheme.colors.gray.darker)
+                    .clickable { onEvent(GettingStartedScreenEvent.OnNext) },
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Default.KeyboardArrowRight,
+                    contentDescription = "next",
+                    modifier = Modifier.size(32.dp).padding(2.dp),
+                    tint = BrandTheme.colors.gray.c50
                 )
             }
         }
