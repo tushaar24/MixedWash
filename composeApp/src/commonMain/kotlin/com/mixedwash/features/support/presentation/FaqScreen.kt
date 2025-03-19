@@ -1,6 +1,7 @@
 package com.mixedwash.features.support.presentation
 
 import BrandTheme
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -25,14 +26,13 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -51,7 +51,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -62,6 +61,7 @@ import com.mixedwash.core.presentation.components.HeadingSize
 import com.mixedwash.core.presentation.components.noRippleClickable
 import com.mixedwash.features.support.domain.model.FaqItemDTO
 import com.mixedwash.ui.theme.components.HeaderIconButton
+import com.mixedwash.ui.theme.dividerBlack
 
 @Composable
 fun FaqScreen(
@@ -70,9 +70,7 @@ fun FaqScreen(
     navController: NavController,
     modifier: Modifier = Modifier
 ) {
-    // Create a LazyListState to observe scroll changes
     val listState = rememberLazyListState()
-    // Derived state to check if the list is scrolled
     val isScrolled by remember {
         derivedStateOf { listState.firstVisibleItemIndex > 0 || listState.firstVisibleItemScrollOffset > 0 }
     }
@@ -102,11 +100,10 @@ fun FaqScreen(
 //                    style = BrandTheme.typography.h5.copy(fontSize = 20.sp)
 //                )
 
-                SearchBarWithIcon(
+                SearchBar(
                     modifier = Modifier.fillMaxWidth(),
                     value = state.searchString,
                     onValueChange = { onEvent(FaqScreenEvent.OnSearchStringValueChanged(it)) },
-                    leadingIcon = Icons.Default.Search,
                     placeholder = "Search for FAQs",
                 )
 
@@ -124,6 +121,8 @@ fun FaqScreen(
                         )
                     }
                 }
+
+                Spacer(Modifier.height(4.dp))
 
                 Box {
                     LazyColumn(
@@ -150,7 +149,7 @@ fun FaqScreen(
                                     items(state.faqTags) {
                                         Box(
                                             modifier = Modifier
-                                                .clip(CircleShape)
+                                                .clip(RoundedCornerShape(8.dp))
                                                 .background(BrandTheme.colors.gray.light)
                                                 .clickable {
                                                     onEvent(
@@ -218,7 +217,7 @@ fun FaqScreen(
                                 .background(
                                     Brush.verticalGradient(
                                         colors = listOf(
-                                            BrandTheme.colors.gray.c300.copy(alpha = 0.70f),
+                                            Color.DarkGray.copy(alpha = 0.05f),
                                             Color.Transparent
                                         )
                                     )
@@ -259,14 +258,19 @@ fun FaqItemCard(item: FaqItemDTO, modifier: Modifier = Modifier) {
     var expanded by remember { mutableStateOf(false) }
 
     Box(
-        modifier = modifier.clip(BrandTheme.shapes.card).background(BrandTheme.colors.gray.light),
+        modifier = modifier
+            .clip(BrandTheme.shapes.card)
+            .background(BrandTheme.colors.gray.light)
+            .animateContentSize() // This automatically animates any size changes in the card.
     ) {
         Column(
             modifier = Modifier.padding(12.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth().noRippleClickable { expanded = !expanded },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .noRippleClickable { expanded = !expanded },
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
@@ -284,11 +288,14 @@ fun FaqItemCard(item: FaqItemDTO, modifier: Modifier = Modifier) {
             }
 
             if (expanded) {
-                HorizontalDivider(Modifier.padding(vertical = 8.dp))
+                HorizontalDivider(
+                    Modifier.padding(vertical = 8.dp),
+                    color = dividerBlack
+                )
 
                 Text(
                     text = item.answer,
-                    style = BrandTheme.typography.body3.copy(color = BrandTheme.colors.gray.c600),
+                    style = BrandTheme.typography.body3.copy(color = BrandTheme.colors.gray.c600)
                 )
             }
         }
@@ -303,14 +310,14 @@ fun LabelChip(
     modifier: Modifier = Modifier
 ) {
     Box(
-        modifier = modifier.clip(CircleShape)
+        modifier = modifier.clip(RoundedCornerShape(8.dp))
             .widthIn(min = 80.dp)
             .background(if (selected) BrandTheme.colors.gray.darker else BrandTheme.colors.background)
             .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {
         Text(
-            modifier = Modifier.fillMaxWidth().padding(12.dp),
+            modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp, horizontal = 8.dp),
             color = if (selected) BrandTheme.colors.background else BrandTheme.colors.gray.dark,
             text = text,
             style = BrandTheme.typography.mediumButton.copy(fontSize = 12.sp)
@@ -319,18 +326,18 @@ fun LabelChip(
 }
 
 @Composable
-fun SearchBarWithIcon(
+fun SearchBar(
     value: String,
     onValueChange: (String) -> Unit,
-    leadingIcon: ImageVector,
     placeholder: String,
     modifier: Modifier = Modifier
 ) {
 
     TextField(
         modifier = modifier
-            .border(1.dp, BrandTheme.colors.gray.normal, BrandTheme.shapes.textField)
-            .clip(BrandTheme.shapes.textField),
+            .border(1.dp, BrandTheme.colors.gray.c300, BrandTheme.shapes.textField)
+            .clip(BrandTheme.shapes.textField)
+            .height(52.dp),
         value = value,
         onValueChange = onValueChange,
         singleLine = true,
@@ -338,13 +345,6 @@ fun SearchBarWithIcon(
             Text(
                 text = placeholder,
                 color = BrandTheme.colors.gray.normalDark
-            )
-        },
-        leadingIcon = {
-            Icon(
-                imageVector = leadingIcon,
-                contentDescription = "Search Icon",
-                tint = BrandTheme.colors.gray.dark
             )
         },
         colors = TextFieldDefaults.colors(
@@ -356,7 +356,7 @@ fun SearchBarWithIcon(
         trailingIcon = {
             if (value.isNotEmpty()) {
                 Icon(
-                    modifier = Modifier.size(16.dp).clickable { onValueChange("") },
+                    modifier = Modifier.size(20.dp).noRippleClickable { onValueChange("") },
                     imageVector = Icons.Default.Clear,
                     contentDescription = "Clear Icon",
                     tint = BrandTheme.colors.gray.dark,
