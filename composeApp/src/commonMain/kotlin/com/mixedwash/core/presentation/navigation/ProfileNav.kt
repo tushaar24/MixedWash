@@ -66,7 +66,9 @@ fun NavGraphBuilder.ProfileNav(
             val state by viewModel.state.collectAsStateWithLifecycle()
             OrderHistoryScreen(
                 state = state,
-                onEvent = viewModel::onEvent
+                onEvent = viewModel::onEvent,
+                uiEventsFlow = viewModel.uiEventsFlow,
+                navController = navController
             )
         }
     }

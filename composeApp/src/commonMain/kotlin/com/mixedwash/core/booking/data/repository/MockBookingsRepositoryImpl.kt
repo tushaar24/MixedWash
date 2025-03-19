@@ -2,6 +2,7 @@ package com.mixedwash.core.booking.data.repository
 
 import com.mixedwash.core.booking.domain.model.BookingData
 import com.mixedwash.core.booking.domain.model.BookingItem
+import com.mixedwash.core.booking.domain.model.BookingItemPricing
 import com.mixedwash.core.booking.domain.model.BookingState
 import com.mixedwash.core.booking.domain.model.BookingTimeSlot
 import com.mixedwash.core.booking.domain.model.error.BookingException
@@ -14,7 +15,53 @@ import kotlinx.datetime.Clock
 class MockBookingsRepositoryImpl : BookingsRepository {
 
     private var bookingDraft: BookingData? = null
-    private val userBookings: MutableList<BookingData> = mutableListOf<BookingData>()
+    val now = Clock.System.now().toEpochMilliseconds()
+    private val userBookings: MutableList<BookingData> = mutableListOf<BookingData>(
+        BookingData(
+            id = "10245780",
+            pickupSlotSelected = BookingTimeSlot(id = 1234, startTimeStamp = now, endTimeStamp = now),
+            dropSlotSelected = BookingTimeSlot(id = 1245, startTimeStamp = now, endTimeStamp = now),
+            bookingItems = listOf(
+                BookingItem(
+                    itemId = "14523",
+                    name = "Dry Clean",
+                    serviceName = "Dry Clean",
+                    quantity = 5,
+                    itemPricing = BookingItemPricing.SubItemFixedPricing(150),
+                    serviceId = "1",
+                    imageUrl = "",
+                    createdMillis = now
+                ),
+
+                BookingItem(
+                    itemId = "14523",
+                    name = "Dry Clean",
+                    serviceName = "Shoe Clean",
+                    quantity = 5,
+                    itemPricing = BookingItemPricing.SubItemFixedPricing(150),
+                    serviceId = "1",
+                    imageUrl = "",
+                    createdMillis = now
+                ),
+
+                BookingItem(
+                    itemId = "14523",
+                    name = "Dry Clean",
+                    serviceName = "Wash and Fold",
+                    quantity = 5,
+                    itemPricing = BookingItemPricing.SubItemFixedPricing(150),
+                    serviceId = "1",
+                    imageUrl = "",
+                    createdMillis = now
+                )
+            ),
+            offers = null,
+            deliveryNotes = "",
+            address = Address(title = "My Home", addressLine1 = "Washington DC", pinCode = 231217.toString()),
+            state = BookingState.Processing(now),
+            stateHistory = emptyList()
+        )
+    )
     private val mutex = Mutex()
 
     override suspend fun setBookingDraft(
