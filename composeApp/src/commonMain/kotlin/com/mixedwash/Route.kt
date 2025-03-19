@@ -95,5 +95,8 @@ sealed class Route {
     @Serializable
     data object ProfileNav : Route()
 
+    @Serializable
+    data object GettingStartedRoute : Route()
+
 }
 

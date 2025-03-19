@@ -11,6 +11,7 @@ import com.mixedwash.features.common.domain.usecases.FindUserByPhoneUseCase
 import com.mixedwash.features.common.domain.usecases.address.AddressUseCases
 import com.mixedwash.features.common.presentation.address.AddressScreenViewModel
 import com.mixedwash.features.common.presentation.phone.PhoneScreenViewModel
+import com.mixedwash.features.getting_started.GettingStartedScreenViewModel
 import com.mixedwash.features.home.di.HomeModule
 import com.mixedwash.features.local_cart.di.LocalCartModule
 import com.mixedwash.features.location_availability.di.LocationAvailabilityModule
@@ -28,7 +29,6 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
-
 
 val CommonModule = module {
 
@@ -70,6 +70,7 @@ val CommonModule = module {
 
     viewModelOf(::AddressScreenViewModel)
     viewModelOf(::PhoneScreenViewModel)
+    viewModelOf(::GettingStartedScreenViewModel)
 
 }
 
