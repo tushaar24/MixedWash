@@ -4,6 +4,7 @@ import BrandTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -54,7 +56,6 @@ fun GettingStartedScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
 ) {
-
     ObserveAsEvents(uiEvents) { event ->
         when (event) {
             is GettingStartedScreenUiEvent.Navigate -> {
@@ -64,28 +65,47 @@ fun GettingStartedScreen(
     }
 
     Column(
-        modifier = modifier.fillMaxSize().padding(32.dp),
+        modifier = modifier
+            .fillMaxSize()
+            .padding(32.dp)
+            .pointerInput(state.currentIndex) {
+                var totalDrag = 0f
+                detectDragGestures(
+                    onDrag = { _, dragAmount ->
+                        totalDrag += dragAmount.x
+                    },
+                    onDragEnd = {
+                        // Check if the total drag exceeds a defined threshold (e.g., 100 pixels)
+                        if (totalDrag < -100 && !state.lastPage) {
+                            onEvent(GettingStartedScreenEvent.OnNext)
+                        }
+                        totalDrag = 0f
+                    }
+                )
+            },
+
         verticalArrangement = Arrangement.spacedBy(32.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-            Text(
-                text = "${state.currentIndex + 1}",
-                fontWeight = FontWeight.Bold,
-                letterSpacing = (-1).sp,
-                lineHeight = 48.sp,
-                fontSize = 48.sp,
-                color = if (state.lastPage) Color.Transparent else BrandTheme.colors.gray.c400,
-                modifier = Modifier.align(Alignment.Start)
-            )
+        // current page number (hidden on the last page)
+        Text(
+            text = "${state.currentIndex + 1}",
+            fontWeight = FontWeight.Bold,
+            letterSpacing = (-1).sp,
+            lineHeight = 48.sp,
+            fontSize = 48.sp,
+            color = if (state.lastPage) Color.Transparent else BrandTheme.colors.gray.c400,
+            modifier = Modifier.align(Alignment.Start)
+        )
 
+        // Image container
         Box(contentAlignment = Alignment.Center) {
-
             Box(
-                modifier = Modifier.clip(CircleShape)
+                modifier = Modifier
+                    .clip(CircleShape)
                     .size(250.dp)
                     .background(state.currentItem.backgroundColor)
             )
-
             AsyncImage(
                 model = ImageRequest.Builder(LocalPlatformContext.current)
                     .data(state.currentItem.imageUrl)
@@ -97,6 +117,7 @@ fun GettingStartedScreen(
             )
         }
 
+        // Title and description texts
         Column(
             modifier = Modifier.align(Alignment.CenterHorizontally),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -108,7 +129,6 @@ fun GettingStartedScreen(
                 fontSize = 24.sp,
                 lineHeight = 36.sp
             )
-
             Text(
                 textAlign = TextAlign.Center,
                 text = state.currentItem.description,
@@ -117,14 +137,14 @@ fun GettingStartedScreen(
             )
         }
 
+        // Dots indicator
         if (!state.lastPage) {
             Spacer(Modifier.fillMaxHeight(0.5f))
-
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                (0..<state.items.size).forEach { idx ->
+                (0 until state.items.size).forEach { idx ->
                     if (idx <= state.currentIndex) {
                         Icon(
                             imageVector = vectorResource(Res.drawable.ic_dot_filled),
@@ -143,6 +163,7 @@ fun GettingStartedScreen(
 
         Spacer(Modifier.weight(1f))
 
+        // Action buttons (help center/explore or next arrow) based on the page state
         if (state.lastPage) {
             Row(
                 modifier = Modifier.align(Alignment.End),
@@ -160,14 +181,14 @@ fun GettingStartedScreen(
                         .padding(horizontal = 14.dp, vertical = 17.dp)
                         .noRippleClickable { onEvent(GettingStartedScreenEvent.OnNavigateToHelpCenter) }
                 )
-
                 Text(
                     text = "EXPLORE",
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 14.sp,
                     color = BrandTheme.colors.gray.c50,
                     lineHeight = 18.sp,
-                    modifier = Modifier.clip(RoundedCornerShape(12.dp))
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(12.dp))
                         .background(BrandTheme.colors.gray.c900)
                         .padding(horizontal = 14.dp, vertical = 17.dp)
                         .noRippleClickable { onEvent(GettingStartedScreenEvent.OnExplore) }
@@ -175,7 +196,8 @@ fun GettingStartedScreen(
             }
         } else {
             Box(
-                modifier = Modifier.align(Alignment.End)
+                modifier = Modifier
+                    .align(Alignment.End)
                     .height(52.dp)
                     .aspectRatio(1f)
                     .clip(CircleShape)
