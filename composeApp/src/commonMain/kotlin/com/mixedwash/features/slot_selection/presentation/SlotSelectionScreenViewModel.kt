@@ -7,7 +7,7 @@ import com.mixedwash.core.booking.domain.model.toBookingTimeSlot
 import com.mixedwash.core.booking.domain.repository.BookingsRepository
 import com.mixedwash.core.presentation.models.SnackBarType
 import com.mixedwash.core.presentation.util.Logger
-import com.mixedwash.features.common.domain.repository.AddressRepository
+import com.mixedwash.features.address.domain.repository.AddressRepository
 import com.mixedwash.features.local_cart.domain.LocalCartRepository
 import com.mixedwash.features.local_cart.domain.model.toDomain
 import com.mixedwash.features.slot_selection.domain.model.response.SlotSelectionMapper.toDomain
@@ -181,8 +181,13 @@ class SlotSelectionScreenViewModel(
                             offer = state.value.selectedOfferCode,
                             deliveryNotes = state.value.deliveryNotes,
                             bookingItems = cartItems.map { it.toBookingItem() },
-                            address = address.toAddress()
+                            address = address
                         ).onSuccess {
+                            localCartRepository.clearCartItems().onFailure { e ->
+                                snackbarEvent("Error clearing cart", type = SnackBarType.ERROR)
+                                Logger.e("SlotSelectionScreenViewModel", "Error clearing cart")
+                                e.printStackTrace()
+                            }
                             _uiEventsChannel.send(SlotSelectionScreenUiEvent.NavigateToReview(it))
                         }.onFailure {
                             Logger.d("SlotSelectionScreenViewModel", "Error Booking")

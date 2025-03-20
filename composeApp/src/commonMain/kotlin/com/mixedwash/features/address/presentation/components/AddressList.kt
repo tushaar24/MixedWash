@@ -1,4 +1,4 @@
-package com.mixedwash.features.common.presentation.address.components
+package com.mixedwash.features.address.presentation.components
 
 import BrandTheme
 import androidx.compose.animation.animateContentSize
@@ -28,9 +28,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.mixedwash.features.common.presentation.address.AddressSearchEvent
-import com.mixedwash.features.common.presentation.address.AddressSearchState
-import com.mixedwash.features.common.presentation.address.model.Address
+import com.mixedwash.features.address.presentation.AddressSearchEvent
+import com.mixedwash.features.address.presentation.AddressSearchState
+import com.mixedwash.features.address.domain.model.Address
 import com.mixedwash.ui.theme.MixedWashTheme
 import com.mixedwash.ui.theme.cardSpacing
 import com.mixedwash.ui.theme.components.IconButton

@@ -1,7 +1,7 @@
-package com.mixedwash.features.common.presentation.address
+package com.mixedwash.features.address.presentation
 
 import androidx.compose.runtime.Immutable
-import com.mixedwash.features.common.presentation.address.model.Address
+import com.mixedwash.features.address.domain.model.Address
 import com.mixedwash.core.presentation.components.DialogPopupData
 import com.mixedwash.core.presentation.models.SnackbarPayload
 import com.mixedwash.libs.loki.autocomplete.AutocompletePlace
@@ -16,7 +16,7 @@ data class AddressScreenState(
     val onAddAddress: () -> Unit,
     val formEventCallBack: (AddressFormEvent) -> Unit,
     val formState: AddressFormState?,
-    val searchState :AddressSearchState,
+    val searchState : AddressSearchState,
     val typeParams: TypeParams
 ){
     sealed class TypeParams {

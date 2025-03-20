@@ -10,8 +10,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.mixedwash.Route
 import com.mixedwash.core.presentation.models.SnackbarHandler
+import com.mixedwash.features.address.presentation.AddressScreenViewModel
 import com.mixedwash.features.common.presentation.address.AddressScreen
-import com.mixedwash.features.common.presentation.address.AddressScreenViewModel
 import com.mixedwash.features.history.presentation.OrderHistoryScreen
 import com.mixedwash.features.history.presentation.OrderHistoryScreenViewModel
 import com.mixedwash.features.profile.profile_edit.ProfileEditScreen

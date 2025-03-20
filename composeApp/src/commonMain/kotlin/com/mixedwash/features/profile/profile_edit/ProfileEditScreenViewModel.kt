@@ -104,7 +104,9 @@ class ProfileEditScreenViewModel(
 
             is ProfileEditScreenEvent.OnChangePicture -> {
                 viewModelScope.launch {
-                    val result = userService.updateMetadata(photoUrl = event.url)
+                    val result = userService.updateMetadata {
+                        it.copy(photoUrl = event.url)
+                    }
                     if (result is Result.Success) {
                         updateState { copy(imageUrl = event.url) }
                     } else {
@@ -153,11 +155,14 @@ class ProfileEditScreenViewModel(
 
                 viewModelScope.launch {
                     updateState { copy(isLoading = true) }
-                    if (userService.updateMetadata(
-                            name = metadata.name,
-                            email = metadata.email,
-                            phoneNumber = metadata.phoneNumber
-                        ) !is Result.Error
+                    if (userService.updateMetadata {
+                            it.copy(
+                                phoneNumber = metadata.phoneNumber,
+                                email = metadata.email,
+                                name = metadata.name,
+                                defaultAddressId = null
+                            )
+                        } !is Result.Error
                     ) {
                         snackbarEvent("Profile has been updated successfully", SnackBarType.SUCCESS)
                         refreshDetails()

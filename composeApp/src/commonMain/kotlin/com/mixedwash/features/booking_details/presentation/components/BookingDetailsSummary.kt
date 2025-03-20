@@ -25,7 +25,7 @@ import com.mixedwash.core.booking.domain.model.BookingTimeSlot
 import com.mixedwash.core.domain.util.capitalize
 import com.mixedwash.core.presentation.util.formatTime
 import com.mixedwash.core.presentation.util.getDayAndDate
-import com.mixedwash.features.common.presentation.address.model.Address
+import com.mixedwash.features.address.domain.model.Address
 import com.mixedwash.ui.theme.dividerBlack
 
 @Composable

@@ -34,9 +34,13 @@ import com.mixedwash.core.presentation.components.HeadingAlign
 import com.mixedwash.core.presentation.components.HeadingSize
 import com.mixedwash.core.presentation.models.SnackbarHandler
 import com.mixedwash.core.presentation.util.ObserveAsEvents
-import com.mixedwash.features.common.presentation.address.components.AddressForm
-import com.mixedwash.features.common.presentation.address.components.AddressList
-import com.mixedwash.features.common.presentation.address.model.Address
+import com.mixedwash.features.address.domain.model.Address
+import com.mixedwash.features.address.presentation.AddressFormEvent
+import com.mixedwash.features.address.presentation.AddressScreenState
+import com.mixedwash.features.address.presentation.AddressScreenUiEvent
+import com.mixedwash.features.address.presentation.AddressSearchState
+import com.mixedwash.features.address.presentation.components.AddressForm
+import com.mixedwash.features.address.presentation.components.AddressList
 import com.mixedwash.ui.theme.MixedWashTheme
 import com.mixedwash.ui.theme.bottomButtonPadding
 import com.mixedwash.ui.theme.components.HeaderIconButton
@@ -122,9 +126,6 @@ fun AddressScreen(
 
                 Spacer(modifier = Modifier.height(headerContentSpacing))
 
-
-
-
                 AddressList(
                     modifier = Modifier.fillMaxWidth(),
                     addresses = state.addressList,
@@ -145,7 +146,6 @@ fun AddressScreen(
 
                 Spacer(modifier = Modifier.weight(1f))
 
-
                 state.typeParams.asSelect()?.run {
                     PrimaryButton(
                         modifier = Modifier
@@ -160,7 +160,7 @@ fun AddressScreen(
             }
         }
     }
-        if (state.formState != null) {
+    if (state.formState != null) {
             ModalBottomSheet(
                 onDismissRequest = {
                     state.formEventCallBack(AddressFormEvent.OnFormClosed)
@@ -190,7 +190,6 @@ fun AddressScreen(
                 )
             }
         }
-
 }
 
 
@@ -249,11 +248,7 @@ private fun PreviewAddressScreen() {
         isLoading = false
     )
     MixedWashTheme {
-//        AddressScreen(
-//            modifier = Modifier.padding(vertical = screenVerticalPadding),
-//            state = state,
-//            uiEventsFlow = emptyFlow(),
-//            snackbarHandler = { _ -> })
+
     }
 }
 

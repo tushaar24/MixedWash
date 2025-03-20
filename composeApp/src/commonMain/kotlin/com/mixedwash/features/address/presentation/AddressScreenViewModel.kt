@@ -1,4 +1,4 @@
-package com.mixedwash.features.common.presentation.address
+package com.mixedwash.features.address.presentation
 
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -25,13 +25,10 @@ import com.mixedwash.core.presentation.models.FormField
 import com.mixedwash.core.presentation.models.InputState
 import com.mixedwash.core.presentation.models.SnackBarType
 import com.mixedwash.core.presentation.models.SnackbarPayload
-import com.mixedwash.features.common.data.entities.AddressEntity
-import com.mixedwash.features.common.data.service.local.LocationService
-import com.mixedwash.features.common.domain.usecases.address.AddressUseCases
-import com.mixedwash.features.common.presentation.address.model.Address
-import com.mixedwash.features.common.presentation.address.model.toAddress
-import com.mixedwash.features.common.presentation.address.model.toAddressEntity
-import com.mixedwash.features.common.presentation.address.model.toFieldIDValueMap
+import com.mixedwash.features.address.domain.model.Address
+import com.mixedwash.features.address.domain.model.toAddress
+import com.mixedwash.features.address.domain.repository.AddressRepository
+import com.mixedwash.features.common.data.service.LocationService
 import com.mixedwash.libs.loki.autocomplete.AutocompleteResult
 import com.mixedwash.libs.loki.core.Place
 import com.mixedwash.libs.loki.geocoder.GeocoderResult
@@ -43,8 +40,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -54,24 +50,19 @@ import kotlin.uuid.Uuid
 
 
 class AddressScreenViewModel(
-    private val addressUseCases: AddressUseCases,
+    private val addressRepository: AddressRepository,
     private val locationService: LocationService,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val addressRoute = savedStateHandle.toRoute<Route.AddressRoute>()
-    private val addressFlow = addressUseCases.getAddressesFlow().onFailure {
-            snackbarEvent(
-                "Error fetching addresses", SnackBarType.ERROR
-            )
-    }.getOrDefault(emptyFlow())
-
 
     private val _state = MutableStateFlow(initialState())
-    val state = addressFlow.combine(_state) { list : List<AddressEntity>, state: AddressScreenState ->
-        updateState { state.copy(addressList = list.map { it.toAddress() }) }
-        _state.value
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(3000), initialState())
+    val state = _state
+        .onStart {
+            fetchAddresses()
+        }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(3000), initialState())
 
     private val _uiEventsChannel = Channel<AddressScreenUiEvent>()
     val uiEventsFlow = _uiEventsChannel.receiveAsFlow()
@@ -120,12 +111,12 @@ class AddressScreenViewModel(
                         state.value.run {
                             val uid =
                                 addressList[selectParams.selectedIndex].uid
-                            addressUseCases.setDefaultAddress(uid)
+                            addressRepository.setCurrentAddress(uid)
                         }.onSuccess {
                             _uiEventsChannel.send(AddressScreenUiEvent.NavigateOnSubmit)
                         }.onFailure { e ->
                             snackbarEvent(
-                                e.message ?: "Error Setting Default Address", SnackBarType.ERROR
+                                e.message ?: "Error Setting Current Address", SnackBarType.ERROR
                             )
                             e.printStackTrace()
                         }
@@ -144,13 +135,16 @@ class AddressScreenViewModel(
                             _uiEventsChannel.send(AddressScreenUiEvent.CloseForm)
                             return@launch
                         }
-                    addressUseCases.deleteAddress(address.toAddressEntity()).onFailure { e ->
-                        snackbarEvent(e.message ?: "Error Deleting Address", SnackBarType.ERROR)
-                        e.printStackTrace()
-                    }.getOrNull() ?: return@launch
-                    _uiEventsChannel.send(AddressScreenUiEvent.ClosePopup)
-                    _uiEventsChannel.send(AddressScreenUiEvent.CloseForm)
-                    snackbarEvent("Address deleted successfully", SnackBarType.SUCCESS)
+                    addressRepository.deleteAddress(address.uid)
+                        .onSuccess {
+                            _uiEventsChannel.send(AddressScreenUiEvent.ClosePopup)
+                            _uiEventsChannel.send(AddressScreenUiEvent.CloseForm)
+                            snackbarEvent("Address deleted successfully", SnackBarType.SUCCESS)
+                        }.onFailure { e ->
+                            snackbarEvent(e.message ?: "Error Deleting Address", SnackBarType.ERROR)
+                            e.printStackTrace()
+                        }
+                    fetchAddresses()
                 }
             }
 
@@ -193,7 +187,10 @@ class AddressScreenViewModel(
                 if (!formSubmitValidation(newAddress = address)) return
                 viewModelScope.launch {
                     updateState { copy(formState = formState?.copy(isLoading = true)) }
-                    addressUseCases.upsertAddress(address = address.toAddressEntity())
+                    addressRepository.upsertAddress(address = address)
+                        .onSuccess {
+                            fetchAddresses()
+                        }
                         .onFailure { e ->
                             snackbarEvent(
                                 e.message ?: "Address Could Not Be Saved",
@@ -430,9 +427,13 @@ class AddressScreenViewModel(
     }
 
 
-    private suspend fun addressObserver() {
-        addressFlow.collect { addressList ->
-            updateState { copy(addressList = addressList.map { it.toAddress() }) }
+    private fun fetchAddresses() {
+        viewModelScope.launch {
+            addressRepository.getAddresses().onSuccess {
+                updateState { copy(addressList = it) }
+            }.onFailure {
+                snackbarEvent("Error Fetching Addresses", SnackBarType.ERROR)
+            }
         }
     }
 
@@ -594,7 +595,7 @@ class AddressScreenViewModel(
         title = "Create Address",
         mode = FormMode.Create(onCreate = { onFormEvent(AddressFormEvent.OnFormCreate) }),
         fields = listOf(
-            _root_ide_package_.com.mixedwash.core.presentation.models.FormField(
+            FormField(
                 value = "",
                 id = ADDRESS_TITLE,
                 label = "Address Title ${if (requiredFields.contains(ADDRESS_TITLE)) "*" else ""}",
@@ -607,7 +608,7 @@ class AddressScreenViewModel(
                         )
                     )
                 },
-            ), _root_ide_package_.com.mixedwash.core.presentation.models.FormField(
+            ), FormField(
                 value = "",
                 id = ADDRESS_LINE_1,
                 label = "Address Line 1${if (requiredFields.contains(ADDRESS_LINE_1)) "*" else ""}",
@@ -620,7 +621,7 @@ class AddressScreenViewModel(
                         )
                     )
                 },
-            ), _root_ide_package_.com.mixedwash.core.presentation.models.FormField(value = "",
+            ), FormField(value = "",
                 id = ADDRESS_LINE_2,
                 label = "Address Line 2${if (requiredFields.contains(ADDRESS_LINE_2)) "*" else ""}",
                 placeholder = "Landmark, Locality",
@@ -631,7 +632,7 @@ class AddressScreenViewModel(
                             fieldId = ADDRESS_LINE_2, value = it
                         )
                     )
-                }), _root_ide_package_.com.mixedwash.core.presentation.models.FormField(value = "",
+                }), FormField(value = "",
                 id = ADDRESS_LINE_3,
                 label = "Address Line 3${if (requiredFields.contains(ADDRESS_LINE_3)) "*" else ""}",
                 placeholder = "City, State",
@@ -642,7 +643,7 @@ class AddressScreenViewModel(
                             fieldId = ADDRESS_LINE_3, value = it
                         )
                     )
-                }), _root_ide_package_.com.mixedwash.core.presentation.models.FormField(
+                }), FormField(
                 value = "",
                 id = PIN_CODE,
                 label = "Pin Code${if (requiredFields.contains(PIN_CODE)) "*" else ""}",

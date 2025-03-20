@@ -81,7 +81,12 @@ class PhoneScreenViewModel(
                 viewModelScope.launch {
                     allowFormInput(false)
                     val result =
-                        userService.updateMetadata(phoneNumber = state.value.formField.value)
+                        userService.updateMetadata {
+                            it.copy(
+                                phoneNumber = state.value.formField.value,
+                                defaultAddressId = null
+                            )
+                        }
                     when (result) {
                         is Result.Success -> {
                             sendUiEvent(PhoneScreenUiEvent.OnSubmitSuccess)

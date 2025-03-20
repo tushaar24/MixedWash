@@ -3,7 +3,7 @@ package com.mixedwash.features.booking_details.presentation
 import com.mixedwash.core.booking.domain.model.BookingItem
 import com.mixedwash.core.booking.domain.model.BookingTimeSlot
 import com.mixedwash.core.presentation.models.SnackbarPayload
-import com.mixedwash.features.common.presentation.address.model.Address
+import com.mixedwash.features.address.domain.model.Address
 
 data class BookingDetailsScreenState(
     val title: String,

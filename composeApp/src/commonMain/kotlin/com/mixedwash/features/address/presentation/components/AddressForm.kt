@@ -1,4 +1,4 @@
-package com.mixedwash.features.common.presentation.address.components
+package com.mixedwash.features.address.presentation.components
 
 import BrandTheme
 import androidx.compose.animation.animateContentSize
@@ -22,8 +22,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.mixedwash.features.common.presentation.address.AddressFormState
-import com.mixedwash.features.common.presentation.address.FormMode
+import com.mixedwash.features.address.presentation.AddressFormState
+import com.mixedwash.features.address.presentation.FormMode
 import com.mixedwash.core.presentation.components.clearFocusOnKeyboardDismiss
 import com.mixedwash.ui.theme.smallPadding
 import com.mixedwash.ui.theme.RedDark

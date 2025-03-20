@@ -3,10 +3,10 @@ package com.mixedwash.core.data
 import com.mixedwash.core.data.util.AppCoroutineScope
 import com.mixedwash.core.domain.models.ErrorType
 import com.mixedwash.core.domain.models.Result
+import com.mixedwash.features.address.domain.model.Address
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
 import dev.gitlive.firebase.firestore.firestore
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
@@ -14,13 +14,15 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+
+class UserNotFoundException(message: String = "User not found") : Exception(message)
+
 
 @Serializable
 data class UserMetadata(
@@ -31,7 +33,8 @@ data class UserMetadata(
     @SerialName("name") val name: String? = null,
     @SerialName("photo_url") val photoUrl: String? = null,
     @SerialName("user_serviceable") val userServiceable: Boolean? = null,
-    @SerialName("address_list") val addressList: List<AddressMetadata>
+    @SerialName("address_list") val addressList: List<Address>,
+    @SerialName("current_address_id") val defaultAddressId: String? = null
 )
 
 @Serializable
@@ -53,19 +56,14 @@ interface UserService {
     suspend fun signOut(): Result<Unit>
 
     suspend fun updateMetadata(
-        phoneNumber: String? = null,
-        lastOpenTimeStamp: Long? = null,
-        email: String? = null,
-        name: String? = null,
-        photoUrl: String? = null,
-        addressList: List<AddressMetadata>? = null
+        update: (UserMetadata) -> UserMetadata
     ): Result<UserMetadata>
 
     suspend fun deleteMetadata(): Result<Unit>
 
 }
 
-private const val USER_COLLECTION = "USERS"
+const val USER_COLLECTION = "USERS"
 
 
 class FirebaseUserService(applicationScope: AppCoroutineScope) : UserService {
@@ -145,38 +143,21 @@ class FirebaseUserService(applicationScope: AppCoroutineScope) : UserService {
         }
 
 
-    override suspend fun updateMetadata(
-        phoneNumber: String?,
-        lastOpenTimeStamp: Long?,
-        email: String?,
-        name: String?,
-        photoUrl: String?,
-        addressList: List<AddressMetadata>?,
-    ): Result<UserMetadata> {
-        return userMutex.withLock {
-            try {
-                val uid =
-                    currentUser?.uid ?: return Result.Error(ErrorType.NotFound("User Not Found"))
+    override suspend fun updateMetadata(update: (UserMetadata) -> UserMetadata): Result<UserMetadata> {
+        try {
+            val uid =
+                currentUser?.uid ?: return Result.Error(ErrorType.NotFound("User Not Found"))
 
-                val metadata = currentUser?.userMetadata ?: return Result.Error(
-                    error = ErrorType.NotFound(
-                        "User Not Found"
-                    )
+            val metadata = currentUser?.userMetadata ?: return Result.Error(
+                error = ErrorType.NotFound(
+                    "User Not Found"
                 )
-
-                val updatedUser = metadata.copy(
-                    phoneNumber = phoneNumber ?: metadata.phoneNumber,
-                    lastOpenTimeStamp = lastOpenTimeStamp ?: metadata.lastOpenTimeStamp,
-                    email = email ?: metadata.email,
-                    name = name ?: metadata.name,
-                    photoUrl = photoUrl ?: metadata.photoUrl,
-                    addressList = addressList ?: metadata.addressList
-                )
-                db.collection(USER_COLLECTION).document(uid).update(updatedUser)
-                return Result.Success(updatedUser)
-            } catch (e: Exception) {
-                Result.Error(error = ErrorType.Unknown("Failed to update user metadata: ${e.message}"))
-            }
+            )
+            val updatedUser = metadata.let(update)
+            db.collection(USER_COLLECTION).document(uid).update(updatedUser)
+            return Result.Success(updatedUser)
+        } catch (e: Exception) {
+            return Result.Error(error = ErrorType.Unknown("Failed to update user metadata: ${e.message}"))
         }
     }
 

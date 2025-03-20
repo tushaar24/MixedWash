@@ -3,7 +3,7 @@ package com.mixedwash.features.home.presentation
 import com.mixedwash.Route
 import com.mixedwash.core.presentation.components.DialogPopupData
 import com.mixedwash.core.presentation.models.SnackbarPayload
-import com.mixedwash.features.common.presentation.address.model.Address
+import com.mixedwash.features.address.domain.model.Address
 import com.mixedwash.features.home.presentation.model.HomeBanner
 import com.mixedwash.features.home.presentation.model.HomeOfferCard
 import com.mixedwash.features.home.presentation.model.HomeScreenData

@@ -1,4 +1,4 @@
-package com.mixedwash.features.common.data.service.local
+package com.mixedwash.features.common.data.service
 
 import com.mixedwash.libs.loki.autocomplete.Autocomplete
 import com.mixedwash.libs.loki.autocomplete.AutocompletePlace

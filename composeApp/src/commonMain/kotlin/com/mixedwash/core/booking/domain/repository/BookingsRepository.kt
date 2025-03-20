@@ -1,6 +1,6 @@
 package com.mixedwash.core.booking.domain.repository
 
-import com.mixedwash.features.common.presentation.address.model.Address
+import com.mixedwash.features.address.domain.model.Address
 import com.mixedwash.core.booking.domain.model.BookingData
 import com.mixedwash.core.booking.domain.model.BookingItem
 import com.mixedwash.core.booking.domain.model.BookingTimeSlot

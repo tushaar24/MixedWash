@@ -23,7 +23,7 @@ import coil3.compose.AsyncImage
 import com.mixedwash.core.presentation.components.dump.SmallButton
 import com.mixedwash.core.presentation.components.gradient
 import com.mixedwash.core.presentation.util.Logger
-import com.mixedwash.features.common.presentation.address.model.Address
+import com.mixedwash.features.address.domain.model.Address
 import com.mixedwash.features.common.util.parse
 import com.mixedwash.features.home.presentation.model.HomeBanner
 

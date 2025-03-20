@@ -53,6 +53,12 @@ class LocalCartRepositoryImpl(private val cartDao : CartDao)  : LocalCartReposit
         }
     }
 
+    override suspend fun clearCartItems(): Result<Unit> = mutex.withLock {
+        runCatching {
+            cartDao.deleteAllItems()
+        }
+    }
+
     override fun getMinimumProcessingDurationHrs(): Result<Flow<Int>> {
         return runCatching {
             getCartItemFlow().getOrThrow().map { items ->

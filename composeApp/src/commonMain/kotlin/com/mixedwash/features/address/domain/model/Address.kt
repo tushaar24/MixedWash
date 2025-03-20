@@ -1,15 +1,13 @@
-package com.mixedwash.features.common.presentation.address.model
+package com.mixedwash.features.address.domain.model
 
 import androidx.compose.runtime.Immutable
 import com.mixedwash.core.presentation.util.Logger
-import com.mixedwash.features.common.data.entities.AddressEntity
 import com.mixedwash.core.presentation.models.FieldID
 import com.mixedwash.libs.loki.core.Place
 import kotlinx.serialization.Serializable
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
-@Immutable
 @Serializable
 data class Address @OptIn(ExperimentalUuidApi::class) constructor(
     val uid: String = Uuid.random().toHexString(),
@@ -26,15 +24,6 @@ data class Address @OptIn(ExperimentalUuidApi::class) constructor(
         return "$addressLine1, $addressLine2\n$addressLine3\n$pinCode"
     }
 }
-
-fun Address.toAddressEntity() = AddressEntity(
-    uid = uid,
-    title = title,
-    addressLine1 = addressLine1,
-    addressLine2 = addressLine2,
-    addressLine3 = addressLine3,
-    pinCode = pinCode
-)
 
 fun Place.toAddress(): Address {
     Logger.d("TAG", this.toString())
@@ -90,20 +79,4 @@ fun Place.toAddress(): Address {
 }
 
 
-
-/**
- * Converts an [Address] to a [EnumMap] of [FieldID] to [String].
- * @return [EnumMap] of [FieldID] to [String]
- */
-fun Address.toFieldIDValueMap(): Map<FieldID, String?> =
-    FieldID.entries.associateWith {
-        when (it) {
-            FieldID.ADDRESS_TITLE -> title
-            FieldID.ADDRESS_LINE_1 -> addressLine1
-            FieldID.ADDRESS_LINE_2 -> addressLine2 ?: ""
-            FieldID.ADDRESS_LINE_3 -> addressLine3 ?: ""
-            FieldID.PIN_CODE -> pinCode
-            FieldID.PHONE, FieldID.EMAIL, FieldID.NAME -> null
-        }
-    }
 

@@ -1,6 +1,6 @@
 package com.mixedwash.core.booking.domain.model
 
-import com.mixedwash.features.common.presentation.address.model.Address
+import com.mixedwash.features.address.domain.model.Address
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

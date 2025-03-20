@@ -7,7 +7,7 @@ import com.mixedwash.core.booking.domain.model.BookingState
 import com.mixedwash.core.booking.domain.model.BookingTimeSlot
 import com.mixedwash.core.booking.domain.model.error.BookingException
 import com.mixedwash.core.booking.domain.repository.BookingsRepository
-import com.mixedwash.features.common.presentation.address.model.Address
+import com.mixedwash.features.address.domain.model.Address
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.datetime.Clock

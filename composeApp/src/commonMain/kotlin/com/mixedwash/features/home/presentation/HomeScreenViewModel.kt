@@ -14,9 +14,9 @@ import com.mixedwash.core.presentation.components.DialogPopupData
 import com.mixedwash.core.presentation.models.SnackBarType
 import com.mixedwash.core.presentation.models.SnackbarPayload
 import com.mixedwash.core.presentation.util.Logger
-import com.mixedwash.features.common.data.service.local.LocationService
-import com.mixedwash.features.common.presentation.address.model.Address
-import com.mixedwash.features.common.presentation.address.model.toAddress
+import com.mixedwash.features.common.data.service.LocationService
+import com.mixedwash.features.address.domain.model.Address
+import com.mixedwash.features.address.domain.model.toAddress
 import com.mixedwash.features.home.domain.HomeScreenDataRepository
 import com.mixedwash.features.home.presentation.model.toPresentation
 import com.mixedwash.features.location_availability.domain.LocationAvailabilityRepository

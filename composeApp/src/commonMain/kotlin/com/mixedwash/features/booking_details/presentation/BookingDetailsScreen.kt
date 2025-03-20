@@ -42,7 +42,7 @@ import com.mixedwash.core.presentation.models.SnackbarHandler
 import com.mixedwash.core.presentation.util.ObserveAsEvents
 import com.mixedwash.features.booking_details.presentation.components.BookingDetailsSummary
 import com.mixedwash.features.booking_details.presentation.components.BookingItem
-import com.mixedwash.features.common.presentation.address.model.Address
+import com.mixedwash.features.address.domain.model.Address
 import com.mixedwash.features.services.presentation.components.DefaultButtonLarge
 import com.mixedwash.ui.theme.MixedWashTheme
 import com.mixedwash.ui.theme.components.HeaderIconButton

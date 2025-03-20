@@ -1,4 +1,4 @@
-package com.mixedwash.features.common.presentation.address.components
+package com.mixedwash.features.address.presentation.components
 
 import BrandTheme
 import androidx.compose.animation.animateColor
