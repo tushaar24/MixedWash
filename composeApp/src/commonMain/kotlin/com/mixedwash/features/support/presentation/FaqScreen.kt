@@ -49,6 +49,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -58,6 +59,7 @@ import com.mixedwash.core.presentation.components.HeadingAlign
 import com.mixedwash.core.presentation.components.HeadingSize
 import com.mixedwash.core.presentation.components.noRippleClickable
 import com.mixedwash.features.support.domain.model.FaqItemDTO
+import com.mixedwash.ui.theme.Typography
 import com.mixedwash.ui.theme.components.HeaderIconButton
 import com.mixedwash.ui.theme.dividerBlack
 
@@ -249,7 +251,7 @@ fun FaqScreen(
                     Text(
                         text = "Contact Support",
                         lineHeight = 18.sp,
-                        fontSize = 16.sp,
+                        fontSize = 14.sp,
                         color = BrandTheme.colors.gray.light,
                         fontWeight = FontWeight.Medium,
                         style = BrandTheme.typography.mediumButton
@@ -372,5 +374,6 @@ fun SearchBar(
             }
         },
         shape = BrandTheme.shapes.textField,
+        textStyle = TextStyle(fontSize = 14.sp, fontFamily = Typography.Poppins())
     )
 }
