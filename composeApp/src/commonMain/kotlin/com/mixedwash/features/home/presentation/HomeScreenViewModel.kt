@@ -77,7 +77,7 @@ class HomeScreenViewModel(
             }
 
             HomeScreenEvent.OnIntroClick -> {
-                sendEvent(HomeScreenUiEvent.Navigate(Route.GettingStartedRoute))
+                sendEvent(HomeScreenUiEvent.Navigate(Route.OnboardingRoute))
             }
 
             is HomeScreenEvent.OnOfferClick -> {

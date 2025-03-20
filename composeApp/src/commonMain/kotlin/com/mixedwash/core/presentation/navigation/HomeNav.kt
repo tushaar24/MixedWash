@@ -15,8 +15,8 @@ import com.mixedwash.core.data.UserService
 import com.mixedwash.core.presentation.models.SnackbarHandler
 import com.mixedwash.features.booking_details.presentation.BookingDetailsScreen
 import com.mixedwash.features.booking_details.presentation.BookingDetailsScreenViewModel
-import com.mixedwash.features.getting_started.GettingStartedScreen
-import com.mixedwash.features.getting_started.GettingStartedScreenViewModel
+import com.mixedwash.features.getting_started.OnboardingScreen
+import com.mixedwash.features.getting_started.OnboardingScreenViewModel
 import com.mixedwash.features.home.presentation.HomeScreen
 import com.mixedwash.features.home.presentation.HomeScreenViewModel
 import com.mixedwash.features.order_confirmation.presentation.OrderConfirmationScreen
@@ -101,10 +101,10 @@ fun NavGraphBuilder.HomeNav(
             )
         }
 
-        composable<Route.GettingStartedRoute> {
-            val viewModel = koinViewModel<GettingStartedScreenViewModel>()
+        composable<Route.OnboardingRoute> {
+            val viewModel = koinViewModel<OnboardingScreenViewModel>()
             val state by viewModel.state.collectAsStateWithLifecycle()
-            GettingStartedScreen(
+            OnboardingScreen(
                 state = state,
                 onEvent = viewModel::onEvent,
                 uiEvents = viewModel.uiEventsFlow,

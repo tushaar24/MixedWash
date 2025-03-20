@@ -1,23 +1,18 @@
 package com.mixedwash.features.getting_started
 
 import com.mixedwash.Route
-import com.mixedwash.features.getting_started.model.GettingStartedItem
+import com.mixedwash.features.getting_started.model.OnboardingItem
 
-data class GettingStartedScreenState(
-    val items: List<GettingStartedItem>,
+data class OnboardingScreenState(
+    val items: List<OnboardingItem>,
     val currentIndex: Int,
-) {
-    val currentItem = items[currentIndex]
-    val lastPage = currentIndex + 1 == items.size
+)
+
+sealed interface OnboardingScreenEvent {
+    data object OnNavigateToHelpCenter : OnboardingScreenEvent
+    data object OnExplore : OnboardingScreenEvent
 }
 
-sealed interface GettingStartedScreenEvent {
-    data object OnNext : GettingStartedScreenEvent
-    data object OnNavigateToHelpCenter : GettingStartedScreenEvent
-    data object OnExplore : GettingStartedScreenEvent
-    data object OnSkip : GettingStartedScreenEvent
-}
-
-sealed interface GettingStartedScreenUiEvent {
-    data class Navigate(val route: Route) : GettingStartedScreenUiEvent
+sealed interface OnboardingScreenUiEvent {
+    data class Navigate(val route: Route) : OnboardingScreenUiEvent
 }
