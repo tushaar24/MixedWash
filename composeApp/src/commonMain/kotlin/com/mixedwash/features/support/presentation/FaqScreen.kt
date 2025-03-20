@@ -149,7 +149,7 @@ fun FaqScreen(
                                     items(state.faqTags) {
                                         Box(
                                             modifier = Modifier
-                                                .clip(RoundedCornerShape(8.dp))
+                                                .clip(RoundedCornerShape(12.dp))
                                                 .background(BrandTheme.colors.gray.light)
                                                 .clickable {
                                                     onEvent(
@@ -227,23 +227,33 @@ fun FaqScreen(
                 }
             }
 
-            Button(
-                modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter),
-                onClick = { onEvent(FaqScreenEvent.OnCallButtonClicked) },
-                shape = BrandTheme.shapes.button,
-                colors = ButtonDefaults.buttonColors(containerColor = BrandTheme.colors.gray.darker)
+            Box(
+                modifier = Modifier.height(52.dp)
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(BrandTheme.colors.gray.darker)
+                    .align(Alignment.BottomCenter)
+                    .noRippleClickable {
+                        onEvent(FaqScreenEvent.OnCallButtonClicked)
+                    },
+                contentAlignment = Alignment.Center
             ) {
                 Row(
-                    modifier = Modifier.padding(8.dp),
+                    modifier = Modifier.padding(16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
                         imageVector = Icons.Default.Call,
-                        contentDescription = "Call"
+                        contentDescription = "Call",
+                        tint = BrandTheme.colors.gray.light,
                     )
                     Spacer(Modifier.width(8.dp))
                     Text(
-                        text = "Call Us",
+                        text = "Contact Support",
+                        lineHeight = 18.sp,
+                        fontSize = 16.sp,
+                        color = BrandTheme.colors.gray.light,
+                        fontWeight = FontWeight.Medium,
                         style = BrandTheme.typography.mediumButton
                     )
                 }
@@ -310,7 +320,7 @@ fun LabelChip(
     modifier: Modifier = Modifier
 ) {
     Box(
-        modifier = modifier.clip(RoundedCornerShape(8.dp))
+        modifier = modifier.clip(RoundedCornerShape(12.dp))
             .widthIn(min = 80.dp)
             .background(if (selected) BrandTheme.colors.gray.darker else BrandTheme.colors.background)
             .clickable { onClick() },
