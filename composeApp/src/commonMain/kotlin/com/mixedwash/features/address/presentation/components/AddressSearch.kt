@@ -16,7 +16,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -124,8 +126,7 @@ fun AddressSearchBar(
     fetchingCurrentLocation: Boolean
 ) {
 
-    // Define your colors.
-    val defaultColor = BrandTheme.colors.gray.normal
+    val defaultColor = BrandTheme.colors.gray.normalDark
     val pulseColor = BrandTheme.colors.gray.darker
 
     // Determine the tint based on fetching state.
@@ -154,7 +155,7 @@ fun AddressSearchBar(
             width = 0.5.dp,
             color = BrandTheme.colors.gray.c300,
             shape = BrandTheme.shapes.textField
-        ).background(Color.White).padding(vertical = 12.dp, horizontal = 16.dp),
+        ).height(52.dp).background(BrandTheme.colors.gray.c100).padding(horizontal = 16.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -166,7 +167,7 @@ fun AddressSearchBar(
                 .clearFocusOnKeyboardDismiss().fillMaxWidth().weight(1f),
             maxLines = 1,
             minLines = 1,
-            textStyle = BrandTheme.typography.body2.copy(color = if (query.isBlank()) BrandTheme.colors.gray.normalDark else Color.Unspecified),
+            textStyle = BrandTheme.typography.body2.copy(color = if (query.isBlank()) BrandTheme.colors.gray.c600 else Color.Unspecified),
             singleLine = true,
             enabled = enabled
         )

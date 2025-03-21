@@ -14,24 +14,26 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.mixedwash.core.presentation.components.noRippleClickable
 import mixedwash.composeapp.generated.resources.Res
 import mixedwash.composeapp.generated.resources.ic_location
 import org.jetbrains.compose.resources.vectorResource
 
 @Composable
 fun LocationSlab(
-    addressKey: String,
-    address: String,
-    onExpand: () -> Unit,
     modifier: Modifier = Modifier,
+    addressTitle: String,
+    addressText: String,
+    onLocationClick: () -> Unit,
     contentColor: Color = Color.DarkGray
 ) {
     Row(
-        modifier = modifier,
+        modifier = modifier.noRippleClickable(onClick = onLocationClick),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Icon(
             imageVector = vectorResource(Res.drawable.ic_location),
@@ -40,33 +42,35 @@ fun LocationSlab(
             modifier = Modifier.size(18.dp),
         )
 
-        Column(modifier = Modifier.clickable { onExpand() }) {
+        Column {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 Text(
-                    text = addressKey,
+                    text = addressTitle,
                     color = contentColor,
                     fontWeight = FontWeight.Medium,
                     fontSize = 14.sp,
-                    lineHeight = 18.sp
+                    lineHeight = 18.sp,
+                    overflow = TextOverflow.Ellipsis
                 )
 
                 Icon(
                     imageVector = Icons.Default.KeyboardArrowDown,
                     contentDescription = "Expand",
                     tint = contentColor,
-                    modifier = Modifier.size(16.dp)
+                    modifier = Modifier.size(12.dp)
                 )
             }
 
             Text(
-                text = address,
+                text = addressText,
                 fontSize = 12.sp,
                 lineHeight = 15.sp,
                 color = contentColor,
-                fontWeight = FontWeight.Normal
+                fontWeight = FontWeight.Normal,
+                overflow = TextOverflow.Ellipsis
             )
         }
     }

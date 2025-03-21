@@ -1,6 +1,6 @@
 package com.mixedwash.features.profile.presentation
 
-import com.mixedwash.Route
+import com.mixedwash.core.presentation.navigation.Route
 
 data class ProfileScreenState(
     val sections: List<ProfileSection>,

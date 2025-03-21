@@ -2,7 +2,7 @@ package com.mixedwash.features.getting_started
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mixedwash.Route
+import com.mixedwash.core.presentation.navigation.Route
 import com.mixedwash.features.getting_started.model.onboardingItems
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
@@ -28,7 +28,7 @@ class OnboardingScreenViewModel : ViewModel() {
     fun onEvent(event: OnboardingScreenEvent) {
         when (event) {
             OnboardingScreenEvent.OnExplore -> {
-                sendNavigationEvent(Route.ServicesRoute(null))
+                sendNavigationEvent(Route.ServicesRoute(serviceId = null))
             }
 
             OnboardingScreenEvent.OnNavigateToHelpCenter -> {

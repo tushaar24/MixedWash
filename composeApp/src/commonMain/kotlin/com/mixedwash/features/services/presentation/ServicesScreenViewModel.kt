@@ -6,13 +6,16 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.mixedwash.Route
 import com.mixedwash.core.presentation.models.SnackBarType
 import com.mixedwash.core.presentation.models.SnackbarPayload
+import com.mixedwash.core.presentation.navigation.NavRouteArgument
+import com.mixedwash.core.presentation.navigation.Route
 import com.mixedwash.core.presentation.util.Logger
+import com.mixedwash.features.address.domain.error.AddressNotFoundException
+import com.mixedwash.features.address.domain.repository.AddressRepository
 import com.mixedwash.features.local_cart.data.model.CartItemEntity
 import com.mixedwash.features.local_cart.domain.LocalCartRepository
-import com.mixedwash.features.local_cart.domain.error.onCartError
+import com.mixedwash.features.local_cart.domain.error.onCartException
 import com.mixedwash.features.local_cart.domain.model.CartItem
 import com.mixedwash.features.local_cart.domain.model.toCartItem
 import com.mixedwash.features.local_cart.domain.model.toDomain
@@ -32,12 +35,14 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 
 private const val TAG = "ServicesScreenViewModel"
 
 class ServicesScreenViewModel(
     private val servicesDataRepository: ServicesDataRepository,
     private val cartRepository: LocalCartRepository,
+    private val addressRepository: AddressRepository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -92,7 +97,7 @@ class ServicesScreenViewModel(
 
             is ServicesScreenEvent.OnItemIncrement -> {
                 viewModelScope.launch {
-                    cartRepository.incrementCartItem(event.itemId).onCartError(itemNotFound = {
+                    cartRepository.incrementCartItem(event.itemId).onCartException(itemNotFound = {
                         snackbarEvent(
                             "Quantity Increment Failed: Item Not Found", SnackBarType.ERROR
                         )
@@ -102,7 +107,7 @@ class ServicesScreenViewModel(
 
             is ServicesScreenEvent.OnItemDecrement -> {
                 viewModelScope.launch {
-                    cartRepository.decrementCartItem(event.itemId).onCartError(itemNotFound = {
+                    cartRepository.decrementCartItem(event.itemId).onCartException(itemNotFound = {
                         snackbarEvent(
                             message = "Quantity Decrement Failed: Item Not Found",
                             type = SnackBarType.ERROR
@@ -134,8 +139,7 @@ class ServicesScreenViewModel(
                                 service.deliveryTimeMinInHrs,
                                 service.deliveryTimeMaxInHrs
                             )
-                        } ?: emptyList(),
-                        filters = emptyList()
+                        } ?: emptyList(), genderFilter = null
                     )
 
                     updateState {
@@ -166,27 +170,22 @@ class ServicesScreenViewModel(
             }
 
             is ServicesScreenEvent.OnFilterClicked -> {
-                state.value.subItemsListState?.filters?.let { list ->
-                    val updatedFilters = if (list.contains(event.gender)) {
-                        list - event.gender
-                    } else {
-                        list + event.gender
-                    }
-                    updateState {
-                        val updatedList = selectedServiceId?.let {
-                            filterSubItemsList(
-                                serviceId = it,
-                                searchQuery = state.value.subItemsListState?.query ?: "",
-                                filters = updatedFilters,
-                            ).getOrNull()
-                        } ?: emptyList()
+                if (event.gender == state.value.subItemsListState?.genderFilter) return
+                updateState {
+                    subItemsListState?.let { subItemsState ->
+                        val updatedList = filterSubItemsList(
+                            serviceId = state.value.selectedServiceId!!,
+                            filter = event.gender,
+                            searchQuery = subItemsState.query
+                        ).getOrDefault(
+                            emptyList()
+                        )
                         copy(
-                            subItemsListState = subItemsListState?.copy(
-                                filters = updatedFilters,
-                                items = updatedList
+                            subItemsListState = subItemsState.copy(
+                                genderFilter = event.gender, items = updatedList
                             )
                         )
-                    }
+                    } ?: this
                 }
             }
 
@@ -197,7 +196,7 @@ class ServicesScreenViewModel(
                             filterSubItemsList(
                                 serviceId =  it,
                                 searchQuery = event.query,
-                                filters = state.value.subItemsListState?.filters ?: emptyList()
+                                filter = state.value.subItemsListState?.genderFilter
                             ).getOrNull()
                         } ?: emptyList()
                         copy(
@@ -215,7 +214,7 @@ class ServicesScreenViewModel(
                 }
             }
 
-            ServicesScreenEvent.OnProceedClick -> {
+            ServicesScreenEvent.OnSubmit -> {
                 if(state.value.cartItems.isEmpty()) {
                     snackbarEvent(
                         message = "No items in cart",
@@ -223,7 +222,36 @@ class ServicesScreenViewModel(
                     )
                     return
                 }
-                sendUiEvent(ServicesScreenUiEvent.ProceedToSlotSelection)
+                viewModelScope.launch {
+                    addressRepository.getCurrentAddress().onSuccess {
+                        sendUiEvent(ServicesScreenUiEvent.NavigateToRoute(Route.SlotSelectionRoute))
+                    }.onFailure { e ->
+                        when (e) {
+                            is AddressNotFoundException -> {
+                                sendUiEvent(
+                                    ServicesScreenUiEvent.NavigateToRoute(
+                                        Route.AddressRoute(
+                                            title = "Select Your Address",
+                                            screenType = Route.AddressRoute.ScreenType.SelectAddress,
+                                            submitText = "Select Address",
+                                            onSubmitRouteSerialized = Json.encodeToString(
+                                                NavRouteArgument(
+                                                    Route.SlotSelectionRoute
+                                                )
+                                            )
+                                        )
+                                    )
+                                )
+                            }
+
+                            else -> {
+                                snackbarEvent(
+                                    message = "Error fetching address", type = SnackBarType.ERROR
+                                )
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -231,7 +259,7 @@ class ServicesScreenViewModel(
     private fun filterSubItemsList(
         serviceId: String,
         searchQuery: String = "",
-        filters: List<Gender>
+        filter: Gender? = null
     ): Result<List<CartItem>> {
         val result = runCatching {
             state.value.subItemsListState?.run {
@@ -246,21 +274,16 @@ class ServicesScreenViewModel(
                 }?.toMutableList() ?: throw IllegalStateException(
                     "Items list is null for service ID: $serviceId"
                 )
-
-                val queriedList = if (searchQuery.isNotBlank()) {
+                val queriedList = if (searchQuery.isNotBlank() && searchQuery != query) {
                     itemsList.filter { it.name.contains(searchQuery, ignoreCase = true) }
                 } else {
                     itemsList
                 }
-                val queriedFilteredList = if (filters.isNotEmpty()) {
-                    queriedList.filter { item ->
-                        filters.any {
-                            it == item.metadata?.gender || item.metadata?.gender == Gender.BOTH
-                        }
-                    }
-                } else {
-                    queriedList
-                }
+                val queriedFilteredList =
+                    if (filter != state.value.subItemsListState!!.genderFilter && filter != null) {
+                        queriedList.filter { it.metadata?.gender == filter }
+                    } else queriedList
+
                 queriedFilteredList
             } ?: throw IllegalStateException("SubItemsListState is null")
 
@@ -346,3 +369,4 @@ class ServicesScreenViewModel(
     }
 
 }
+

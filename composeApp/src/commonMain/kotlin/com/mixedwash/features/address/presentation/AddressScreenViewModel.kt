@@ -11,7 +11,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.mixedwash.Route
+import com.mixedwash.core.presentation.navigation.Route
 import com.mixedwash.core.domain.validation.PinCodeValidationUseCase
 import com.mixedwash.core.presentation.components.ButtonData
 import com.mixedwash.core.presentation.components.DialogPopupData
@@ -25,6 +25,8 @@ import com.mixedwash.core.presentation.models.FormField
 import com.mixedwash.core.presentation.models.InputState
 import com.mixedwash.core.presentation.models.SnackBarType
 import com.mixedwash.core.presentation.models.SnackbarPayload
+import com.mixedwash.core.presentation.navigation.NavRouteArgument
+import com.mixedwash.core.presentation.util.Logger
 import com.mixedwash.features.address.domain.model.Address
 import com.mixedwash.features.address.domain.model.toAddress
 import com.mixedwash.features.address.domain.repository.AddressRepository
@@ -45,6 +47,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -98,22 +101,37 @@ class AddressScreenViewModel(
                     updateState {
                         copy(
                             typeParams = selectParams.copy(
-                                selectedIndex = event.index
+                                selectedId = event.addressId
                             )
                         )
                     }
+
                 }
             }
 
             AddressScreenEvent.OnScreenSubmit -> {
                 viewModelScope.launch {
                     state.value.typeParams.asSelect()?.let { selectParams ->
-                        state.value.run {
-                            val uid =
-                                addressList[selectParams.selectedIndex].uid
-                            addressRepository.setCurrentAddress(uid)
-                        }.onSuccess {
-                            _uiEventsChannel.send(AddressScreenUiEvent.NavigateOnSubmit)
+                        addressRepository.setCurrentAddress(selectParams.selectedId).onSuccess {
+                            addressRoute.onSubmitRouteSerialized?.let { string ->
+                                runCatching {
+                                    Logger.d("AddressScreenViewModel", "String: $string")
+                                    Json.decodeFromString<NavRouteArgument>(string)
+                                }.onSuccess { routeArgument ->
+                                    _uiEventsChannel.send(
+                                        AddressScreenUiEvent.NavigateOnSubmit(
+                                            routeArgument.route
+                                        )
+                                    )
+                                }.onFailure { e ->
+                                    snackbarEvent(
+                                        "Navigation Failed: Invalid Submit Route",
+                                        SnackBarType.ERROR
+                                    )
+                                    Logger.e("AddressScreenViewModel", e.stackTraceToString())
+                                }
+
+                            }
                         }.onFailure { e ->
                             snackbarEvent(
                                 e.message ?: "Error Setting Current Address", SnackBarType.ERROR
@@ -571,7 +589,7 @@ class AddressScreenViewModel(
             Route.AddressRoute.ScreenType.SelectAddress -> AddressScreenState.TypeParams.Select(
                 onSubmit = { onScreenEvent(AddressScreenEvent.OnScreenSubmit) },
                 submitText = addressRoute.submitText ?: "Submit",
-                selectedIndex = -1,
+                selectedId = null,
                 onAddressSelected = { onScreenEvent(AddressScreenEvent.OnAddressSelect(it)) }
             )
         }

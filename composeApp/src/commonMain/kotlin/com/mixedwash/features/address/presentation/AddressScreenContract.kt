@@ -1,9 +1,10 @@
 package com.mixedwash.features.address.presentation
 
 import androidx.compose.runtime.Immutable
-import com.mixedwash.features.address.domain.model.Address
+import com.mixedwash.core.presentation.navigation.Route
 import com.mixedwash.core.presentation.components.DialogPopupData
 import com.mixedwash.core.presentation.models.SnackbarPayload
+import com.mixedwash.features.address.domain.model.Address
 import com.mixedwash.libs.loki.autocomplete.AutocompletePlace
 
 
@@ -24,8 +25,8 @@ data class AddressScreenState(
         data class Select (
             val onSubmit : () -> Unit,
             val submitText : String,
-            val selectedIndex: Int,
-            val onAddressSelected : (index: Int) -> Unit
+            val selectedId: String? = null,
+            val onAddressSelected : (uid: String) -> Unit
         ) : TypeParams()
 
         fun asSelect() = if(this is Select) this else null
@@ -50,7 +51,7 @@ data class AddressSearchState (
     companion object {
         fun initialState() = AddressSearchState(
             query = "",
-            placeHolder = "Enter your area, street",
+            placeHolder = "Enter your address",
             enabled = true,
             autocompleteResult = emptyList(),
             fetchingLocation = false,
@@ -71,7 +72,7 @@ sealed class FormMode {
 
 
 sealed class AddressScreenEvent {
-    data class OnAddressSelect(val index: Int) : AddressScreenEvent()
+    data class OnAddressSelect(val addressId: String) : AddressScreenEvent()
     data class OnAddressEdit(val address: Address) : AddressScreenEvent()
     data class OnAddAddress(val address : Address? = null) : AddressScreenEvent()
     data object OnScreenSubmit : AddressScreenEvent()
@@ -103,6 +104,6 @@ sealed class AddressScreenUiEvent {
     data object CloseForm : AddressScreenUiEvent()
     data class ShowDialogPopup(val dialogPopupData: DialogPopupData) : AddressScreenUiEvent()
     data object ClosePopup : AddressScreenUiEvent()
-    data object NavigateOnSubmit : AddressScreenUiEvent()
+    data class NavigateOnSubmit(val route: Route) : AddressScreenUiEvent()
 }
 

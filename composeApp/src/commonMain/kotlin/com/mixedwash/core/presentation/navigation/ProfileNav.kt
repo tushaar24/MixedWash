@@ -8,7 +8,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
-import com.mixedwash.Route
+import com.mixedwash.core.presentation.navigation.Route
 import com.mixedwash.core.presentation.models.SnackbarHandler
 import com.mixedwash.features.address.presentation.AddressScreenViewModel
 import com.mixedwash.features.common.presentation.address.AddressScreen

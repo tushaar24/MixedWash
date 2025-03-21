@@ -4,8 +4,7 @@ import androidx.room.TypeConverter
 
 enum class GenderEntity {
     MALE,
-    FEMALE,
-    BOTH
+    FEMALE
 }
 
 class GenderEntityTypeConverter {

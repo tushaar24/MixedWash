@@ -46,7 +46,6 @@ fun ItemPricingEntity.toDomain() : ItemPricing = when (pricingType) {
 fun GenderEntity.toDomain() = when (this) {
     GenderEntity.FEMALE -> Gender.FEMALE
     GenderEntity.MALE -> Gender.MALE
-    GenderEntity.BOTH -> Gender.BOTH
 }
 
 fun ServiceItemPresentation.toCartItem(deliveryTimeMinInHrs: Int, deliveryTimeMaxInHrs: Int?) = CartItem(

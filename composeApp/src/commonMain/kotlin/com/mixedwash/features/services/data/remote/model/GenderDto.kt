@@ -7,5 +7,4 @@ import kotlinx.serialization.Serializable
 enum class GenderDto {
     @SerialName("male") MALE,
     @SerialName("female") FEMALE,
-    @SerialName("both") BOTH
 }

@@ -11,14 +11,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
-import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -26,6 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.mixedwash.core.presentation.navigation.Route
 import com.mixedwash.WindowInsetsContainer
 import com.mixedwash.core.presentation.components.DefaultHeader
 import com.mixedwash.core.presentation.components.DialogPopup
@@ -44,7 +43,6 @@ import com.mixedwash.features.address.presentation.components.AddressList
 import com.mixedwash.ui.theme.MixedWashTheme
 import com.mixedwash.ui.theme.bottomButtonPadding
 import com.mixedwash.ui.theme.components.HeaderIconButton
-import com.mixedwash.ui.theme.components.OutlinedButton
 import com.mixedwash.ui.theme.components.PrimaryButton
 import com.mixedwash.ui.theme.headerContentSpacing
 import com.mixedwash.ui.theme.screenHorizontalPadding
@@ -59,10 +57,7 @@ fun AddressScreen(
     uiEventsFlow: Flow<AddressScreenUiEvent>,
     snackbarHandler: SnackbarHandler,
     navController: NavController,
-    onSubmitNavigate: (() -> Unit)? = null
 ) {
-    state.typeParams.asSelect()
-        ?.let { requireNotNull(onSubmitNavigate) { "onSubmitNavigate cannot be null when typeParam is SelectAddress" } }
 
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
@@ -98,8 +93,12 @@ fun AddressScreen(
                 dialogPopupData = event.dialogPopupData
             }
 
-            AddressScreenUiEvent.NavigateOnSubmit -> {
-                onSubmitNavigate!!.invoke()
+            is AddressScreenUiEvent.NavigateOnSubmit -> {
+                navController.navigate(event.route) {
+                    popUpTo(navController.currentDestination?.route ?: return@navigate) {
+                        inclusive = true
+                    }
+                }
             }
 
         }
@@ -121,7 +120,8 @@ fun AddressScreen(
                 }
             )
             Column(
-                Modifier.padding(horizontal = screenHorizontalPadding)
+                Modifier
+                    .padding(horizontal = screenHorizontalPadding).fillMaxSize()
             ) {
 
                 Spacer(modifier = Modifier.height(headerContentSpacing))
@@ -130,19 +130,22 @@ fun AddressScreen(
                     modifier = Modifier.fillMaxWidth(),
                     addresses = state.addressList,
                     onAddressClicked = state.typeParams.asSelect()?.onAddressSelected,
-                    selectedIndex = state.typeParams.asSelect()?.selectedIndex ?: -1,
+                    selectedAddressId = state.typeParams.asSelect()?.selectedId,
                     onAddressEdit = state.onAddressEdit,
-                    addressSearchState = state.searchState,
+                    addressSearchState = if (state.typeParams is AddressScreenState.TypeParams.Edit) state.searchState else null,
                 )
-                Spacer(modifier = Modifier.height(16.dp))
-                OutlinedButton(
-                    iconBefore = Icons.Rounded.Add,
-                    text = "Add Address",
-                    modifier = Modifier.fillMaxWidth(),
-                    contentColor = BrandTheme.colors.gray.dark,
-                    outlineColor = BrandTheme.colors.gray.dark,
-                    onClick = state.onAddAddress
-                )
+
+                /*
+                                Spacer(modifier = Modifier.height(16.dp))
+                                OutlinedButton(
+                                    iconBefore = Icons.Rounded.Add,
+                                    text = "Add Address",
+                                    modifier = Modifier.fillMaxWidth(),
+                                    contentColor = BrandTheme.colors.gray.dark,
+                                    outlineColor = BrandTheme.colors.gray.dark,
+                                    onClick = state.onAddAddress
+                                )
+                */
 
                 Spacer(modifier = Modifier.weight(1f))
 
@@ -153,7 +156,7 @@ fun AddressScreen(
                             .padding(bottom = bottomButtonPadding),
                         text = submitText,
                         onClick = onSubmit,
-                        enabled = selectedIndex != -1
+                        enabled = !selectedId.isNullOrBlank()
                     )
                 }
 
@@ -197,7 +200,9 @@ fun AddressScreen(
 //@Preview(showSystemUi = true, device = Devices.PIXEL)
 @Composable
 private fun PreviewAddressScreen() {
-    var selectedIndex by remember { mutableIntStateOf(0) }
+    MixedWashTheme {
+
+        var selectedId by remember { mutableStateOf("") }
     val dummyAddress = listOf(
         Address(
             uid = "alkka",
@@ -232,7 +237,6 @@ private fun PreviewAddressScreen() {
         typeParams = AddressScreenState.TypeParams.Select(
             onSubmit = { },
             submitText = "Save",
-            selectedIndex = 0,
             onAddressSelected = { }
         ),
         searchState = AddressSearchState.initialState()
@@ -243,11 +247,10 @@ private fun PreviewAddressScreen() {
         addressList = dummyAddress,
         typeParams = (emptyState.typeParams as AddressScreenState.TypeParams.Select).copy(
             submitText = "Continue",
-            onAddressSelected = { selectedIndex = it },
+            onAddressSelected = { selectedId = it },
         ),
         isLoading = false
     )
-    MixedWashTheme {
 
     }
 }

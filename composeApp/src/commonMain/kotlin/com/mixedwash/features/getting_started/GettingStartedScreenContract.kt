@@ -1,6 +1,6 @@
 package com.mixedwash.features.getting_started
 
-import com.mixedwash.Route
+import com.mixedwash.core.presentation.navigation.Route
 import com.mixedwash.features.getting_started.model.OnboardingItem
 
 data class OnboardingScreenState(

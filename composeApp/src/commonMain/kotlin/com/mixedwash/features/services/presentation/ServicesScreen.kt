@@ -25,7 +25,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.mixedwash.Route
 import com.mixedwash.core.presentation.components.DefaultHeader
 import com.mixedwash.core.presentation.components.HeadingAlign
 import com.mixedwash.core.presentation.components.HeadingSize
@@ -72,7 +71,8 @@ fun ServicesScreen(
                 onItemIncrement = { onEvent(ServicesScreenEvent.OnItemIncrement(it)) },
                 onItemDecrement = { onEvent(ServicesScreenEvent.OnItemDecrement(it)) },
                 onItemAdd = { onEvent(ServicesScreenEvent.OnItemAdd(it)) },
-                onFilterClick = { onEvent(ServicesScreenEvent.OnFilterClicked(it)) }
+                onFilterClick = { onEvent(ServicesScreenEvent.OnFilterClicked(it)) },
+                onClose = { onEvent(ServicesScreenEvent.OnCloseSubItemsSheet) }
             )
         }
     }
@@ -138,8 +138,8 @@ fun ServicesScreen(
                 }
             }
 
-            ServicesScreenUiEvent.ProceedToSlotSelection -> {
-                navController.navigate(Route.SlotSelectionRoute)
+            is ServicesScreenUiEvent.NavigateToRoute -> {
+                navController.navigate(event.route)
             }
         }
     }
@@ -190,7 +190,7 @@ fun ServicesScreen(
 
             ServicesFooter(
                 selectedItemsSize = state.cartItems.fold(initial = 0) { acc, cartItem -> acc + cartItem.quantity },
-                onProceed = { onEvent(ServicesScreenEvent.OnProceedClick) },
+                onProceed = { onEvent(ServicesScreenEvent.OnSubmit) },
                 allowProceed = state.cartItems.isNotEmpty()
             )
         }

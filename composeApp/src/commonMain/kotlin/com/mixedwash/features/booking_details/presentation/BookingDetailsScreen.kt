@@ -20,7 +20,9 @@ import androidx.compose.material.icons.rounded.KeyboardArrowLeft
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,7 +32,6 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.mixedwash.Route
 import com.mixedwash.WindowInsetsContainer
 import com.mixedwash.core.booking.domain.model.BookingItemPricing
 import com.mixedwash.core.booking.domain.model.BookingTimeSlot
@@ -39,10 +40,11 @@ import com.mixedwash.core.presentation.components.DefaultHeader
 import com.mixedwash.core.presentation.components.HeadingAlign
 import com.mixedwash.core.presentation.components.HeadingSize
 import com.mixedwash.core.presentation.models.SnackbarHandler
+import com.mixedwash.core.presentation.navigation.Route
 import com.mixedwash.core.presentation.util.ObserveAsEvents
+import com.mixedwash.features.address.domain.model.Address
 import com.mixedwash.features.booking_details.presentation.components.BookingDetailsSummary
 import com.mixedwash.features.booking_details.presentation.components.BookingItem
-import com.mixedwash.features.address.domain.model.Address
 import com.mixedwash.features.services.presentation.components.DefaultButtonLarge
 import com.mixedwash.ui.theme.MixedWashTheme
 import com.mixedwash.ui.theme.components.HeaderIconButton
@@ -66,7 +68,7 @@ fun BookingDetailsScreen(
     ObserveAsEvents(uiEventsFlow) { event ->
         when (event) {
             is BookingDetailsScreenUiEvent.NavigateToBookingConfirmation -> {
-                navController.navigate(Route.BookingConfirmationRoute(event.bookingId)) {
+                navController.navigate(Route.BookingConfirmationRoute(bookingId = event.bookingId)) {
                     popUpTo(Route.HomeRoute)
                 }
             }
@@ -80,12 +82,18 @@ fun BookingDetailsScreen(
     WindowInsetsContainer {
 
         val scrollState = rememberScrollState()
+        val isScrolledUp by remember {
+            derivedStateOf { scrollState.value == 0 }
+        }
+        val isScrolledDown by remember {
+            derivedStateOf { scrollState.value == scrollState.maxValue }
+        }
         val headerElevation by animateDpAsState(
-            if (scrollState.value > 0) 4.dp else 0.dp,
+            if (isScrolledUp) 0.dp else 4.dp,
             animationSpec = spring(stiffness = Spring.StiffnessLow)
         )
         val footerElevation by animateDpAsState(
-            if (scrollState.value < scrollState.maxValue) 4.dp else 0.dp,
+            if (isScrolledDown) 0.dp else 4.dp,
             animationSpec = spring(stiffness = Spring.StiffnessLow)
         )
 

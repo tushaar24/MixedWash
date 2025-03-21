@@ -1,6 +1,6 @@
 package com.mixedwash.features.home.presentation
 
-import com.mixedwash.Route
+import com.mixedwash.core.presentation.navigation.Route
 import com.mixedwash.core.presentation.components.DialogPopupData
 import com.mixedwash.core.presentation.models.SnackbarPayload
 import com.mixedwash.features.address.domain.model.Address

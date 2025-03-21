@@ -14,7 +14,7 @@ import com.mixedwash.features.local_cart.domain.error.CartException.ItemNotFound
  * @see Result
  * @see ItemNotFoundException
  */
-inline fun <T> Result<T>.onCartError(
+inline fun <T> Result<T>.onCartException(
     crossinline itemNotFound: (ItemNotFoundException) -> Unit = {},
     crossinline other: (Throwable) -> Unit = { e -> e.printStackTrace() }
 ): Result<T> {

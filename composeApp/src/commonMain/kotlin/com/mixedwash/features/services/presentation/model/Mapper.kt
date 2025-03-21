@@ -85,7 +85,6 @@ fun PricingMetadataDto.toPresentation(): PricingMetadataPresentation = when (thi
 fun GenderDto.toPresentation() : Gender = when (this) {
     GenderDto.MALE -> Gender.MALE
     GenderDto.FEMALE -> Gender.FEMALE
-    GenderDto.BOTH -> Gender.BOTH
 }
 
 fun ServiceItemPresentation.toCartItemEntity(deliveryTimeMinInHrs: Int, deliveryTimeMaxInHrs: Int?) : CartItemEntity {
@@ -108,7 +107,6 @@ fun ServiceItemMetadata.toEntity() : ItemMetadataEntity {
         gender = when(gender) {
             Gender.MALE -> GenderEntity.MALE
             Gender.FEMALE -> GenderEntity.FEMALE
-            Gender.BOTH -> GenderEntity.BOTH
             null -> null
         }
     )

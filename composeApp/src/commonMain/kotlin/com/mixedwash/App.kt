@@ -42,6 +42,7 @@ import com.mixedwash.core.presentation.models.decodeSnackBar
 import com.mixedwash.core.presentation.navigation.AuthNav
 import com.mixedwash.core.presentation.navigation.HomeNav
 import com.mixedwash.core.presentation.navigation.ProfileNav
+import com.mixedwash.core.presentation.navigation.Route
 import com.mixedwash.core.presentation.util.Logger
 import com.mixedwash.features.support.presentation.FaqScreen
 import com.mixedwash.features.support.presentation.FaqScreenViewModel

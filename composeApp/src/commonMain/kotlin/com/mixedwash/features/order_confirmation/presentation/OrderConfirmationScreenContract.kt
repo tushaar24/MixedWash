@@ -1,6 +1,6 @@
 package com.mixedwash.features.order_confirmation.presentation
 
-import com.mixedwash.Route
+import com.mixedwash.core.presentation.navigation.Route
 
 data class OrderConfirmationScreenState(
     val title: String,

@@ -3,7 +3,6 @@ package com.mixedwash.features.address.data.service
 import com.mixedwash.core.data.USER_COLLECTION
 import com.mixedwash.core.data.UserNotFoundException
 import com.mixedwash.core.data.UserService
-import com.mixedwash.core.data.util.AppCoroutineScope
 import com.mixedwash.features.address.domain.error.AddressNotFoundException
 import com.mixedwash.features.address.domain.error.OperationFailedException
 import com.mixedwash.features.address.domain.model.Address
@@ -136,14 +135,17 @@ class FirebaseAddressService(
         }
     }
 
-    fun getCurrentAddress(): Result<Address> = runCatching {
+    suspend fun getCurrentAddress(): Result<Address> = runCatching {
         val user = userService.currentUser ?: throw UserNotFoundException()
         val userMetadata =
             user.userMetadata ?: throw UserNotFoundException("UserMetadata not found")
         if (userMetadata.defaultAddressId == null) throw AddressNotFoundException()
         val defaultAddress =
             user.userMetadata.addressList.find { it.uid == userMetadata.defaultAddressId }
-                ?: throw AddressNotFoundException()
+        if (defaultAddress == null) {
+            userService.updateMetadata { it.copy(defaultAddressId = null) }
+            throw AddressNotFoundException()
+        }
         return Result.success(defaultAddress)
     }
 

@@ -1,6 +1,5 @@
 package com.mixedwash.features.home.presentation.components
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -22,7 +21,7 @@ import androidx.compose.ui.unit.sp
 import com.mixedwash.core.presentation.components.dump.LocationSlab
 import com.mixedwash.core.presentation.components.noRippleClickable
 import mixedwash.composeapp.generated.resources.Res
-import mixedwash.composeapp.generated.resources.ic_profile
+import mixedwash.composeapp.generated.resources.ic_person_filled
 import org.jetbrains.compose.resources.vectorResource
 
 @Composable
@@ -41,10 +40,11 @@ fun HomeTopBar(
         verticalAlignment = Alignment.CenterVertically
     ) {
         LocationSlab(
+            modifier.fillMaxWidth(0.4f),
             contentColor = contentColor,
-            addressKey = addressTitle,
-            address = addressLine,
-            onExpand = onExpand
+            addressTitle = addressTitle,
+            addressText = addressLine,
+            onLocationClick = onExpand
         )
 
         Row(
@@ -56,24 +56,24 @@ fun HomeTopBar(
                 modifier = Modifier
                     .padding(horizontal = 0.dp, vertical = 6.dp)
                     .noRippleClickable { onFAQsClick() },
-                text = "FAQs",
+                text = "faqs",
                 color = contentColor,
                 fontWeight = FontWeight.Medium,
                 fontSize = 14.sp
             )
 
             VerticalDivider(
-                color = contentColor.copy(alpha = 0.2f),
+                color = contentColor.copy(alpha = 0.1f),
                 modifier = Modifier
                     .width(2.dp)
                     .padding(vertical = 4.dp, horizontal = 0.dp)
             )
 
             Icon(
-                imageVector = vectorResource(Res.drawable.ic_profile),
+                imageVector = vectorResource(Res.drawable.ic_person_filled),
                 contentDescription = "Profile",
                 tint = contentColor,
-                modifier = Modifier.size(18.dp).clickable { onProfileClick() },
+                modifier = Modifier.size(18.dp).noRippleClickable(onClick = onProfileClick),
             )
         }
     }

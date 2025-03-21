@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -41,17 +42,17 @@ import com.mixedwash.ui.theme.screenVerticalPadding
 fun AddressList(
     modifier: Modifier = Modifier,
     addresses: List<Address>,
-    selectedIndex: Int = -1,
-    onAddressClicked: ((Int) -> Unit)? = null,
+    selectedAddressId: String? = null,
+    onAddressClicked: ((String) -> Unit)? = null,
     onAddressEdit: ((Address) -> Unit)? = null,
-    addressSearchState: AddressSearchState
+    addressSearchState: AddressSearchState?=null
 ) {
     LazyColumn(
         modifier = modifier.animateContentSize(),
         verticalArrangement = Arrangement.spacedBy(cardSpacing)
     ) {
         item {
-            addressSearchState.let { state ->
+            addressSearchState?.let { state ->
                 AddressSearch(
                     modifier = Modifier.fillMaxWidth(),
                     query = state.query,
@@ -71,11 +72,12 @@ fun AddressList(
         items(count = addresses.size, key = { index -> addresses[index].uid }) { index ->
 
             val address = addresses[index]
+            val isSelected = selectedAddressId == address.uid
 
-            val borderColor = if (selectedIndex == index) Color.Transparent
+            val borderColor = if (isSelected) Color.Transparent
             else Color.Transparent
 
-            val containerColor = if (selectedIndex == index) BrandTheme.colors.gray.c300
+            val containerColor = if (isSelected) BrandTheme.colors.gray.c300
             else Color.Transparent
 
             Row(modifier = Modifier
@@ -85,9 +87,9 @@ fun AddressList(
                 )
                 .clip(BrandTheme.shapes.card)
                 .background(containerColor)
-                .clickable(enabled = onAddressClicked != null && selectedIndex != index) {
+                .clickable(enabled = onAddressClicked != null && !isSelected) {
                     onAddressClicked!!(
-                        index
+                        address.uid
                     )
                 }
                 .padding(horizontal = 16.dp, vertical = 16.dp)) {
@@ -164,15 +166,15 @@ private fun PreviewAddressList() {
             pinCode = "560100"
         )
     )
-    var selectedIndex by remember { mutableIntStateOf(0) }
 
+    var selectedId by remember {mutableStateOf("")}
     MixedWashTheme {
         AddressList(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = screenHorizontalPadding, vertical = screenVerticalPadding),
             addresses = addresses,
-            selectedIndex = selectedIndex, onAddressClicked = { selectedIndex = it },
+            selectedAddressId = selectedId, onAddressClicked = { selectedId = it },
             onAddressEdit = {},
             addressSearchState = AddressSearchState.initialState()
         )

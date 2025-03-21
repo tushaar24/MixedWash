@@ -2,7 +2,7 @@ package com.mixedwash.features.profile.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mixedwash.Route
+import com.mixedwash.core.presentation.navigation.Route
 import com.mixedwash.core.data.UserService
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,10 +26,10 @@ class ProfileScreenViewModel(
 ) : ViewModel() {
 
     val metadata =
-        userService.currentUser?.userMetadata   // TODO: what happens when null?
+        userService.currentUser?.userMetadata
 
     private val initialState = ProfileScreenState(
-        imageUrl = metadata?.photoUrl, // Placeholder
+        imageUrl = metadata?.photoUrl,
         name = metadata?.name,
         email = metadata?.email,
         phone = metadata?.phoneNumber,

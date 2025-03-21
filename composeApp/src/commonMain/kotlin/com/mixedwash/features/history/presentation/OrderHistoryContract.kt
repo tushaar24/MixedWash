@@ -1,6 +1,6 @@
 package com.mixedwash.features.history.presentation
 
-import com.mixedwash.Route
+import com.mixedwash.core.presentation.navigation.Route
 import com.mixedwash.core.booking.domain.model.BookingData
 import com.mixedwash.features.history.domain.model.InsightMetric
 

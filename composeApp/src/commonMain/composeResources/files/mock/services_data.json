@@ -245,7 +245,6 @@
           "item_id": "item_dry_clean_jacket",
           "name": "Jacket",
           "metadata": {
-            "gender": "both",
             "image_url": "https://assets-aac.pages.dev/assets/sku_dry_clean_item_jacket_2.png"
           },
           "item_pricing": {
@@ -296,7 +295,6 @@
           "item_id": "item_dry_clean_long_coat",
           "name": "Long Coat",
           "metadata": {
-            "gender": "both",
             "image_url": "https://assets-aac.pages.dev/assets/sku_dry_clean_item_long_coat_1.png"
           },
           "item_pricing": {

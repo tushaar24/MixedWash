@@ -2,7 +2,7 @@ package com.mixedwash.features.history.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mixedwash.Route
+import com.mixedwash.core.presentation.navigation.Route
 import com.mixedwash.core.booking.domain.repository.BookingsRepository
 import com.mixedwash.features.history.domain.model.insightMetrics
 import kotlinx.coroutines.channels.Channel
@@ -40,8 +40,8 @@ class OrderHistoryScreenViewModel(private val bookingsRepository: BookingsReposi
                     _uiEventsChannel.send(
                         OrderHistoryScreenUiEvent.Navigate(
                             Route.BookingDetailsRoute(
-                                event.orderId,
-                                Route.BookingDetailsRoute.DestinationType.VIEW_BOOKING_BY_ID
+                                bookingId = event.orderId,
+                                destinationType = Route.BookingDetailsRoute.DestinationType.VIEW_BOOKING_BY_ID
                             )
                         )
                     )

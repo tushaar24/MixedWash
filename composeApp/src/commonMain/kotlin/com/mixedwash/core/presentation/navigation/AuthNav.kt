@@ -10,7 +10,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
-import com.mixedwash.Route
+import com.mixedwash.core.presentation.navigation.Route
 import com.mixedwash.features.common.presentation.phone.PhoneScreen
 import com.mixedwash.features.common.presentation.phone.PhoneScreenViewModel
 import com.mixedwash.features.common.presentation.signin.CarouselItem
