@@ -1,4 +1,4 @@
-package com.mixedwash.features.getting_started
+package com.mixedwash.features.onboarding.presentation
 
 import BrandTheme
 import androidx.compose.animation.AnimatedContent
@@ -51,6 +51,7 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.mixedwash.core.presentation.components.noRippleClickable
 import com.mixedwash.core.presentation.util.ObserveAsEvents
+import com.mixedwash.features.common.util.parse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import mixedwash.composeapp.generated.resources.Res
@@ -77,7 +78,7 @@ fun OnboardingScreen(
     val coroutineScope = rememberCoroutineScope()
 
     val animatedBackgroundColor = animateColorAsState(
-        targetValue = state.items[pagerState.currentPage].backgroundColor,
+        targetValue = Color.parse(state.items[pagerState.currentPage].backgroundColorHex),
         animationSpec = tween(durationMillis = 300)
     )
 

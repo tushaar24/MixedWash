@@ -10,15 +10,14 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
-import com.mixedwash.core.presentation.navigation.Route
 import com.mixedwash.core.data.UserService
 import com.mixedwash.core.presentation.models.SnackbarHandler
 import com.mixedwash.features.booking_details.presentation.BookingDetailsScreen
 import com.mixedwash.features.booking_details.presentation.BookingDetailsScreenViewModel
-import com.mixedwash.features.getting_started.OnboardingScreen
-import com.mixedwash.features.getting_started.OnboardingScreenViewModel
 import com.mixedwash.features.home.presentation.HomeScreen
 import com.mixedwash.features.home.presentation.HomeScreenViewModel
+import com.mixedwash.features.onboarding.presentation.OnboardingScreen
+import com.mixedwash.features.onboarding.presentation.OnboardingScreenViewModel
 import com.mixedwash.features.order_confirmation.presentation.OrderConfirmationScreen
 import com.mixedwash.features.order_confirmation.presentation.OrderConfirmationScreenViewModel
 import com.mixedwash.features.services.presentation.ServicesScreen

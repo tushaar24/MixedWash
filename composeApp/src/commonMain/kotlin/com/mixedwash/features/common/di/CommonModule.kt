@@ -8,10 +8,12 @@ import com.mixedwash.features.booking_details.di.BookingDetailsModule
 import com.mixedwash.features.common.data.service.LocationService
 import com.mixedwash.features.common.domain.usecases.FindUserByPhoneUseCase
 import com.mixedwash.features.common.presentation.phone.PhoneScreenViewModel
-import com.mixedwash.features.getting_started.OnboardingScreenViewModel
+import com.mixedwash.features.onboarding.presentation.OnboardingScreenViewModel
 import com.mixedwash.features.home.di.HomeModule
 import com.mixedwash.features.local_cart.di.LocalCartModule
 import com.mixedwash.features.location_availability.di.LocationAvailabilityModule
+import com.mixedwash.features.onboarding.data.OnboardingRepositoryImpl
+import com.mixedwash.features.onboarding.domain.OnboardingRepository
 import com.mixedwash.features.services.di.ServicesModule
 import com.mixedwash.features.slot_selection.di.SlotSelectionModule
 import com.mixedwash.libs.loki.autocomplete.Autocomplete
@@ -38,6 +40,8 @@ val CommonModule = module {
         SlotSelectionModule,
         BookingDetailsModule
     )
+
+    single<OnboardingRepository> { OnboardingRepositoryImpl() }
 
     single { FindUserByPhoneUseCase }
 

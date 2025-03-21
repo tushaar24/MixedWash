@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-// TODO : Populate 'faqItems' properly
 class FaqScreenViewModel(
     private val faqService: FaqService
 ) : ViewModel() {

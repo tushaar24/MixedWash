@@ -1,7 +1,7 @@
-package com.mixedwash.features.getting_started
+package com.mixedwash.features.onboarding.presentation
 
 import com.mixedwash.core.presentation.navigation.Route
-import com.mixedwash.features.getting_started.model.OnboardingItem
+import com.mixedwash.features.onboarding.domain.model.OnboardingItem
 
 data class OnboardingScreenState(
     val items: List<OnboardingItem>,
