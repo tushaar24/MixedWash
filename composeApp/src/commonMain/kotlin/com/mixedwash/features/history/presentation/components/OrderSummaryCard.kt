@@ -26,6 +26,7 @@ import com.mixedwash.core.presentation.components.noRippleClickable
 import com.mixedwash.features.history.domain.model.OrderDeliveryStatus
 import com.mixedwash.ui.theme.Gray100
 import com.mixedwash.ui.theme.Gray50
+import com.mixedwash.ui.theme.Gray700
 import com.mixedwash.ui.theme.Gray800
 import com.mixedwash.ui.theme.Green
 import com.mixedwash.ui.theme.Yellow
@@ -40,7 +41,7 @@ fun OrderSummaryCard(
     ordered: String,
     delivery: String,
     status: OrderDeliveryStatus,
-    cost: Int?,
+    cost: String?,
     onDetails: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -97,7 +98,7 @@ fun OrderSummaryCard(
                     fontWeight = FontWeight.Medium,
                     color = when (status) {
                         OrderDeliveryStatus.DELIVERED -> Green
-                        else -> Gray800
+                        else -> Gray700
                     }
                 )
 

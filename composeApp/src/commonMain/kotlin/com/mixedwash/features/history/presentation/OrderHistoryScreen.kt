@@ -2,6 +2,7 @@ package com.mixedwash.features.history.presentation
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -20,6 +21,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.mixedwash.WindowInsetsContainer
 import com.mixedwash.core.booking.domain.model.BookingState
+import com.mixedwash.core.booking.domain.model.calculateTotalPrice
 import com.mixedwash.core.presentation.components.DefaultHeader
 import com.mixedwash.core.presentation.components.dump.TitleWithIcon
 import com.mixedwash.core.presentation.util.ObserveAsEvents
@@ -63,12 +65,15 @@ fun OrderHistoryScreen(
             )
 
             LazyColumn(
-                modifier = modifier.fillMaxSize().padding(16.dp),
+                modifier = modifier.fillMaxSize().padding(vertical = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
 
                 item {
-                    LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                    LazyRow(
+                        contentPadding = PaddingValues(horizontal = 16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
                         items(state.insights) {
                             StatisticCard(
                                 value = it.value,
@@ -82,7 +87,11 @@ fun OrderHistoryScreen(
                 }
 
                 item {
-                    TitleWithIcon(title = "Orders", icon = Res.drawable.ic_clothes_hanger)
+                    TitleWithIcon(
+                        title = "Orders",
+                        icon = Res.drawable.ic_clothes_hanger,
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
                 }
 
                 if (state.orders.isEmpty()) {
@@ -95,8 +104,11 @@ fun OrderHistoryScreen(
                         )
                     }
                 } else {
-                    items(state.orders) { order ->
-                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    items(items = state.orders) { order ->
+                        Column(
+                            modifier = Modifier.padding(horizontal = 16.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
                             OrderSummaryCard(
                                 orderId = order.id,
                                 titles = order.bookingItems.map { it.serviceName },
@@ -107,13 +119,11 @@ fun OrderHistoryScreen(
                                     is BookingState.Delivered -> OrderDeliveryStatus.DELIVERED
                                     else -> OrderDeliveryStatus.PROCESSING
                                 },
-                                cost = 1024,
+                                cost = if (order.state is BookingState.Delivered)
+                                    formatIndianCurrency(order.calculateTotalPrice())
+                                else null,
                                 onDetails = {
-                                    onEvent(
-                                        OrderHistoryScreenEvent.OnOrderDetailsScreen(
-                                            order.id
-                                        )
-                                    )
+                                    onEvent(OrderHistoryScreenEvent.OnOrderDetailsScreen(order.id))
                                 },
                             )
 

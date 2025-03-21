@@ -27,7 +27,7 @@ fun TitleWithIcon(title: String, icon: DrawableResource, modifier: Modifier = Mo
             painter = painterResource(icon),
             contentDescription = null,
             tint = Gray800,
-            modifier = Modifier.size(18.dp)
+            modifier = Modifier.size(22.dp)
         )
 
         Spacer(Modifier.width(8.dp))
