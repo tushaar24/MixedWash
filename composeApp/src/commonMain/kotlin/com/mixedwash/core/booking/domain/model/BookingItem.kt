@@ -23,5 +23,22 @@ data class BookingItem(
     val createdMillis: Long
 )
 
+fun BookingData.calculateTotalPrice(): Int {
+    return bookingItems.sumOf { it.calculateItemPrice() }
+}
 
+private fun BookingItem.calculateItemPrice(): Int {
+    return when (itemPricing) {
+        is BookingItemPricing.SubItemRangedPricing -> itemPricing.maxPrice * quantity
+        is BookingItemPricing.SubItemFixedPricing -> itemPricing.fixedPrice * quantity
+        is BookingItemPricing.ServiceItemPricing -> {
+            val basePrice = itemPricing.pricePerUnit * itemPricing.minimumUnits
+            if (basePrice > itemPricing.minimumPrice) {
+                basePrice
+            } else {
+                itemPricing.minimumPrice
+            }
+        }
+    }
+}
 

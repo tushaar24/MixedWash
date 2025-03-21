@@ -60,7 +60,7 @@ class BookingDetailsScreenViewModel(
                         pickupSlot = booking.pickupSlotSelected,
                         dropSlot = booking.dropSlotSelected,
                         deliveryAddress = booking.address,
-                        title = if (route.destinationType == Route.BookingDetailsRoute.DestinationType.CONFIRM_DRAFT_BOOKING) "Review Your Booking" else "Booking Details",
+                        title = if (route.destinationType == Route.BookingDetailsRoute.DestinationType.CONFIRM_DRAFT_BOOKING) "Review Your Booking" else "Order  #" + route.bookingId!!.takeLast(6),
                         screenType = if (route.destinationType == Route.BookingDetailsRoute.DestinationType.CONFIRM_DRAFT_BOOKING) BookingDetailsScreenType.CONFIRMATION else BookingDetailsScreenType.BOOKING_DETAILS,
                         note = if (route.destinationType == Route.BookingDetailsRoute.DestinationType.CONFIRM_DRAFT_BOOKING) "*final order cost will be calculated based on the exact contents of your order confirmed after processing." else null
                     )
