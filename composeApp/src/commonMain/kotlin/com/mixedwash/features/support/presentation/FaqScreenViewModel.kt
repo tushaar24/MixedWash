@@ -3,6 +3,7 @@ package com.mixedwash.features.support.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mixedwash.features.support.data.FaqService
+import com.mixedwash.features.support.domain.model.FaqData
 import com.mixedwash.features.support.domain.model.FaqItemCategoryDto
 import com.mixedwash.features.support.domain.model.FaqItemTagDto
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +17,7 @@ class FaqScreenViewModel(
 ) : ViewModel() {
 
     private val initialState = FaqScreenState(
-        faqItems = emptyList(),
+        faqData = FaqData("", emptyList()),
         currentCategory = FaqItemCategoryDto.All,
         faqCategories = FaqItemCategoryDto.entries,
         searchString = "",
@@ -48,7 +49,7 @@ class FaqScreenViewModel(
                 filterByTag(event.tag)
             }
 
-            FaqScreenEvent.OnCallButtonClicked -> raiseCallIntent()
+            is FaqScreenEvent.OnCallButtonClicked -> raiseCallIntent()
         }
     }
 
@@ -63,7 +64,12 @@ class FaqScreenViewModel(
     private fun filterByTag(tag: String) {
         viewModelScope.launch {
             _state.update {
-                it.copy(faqItems = faqService.filterByTag(tag).getOrNull() ?: emptyList())
+                it.copy(
+                    faqData = FaqData(
+                        phoneNumber = it.faqData.phoneNumber,
+                        faqItemDtos = faqService.filterByTag(tag).getOrNull() ?: emptyList()
+                    )
+                )
             }
         }
     }
@@ -71,7 +77,12 @@ class FaqScreenViewModel(
     private fun searchFaqs(searchString: String) {
         viewModelScope.launch {
             _state.update {
-                it.copy(faqItems = faqService.searchFaqs(searchString).getOrNull() ?: emptyList())
+                it.copy(
+                    faqData = FaqData(
+                        phoneNumber = it.faqData.phoneNumber,
+                        faqItemDtos = faqService.searchFaqs(searchString).getOrNull() ?: emptyList()
+                    )
+                )
             }
         }
     }
@@ -81,7 +92,11 @@ class FaqScreenViewModel(
             _state.update {
                 it.copy(
                     currentCategory = newCategory,
-                    faqItems = faqService.getFaqsByLabel(newCategory).getOrNull() ?: emptyList()
+                    faqData = FaqData(
+                        phoneNumber = it.faqData.phoneNumber,
+                        faqItemDtos = faqService.getFaqsByLabel(newCategory).getOrNull()
+                            ?: emptyList()
+                    )
                 )
             }
         }
@@ -91,7 +106,7 @@ class FaqScreenViewModel(
         viewModelScope.launch {
             _state.update {
                 it.copy(
-                    faqItems = faqService.getAllFaqs().getOrNull() ?: emptyList()
+                    faqData = faqService.getAllFaqs().getOrNull() ?: FaqData("", emptyList())
                 )
             }
         }

@@ -3,6 +3,12 @@ package com.mixedwash.features.support.domain.model
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+@Serializable
+data class FaqData(
+    @SerialName("phone_number") val phoneNumber: String,
+    @SerialName("faq_item_dtos") val faqItemDtos: List<FaqItemDTO>
+)
+
 /**
  * @param question the question that a user may have
  * @param answer the answer to the question

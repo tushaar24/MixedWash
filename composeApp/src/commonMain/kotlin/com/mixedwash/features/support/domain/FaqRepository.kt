@@ -1,10 +1,11 @@
 package com.mixedwash.features.support.domain
 
+import com.mixedwash.features.support.domain.model.FaqData
 import com.mixedwash.features.support.domain.model.FaqItemCategoryDto
 import com.mixedwash.features.support.domain.model.FaqItemDTO
 
 interface FaqRepository {
-    suspend fun getAllFaqs() : Result<List<FaqItemDTO>>
+    suspend fun getAllFaqs() : Result<FaqData>
 
     suspend fun getFaqsByCategory(label: FaqItemCategoryDto) : Result<List<FaqItemDTO>>
 

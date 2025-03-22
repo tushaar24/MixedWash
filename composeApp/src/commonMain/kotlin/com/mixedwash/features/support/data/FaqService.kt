@@ -2,7 +2,6 @@ package com.mixedwash.features.support.data
 
 import com.mixedwash.features.support.domain.FaqRepository
 import com.mixedwash.features.support.domain.model.FaqItemCategoryDto
-import com.mixedwash.features.support.domain.model.FaqItemDTO
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
@@ -16,12 +15,12 @@ class FaqService(private val faqRepository: FaqRepository) {
         faqRepository.getFaqsByCategory(category)
     }
 
-    suspend fun searchFaqs(searchString: String): Result<List<FaqItemDTO>> =
+    suspend fun searchFaqs(searchString: String) =
         withContext(Dispatchers.IO) {
             faqRepository.searchFaqs(searchString)
         }
 
-    suspend fun filterByTag(tag: String): Result<List<FaqItemDTO>> =
+    suspend fun filterByTag(tag: String) =
         withContext(Dispatchers.IO) {
             faqRepository.filterByTag(tag)
         }

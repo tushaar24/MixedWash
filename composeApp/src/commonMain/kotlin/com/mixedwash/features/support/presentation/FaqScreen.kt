@@ -2,6 +2,9 @@ package com.mixedwash.features.support.presentation
 
 import BrandTheme
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -15,11 +18,8 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -29,7 +29,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
@@ -54,6 +53,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.mixedwash.WindowInsetsContainer
+import com.mixedwash.core.presentation.components.BottomBox
 import com.mixedwash.core.presentation.components.DefaultHeader
 import com.mixedwash.core.presentation.components.HeadingAlign
 import com.mixedwash.core.presentation.components.HeadingSize
@@ -74,188 +75,189 @@ fun FaqScreen(
     val isScrolled by remember {
         derivedStateOf { listState.firstVisibleItemIndex > 0 || listState.firstVisibleItemScrollOffset > 0 }
     }
+    val footerElevation by animateDpAsState(
+        if (isScrolled) 0.dp else 4.dp,
+        animationSpec = spring(stiffness = Spring.StiffnessLow)
+    )
 
-    Column(modifier = Modifier.statusBarsPadding().navigationBarsPadding()) {
-        DefaultHeader(
-            title = "Help Center",
-            headingSize = HeadingSize.Subtitle1,
-            headingAlign = HeadingAlign.Start,
-            navigationButton = {
-                HeaderIconButton(
-                    imageVector = Icons.AutoMirrored.Default.KeyboardArrowLeft,
-                    onClick = { navController.navigateUp() }
-                )
-            }
-        )
+    WindowInsetsContainer {
+        Column {
+            DefaultHeader(
+                title = "Help Center",
+                headingSize = HeadingSize.Subtitle1,
+                headingAlign = HeadingAlign.Start,
+                navigationButton = {
+                    HeaderIconButton(
+                        imageVector = Icons.AutoMirrored.Default.KeyboardArrowLeft,
+                        onClick = { navController.navigateUp() }
+                    )
+                }
+            )
 
-        Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
-        Box(modifier = modifier.fillMaxSize().padding(horizontal = 16.dp)) {
-            Column(
-                modifier = Modifier.fillMaxHeight(),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
+            Box(modifier = modifier.fillMaxSize().padding(horizontal = 16.dp)) {
+                Column(
+                    modifier = Modifier.fillMaxHeight(),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
 //                Text(
 //                    text = "How can we help you?",
 //                    style = BrandTheme.typography.h5.copy(fontSize = 20.sp)
 //                )
 
-                SearchBar(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = state.searchString,
-                    onValueChange = { onEvent(FaqScreenEvent.OnSearchStringValueChanged(it)) },
-                    placeholder = "Search for FAQs",
-                )
+                    SearchBar(
+                        modifier = Modifier.fillMaxWidth(),
+                        value = state.searchString,
+                        onValueChange = { onEvent(FaqScreenEvent.OnSearchStringValueChanged(it)) },
+                        placeholder = "Search for FAQs",
+                    )
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .horizontalScroll(rememberScrollState()),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    for (label in state.faqCategories) {
-                        LabelChip(
-                            selected = state.currentCategory == label,
-                            onClick = { onEvent(FaqScreenEvent.OnFaqCategoryChipClicked(label)) },
-                            text = label.name
-                        )
-                    }
-                }
-
-                Spacer(Modifier.height(4.dp))
-
-                Box {
-                    LazyColumn(
-                        state = listState,
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .horizontalScroll(rememberScrollState()),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        if (state.searchString.isEmpty()) {
-                            item {
-                                Text(
-                                    text = "Most Searched Questions",
-                                    style = BrandTheme.typography.subtitle3.copy(
-                                        fontWeight = FontWeight.W500,
-                                        fontSize = 13.sp,
-                                        color = BrandTheme.colors.gray.normalDark
-                                    ),
-                                )
-                            }
+                        for (label in state.faqCategories) {
+                            LabelChip(
+                                selected = state.currentCategory == label,
+                                onClick = { onEvent(FaqScreenEvent.OnFaqCategoryChipClicked(label)) },
+                                text = label.name
+                            )
+                        }
+                    }
 
-                            item {
-                                LazyRow(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                                ) {
-                                    items(state.faqTags) {
-                                        Box(
-                                            modifier = Modifier
-                                                .clip(RoundedCornerShape(12.dp))
-                                                .background(BrandTheme.colors.gray.light)
-                                                .clickable {
-                                                    onEvent(
-                                                        FaqScreenEvent.OnFaqTagClicked(
-                                                            it.displayTag
+                    Box {
+                        LazyColumn(
+                            state = listState,
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+
+                            item { Spacer(Modifier.height(2.dp)) }
+
+                            if (state.searchString.isEmpty()) {
+                                item {
+                                    Text(
+                                        text = "Most Searched Questions",
+                                        style = BrandTheme.typography.subtitle3.copy(
+                                            fontWeight = FontWeight.W500,
+                                            fontSize = 13.sp,
+                                            color = BrandTheme.colors.gray.normalDark
+                                        ),
+                                    )
+                                }
+
+                                item {
+                                    LazyRow(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                    ) {
+                                        items(state.faqTags) {
+                                            Box(
+                                                modifier = Modifier
+                                                    .clip(RoundedCornerShape(12.dp))
+                                                    .background(BrandTheme.colors.gray.light)
+                                                    .clickable {
+                                                        onEvent(
+                                                            FaqScreenEvent.OnFaqTagClicked(
+                                                                it.displayTag
+                                                            )
                                                         )
+                                                    }
+                                            ) {
+                                                Text(
+                                                    modifier = Modifier.padding(12.dp),
+                                                    text = it.displayTag,
+                                                    style = BrandTheme.typography.label.copy(
+                                                        fontWeight = FontWeight.W600,
+                                                        lineHeight = 20.sp
                                                     )
-                                                }
-                                        ) {
-                                            Text(
-                                                modifier = Modifier.padding(12.dp),
-                                                text = it.displayTag,
-                                                style = BrandTheme.typography.label.copy(
-                                                    fontWeight = FontWeight.W600,
-                                                    lineHeight = 20.sp
                                                 )
-                                            )
+                                            }
                                         }
                                     }
                                 }
+
+                                item { Spacer(Modifier.height(2.dp)) }
+
+                                item {
+                                    Text(
+                                        text = "All Questions",
+                                        style = BrandTheme.typography.subtitle3.copy(
+                                            fontWeight = FontWeight.W500,
+                                            fontSize = 13.sp,
+                                            color = BrandTheme.colors.gray.normalDark
+                                        ),
+                                    )
+                                }
+                            } else {
+                                item {
+                                    Text(
+                                        text = "Search Results for \"${state.searchString}\"",
+                                        style = BrandTheme.typography.subtitle3.copy(
+                                            fontWeight = FontWeight.W500,
+                                            color = BrandTheme.colors.gray.normalDark
+                                        ),
+                                    )
+                                }
                             }
 
-                            item { Spacer(Modifier.height(4.dp)) }
-
-                            item {
-                                Text(
-                                    text = "All Questions",
-                                    style = BrandTheme.typography.subtitle3.copy(
-                                        fontWeight = FontWeight.W500,
-                                        fontSize = 13.sp,
-                                        color = BrandTheme.colors.gray.normalDark
-                                    ),
+                            items(state.faqData.faqItemDtos) {
+                                FaqItemCard(
+                                    modifier = Modifier.padding(bottom = 8.dp),
+                                    item = it
                                 )
                             }
-                        } else {
-                            item {
-                                Text(
-                                    text = "Search Results for \"${state.searchString}\"",
-                                    style = BrandTheme.typography.subtitle3.copy(
-                                        fontWeight = FontWeight.W500,
-                                        color = BrandTheme.colors.gray.normalDark
-                                    ),
-                                )
-                            }
+
+                            // Avoid the content being hidden by the bottom button
+                            item { Spacer(Modifier.height(64.dp)) }
                         }
 
-                        items(state.faqItems) {
-                            FaqItemCard(
-                                modifier = Modifier.padding(vertical = 8.dp),
-                                item = it
-                            )
-                        }
-
-                        // Avoid the content being hidden by the bottom button
-                        item { Spacer(Modifier.height(64.dp)) }
-                    }
-
-                    // Overlay a gradient drop shadow when the list is scrolled
-                    if (isScrolled) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(48.dp)
-                                .align(Alignment.TopCenter)
-                                .background(
-                                    Brush.verticalGradient(
-                                        colors = listOf(
-                                            Color.DarkGray.copy(alpha = 0.05f),
-                                            Color.Transparent
+                        // Overlay a gradient drop shadow when the list is scrolled
+                        if (isScrolled) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(48.dp)
+                                    .align(Alignment.TopCenter)
+                                    .background(
+                                        Brush.verticalGradient(
+                                            colors = listOf(
+                                                Color.DarkGray.copy(alpha = 0.05f),
+                                                Color.Transparent
+                                            )
                                         )
                                     )
-                                )
-                        )
+                            )
+                        }
                     }
                 }
-            }
 
-            Box(
-                modifier = Modifier.height(52.dp)
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(BrandTheme.colors.gray.darker)
-                    .align(Alignment.BottomCenter)
-                    .noRippleClickable {
-                        onEvent(FaqScreenEvent.OnCallButtonClicked)
-                    },
-                contentAlignment = Alignment.Center
-            ) {
-                Row(
-                    modifier = Modifier.padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                BottomBox(
+                    modifier = Modifier.align(Alignment.BottomCenter),
+                    elevation = footerElevation
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Call,
-                        contentDescription = "Call",
-                        tint = BrandTheme.colors.gray.light,
-                    )
-                    Spacer(Modifier.width(8.dp))
-                    Text(
-                        text = "Contact Support",
-                        lineHeight = 18.sp,
-                        fontSize = 14.sp,
-                        color = BrandTheme.colors.gray.light,
-                        fontWeight = FontWeight.Medium,
-                        style = BrandTheme.typography.mediumButton
-                    )
+                    Box(
+                        modifier = Modifier.height(52.dp)
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(BrandTheme.colors.gray.darker)
+                            .noRippleClickable {
+                                onEvent(FaqScreenEvent.OnCallButtonClicked(state.faqData.phoneNumber))
+                            },
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text(
+                            text = "Contact Support",
+                            lineHeight = 18.sp,
+                            fontSize = 14.sp,
+                            color = BrandTheme.colors.gray.light,
+                            fontWeight = FontWeight.Medium,
+                            style = BrandTheme.typography.mediumButton,
+                            modifier = Modifier.padding(16.dp)
+                        )
+                    }
                 }
             }
         }
