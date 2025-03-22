@@ -158,7 +158,7 @@
           "name": "Kurta",
           "metadata": {
             "gender": "male",
-            "image_url": "https://assets-aac.pages.dev/assets/sku_dry_clean_item_kurta_1.png"
+            "image_url": "https://assets-aac.pages.dev/assets/sku_dry_clean_item_kurta_2.png"
           },
           "item_pricing": {
             "type": "sub_item_fixed_pricing",
@@ -170,7 +170,7 @@
           "name": "Pyjama",
           "metadata": {
             "gender": "male",
-            "image_url": "https://assets-aac.pages.dev/assets/sku_dry_clean_item_kurta_2.png"
+            "image_url": "https://assets-aac.pages.dev/assets/sku_dry_clean_item_pyjama_1.png"
           },
           "item_pricing": {
             "type": "sub_item_ranged_pricing",
