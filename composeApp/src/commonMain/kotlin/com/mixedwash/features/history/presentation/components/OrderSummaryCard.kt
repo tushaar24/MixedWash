@@ -28,6 +28,7 @@ import com.mixedwash.ui.theme.Gray100
 import com.mixedwash.ui.theme.Gray50
 import com.mixedwash.ui.theme.Gray700
 import com.mixedwash.ui.theme.Gray800
+import com.mixedwash.ui.theme.Gray900
 import com.mixedwash.ui.theme.Green
 import com.mixedwash.ui.theme.Yellow
 import mixedwash.composeapp.generated.resources.Res
@@ -55,11 +56,11 @@ fun OrderSummaryCard(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(18.dp)) {
                 IndicationChip(
                     text = orderId,
                     textColor = Gray100,
-                    backgroundColor = Gray800,
+                    backgroundColor = Gray900,
                     borderColor = Gray800,
                     leadingIcon = '#'
                 )

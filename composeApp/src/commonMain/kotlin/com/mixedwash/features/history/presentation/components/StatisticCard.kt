@@ -5,13 +5,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,9 +21,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.material3.Text
-import com.mixedwash.ui.theme.Gray200
-import com.mixedwash.ui.theme.Gray400
+import com.mixedwash.ui.theme.Gray100
+import com.mixedwash.ui.theme.Gray500
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.vectorResource
 
@@ -36,9 +36,9 @@ fun StatisticCard(
 ) {
     Box(
         modifier = Modifier
-            .defaultMinSize(minWidth = 130.dp, minHeight = 110.dp)
+
             .clip(RoundedCornerShape(12.dp))
-            .background(Gray200)
+            .background(Gray100)
     ) {
 
         Column(
@@ -54,6 +54,8 @@ fun StatisticCard(
                 lineHeight = 26.sp
             )
 
+            Spacer(Modifier.height(28.8.dp))
+
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.BottomEnd
@@ -67,12 +69,12 @@ fun StatisticCard(
                         imageVector = vectorResource(icon),
                         contentDescription = null,
                         modifier = Modifier.height(14.dp),
-                        tint = Gray400
+                        tint = Gray500
                     )
 
                     Text(
                         text = "$metric\n• $unit",
-                        color = Gray400,
+                        color = Gray500,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Medium,
                         lineHeight = 14.sp,
