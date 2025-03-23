@@ -3,11 +3,15 @@ package com.mixedwash.features.home.presentation
 import BrandTheme
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -40,6 +44,8 @@ import androidx.navigation.NavController
 import com.mixedwash.SetStatusBarColor
 import com.mixedwash.core.presentation.components.DialogPopup
 import com.mixedwash.core.presentation.components.DialogPopupData
+import com.mixedwash.core.presentation.components.ElevatedBox
+import com.mixedwash.core.presentation.components.ShadowDirection
 import com.mixedwash.core.presentation.components.noRippleClickable
 import com.mixedwash.core.presentation.models.SnackbarHandler
 import com.mixedwash.core.presentation.navigation.AppCloser
@@ -240,45 +246,41 @@ fun HomeScreen(
                 animationSpec = tween(durationMillis = 300)
             )
 
-            val targetStatusBarColor = if (scrollValue <= startThreshold) {
-                // For example, use a transparent status bar (or any color you choose) when not scrolled
-                Color.parse(banner.gradient.gradientColors[1].colorHex)
-            } else {
-                // Change to a solid color when scrolled
-                Gray50
-            }
+            // lets the status bar content color be the same as top bar content color
+            SetStatusBarColor(isLight = topBarContentColor.luminance() < 0.5f)
 
-// Optionally, animate the status bar color change
-            val statusBarColor by animateColorAsState(
-                targetValue = targetStatusBarColor,
-                animationSpec = tween(durationMillis = 300)
+            val alpha = animateFloatAsState(
+                targetValue = if (scrollValue <= startThreshold) 0f else 1f,
+                animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
             )
-
-            SetStatusBarColor(isLight = statusBarColor.luminance() > 0.5f)
-
             Column(
                 modifier = Modifier.align(Alignment.TopCenter).background(
-                    color = Gray50.copy(
-                        alpha = when {
-                            scrollValue <= startThreshold -> 0f
-                            else -> 1f
-                        }
-                    )
+                    color = Gray50.copy(alpha = alpha.value)
                 )
             ) {
                 Box(
                     modifier = Modifier.height(statusBarHeight + 2.dp).fillMaxWidth()
                 )
 
-                HomeTopBar(
-                    addressTitle = if (state.cartAddress is CartAddressState.LocationFetched) state.cartAddress.address.title else "",
-                    addressLine = if (state.cartAddress is CartAddressState.LocationFetched) state.cartAddress.address.pinCode else "",
-                    onExpand = {},
-                    onProfileClick = { onEvent(HomeScreenEvent.OnNavigateToProfile) },
-                    onFAQsClick = { onEvent(HomeScreenEvent.OnNavigateToFaqs) },
-                    contentColor = topBarContentColor,
-                    modifier = Modifier.padding(bottom = 4.dp)
-                )
+                val elevation by animateDpAsState(if (scrollValue >= endThreshold) 4.dp else 0.dp)
+                ElevatedBox(
+                    elevation = elevation,
+                    backgroundColor = Color.Transparent,
+                    shadowColor = Gray50,
+                    alpha = if (scrollValue >= endThreshold) 0.05f else 0f,
+                    verticalDirection = ShadowDirection.Vertical.Bottom,
+                    contentPadding = PaddingValues(0.dp)
+                ) {
+                    HomeTopBar(
+                        addressTitle = if (state.cartAddress is CartAddressState.LocationFetched) state.cartAddress.address.title else "",
+                        addressLine = if (state.cartAddress is CartAddressState.LocationFetched) state.cartAddress.address.pinCode else "",
+                        onExpand = {},
+                        onProfileClick = { onEvent(HomeScreenEvent.OnNavigateToProfile) },
+                        onFAQsClick = { onEvent(HomeScreenEvent.OnNavigateToFaqs) },
+                        contentColor = topBarContentColor,
+                        modifier = Modifier.padding(bottom = 4.dp)
+                    )
+                }
             }
         }
     }

@@ -54,7 +54,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.mixedwash.WindowInsetsContainer
-import com.mixedwash.core.presentation.components.BottomBox
+import com.mixedwash.core.presentation.components.ElevatedBox
 import com.mixedwash.core.presentation.components.DefaultHeader
 import com.mixedwash.core.presentation.components.HeadingAlign
 import com.mixedwash.core.presentation.components.HeadingSize
@@ -234,7 +234,7 @@ fun FaqScreen(
                     }
                 }
 
-                BottomBox(
+                ElevatedBox(
                     modifier = Modifier.align(Alignment.BottomCenter),
                     elevation = footerElevation
                 ) {

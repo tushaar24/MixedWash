@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.mixedwash.core.presentation.navigation.Route
 import com.mixedwash.WindowInsetsContainer
-import com.mixedwash.core.presentation.components.BottomBox
+import com.mixedwash.core.presentation.components.ElevatedBox
 import com.mixedwash.core.presentation.components.DefaultHeader
 import com.mixedwash.core.presentation.components.HeadingAlign
 import com.mixedwash.core.presentation.components.HeadingSize
@@ -213,8 +213,6 @@ fun SlotSelectionScreen(
                     text = state.deliveryNotes,
                     onValueChange = onDeliveryNotesChange
                 )
-
-
             }
             val isEnabled by remember(state.pickupTimeSelectedId, state.dropTimeSelectedId) {
                 derivedStateOf {
@@ -226,7 +224,7 @@ fun SlotSelectionScreen(
             }
 
             val elevation by animateDpAsState(if (isScrolledDown) 0.dp else 4.dp)
-            BottomBox(elevation = elevation) {
+            ElevatedBox(elevation = elevation) {
                 DefaultButtonLarge(
                     modifier = Modifier.fillMaxWidth().padding(horizontal = screenHorizontalPadding),
                     text = "BOOK ORDER",

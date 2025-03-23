@@ -35,7 +35,7 @@ import androidx.navigation.NavController
 import com.mixedwash.WindowInsetsContainer
 import com.mixedwash.core.booking.domain.model.BookingItemPricing
 import com.mixedwash.core.booking.domain.model.BookingTimeSlot
-import com.mixedwash.core.presentation.components.BottomBox
+import com.mixedwash.core.presentation.components.ElevatedBox
 import com.mixedwash.core.presentation.components.DefaultHeader
 import com.mixedwash.core.presentation.components.HeadingAlign
 import com.mixedwash.core.presentation.components.HeadingSize
@@ -232,20 +232,17 @@ fun BookingDetailsScreen(
                 }
 
                 Spacer(Modifier.height(16.dp))
-
             }
             if (state.screenType == BookingDetailsScreenType.CONFIRMATION) {
-                BottomBox(elevation = footerElevation) {
+                ElevatedBox(elevation = footerElevation) {
                     DefaultButtonLarge(
                         modifier = Modifier
                             .fillMaxWidth().padding(horizontal = screenHorizontalPadding),
                         text = "CONFIRM ORDER",
                         onClick = { onEvent(BookingDetailsScreenEvent.OnConfirmBooking) }
                     )
-
                 }
             }
-
         }
     }
 }
