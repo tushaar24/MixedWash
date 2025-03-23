@@ -1,36 +1,134 @@
 {
-  "home_banner": {
-    "heading": "Laundry piling up?",
-    "image_url": "https://assets-aac.pages.dev/assets/white_washbaskt_overflow.png",
-    "description": "Get laundry at your door-step in 24 hours",
-    "button": "Order Pickup",
-    "link": "pickup_screen",
-    "ui_text_color": "#7B7B7B",
-    "content_text_color": "#7B7B7B",
-    "gradient": {
-      "gradient_colors": [
-        {
-          "color_hex": "#E5E5E5",
-          "color_stop": 0.0
-        },
-        {
-          "color_hex": "#FBFBFB",
-          "color_stop": 1.0
-        }
-      ],
-      "angle": -70.999
+  "home_banners": [
+    {
+      "id": "banner_washing_bed_sheets",
+      "heading": "Washing bed sheets got you scared?",
+      "image_url": "https://assets-aac.pages.dev/assets/sheet_ghost.png",
+      "description": "Don't worry, we have trained experts for that sort of thing",
+      "button": "Get Help Now",
+      "link": "pickup_screen",
+      "ui_text_color": "#F4F4F4",
+      "content_text_color": "#a5a5a5",
+      "gradient": {
+        "gradient_colors": [
+          {
+            "color_hex": "#676767",
+            "color_stop": 0.0
+          },
+          {
+            "color_hex": "#262626",
+            "color_stop": 1.0
+          }
+        ],
+        "angle": 70.999
+      }
+    },
+    {
+      "id": "banner_18_C_rainy",
+      "heading": "18°C | Rainy",
+      "image_url": "https://assets-aac.pages.dev/assets/cloud_clohtes_line.png",
+      "description": "the rain won't stop? neither should your laundry",
+      "button": "Order Pickup",
+      "link": "pickup_screen",
+      "ui_text_color": "#F4F4F4",
+      "content_text_color": "#D1E2EE",
+      "gradient": {
+        "gradient_colors": [
+          {
+            "color_hex": "#5E6F7C",
+            "color_stop": 0.0
+          },
+          {
+            "color_hex": "#A8B5C0",
+            "color_stop": 1.0
+          }
+        ],
+        "angle": 70.999
+      }
+    },
+    {
+      "id": "banner_sofas_are_meant",
+      "heading": "Sofas are meant to be sat on...",
+      "image_url": "https://assets-aac.pages.dev/assets/sofa_clothes.png",
+      "description": "We'll return your laundry clean & fresh within 24 hours",
+      "button": "Get Help Now",
+      "link": "pickup_screen",
+      "ui_text_color": "#314BAD",
+      "content_text_color": "#4D5888",
+      "gradient": {
+        "gradient_colors": [
+          {
+            "color_hex": "#CBD0F6",
+            "color_stop": 0.0
+          },
+          {
+            "color_hex": "#E8EBF9",
+            "color_stop": 1.0
+          }
+        ],
+        "angle": 70.999
+      }
+    },
+    {
+      "id": "banner_waiting_for_laundry",
+      "heading": "Waiting for laundry?",
+      "image_url": "https://assets-aac.pages.dev/assets/man_alarm_clock_dark.png",
+      "description": "Never again! Get same-day laundry with free delivery",
+      "button": "Order Pickup",
+      "link": "pickup_screen",
+      "ui_text_color": "#E5E5E5",
+      "content_text_color": "#C3C3C3",
+      "gradient": {
+        "gradient_colors": [
+          {
+            "color_hex": "#1E1E1E",
+            "color_stop": 0.0
+          },
+          {
+            "color_hex": "#7b7b7b",
+            "color_stop": 1.0
+          }
+        ],
+        "angle": 70.999
+      }
+    },
+    {
+      "id": "banner_laundry_piling_up",
+      "heading": "Laundry piling up?",
+      "image_url": "https://assets-aac.pages.dev/assets/white_washbaskt_overflow.png",
+      "description": "Get laundry at your door-step in 24 hours",
+      "button": "Order Pickup",
+      "link": "pickup_screen",
+      "ui_text_color": "#676767",
+      "content_text_color": "#7B7B7B",
+      "gradient": {
+        "gradient_colors": [
+          {
+            "color_hex": "#FBFBFB",
+            "color_stop": 0.0
+          },
+          {
+            "color_hex": "#E5E5E5",
+            "color_stop": 1.0
+          }
+        ],
+        "angle": 70.999
+      }
     }
-  },
+  ],
+  "preferred_banner_id": "banner_waiting_for_laundry",
   "offer_cards": [
     {
       "text": "Flat 20% OFF with coupon code WELCOME20 on your first order",
-      "big_text": ["20% OFF"],
+      "big_text": [
+        "20% OFF"
+      ],
       "offer_id": "WELCOME20",
       "image_url": "https://assets-aac.pages.dev/assets/basket_overflow_black.png",
       "button_label": "Add to cart",
       "link": "add_to_cart",
       "content_text_color": "#263D1E",
-      "button_text_color" : "#FBFBFB",
+      "button_text_color": "#FBFBFB",
       "gradient": {
         "gradient_colors": [
           {
@@ -80,7 +178,7 @@
     "description": "See how MixedWash works and learn more about our services.",
     "button_text": "Take Tour >>",
     "content_text_color": "#262626",
-    "button_text_color" : "#F4F4F4",
+    "button_text_color": "#F4F4F4",
     "gradient": {
       "gradient_colors": [
         {

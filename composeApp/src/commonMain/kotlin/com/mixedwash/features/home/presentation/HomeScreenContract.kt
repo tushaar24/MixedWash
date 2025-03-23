@@ -22,7 +22,7 @@ data class HomeScreenState(
 )
 
 fun HomeScreenData.toUiState(): HomeScreenState = HomeScreenState(
-    banner = banner,
+    banner = banners.firstOrNull { it.id == this.preferredBannerId } ?: banners[0],
     offerCards = offerCards,
     services = services,
     activeOrders = activeOrders,

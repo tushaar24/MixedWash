@@ -3,6 +3,7 @@ package com.mixedwash.features.home.presentation.model
 import com.mixedwash.features.home.data.models.HomeBannerDto
 
 data class HomeBanner(
+    val id: String,
     val heading: String,
     val imageUrl: String,
     val description: String,
@@ -15,6 +16,7 @@ data class HomeBanner(
 
 // Converter from HomeBannerDto to HomeBanner
 fun HomeBannerDto.toPresentation(): HomeBanner = HomeBanner(
+    id = id,
     heading = heading,
     imageUrl = imageUrl,
     description = description,

@@ -63,7 +63,7 @@ fun HomeTopBar(
             )
 
             VerticalDivider(
-                color = contentColor.copy(alpha = 0.1f),
+                color = contentColor.copy(alpha = 0.2f),
                 modifier = Modifier
                     .width(2.dp)
                     .padding(vertical = 4.dp, horizontal = 0.dp)

@@ -6,7 +6,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class HomeScreenDataDto(
-    @SerialName("home_banner") val homeBanner: HomeBannerDto,
+    @SerialName("home_banners") val homeBanners: List<HomeBannerDto>,
+    @SerialName("preferred_banner_id") val preferredBannerId: String,
     @SerialName("offer_cards") val offerCards: List<HomeOfferCardDto>? = null,
     @SerialName("home_services") val homeServices: List<HomeServicesDto>,
     @SerialName("active_orders") val activeOrders: List<OrderStatusDto>? = null,
@@ -16,6 +17,7 @@ data class HomeScreenDataDto(
 
 @Serializable
 data class HomeBannerDto(
+    @SerialName("id") val id: String,
     @SerialName("heading") val heading: String,
     @SerialName("image_url") val imageUrl: String,
     @SerialName("description") val description: String,
