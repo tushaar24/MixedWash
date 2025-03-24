@@ -49,28 +49,26 @@ fun AddressList(
     selectedAddressId: String? = null,
     onAddressClicked: ((String) -> Unit)? = null,
     onAddressEdit: ((Address) -> Unit)? = null,
-    addressSearchState: AddressSearchState? = null
+    addressSearchState: AddressSearchState
 ) {
     LazyColumn(
         modifier = modifier.animateContentSize(),
         verticalArrangement = Arrangement.spacedBy(cardSpacing)
     ) {
         item {
-            addressSearchState?.let { state ->
-                AddressSearch(
-                    modifier = Modifier.fillMaxWidth(),
-                    query = state.query,
-                    placeHolder = state.placeHolder,
-                    enabled = state.enabled,
-                    places = state.autocompleteResult,
-                    onValueChange = { state.onEvent(AddressSearchEvent.OnValueChange(it)) },
-                    onLocationClick = { state.onEvent(AddressSearchEvent.OnLocationClick) },
-                    onPlaceSelected = { state.onEvent(AddressSearchEvent.OnPlaceSelected(it)) },
-                    onClearRequest = { state.onEvent(AddressSearchEvent.OnClear) },
-                    fetchingCurrentLocation = state.fetchingLocation,
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-            }
+            AddressSearch(
+                modifier = Modifier.fillMaxWidth(),
+                query = addressSearchState.query ,
+                placeHolder = addressSearchState.placeHolder,
+                enabled = addressSearchState.enabled,
+                places = addressSearchState.autocompleteResult,
+                onValueChange = { addressSearchState.onEvent(AddressSearchEvent.OnValueChange(it))  },
+                onLocationClick = { addressSearchState.onEvent(AddressSearchEvent.OnLocationClick) },
+                onPlaceSelected = { addressSearchState.onEvent(AddressSearchEvent.OnPlaceSelected(it)) },
+                onClearRequest = { addressSearchState.onEvent(AddressSearchEvent.OnClear) },
+                fetchingCurrentLocation = addressSearchState.fetchingLocation,
+            )
+            Spacer(modifier = Modifier.height(16.dp))
         }
 
         if (addresses.isEmpty()) {

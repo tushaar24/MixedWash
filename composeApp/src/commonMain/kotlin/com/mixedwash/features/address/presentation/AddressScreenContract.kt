@@ -3,6 +3,7 @@ package com.mixedwash.features.address.presentation
 import androidx.compose.runtime.Immutable
 import com.mixedwash.core.presentation.navigation.Route
 import com.mixedwash.core.presentation.components.DialogPopupData
+import com.mixedwash.core.presentation.models.FormField
 import com.mixedwash.core.presentation.models.SnackbarPayload
 import com.mixedwash.features.address.domain.model.Address
 import com.mixedwash.libs.loki.autocomplete.AutocompletePlace
@@ -35,7 +36,7 @@ data class AddressScreenState(
 
 data class AddressFormState(
     val title: String,
-    val fields: List<_root_ide_package_.com.mixedwash.core.presentation.models.FormField>,
+    val fields: List<FormField>,
     val mode: FormMode,
     val isLoading: Boolean = false
 )

@@ -24,7 +24,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.mixedwash.core.presentation.navigation.Route
 import com.mixedwash.WindowInsetsContainer
 import com.mixedwash.core.presentation.components.DefaultHeader
 import com.mixedwash.core.presentation.components.DialogPopup
@@ -132,7 +131,7 @@ fun AddressScreen(
                     onAddressClicked = state.typeParams.asSelect()?.onAddressSelected,
                     selectedAddressId = state.typeParams.asSelect()?.selectedId,
                     onAddressEdit = state.onAddressEdit,
-                    addressSearchState = if (state.typeParams is AddressScreenState.TypeParams.Edit) state.searchState else null,
+                    addressSearchState = state.searchState,
                 )
 
                 /*
