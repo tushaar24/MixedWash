@@ -2,7 +2,6 @@ package com.mixedwash.features.slot_selection.presentation
 
 import BrandTheme
 import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -25,14 +24,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.mixedwash.core.presentation.navigation.Route
 import com.mixedwash.WindowInsetsContainer
-import com.mixedwash.core.presentation.components.ElevatedBox
 import com.mixedwash.core.presentation.components.DefaultHeader
+import com.mixedwash.core.presentation.components.ElevatedShape
 import com.mixedwash.core.presentation.components.HeadingAlign
 import com.mixedwash.core.presentation.components.HeadingSize
 import com.mixedwash.core.presentation.models.SnackbarHandler
 import com.mixedwash.core.presentation.models.SnackbarPayload
+import com.mixedwash.core.presentation.navigation.Route
 import com.mixedwash.core.presentation.util.Logger
 import com.mixedwash.core.presentation.util.ObserveAsEvents
 import com.mixedwash.features.services.presentation.components.DefaultButtonLarge
@@ -219,12 +218,12 @@ fun SlotSelectionScreen(
                     state.pickupTimeSelectedId != null && state.dropTimeSelectedId != null
                 }
             }
-            val isScrolledDown by remember {
-                derivedStateOf { scrollState.value == scrollState.maxValue }
-            }
-
-            val elevation by animateDpAsState(if (isScrolledDown) 0.dp else 4.dp)
-            ElevatedBox(elevation = elevation) {
+//            val isScrolledDown by remember {
+//                derivedStateOf { scrollState.value == scrollState.maxValue }
+//            }
+//
+//            val elevation by animateDpAsState(if (isScrolledDown) 0.dp else 4.dp)
+            ElevatedShape(scrollState = scrollState) {
                 DefaultButtonLarge(
                     modifier = Modifier.fillMaxWidth().padding(horizontal = screenHorizontalPadding),
                     text = "BOOK ORDER",

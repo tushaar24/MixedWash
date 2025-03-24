@@ -44,6 +44,7 @@ import androidx.navigation.NavController
 import com.mixedwash.SetStatusBarColor
 import com.mixedwash.core.presentation.components.DialogPopup
 import com.mixedwash.core.presentation.components.DialogPopupData
+import com.mixedwash.core.presentation.components.DropShadowConfig
 import com.mixedwash.core.presentation.components.ElevatedBox
 import com.mixedwash.core.presentation.components.ShadowDirection
 import com.mixedwash.core.presentation.components.noRippleClickable
@@ -264,11 +265,13 @@ fun HomeScreen(
 
                 val elevation by animateDpAsState(if (scrollValue >= endThreshold) 4.dp else 0.dp)
                 ElevatedBox(
+                    dropShadowConfig = DropShadowConfig(
+                        shadowColor = Gray50,
+                        alpha = if (scrollValue >= endThreshold) 0.05f else 0f,
+                        verticalDirection = ShadowDirection.Vertical.Bottom
+                    ),
                     elevation = elevation,
                     backgroundColor = Color.Transparent,
-                    shadowColor = Gray50,
-                    alpha = if (scrollValue >= endThreshold) 0.05f else 0f,
-                    verticalDirection = ShadowDirection.Vertical.Bottom,
                     contentPadding = PaddingValues(0.dp)
                 ) {
                     HomeTopBar(
