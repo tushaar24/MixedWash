@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -49,6 +50,38 @@ fun ElevatedBox(
     }
 }
 
+// an overload which can be used with lazy columns
+@Composable
+fun ElevatedShape(
+    listState: LazyListState,
+    modifier: Modifier = Modifier,
+    elevation: Dp = 4.dp,
+    dropShadowConfig: DropShadowConfig = DropShadowConfig(),
+    content: @Composable BoxScope.() -> Unit,
+) {
+    val isScrolledDown by remember {
+        derivedStateOf {
+            val lastItem = listState.layoutInfo.visibleItemsInfo.lastOrNull()
+            if (lastItem != null) {
+                val endOfLastItem = lastItem.offset + lastItem.size
+                endOfLastItem <= listState.layoutInfo.viewportEndOffset && lastItem.index == listState.layoutInfo.totalItemsCount - 1
+            } else {
+                false
+            }
+        }
+    }
+
+    val currentElevation by animateDpAsState(if (isScrolledDown) 0.dp else elevation)
+
+    ElevatedBox(
+        modifier = modifier,
+        elevation = currentElevation,
+        dropShadowConfig = dropShadowConfig,
+        content = content
+    )
+}
+
+// an overload which can be used with columns that are scrollable
 @Composable
 fun ElevatedShape(
     scrollState: ScrollState,

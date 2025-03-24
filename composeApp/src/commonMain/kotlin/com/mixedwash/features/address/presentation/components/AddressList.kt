@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.LocationOn
 import androidx.compose.material.icons.rounded.MoreVert
@@ -45,6 +47,7 @@ import com.mixedwash.ui.theme.screenVerticalPadding
 @Composable
 fun AddressList(
     modifier: Modifier = Modifier,
+    listState: LazyListState,
     addresses: List<Address>,
     selectedAddressId: String? = null,
     onAddressClicked: ((String) -> Unit)? = null,
@@ -53,6 +56,7 @@ fun AddressList(
 ) {
     LazyColumn(
         modifier = modifier.animateContentSize(),
+        state = listState,
         verticalArrangement = Arrangement.spacedBy(cardSpacing)
     ) {
         item {
@@ -195,7 +199,8 @@ private fun PreviewAddressList() {
             addresses = addresses,
             selectedAddressId = selectedId, onAddressClicked = { selectedId = it },
             onAddressEdit = {},
-            addressSearchState = AddressSearchState.initialState()
+            addressSearchState = AddressSearchState.initialState(),
+            listState = rememberLazyListState()
         )
     }
 }
