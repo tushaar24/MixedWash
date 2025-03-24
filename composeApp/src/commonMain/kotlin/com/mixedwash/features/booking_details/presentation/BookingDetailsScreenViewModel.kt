@@ -9,6 +9,7 @@ import com.mixedwash.core.booking.domain.repository.BookingsRepository
 import com.mixedwash.core.presentation.models.SnackBarType
 import com.mixedwash.core.presentation.models.SnackbarPayload
 import com.mixedwash.core.presentation.util.Logger
+import com.mixedwash.features.local_cart.domain.LocalCartRepository
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -24,6 +25,7 @@ private const val TAG = "BookingDetailsScreenViewModel"
 
 class BookingDetailsScreenViewModel(
     savedStateHandle: SavedStateHandle,
+    private val localCartRepository: LocalCartRepository,
     private val bookingsRepository: BookingsRepository
 ) : ViewModel() {
 
@@ -87,6 +89,11 @@ class BookingDetailsScreenViewModel(
             BookingDetailsScreenEvent.OnConfirmBooking -> {
                 viewModelScope.launch {
                     bookingsRepository.placeDraftBooking().onSuccess {
+                        localCartRepository.clearCartItems().onFailure { e ->
+                            //snackbarEvent("Error clearing cart", type = SnackBarType.ERROR)
+                            Logger.e("SlotSelectionScreenViewModel", "Error clearing cart")
+                            e.printStackTrace()
+                        }
                         sendEvent(BookingDetailsScreenUiEvent.NavigateToBookingConfirmation(it.id))
                     }.onFailure {
                         showSnackbar(SnackbarPayload("Error Placing Booking", SnackBarType.ERROR))

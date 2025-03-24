@@ -183,11 +183,6 @@ class SlotSelectionScreenViewModel(
                             bookingItems = cartItems.map { it.toBookingItem() },
                             address = address
                         ).onSuccess {
-                            localCartRepository.clearCartItems().onFailure { e ->
-                                snackbarEvent("Error clearing cart", type = SnackBarType.ERROR)
-                                Logger.e("SlotSelectionScreenViewModel", "Error clearing cart")
-                                e.printStackTrace()
-                            }
                             _uiEventsChannel.send(SlotSelectionScreenUiEvent.NavigateToReview(it))
                         }.onFailure {
                             Logger.d("SlotSelectionScreenViewModel", "Error Booking")
