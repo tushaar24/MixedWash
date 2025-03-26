@@ -41,7 +41,6 @@ class HomeScreenViewModel(
     private val homeScreenDataRepository: HomeScreenDataRepository
 ) : ViewModel() {
 
-
     private val _state = MutableStateFlow(HomeScreenState(isLoading = true))
     val state = _state.onEach {
         updateAvailability()
@@ -263,6 +262,11 @@ class HomeScreenViewModel(
 
     private fun updateAvailability() {
         val cartAddress = _state.value.cartAddress
+        updateState{
+            copy(
+                isLoading = true
+            )
+        }
         if (cartAddress is CartAddressState.LocationFetched && cartAddress.availability is ServiceAvailability.Unassigned) {
             viewModelScope.launch {
                 val address = cartAddress.address
@@ -302,6 +306,11 @@ class HomeScreenViewModel(
                 }
 
             }
+        }
+        updateState{
+            copy(
+                isLoading = false
+            )
         }
 
     }

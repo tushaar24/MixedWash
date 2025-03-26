@@ -40,8 +40,8 @@ fun OrderConfirmationScreen(
         when (event) {
             is OrderConfirmationScreenUiEvent.Navigate -> {
                 navController.navigate(event.route) {
-                    // pop everything else
-                    popUpTo(0)
+                    popUpTo(event.route)
+                    launchSingleTop = true
                 }
             }
         }

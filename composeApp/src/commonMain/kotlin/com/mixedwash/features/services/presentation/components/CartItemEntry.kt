@@ -43,7 +43,7 @@ fun CartItemEntry(
 
     val itemPrice = when (pricing) {
         is ItemPricing.ServiceItemPricingPresentation -> {
-            "₹${pricing.minimumPrice.div(100)}"
+            ""
         }
 
         is ItemPricing.SubItemFixedPricingPresentation -> {

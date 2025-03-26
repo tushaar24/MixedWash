@@ -167,7 +167,7 @@ fun AddressSearchBar(
                 .clearFocusOnKeyboardDismiss().fillMaxWidth().weight(1f),
             maxLines = 1,
             minLines = 1,
-            textStyle = BrandTheme.typography.body2.copy(color = if (query.isBlank()) BrandTheme.colors.gray.c600 else Color.Unspecified),
+            textStyle = BrandTheme.typography.body2.copy(color = if (query.isBlank()) BrandTheme.colors.gray.normalDark else Color.Unspecified),
             singleLine = true,
             enabled = enabled
         )

@@ -25,7 +25,6 @@ data class DropShadowConfig(
     val alpha: Float = 0.02f,
     val shape: Shape = RectangleShape,
     val verticalDirection: ShadowDirection.Vertical = ShadowDirection.Vertical.Top,
-    val spread: Int = 1,
 )
 
 @Composable
@@ -39,12 +38,15 @@ fun ElevatedBox(
 ) {
     val dir = if (dropShadowConfig.verticalDirection == ShadowDirection.Vertical.Bottom) 1 else -1
     Box(
-        modifier.dropShadow(
-            offsetY = elevation * dir * dropShadowConfig.spread,
-            color = dropShadowConfig.shadowColor.copy(alpha = dropShadowConfig.alpha),
-            blur = elevation,
-            shape = dropShadowConfig.shape
-        ).background(backgroundColor).padding(contentPadding)
+        modifier
+            .dropShadow(
+                offsetY = elevation * dir,
+                color = dropShadowConfig.shadowColor.copy(alpha = dropShadowConfig.alpha),
+                blur = elevation,
+                shape = dropShadowConfig.shape
+            )
+            .background(backgroundColor)
+            .padding(contentPadding)
     ) {
         content()
     }

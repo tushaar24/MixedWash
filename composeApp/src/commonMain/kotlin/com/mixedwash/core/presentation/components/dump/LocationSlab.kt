@@ -3,6 +3,7 @@ package com.mixedwash.core.presentation.components.dump
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -44,7 +45,7 @@ fun LocationSlab(
         Column {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text(
                     text = addressTitle,
@@ -54,7 +55,7 @@ fun LocationSlab(
                     lineHeight = 18.sp,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-//                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(weight = 1f, fill=false)
                 )
 
                 Icon(

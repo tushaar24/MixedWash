@@ -50,9 +50,9 @@ fun DefaultHeader(
                 color = Color.Black.copy(shadowAlpha),
                 spread = 0.dp,
                 blur = headerElevation
-            )
-            .background(backgroundColor)
-            .padding(vertical = 8.dp).zIndex(1f),
+            ).background(backgroundColor)
+            .zIndex(1f)
+            .padding(vertical = 8.dp),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {

@@ -1,5 +1,6 @@
 package com.mixedwash.features.services.presentation.components
 
+import BrandTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Row
@@ -37,7 +38,7 @@ fun DefaultSearchBar(
                 width = 0.5.dp,
                 color = BrandTheme.colors.gray.c300,
                 shape = BrandTheme.shapes.textField
-            ).background(Color.White)
+            ).background(BrandTheme.colors.gray.c100)
             .padding(horizontal = 16.dp),
 
         verticalAlignment = Alignment.CenterVertically,
