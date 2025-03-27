@@ -77,19 +77,19 @@ class HomeScreenViewModel(
             }
 
             HomeScreenEvent.OnBannerClick -> {
-                sendEvent(HomeScreenUiEvent.Navigate(Route.ServicesRoute()))
+                sendUiEvent(HomeScreenUiEvent.Navigate(Route.ServicesRoute()))
             }
 
             HomeScreenEvent.OnIntroClick -> {
-                sendEvent(HomeScreenUiEvent.Navigate(Route.OnboardingRoute))
+                sendUiEvent(HomeScreenUiEvent.Navigate(Route.OnboardingRoute))
             }
 
             is HomeScreenEvent.OnOfferClick -> {
-                sendEvent(HomeScreenUiEvent.Navigate(Route.ServicesRoute()))
+                sendUiEvent(HomeScreenUiEvent.Navigate(Route.ServicesRoute()))
             }
 
             HomeScreenEvent.OnCloseAppRequest -> {
-                sendEvent(HomeScreenUiEvent.CloseApp)
+                sendUiEvent(HomeScreenUiEvent.CloseApp)
             }
 
             HomeScreenEvent.OnSeeAllServicesClicked -> {
@@ -100,19 +100,19 @@ class HomeScreenViewModel(
 
             is HomeScreenEvent.OnServiceClicked -> {
                 viewModelScope.launch {
-                    _uiEventsChannel.send(HomeScreenUiEvent.Navigate(Route.ServicesRoute(serviceId = event.serviceId)))
+                    sendUiEvent(HomeScreenUiEvent.Navigate(Route.ServicesRoute(serviceId = event.serviceId)))
                 }
             }
 
             HomeScreenEvent.OnNavigateToFaqs ->  {
                 viewModelScope.launch {
-                    _uiEventsChannel.send(HomeScreenUiEvent.Navigate(Route.FaqRoute))
+                    sendUiEvent(HomeScreenUiEvent.Navigate(Route.FaqRoute))
                 }
             }
 
             HomeScreenEvent.OnNavigateToProfile ->  {
                 viewModelScope.launch {
-                    _uiEventsChannel.send(HomeScreenUiEvent.Navigate(Route.ProfileRoute))
+                    sendUiEvent(HomeScreenUiEvent.Navigate(Route.ProfileRoute))
                 }
             }
 
@@ -183,7 +183,7 @@ class HomeScreenViewModel(
 
                         is HomeScreenEvent.AddressListEvent.OnAddressSearchBoxClicked -> {
                             Logger.d("TAG", "OnAddressSearchBoxClicked")
-                            sendEvent(
+                            sendUiEvent(
                                 HomeScreenUiEvent.Navigate(
                                     Route.AddressRoute(
                                         title = "Select an Address",
@@ -209,12 +209,12 @@ class HomeScreenViewModel(
             }
 
             HomeScreenEvent.OnCloseAddressBottomSheet -> {
-                sendEvent(HomeScreenUiEvent.DismissAddressBottomSheet)
+                sendUiEvent(HomeScreenUiEvent.DismissAddressBottomSheet)
             }
 
             HomeScreenEvent.OnChangeLocation -> {
 
-                sendEvent(HomeScreenUiEvent.DismissAvailabilityBottomSheet)
+                sendUiEvent(HomeScreenUiEvent.DismissAvailabilityBottomSheet)
 
                 updateState {
                     copy(
@@ -222,16 +222,16 @@ class HomeScreenViewModel(
                     )
                 }
 
-                sendEvent(
+                sendUiEvent(
                     HomeScreenUiEvent.Navigate(
-                        Route.AddressRoute(
+                        route = Route.AddressRoute(
                             title = "Select an Address",
                             screenType = Route.AddressRoute.ScreenType.SelectAddress,
                             submitText = "Select Address",
                             onSubmitNavArgsSerialized = Json.encodeToString(
                                 NavArgs(NavArgType.NavigateUp)
                             )
-                        )
+                        )   // TODO: Single Top
                     )
                 )
 
@@ -257,8 +257,27 @@ class HomeScreenViewModel(
     private fun onScreenStart() {
         viewModelScope.launch {
             updateState { copy(isLoading = true) }
-            updateCartAddress(addressRepository.getCurrentAddress().getOrNull())
-            updateState { copy(isLoading = false) }
+            val currentAddress = addressRepository.getCurrentAddress().getOrNull()
+            val addressList = addressRepository.getAddresses().getOrDefault(emptyList())
+            if (currentAddress == null && addressList.isNotEmpty()) {
+                updateState { copy(isLoading = false) }
+                sendUiEvent(
+                    HomeScreenUiEvent.Navigate(
+                        route = Route.AddressRoute(
+                            title = "Select an Address",
+                            screenType = Route.AddressRoute.ScreenType.SelectAddress,
+                            submitText = "Select Address",
+                            onSubmitNavArgsSerialized = Json.encodeToString(
+                                NavArgs(NavArgType.NavigateUp)
+                            )
+                        )
+                    )
+                )
+
+            } else {
+                updateCartAddress(currentAddress)
+                updateState { copy(isLoading = false) }
+            }
         }
     }
 
@@ -510,7 +529,7 @@ class HomeScreenViewModel(
         )
     }
 
-    private fun sendEvent(event: HomeScreenUiEvent) {
+    private fun sendUiEvent(event: HomeScreenUiEvent) {
         viewModelScope.launch { _uiEventsChannel.send(event) }
     }
 
