@@ -185,7 +185,7 @@ android {
         debug {
             applicationIdSuffix = ".debug"
             isMinifyEnabled = false
-            buildConfigField(type= "boolean", name = "BYPASS_LOCATION_CHECK", value = "true" )
+            buildConfigField(type= "boolean", name = "BYPASS_LOCATION_CHECK", value = "false" )
             signingConfig = signingConfigs.getByName("sharedDebug")
         }
 

@@ -1,10 +1,11 @@
 package com.mixedwash.features.address.presentation
 
 import androidx.compose.runtime.Immutable
-import com.mixedwash.core.presentation.navigation.Route
 import com.mixedwash.core.presentation.components.DialogPopupData
 import com.mixedwash.core.presentation.models.FormField
 import com.mixedwash.core.presentation.models.SnackbarPayload
+import com.mixedwash.core.presentation.navigation.NavArgType
+import com.mixedwash.core.presentation.navigation.NavArgs
 import com.mixedwash.features.address.domain.model.Address
 import com.mixedwash.libs.loki.autocomplete.AutocompletePlace
 
@@ -52,7 +53,7 @@ data class AddressSearchState (
     companion object {
         fun initialState() = AddressSearchState(
             query = "",
-            placeHolder = "Enter your address",
+            placeHolder = "Add new address",
             enabled = true,
             autocompleteResult = emptyList(),
             fetchingLocation = false,
@@ -105,6 +106,6 @@ sealed class AddressScreenUiEvent {
     data object CloseForm : AddressScreenUiEvent()
     data class ShowDialogPopup(val dialogPopupData: DialogPopupData) : AddressScreenUiEvent()
     data object ClosePopup : AddressScreenUiEvent()
-    data class NavigateOnSubmit(val route: Route) : AddressScreenUiEvent()
+    data class NavigateOnSubmit(val navArgs: NavArgs) : AddressScreenUiEvent()
 }
 

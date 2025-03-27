@@ -12,34 +12,47 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.ModalBottomSheetProperties
 import androidx.compose.material3.SheetValue
+import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
 import com.mixedwash.SetStatusBarColor
 import com.mixedwash.core.presentation.components.DialogPopup
@@ -50,7 +63,9 @@ import com.mixedwash.core.presentation.components.ShadowDirection
 import com.mixedwash.core.presentation.components.noRippleClickable
 import com.mixedwash.core.presentation.models.SnackbarHandler
 import com.mixedwash.core.presentation.navigation.AppCloser
+import com.mixedwash.core.presentation.util.Logger
 import com.mixedwash.core.presentation.util.ObserveAsEvents
+import com.mixedwash.features.address.presentation.components.AddressList
 import com.mixedwash.features.common.util.parse
 import com.mixedwash.features.home.presentation.components.HomeBanner
 import com.mixedwash.features.home.presentation.components.HomeTopBar
@@ -61,11 +76,14 @@ import com.mixedwash.features.home.presentation.components.ServicesSection
 import com.mixedwash.ui.theme.Gray50
 import com.mixedwash.ui.theme.Gray800
 import com.mixedwash.ui.theme.components.DefaultCircularProgressIndicator
+import com.mixedwash.ui.theme.components.IconButton
+import com.mixedwash.ui.theme.screenHorizontalPadding
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
 /**
- * Notes:
+ * # Notes:
  * 1. statusBarsPadding and navigationBarsPadding are used to prevent content from overlapping the
  *      systemUI in edge-to-edge
  * 2. the padding values aren't applied to the screen itself as the header color gradient must
@@ -85,14 +103,7 @@ fun HomeScreen(
     navController: NavController
 ) {
 
-
     var dialogPopupData by remember { mutableStateOf<DialogPopupData?>(null) }
-    val sheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true,
-        confirmValueChange = { newState ->
-            newState != SheetValue.Hidden
-        }
-    )
 
     dialogPopupData?.let {
         DialogPopup(
@@ -104,10 +115,18 @@ fun HomeScreen(
     }
 
 
+    val addressSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val serviceBottomSheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true,
+        confirmValueChange = { newState ->
+            newState != SheetValue.Hidden
+        }
+    )
+
     val appCloser = koinInject<AppCloser>()
+    val scope = rememberCoroutineScope()
     ObserveAsEvents(uiEvents) { event ->
         when (event) {
-
             is HomeScreenUiEvent.ShowSnackbar -> {
                 snackbarHandler(event.payload)
             }
@@ -116,10 +135,29 @@ fun HomeScreen(
                 navController.navigate(event.route)
             }
 
-            HomeScreenUiEvent.NavigateUp -> {
+            HomeScreenUiEvent.CloseApp -> {
                 appCloser.closeApp()
             }
 
+            HomeScreenUiEvent.DismissAddressBottomSheet -> {
+                scope.launch {
+                    if (addressSheetState.isVisible) {
+                        addressSheetState.hide()
+                    }
+                }.invokeOnCompletion {
+                    onEvent(HomeScreenEvent.OnDismissedAddressBottomSheet)
+                }
+            }
+
+            HomeScreenUiEvent.DismissAvailabilityBottomSheet -> {
+                scope.launch {
+                    if(serviceBottomSheetState.isVisible) {
+                        serviceBottomSheetState.hide()
+                    }
+                }.invokeOnCompletion {
+                    onEvent(HomeScreenEvent.OnAvailabilityBottomSheetDismissed)
+                }
+            }
         }
     }
 
@@ -137,7 +175,7 @@ fun HomeScreen(
     } else if (state.cartAddress.availability is ServiceAvailability.Unavailable) {
         val unavailable = state.cartAddress.availability
         ModalBottomSheet(
-            sheetState = sheetState,
+            sheetState = serviceBottomSheetState,
             properties = ModalBottomSheetProperties(shouldDismissOnBackPress = false),
             shape = BrandTheme.shapes.rectangle,
             dragHandle = {},
@@ -145,12 +183,81 @@ fun HomeScreen(
             contentColor = LocalContentColor.current,
             modifier = Modifier.fillMaxWidth(),
             onDismissRequest = {
-                onEvent(HomeScreenEvent.OnDismissPermanentBottomSheet)
+                onEvent(HomeScreenEvent.OnCloseAppRequest)
             }
         ) {
             ServiceUnavailable(
                 unavailable = unavailable,
-                onClick = { onEvent(HomeScreenEvent.OnDismissPermanentBottomSheet) })
+                onDismiss = { onEvent(HomeScreenEvent.OnCloseAppRequest) },
+                onChangeLocation = { onEvent(HomeScreenEvent.OnChangeLocation) }
+            )
+        }
+    }
+
+    state.addressBottomSheetState?.let { state ->
+        ModalBottomSheet(sheetState = addressSheetState,
+            shape = BrandTheme.shapes.rectangle,
+            dragHandle = {},
+            containerColor = BrandTheme.colors.background,
+            contentColor = LocalContentColor.current,
+            modifier = Modifier.fillMaxWidth(),
+            onDismissRequest = {
+                onEvent(HomeScreenEvent.OnDismissedAddressBottomSheet)
+            }) {
+
+            Column(
+                modifier = modifier.fillMaxWidth()
+                    .fillMaxHeight(0.7f)
+                    .padding(
+                        top = 36.dp,
+                        start = screenHorizontalPadding,
+                        end = screenHorizontalPadding
+                    ),
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(text = state.title, fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
+                    IconButton(
+                        iconSize = 20.dp,
+                        imageVector = Icons.Rounded.Close,
+                        onClick = state.onClose,
+                        buttonColors = BrandTheme.colors.iconButtonColors()
+                            .copy(containerColor = Color.Transparent)
+                    )
+
+                }
+
+                AddressList(
+                    modifier = Modifier.fillMaxWidth(),
+                    listState = rememberLazyListState(),
+                    addresses = state.addresses,
+                    isLoading = state.isLoading,
+                    selectedAddressId = state.selectedAddressId,
+                    onAddressClicked = state.onAddressClicked,
+                    onSearchBoxClick = state.onSearchBoxClick,
+                    onAddressEdit = state.onAddressEdit,
+                    addressSearchState = state.addressSearchState
+                )
+            }
+        }
+    }
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            Logger.d("TAG", "Event: ${event.name}")
+            if (event == Lifecycle.Event.ON_START) {
+                onEvent(HomeScreenEvent.OnScreenStart)
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
 
@@ -174,18 +281,6 @@ fun HomeScreen(
                     onBannerButtonClicked = { onEvent(HomeScreenEvent.OnBannerClick) },
                 )
             }
-
-            /*
-            OrderStatusCard(
-                orderId = "#1022153",
-                title = "Wash & Fold",
-                subtitle = "Heavy Wash",
-                description = "Your order is currently being washed at our facility",
-                onDetailsClick = { },
-                imageUrl = "silver_washing_machine",
-                modifier = edgePadding
-            )
-    */
 
             Column(
                 modifier = Modifier.padding(horizontal = 16.dp),
@@ -276,8 +371,8 @@ fun HomeScreen(
                 ) {
                     HomeTopBar(
                         addressTitle = if (state.cartAddress is CartAddressState.LocationFetched) state.cartAddress.address.title else "",
-                        addressLine = if (state.cartAddress is CartAddressState.LocationFetched) state.cartAddress.address.pinCode else "",
-                        onExpand = {},
+                        addressLine = if (state.cartAddress is CartAddressState.LocationFetched) state.cartAddress.address.toString() else "",
+                        onLocationSlabClicked = { onEvent(HomeScreenEvent.OnLocationSlabClicked) },
                         onProfileClick = { onEvent(HomeScreenEvent.OnNavigateToProfile) },
                         onFAQsClick = { onEvent(HomeScreenEvent.OnNavigateToFaqs) },
                         contentColor = topBarContentColor,

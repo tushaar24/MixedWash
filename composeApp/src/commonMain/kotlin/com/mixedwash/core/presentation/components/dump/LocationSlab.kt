@@ -45,7 +45,7 @@ fun LocationSlab(
         Column {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
             ) {
                 Text(
                     text = addressTitle,
@@ -70,7 +70,8 @@ fun LocationSlab(
                 text = addressText,
                 fontSize = 12.sp,
                 lineHeight = 15.sp,
-                color = contentColor,
+                color = contentColor.copy(alpha = 0.8f),
+                maxLines = 1,
                 fontWeight = FontWeight.Normal,
                 overflow = TextOverflow.Ellipsis
             )

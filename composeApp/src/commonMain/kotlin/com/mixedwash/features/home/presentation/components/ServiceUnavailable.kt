@@ -18,12 +18,14 @@ import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.mixedwash.features.home.presentation.ServiceAvailability
+import com.mixedwash.features.services.presentation.components.DefaultButtonLarge
 import com.mixedwash.ui.theme.components.OutlinedButton
 
 @Composable
 fun ServiceUnavailable(
     unavailable: ServiceAvailability.Unavailable,
-    onClick: () -> Unit
+    onDismiss: () -> Unit,
+    onChangeLocation: () -> Unit,
 ) {
     Column(
         Modifier.fillMaxWidth().padding(horizontal = 48.dp, vertical = 64.dp),
@@ -58,8 +60,9 @@ fun ServiceUnavailable(
                 .build(), contentDescription = "Error graphic",
             modifier = Modifier.size(300.dp)
         )
-        Column(verticalArrangement = Arrangement.spacedBy(16.dp)){
-            OutlinedButton(text = unavailable.buttonText, onClick = onClick)
+        Column(verticalArrangement = Arrangement.spacedBy(16.dp), horizontalAlignment = Alignment.CenterHorizontally){
+            DefaultButtonLarge(text = "Change Location", onClick = onChangeLocation)
+            OutlinedButton(text = unavailable.buttonText, onClick = onDismiss)
         }
 
     }

@@ -19,7 +19,7 @@ sealed class Route {
         val title: String,
         val screenType: ScreenType,
         val submitText: String,
-        val onSubmitRouteSerialized: String? = null
+        val onSubmitNavArgsSerialized: String? = null
     ) : Route() {
         @Serializable
         enum class ScreenType {

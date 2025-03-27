@@ -35,11 +35,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.mixedwash.core.presentation.components.noRippleClickable
+import com.mixedwash.core.presentation.util.Logger
 import com.mixedwash.features.address.domain.model.Address
 import com.mixedwash.features.address.presentation.AddressSearchEvent
 import com.mixedwash.features.address.presentation.AddressSearchState
 import com.mixedwash.ui.theme.MixedWashTheme
 import com.mixedwash.ui.theme.cardSpacing
+import com.mixedwash.ui.theme.components.DefaultCircularProgressIndicator
 import com.mixedwash.ui.theme.components.IconButton
 import com.mixedwash.ui.theme.screenHorizontalPadding
 import com.mixedwash.ui.theme.screenVerticalPadding
@@ -48,32 +51,65 @@ import com.mixedwash.ui.theme.screenVerticalPadding
 fun AddressList(
     modifier: Modifier = Modifier,
     listState: LazyListState,
+    isLoading: Boolean = false,
     addresses: List<Address>,
+    onSearchBoxClick: (() -> Unit)? = null,
     selectedAddressId: String? = null,
     onAddressClicked: ((String) -> Unit)? = null,
     onAddressEdit: ((Address) -> Unit)? = null,
     addressSearchState: AddressSearchState
 ) {
+    if (isLoading) {
+        Box(modifier.fillMaxSize()) {
+            DefaultCircularProgressIndicator(
+                modifier = Modifier.align(Alignment.Center)
+            )
+        }
+        return
+    }
+
     LazyColumn(
         modifier = modifier.animateContentSize(),
         state = listState,
         verticalArrangement = Arrangement.spacedBy(cardSpacing)
     ) {
         item {
-            AddressSearch(
-                modifier = Modifier.fillMaxWidth(),
-                query = addressSearchState.query ,
-                placeHolder = addressSearchState.placeHolder,
-                enabled = addressSearchState.enabled,
-                places = addressSearchState.autocompleteResult,
-                onValueChange = { addressSearchState.onEvent(AddressSearchEvent.OnValueChange(it))  },
-                onLocationClick = { addressSearchState.onEvent(AddressSearchEvent.OnLocationClick) },
-                onPlaceSelected = { addressSearchState.onEvent(AddressSearchEvent.OnPlaceSelected(it)) },
-                onClearRequest = { addressSearchState.onEvent(AddressSearchEvent.OnClear) },
-                fetchingCurrentLocation = addressSearchState.fetchingLocation,
-            )
+            Box(
+                modifier =
+                Modifier.fillMaxWidth().then(if (onSearchBoxClick != null) {
+                    Modifier.noRippleClickable {
+                        onSearchBoxClick()
+                    }
+                } else Modifier)
+            ) {
+                AddressSearch(
+                    modifier = Modifier.fillMaxWidth(),
+                    query = addressSearchState.query,
+                    placeHolder = addressSearchState.placeHolder,
+                    enabled = addressSearchState.enabled,
+                    places = addressSearchState.autocompleteResult,
+                    onValueChange = {
+                        addressSearchState.onEvent(
+                            AddressSearchEvent.OnValueChange(
+                                it
+                            )
+                        )
+                    },
+                    onLocationClick = { addressSearchState.onEvent(AddressSearchEvent.OnLocationClick) },
+                    onPlaceSelected = {
+                        addressSearchState.onEvent(
+                            AddressSearchEvent.OnPlaceSelected(
+                                it
+                            )
+                        )
+                    },
+                    onClearRequest = { addressSearchState.onEvent(AddressSearchEvent.OnClear) },
+                    fetchingCurrentLocation = addressSearchState.fetchingLocation,
+                )
+            }
             Spacer(modifier = Modifier.height(16.dp))
         }
+
 
         if (addresses.isEmpty()) {
             item {
@@ -102,26 +138,20 @@ fun AddressList(
                 else Color.Transparent
 
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .border(
+                    modifier = Modifier.fillMaxWidth().animateItem().border(
                             1.dp, color = borderColor, shape = BrandTheme.shapes.card
-                        )
-                        .clip(BrandTheme.shapes.card)
-                        .background(containerColor)
+                    ).clip(BrandTheme.shapes.card).background(containerColor)
                         .clickable(enabled = onAddressClicked != null && !isSelected) {
                             onAddressClicked!!(
                                 address.uid
                             )
-                        }
-                        .padding(horizontal = 16.dp, vertical = 16.dp)) {
+                        }.padding(horizontal = 16.dp, vertical = 16.dp)
+                ) {
                     Icon(
                         imageVector = Icons.Rounded.LocationOn,
                         contentDescription = "Location Icon",
                         tint = BrandTheme.colors.gray.dark,
-                        modifier = Modifier
-                            .padding(top = 4.dp, end = 18.dp)
-                            .size(14.dp)
+                        modifier = Modifier.padding(top = 4.dp, end = 18.dp).size(14.dp)
                     )
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
@@ -155,10 +185,11 @@ fun AddressList(
                                 .copy(containerColor = Color.Transparent)
                         )
                     }
+                    }
                 }
             }
         }
-    }
+
 
 }
 

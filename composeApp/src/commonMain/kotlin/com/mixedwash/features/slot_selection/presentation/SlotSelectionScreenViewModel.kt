@@ -8,8 +8,10 @@ import com.mixedwash.core.booking.domain.repository.BookingsRepository
 import com.mixedwash.core.presentation.models.SnackBarType
 import com.mixedwash.core.presentation.util.Logger
 import com.mixedwash.features.address.domain.repository.AddressRepository
+import com.mixedwash.features.home.presentation.ServiceAvailability
 import com.mixedwash.features.local_cart.domain.LocalCartRepository
 import com.mixedwash.features.local_cart.domain.model.toDomain
+import com.mixedwash.features.location_availability.domain.LocationAvailabilityRepository
 import com.mixedwash.features.slot_selection.domain.model.response.SlotSelectionMapper.toDomain
 import com.mixedwash.features.slot_selection.domain.model.response.TimeSlot
 import com.mixedwash.features.slot_selection.domain.repository.SlotsRepository
@@ -31,7 +33,8 @@ class SlotSelectionScreenViewModel(
     private val slotsRepository: SlotsRepository,
     private val localCartRepository: LocalCartRepository,
     private val addressRepository: AddressRepository,
-    private val bookingsRepository: BookingsRepository
+    private val bookingsRepository: BookingsRepository,
+    private val locationAvailabilityRepository: LocationAvailabilityRepository
 ) : ViewModel() {
 
     private val initialState = SlotSelectionScreenState(
@@ -168,11 +171,16 @@ class SlotSelectionScreenViewModel(
                         if (!submitValidation()) {
                             throw IllegalStateException("Invalid Slots")
                         }
-                        val address = addressRepository.run {
-//                            val defaultAddress = getDefaultAddress().getOrThrow()
-//                            getAddressByUid(defaultAddress).getOrThrow()
-                            getAddresses().getOrThrow().first()
-                        }
+                        val address = addressRepository.getCurrentAddress()
+                            .getOrElse { throw Exception("Address has not been selected") }
+                        val isServiceable = locationAvailabilityRepository.isLocationServiceable(
+                            currentLat = address.lat,
+                            currentLon = address.long,
+                            currentPincode = address.pinCode
+                        ).getOrNull()?: throw Exception("Location Serviceability Undecided")
+
+                        if(!isServiceable) { throw Exception("Address is not serviceable") }
+
                         val cartItems =
                             localCartRepository.getCartItems().getOrThrow().map { it.toDomain() }
                         bookingsRepository.setBookingDraft(

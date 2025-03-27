@@ -7,17 +7,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mixedwash.core.presentation.navigation.Route
 import com.mixedwash.core.domain.models.Result
 import com.mixedwash.core.presentation.components.ButtonData
 import com.mixedwash.core.presentation.components.DialogPopupData
 import com.mixedwash.core.presentation.models.SnackBarType
 import com.mixedwash.core.presentation.models.SnackbarPayload
+import com.mixedwash.core.presentation.navigation.NavArgType
+import com.mixedwash.core.presentation.navigation.NavArgs
+import com.mixedwash.core.presentation.navigation.Route
 import com.mixedwash.core.presentation.util.Logger
-import com.mixedwash.features.common.data.service.LocationService
 import com.mixedwash.features.address.domain.model.Address
 import com.mixedwash.features.address.domain.model.toAddress
+import com.mixedwash.features.address.domain.repository.AddressRepository
+import com.mixedwash.features.address.presentation.AddressSearchState
+import com.mixedwash.features.common.data.service.LocationService
 import com.mixedwash.features.home.domain.HomeScreenDataRepository
+import com.mixedwash.features.home.presentation.model.AddressBottomSheetState
 import com.mixedwash.features.home.presentation.model.toPresentation
 import com.mixedwash.features.location_availability.domain.LocationAvailabilityRepository
 import com.mixedwash.libs.loki.core.Place
@@ -29,22 +34,23 @@ import com.mixedwash.ui.theme.Gray900
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 
 class HomeScreenViewModel(
     private val locationService: LocationService,
     private val locationAvailabilityRepository: LocationAvailabilityRepository,
-    private val homeScreenDataRepository: HomeScreenDataRepository
+    private val homeScreenDataRepository: HomeScreenDataRepository,
+    private val addressRepository: AddressRepository
 ) : ViewModel() {
 
+    private val serviceableAddressUidCache = mutableListOf<String>()
+
     private val _state = MutableStateFlow(HomeScreenState(isLoading = true))
-    val state = _state.onEach {
-        updateAvailability()
-    }.stateIn(
+    val state = _state.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(3000),
         HomeScreenState(isLoading = true)
@@ -55,7 +61,6 @@ class HomeScreenViewModel(
 
     init {
         reload()
-        viewModelScope.launch { updateLocation(null) }
     }
 
 
@@ -67,7 +72,7 @@ class HomeScreenViewModel(
 
             is HomeScreenEvent.UpdateLocation -> {
                 viewModelScope.launch {
-                    updateLocation(event.address)
+                    updateCartAddress(event.address)
                 }
             }
 
@@ -83,8 +88,8 @@ class HomeScreenViewModel(
                 sendEvent(HomeScreenUiEvent.Navigate(Route.ServicesRoute()))
             }
 
-            HomeScreenEvent.OnDismissPermanentBottomSheet -> {
-                sendEvent(HomeScreenUiEvent.NavigateUp)
+            HomeScreenEvent.OnCloseAppRequest -> {
+                sendEvent(HomeScreenUiEvent.CloseApp)
             }
 
             HomeScreenEvent.OnSeeAllServicesClicked -> {
@@ -110,6 +115,150 @@ class HomeScreenViewModel(
                     _uiEventsChannel.send(HomeScreenUiEvent.Navigate(Route.ProfileRoute))
                 }
             }
+
+            HomeScreenEvent.OnLocationSlabClicked -> {
+                updateState {
+                    copy(
+                        addressBottomSheetState = AddressBottomSheetState(
+                            isLoading = true,
+                            title = "Select Address",
+                            addresses = emptyList(),
+                            selectedAddressId = null,
+                            onAddressClicked = {
+                                updateState {
+                                    copy(
+                                        addressBottomSheetState = addressBottomSheetState?.copy(
+                                            selectedAddressId = it
+                                        )
+                                    )
+                                }
+                                onEvent(
+                                    HomeScreenEvent.AddressListEvent.OnAddressClicked(
+                                        it
+                                    )
+                                )
+                            },
+                            onAddressEdit = null,
+                            onSearchBoxClick = { onEvent(HomeScreenEvent.AddressListEvent.OnAddressSearchBoxClicked) },
+                            onClose = { onEvent(HomeScreenEvent.OnCloseAddressBottomSheet) },
+                            addressSearchState = AddressSearchState(
+                                query = "",
+                                placeHolder = "Add New Address",
+                                enabled = true,
+                                autocompleteResult = emptyList(),
+                                fetchingLocation = false,
+                                onEvent = { onEvent(HomeScreenEvent.AddressListEvent.OnAddressSearchBoxClicked) }
+                            )
+                        )
+                    )
+                }
+                viewModelScope.launch {
+                    addressRepository.getAddresses().onSuccess { addressList ->
+                        updateState {
+                            copy(
+                                addressBottomSheetState = addressBottomSheetState?.copy(
+                                    isLoading = false,
+                                    addresses = addressList,
+                                )
+                            )
+                        }
+                    }
+                }
+            }
+
+            is HomeScreenEvent.AddressListEvent -> {
+                viewModelScope.launch {
+                    onEvent(HomeScreenEvent.OnCloseAddressBottomSheet)
+                    when (event) {
+                        is HomeScreenEvent.AddressListEvent.OnAddressClicked -> {
+                            addressRepository.setCurrentAddress(event.uid).onFailure {
+                                snackbarEvent(
+                                    "Address could not be updated",
+                                    SnackBarType.ERROR
+                                )
+                            }
+                            updateCartAddress(addressRepository.getCurrentAddress().getOrNull())
+                        }
+
+
+                        is HomeScreenEvent.AddressListEvent.OnAddressSearchBoxClicked -> {
+                            Logger.d("TAG", "OnAddressSearchBoxClicked")
+                            sendEvent(
+                                HomeScreenUiEvent.Navigate(
+                                    Route.AddressRoute(
+                                        title = "Select an Address",
+                                        screenType = Route.AddressRoute.ScreenType.SelectAddress,
+                                        submitText = "Select Address",
+                                        onSubmitNavArgsSerialized = Json.encodeToString(
+                                            NavArgs(NavArgType.NavigateUp)
+                                        )
+                                    )
+                                )
+                            )
+                        }
+                    }
+                }
+            }
+
+            HomeScreenEvent.OnDismissedAddressBottomSheet -> {
+                updateState {
+                    copy(
+                        addressBottomSheetState = null
+                    )
+                }
+            }
+
+            HomeScreenEvent.OnCloseAddressBottomSheet -> {
+                sendEvent(HomeScreenUiEvent.DismissAddressBottomSheet)
+            }
+
+            HomeScreenEvent.OnChangeLocation -> {
+
+                sendEvent(HomeScreenUiEvent.DismissAvailabilityBottomSheet)
+
+                updateState {
+                    copy(
+                        cartAddress = CartAddressState.Unassigned
+                    )
+                }
+
+                sendEvent(
+                    HomeScreenUiEvent.Navigate(
+                        Route.AddressRoute(
+                            title = "Select an Address",
+                            screenType = Route.AddressRoute.ScreenType.SelectAddress,
+                            submitText = "Select Address",
+                            onSubmitNavArgsSerialized = Json.encodeToString(
+                                NavArgs(NavArgType.NavigateUp)
+                            )
+                        )
+                    )
+                )
+
+
+            }
+
+            HomeScreenEvent.OnScreenStart -> {
+                onScreenStart()
+            }
+
+            HomeScreenEvent.OnAvailabilityBottomSheetDismissed -> {
+                /*
+                 * Availability Bottom Sheet should only be dismissed for a good reason since
+                * it prevents the user from interacting with the UI if his location is not
+                * serviceable.
+                *
+                * The relevant state changes must be handled by the caller themselves
+                * */
+            }
+        }
+    }
+
+    private fun onScreenStart() {
+        viewModelScope.launch {
+            updateState { copy(isLoading = true) }
+            updateCartAddress(addressRepository.getCurrentAddress().getOrNull())
+            updateState { copy(isLoading = false) }
         }
     }
 
@@ -136,12 +285,12 @@ class HomeScreenViewModel(
 
     }
 
-    private suspend fun updateLocation(address: Address?) {
+    private suspend fun updateCartAddress(address: Address?) {
         if (address != null) {
             updateState {
-                copy(cartAddress = CartAddressState.LocationFetched(address))   // TODO : Replace with cart service
-
+                copy(cartAddress = CartAddressState.LocationFetched(address))
             }
+            updateAvailability()
             return
         }
         updateState {
@@ -257,60 +406,69 @@ class HomeScreenViewModel(
                 )
             )
         }
-
+        updateAvailability()
     }
 
     private fun updateAvailability() {
         val cartAddress = _state.value.cartAddress
-        updateState{
-            copy(
-                isLoading = true
-            )
-        }
         if (cartAddress is CartAddressState.LocationFetched && cartAddress.availability is ServiceAvailability.Unassigned) {
-            viewModelScope.launch {
-                val address = cartAddress.address
-                if (address.lat == null || address.long == null) return@launch
-                val result =
-                    locationAvailabilityRepository.isLocationServiceable(
+            if (serviceableAddressUidCache.none { it == cartAddress.address.uid }) {
+                viewModelScope.launch {
+                    updateState {
+                        copy(
+                            isLoading = true
+                        )
+                    }
+                    val address = cartAddress.address
+                    val result = locationAvailabilityRepository.isLocationServiceable(
                         currentLat = address.lat,
                         currentLon = address.long,
                         currentPincode = cartAddress.address.pinCode
                     )
-                var error: String? = null
-                if (result !is Result.Success) {
-                    error = "Error Fetching Availability"
-                } else if (!result.data) error = "Service Unavailable"
-                if (error != null) {
-                    updateState {
-                        copy(
-                            cartAddress = cartAddress.copy(
-                                availability = ServiceAvailability.Unavailable(
-                                    title = error,
-                                    description = "Sorry, service is currently unavailable at your current location: \n${address.addressLine1 + " " + address.pinCode}",
-                                    imageUrl = "https://assets-aac.pages.dev/assets/error_kitty.png",
-                                    buttonText = "Promise You'll Be Back",
-                                    error = error
+                    var error: String? = null
+                    if (result !is Result.Success) {
+                        error = "Error Fetching Availability"
+                    } else if (!result.data) error = "Service Unavailable"
+                    if (error != null) {
+                        serviceableAddressUidCache.removeAll { it == address.uid }
+                        updateState {
+                            copy(
+                                cartAddress = cartAddress.copy(
+                                    availability = ServiceAvailability.Unavailable(
+                                        title = error,
+                                        description = "Sorry, service is currently unavailable at your current location: \n${address.addressLine1 + " " + address.pinCode}",
+                                        imageUrl = "https://assets-aac.pages.dev/assets/error_kitty.png",
+                                        buttonText = "Promise You'll Be Back",
+                                        error = error
+                                    )
                                 )
                             )
-                        )
+                        }
+                    } else {
+                        serviceableAddressUidCache.add(address.uid)
+                        updateState {
+                            copy(
+                                cartAddress = cartAddress.copy(
+                                    availability = ServiceAvailability.Available
+                                )
+                            )
+                        }
                     }
-                } else {
                     updateState {
                         copy(
-                            cartAddress = cartAddress.copy(
-                                availability = ServiceAvailability.Available
-                            )
+                            isLoading = false
                         )
                     }
                 }
-
+            } else {
+                updateState {
+                    copy(
+                        cartAddress = cartAddress.copy(
+                            availability = ServiceAvailability.Available
+                        )
+                    )
+                }
             }
-        }
-        updateState{
-            copy(
-                isLoading = false
-            )
         }
 
     }

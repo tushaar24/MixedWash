@@ -11,7 +11,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.mixedwash.core.presentation.navigation.Route
 import com.mixedwash.core.domain.validation.PinCodeValidationUseCase
 import com.mixedwash.core.presentation.components.ButtonData
 import com.mixedwash.core.presentation.components.DialogPopupData
@@ -25,7 +24,8 @@ import com.mixedwash.core.presentation.models.FormField
 import com.mixedwash.core.presentation.models.InputState
 import com.mixedwash.core.presentation.models.SnackBarType
 import com.mixedwash.core.presentation.models.SnackbarPayload
-import com.mixedwash.core.presentation.navigation.NavRouteArgument
+import com.mixedwash.core.presentation.navigation.NavArgs
+import com.mixedwash.core.presentation.navigation.Route
 import com.mixedwash.core.presentation.util.Logger
 import com.mixedwash.features.address.domain.model.Address
 import com.mixedwash.features.address.domain.model.toAddress
@@ -113,15 +113,13 @@ class AddressScreenViewModel(
                 viewModelScope.launch {
                     state.value.typeParams.asSelect()?.let { selectParams ->
                         addressRepository.setCurrentAddress(selectParams.selectedId).onSuccess {
-                            addressRoute.onSubmitRouteSerialized?.let { string ->
+                            addressRoute.onSubmitNavArgsSerialized?.let { string ->
                                 runCatching {
                                     Logger.d("AddressScreenViewModel", "String: $string")
-                                    Json.decodeFromString<NavRouteArgument>(string)
+                                    Json.decodeFromString<NavArgs>(string)
                                 }.onSuccess { routeArgument ->
                                     _uiEventsChannel.send(
-                                        AddressScreenUiEvent.NavigateOnSubmit(
-                                            routeArgument.route
-                                        )
+                                        AddressScreenUiEvent.NavigateOnSubmit(routeArgument)
                                     )
                                 }.onFailure { e ->
                                     snackbarEvent(
@@ -165,7 +163,6 @@ class AddressScreenViewModel(
                     fetchAddresses()
                 }
             }
-
         }
     }
 
@@ -447,11 +444,13 @@ class AddressScreenViewModel(
 
     private fun fetchAddresses() {
         viewModelScope.launch {
+            updateState { copy(isLoading = true) }
             addressRepository.getAddresses().onSuccess {
                 updateState { copy(addressList = it) }
             }.onFailure {
                 snackbarEvent("Error Fetching Addresses", SnackBarType.ERROR)
             }
+            updateState { copy(isLoading = false) }
         }
     }
 

@@ -29,7 +29,7 @@ fun HomeTopBar(
     modifier: Modifier = Modifier,
     addressTitle: String,
     addressLine: String,
-    onExpand: () -> Unit,
+    onLocationSlabClicked: () -> Unit,
     onProfileClick: () -> Unit,
     onFAQsClick: () -> Unit,
     contentColor: Color,
@@ -44,7 +44,7 @@ fun HomeTopBar(
             contentColor = contentColor,
             addressTitle = addressTitle,
             addressText = addressLine,
-            onLocationClick = onExpand
+            onLocationClick = onLocationSlabClicked
         )
 
         Row(

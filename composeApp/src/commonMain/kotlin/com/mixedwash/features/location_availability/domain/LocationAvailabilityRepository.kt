@@ -7,8 +7,8 @@ interface LocationAvailabilityRepository {
     val bypassLocationCheck: Boolean
 
     suspend fun isLocationServiceable(
-        currentLat: Double,
-        currentLon: Double,
+        currentLat: Double?,
+        currentLon: Double?,
         currentPincode: String,
     ): Result<Boolean>
 

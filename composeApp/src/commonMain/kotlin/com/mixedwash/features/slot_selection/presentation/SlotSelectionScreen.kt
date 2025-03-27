@@ -218,11 +218,6 @@ fun SlotSelectionScreen(
                     state.pickupTimeSelectedId != null && state.dropTimeSelectedId != null
                 }
             }
-//            val isScrolledDown by remember {
-//                derivedStateOf { scrollState.value == scrollState.maxValue }
-//            }
-//
-//            val elevation by animateDpAsState(if (isScrolledDown) 0.dp else 4.dp)
             ElevatedShape(scrollState = scrollState) {
                 DefaultButtonLarge(
                     modifier = Modifier.fillMaxWidth().padding(horizontal = screenHorizontalPadding),

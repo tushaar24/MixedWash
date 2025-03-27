@@ -35,6 +35,7 @@ import com.mixedwash.core.presentation.components.ElevatedShape
 import com.mixedwash.core.presentation.components.HeadingAlign
 import com.mixedwash.core.presentation.components.HeadingSize
 import com.mixedwash.core.presentation.models.SnackbarHandler
+import com.mixedwash.core.presentation.navigation.navigateWithArgs
 import com.mixedwash.core.presentation.util.ObserveAsEvents
 import com.mixedwash.features.address.domain.model.Address
 import com.mixedwash.features.address.presentation.AddressFormEvent
@@ -96,11 +97,7 @@ fun AddressScreen(
             }
 
             is AddressScreenUiEvent.NavigateOnSubmit -> {
-                navController.navigate(event.route) {
-                    popUpTo(navController.currentDestination?.route ?: return@navigate) {
-                        inclusive = true
-                    }
-                }
+                navController.navigateWithArgs(event.navArgs)
             }
 
         }
@@ -136,24 +133,13 @@ fun AddressScreen(
                     AddressList(
                         modifier = Modifier.fillMaxWidth(),
                         listState = listState,
+                        isLoading = state.isLoading,
                         addresses = state.addressList,
                         onAddressClicked = state.typeParams.asSelect()?.onAddressSelected,
                         selectedAddressId = state.typeParams.asSelect()?.selectedId,
                         onAddressEdit = state.onAddressEdit,
                         addressSearchState = state.searchState,
                     )
-
-                    /*
-                                    Spacer(modifier = Modifier.height(16.dp))
-                                    OutlinedButton(
-                                        iconBefore = Icons.Rounded.Add,
-                                        text = "Add Address",
-                                        modifier = Modifier.fillMaxWidth(),
-                                        contentColor = BrandTheme.colors.gray.dark,
-                                        outlineColor = BrandTheme.colors.gray.dark,
-                                        onClick = state.onAddAddress
-                                    )
-                    */
 
                     Spacer(modifier = Modifier.height(40.dp))
 

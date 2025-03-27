@@ -7,6 +7,7 @@ import com.mixedwash.features.location_availability.domain.LocationAvailabilityR
 import com.mixedwash.features.location_availability.domain.LocationAvailabilityService
 import com.mixedwash.features.location_availability.domain.model.LocationAvailabilityDTO
 import com.mixedwash.libs.loki.core.calculateDistance
+import kotlinx.coroutines.delay
 
 private const val TAG = "LocationAvailabilityRepository"
 
@@ -22,10 +23,11 @@ class LocationAvailabilityRepositoryImpl(
     }
 
     override suspend fun isLocationServiceable(
-        currentLat: Double,
-        currentLon: Double,
+        currentLat: Double?,
+        currentLon: Double?,
         currentPincode: String
     ): Result<Boolean> {
+        delay(1000)
         if (bypassLocationCheck) {
             Logger.d(TAG, "location check bypassed")
             return Result.Success(true)
@@ -42,10 +44,13 @@ class LocationAvailabilityRepositoryImpl(
         }
 
         // Check if the current coordinate falls within any service area.
-        for (area in data.serviceAreas) {
-            val distance = calculateDistance(currentLat, currentLon, area.latitude, area.longitude)
-            if (distance <= area.radiusKm) {
-                return Result.Success(true)
+        if (currentLat != null && currentLon != null) {
+            for (area in data.serviceAreas) {
+                val distance =
+                    calculateDistance(currentLat, currentLon, area.latitude, area.longitude)
+                if (distance <= area.radiusKm) {
+                    return Result.Success(true)
+                }
             }
         }
         return Result.Success(false)

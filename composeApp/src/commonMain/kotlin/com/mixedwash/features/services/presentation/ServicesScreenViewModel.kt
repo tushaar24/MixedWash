@@ -8,7 +8,9 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.mixedwash.core.presentation.models.SnackBarType
 import com.mixedwash.core.presentation.models.SnackbarPayload
-import com.mixedwash.core.presentation.navigation.NavRouteArgument
+import com.mixedwash.core.presentation.navigation.NavArgType
+import com.mixedwash.core.presentation.navigation.NavArgs
+import com.mixedwash.core.presentation.navigation.PopUpOption
 import com.mixedwash.core.presentation.navigation.Route
 import com.mixedwash.core.presentation.util.Logger
 import com.mixedwash.features.address.domain.error.AddressNotFoundException
@@ -234,9 +236,12 @@ class ServicesScreenViewModel(
                                             title = "Select Your Address",
                                             screenType = Route.AddressRoute.ScreenType.SelectAddress,
                                             submitText = "Select Address",
-                                            onSubmitRouteSerialized = Json.encodeToString(
-                                                NavRouteArgument(
-                                                    Route.SlotSelectionRoute
+                                            onSubmitNavArgsSerialized = Json.encodeToString(
+                                                NavArgs(
+                                                    navType = NavArgType.Navigate(
+                                                        route = Route.SlotSelectionRoute,
+                                                        popUpOption = PopUpOption.PopCurrentRoute
+                                                    )
                                                 )
                                             )
                                         )
