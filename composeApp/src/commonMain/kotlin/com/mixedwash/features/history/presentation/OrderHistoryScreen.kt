@@ -26,6 +26,7 @@ import com.mixedwash.core.booking.domain.model.BookingState
 import com.mixedwash.core.booking.domain.model.calculateTotalPrice
 import com.mixedwash.core.presentation.components.DefaultHeader
 import com.mixedwash.core.presentation.components.dump.TitleWithIcon
+import com.mixedwash.core.presentation.util.Logger
 import com.mixedwash.core.presentation.util.ObserveAsEvents
 import com.mixedwash.core.presentation.util.formatTimestamp
 import com.mixedwash.features.history.domain.model.OrderDeliveryStatus
@@ -113,6 +114,7 @@ fun OrderHistoryScreen(
                             modifier = Modifier.padding(horizontal = 16.dp),
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
+                            Logger.d("fcuk", "${order.pickupSlotSelected.startTimeStamp}")
                             OrderSummaryCard(
                                 orderId = order.id,
                                 titles = order.bookingItems.map { it.serviceName },

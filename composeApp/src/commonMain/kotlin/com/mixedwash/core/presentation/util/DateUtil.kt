@@ -32,9 +32,13 @@ fun Long.getMonth(): String {
     return localDate.month.name.take(3)
 }
 
+/*
+    accepts a Long timestamp(seconds since epoch), and return the date-time
+     like so: 27 Mar • 12:00 pm
+ */
 fun formatTimestamp(timestamp: Long): String {
-    val instant = Instant.fromEpochMilliseconds(timestamp)
-    val dateTime = instant.toLocalDateTime(TimeZone.currentSystemDefault()) // Change to your desired timezone
+    val instant = Instant.fromEpochSeconds(timestamp)
+    val dateTime = instant.toLocalDateTime(TimeZone.currentSystemDefault())
 
     val monthAbbreviations = listOf(
         "Jan", "Feb", "Mar", "Apr", "May", "Jun",
