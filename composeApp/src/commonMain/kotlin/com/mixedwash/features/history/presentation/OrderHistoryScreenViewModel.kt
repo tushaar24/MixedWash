@@ -59,7 +59,7 @@ class OrderHistoryScreenViewModel(private val bookingsRepository: BookingsReposi
     }
 
     private fun calculateMetrics() {
-        val quantityInKg = _state.value.orders.sumOf { it.bookingItems.sumOf { it.quantity } } + 90
+        val quantityInKg = _state.value.orders.sumOf { item -> item.bookingItems.sumOf { it.quantity } }
 
         _state.update {
             it.copy(
