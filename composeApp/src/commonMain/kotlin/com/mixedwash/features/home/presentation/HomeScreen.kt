@@ -287,34 +287,8 @@ fun HomeScreen(
                 verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
 
-                state.introSection?.let {
-
-                    IntroSection(
-                        title = it.heading,
-                        description = it.description,
-                        imageUrl = it.imageUrl,
-                        buttonLabel = it.buttonText,
-                        gradient = it.gradient,
-                        contentColor = it.contentTextColor,
-                        buttonTextColor = it.buttonTextColor,
-                        onClick = { onEvent(HomeScreenEvent.OnIntroClick) },
-                        modifier = Modifier,
-                    )
-                }
-
                 val offerCard = state.offerCards?.get(0)
-                offerCard?.let {
-                    OfferCard(
-                        text = offerCard.text,
-                        bigText = offerCard.bigText,
-                        imageUrl = offerCard.imageUrl,
-                        buttonLabel = offerCard.buttonLabel,
-                        gradient = offerCard.gradient,
-                        contentColor = offerCard.contentTextColor,
-                        buttonTextColor = offerCard.buttonTextColor,
-                        onClick = { onEvent(HomeScreenEvent.OnOfferClick(offerCard.offerId)) }
-                    )
-                }
+
 
                 state.services?.let {
                     ServicesSection(
@@ -328,6 +302,33 @@ fun HomeScreen(
                                 )
                             )
                         }
+                    )
+                }
+
+                offerCard?.let {
+                    OfferCard(
+                        text = offerCard.text,
+                        bigText = offerCard.bigText,
+                        imageUrl = offerCard.imageUrl,
+                        buttonLabel = offerCard.buttonLabel,
+                        gradient = offerCard.gradient,
+                        contentColor = offerCard.contentTextColor,
+                        buttonTextColor = offerCard.buttonTextColor,
+                        onClick = { onEvent(HomeScreenEvent.OnOfferClick(offerCard.offerId)) }
+                    )
+                }
+
+                state.introSection?.let {
+                    IntroSection(
+                        title = it.heading,
+                        description = it.description,
+                        imageUrl = it.imageUrl,
+                        buttonLabel = it.buttonText,
+                        gradient = it.gradient,
+                        contentColor = it.contentTextColor,
+                        buttonTextColor = it.buttonTextColor,
+                        onClick = { onEvent(HomeScreenEvent.OnIntroClick) },
+                        modifier = Modifier,
                     )
                 }
             }

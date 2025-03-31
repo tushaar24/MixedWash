@@ -12,11 +12,11 @@
       "gradient": {
         "gradient_colors": [
           {
-            "color_hex": "#676767",
+            "color_hex": "#181818",
             "color_stop": 0.0
           },
           {
-            "color_hex": "#262626",
+            "color_hex": "#313131",
             "color_stop": 1.0
           }
         ],
@@ -119,25 +119,21 @@
   "preferred_banner_id": "banner_washing_bed_sheets",
   "offer_cards": [
     {
-      "text": "Flat 20% OFF with coupon code WELCOME20 on your first order",
+      "text": "20% OFF on your first order",
       "big_text": [
         "20% OFF"
       ],
       "offer_id": "WELCOME20",
-      "image_url": "https://assets-aac.pages.dev/assets/basket_overflow_black.png",
-      "button_label": "Add to cart",
+      "image_url": "https://assets-aac.pages.dev/assets/sku_offer_card_image.png",
+      "button_label": ">",
       "link": "add_to_cart",
-      "content_text_color": "#263D1E",
+      "content_text_color": "#328756",
       "button_text_color": "#FBFBFB",
       "gradient": {
         "gradient_colors": [
           {
-            "color_hex": "#E6EAE3",
+            "color_hex": "#EFF5EE",
             "color_stop": 0.0
-          },
-          {
-            "color_hex": "#E2EBDF",
-            "color_stop": 1.0
           }
         ],
         "angle": 0.0
@@ -148,33 +144,38 @@
     {
       "service_id": "service_wash_and_iron",
       "title": "Wash & Iron",
-      "image_url": "https://assets-aac.pages.dev/assets/sku_wash_and_iron.png"
+      "description": "dress shirts, trousers and more",
+      "image_url": "https://assets-aac.pages.dev/assets/sku_was_and_iron_new.png"
     },
     {
       "service_id": "service_wash_and_fold",
       "title": "Wash & Fold",
-      "image_url": "https://assets-aac.pages.dev/assets/sku_wash_and_fold.png"
+      "description": "regular wash for daily wear items",
+      "image_url": "https://assets-aac.pages.dev/assets/sku_wash_and_fold_new.png"
     },
     {
       "service_id": "service_dry_clean",
       "title": "Dry Clean",
-      "image_url": "https://assets-aac.pages.dev/assets/sku_dry_clean.png"
-    },
-    {
-      "service_id": "service_heavy_wash",
-      "title": "Heavy Wash",
-      "image_url": "https://assets-aac.pages.dev/assets/sku_heavy_wash.png"
+      "description": "for delicates and stained",
+      "image_url": "https://assets-aac.pages.dev/assets/sku_dry_clean_new.png"
     },
     {
       "service_id": "service_shoe_clean",
       "title": "Shoe Clean",
-      "image_url": "https://assets-aac.pages.dev/assets/sku_shoe_clean.png"
+      "description": "sheets blankets jeans?",
+      "image_url": "https://assets-aac.pages.dev/assets/sku_shoe_clean_new.png"
+    },
+    {
+      "service_id": "service_heavy_wash",
+      "title": "Heavy Wash",
+      "description": "keeping your kicks fresh af",
+      "image_url": "https://assets-aac.pages.dev/assets/sku_heavy_wash_new.png"
     }
   ],
   "active_orders": [],
   "intro_section": {
     "heading": "Getting Started?",
-    "image_url": "https://assets-aac.pages.dev/assets/basket_woman.png",
+    "image_url": "https://assets-aac.pages.dev/assets/getting_started.png",
     "description": "See how MixedWash works and learn more about our services.",
     "button_text": "Take Tour >>",
     "content_text_color": "#262626",
@@ -182,7 +183,7 @@
     "gradient": {
       "gradient_colors": [
         {
-          "color_hex": "#F4F4F4",
+          "color_hex": "#F2EDE3",
           "color_stop": 0.0
         }
       ],

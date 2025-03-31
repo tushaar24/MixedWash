@@ -6,6 +6,7 @@ import com.mixedwash.features.home.data.models.HomeServicesDto
 data class HomeService(
     val serviceID: String,
     val title: String,
+    val description: String,
     val imageUrl: String
 )
 
@@ -13,5 +14,6 @@ data class HomeService(
 fun HomeServicesDto.toPresentation(): HomeService = HomeService(
     serviceID = serviceID,
     title = title,
-    imageUrl = imageUrl
+    imageUrl = imageUrl,
+    description = description
 )

@@ -1,6 +1,5 @@
 package com.mixedwash.features.home.presentation.components
 
-import BrandTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -8,12 +7,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,8 +23,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
-import com.mixedwash.core.presentation.components.noRippleClickable
 import com.mixedwash.features.home.presentation.model.HomeService
+import com.mixedwash.ui.theme.Gray100
+import com.mixedwash.ui.theme.Gray600
 import com.mixedwash.ui.theme.Gray700
 
 @Composable
@@ -38,27 +36,26 @@ fun ServicesSection(
     onServiceClicked: (String) -> Unit,
     textColor: Color = Gray700
 ) {
-    Column(modifier = modifier) {
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            Text(
-                text = "Services",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium,
-                color = textColor
-            )
-            Text(
-                text = "See All",
-                color = textColor,
-                modifier = Modifier.noRippleClickable(onClick = onSeeAll),
-                fontSize = 12.sp
-            )
-        }
+    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        for (i in serviceItems.indices step 2) {
+            Row {
+                ServiceCard(
+                    serviceItem = serviceItems[i],
+                    onClick = { onServiceClicked(serviceItems[i].serviceID) },
+                    modifier = Modifier.weight(1f)
+                )
 
-        Spacer(Modifier.height(18.dp))
+                Spacer(Modifier.width(10.dp))
 
-        LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            items(serviceItems) { service ->
-                ServiceCard(service, onClick = { onServiceClicked(service.serviceID) })
+                if (i + 1 < serviceItems.size - 1) {
+                    ServiceCard(
+                        serviceItem = serviceItems[i + 1],
+                        onClick = { onServiceClicked(serviceItems[i + 1].serviceID) },
+                        modifier = Modifier.weight(1f)
+                    )
+                } else {
+                    Spacer(Modifier.weight(1f))
+                }
             }
         }
     }
@@ -68,29 +65,41 @@ fun ServicesSection(
 fun ServiceCard(serviceItem: HomeService, onClick: () -> Unit, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
-            .width(130.dp)
-            .height(160.dp)
             .clip(RoundedCornerShape(12.dp))
-            .background(BrandTheme.colors.gray.light)
-            .clickable (onClick = onClick)
+            .background(Gray100)
+            .clickable(onClick = onClick)
     ) {
         Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(12.dp, alignment = Alignment.CenterVertically)
-        ) {
-            AsyncImage(
-                model = serviceItem.imageUrl,
-                contentDescription = null,
-                modifier = Modifier.height(80.dp)
-                    .width(100.dp),
-                contentScale = ContentScale.Fit
+            modifier = Modifier
+                .padding(start = 16.dp, top = 16.dp, end = 32.dp, bottom = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(
+                8.dp,
+                alignment = Alignment.CenterVertically
             )
+        ) {
 
             Text(
                 text = serviceItem.title,
                 fontSize = 14.sp,
+                fontWeight = FontWeight.SemiBold,
+                lineHeight = 16.sp
             )
+
+            Text(
+                text = serviceItem.description,
+                fontSize = 12.sp,
+                lineHeight = 16.sp,
+                color = Gray600
+            )
+
+            Spacer(Modifier.height(32.dp))
         }
+
+        AsyncImage(
+            model = serviceItem.imageUrl,
+            contentDescription = null,
+            modifier = Modifier.size(68.dp).padding(4.dp).align(Alignment.BottomEnd),
+            contentScale = ContentScale.Fit
+        )
     }
 }

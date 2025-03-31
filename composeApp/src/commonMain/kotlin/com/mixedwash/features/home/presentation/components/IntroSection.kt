@@ -4,13 +4,10 @@ import BrandTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -29,6 +26,9 @@ import com.mixedwash.core.presentation.components.dump.SmallButton
 import com.mixedwash.core.presentation.components.gradient
 import com.mixedwash.features.common.util.parse
 import com.mixedwash.features.home.presentation.model.Gradient
+import mixedwash.composeapp.generated.resources.Res
+import mixedwash.composeapp.generated.resources.ic_drop
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun IntroSection(
@@ -50,24 +50,12 @@ fun IntroSection(
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 32.dp, vertical = 18.dp)
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 32.dp)
         ) {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalPlatformContext.current)
-                    .data(imageUrl)
-                    .crossfade(true)
-                    .build(),
-                modifier = Modifier.width(106.dp).height(110.dp),
-                contentScale = ContentScale.Fit,
-                contentDescription = null
-            )
-
             Column(
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier.weight(weight = 1f)
             ) {
-
-
-
                 Text(
                     text = title,
                     color = contentColor,
@@ -96,6 +84,17 @@ fun IntroSection(
 
                 }
             }
+
+            AsyncImage(
+                model = ImageRequest.Builder(LocalPlatformContext.current)
+                    .data(imageUrl)
+                    .crossfade(true)
+                    .build(),
+                modifier = Modifier.size(140.dp),
+                contentScale = ContentScale.Fit,
+                placeholder = painterResource(Res.drawable.ic_drop),
+                contentDescription = null
+            )
         }
     }
 }

@@ -45,6 +45,7 @@ data class HomeOfferCardDto(
 data class HomeServicesDto(
     @SerialName("service_id") val serviceID: String,
     @SerialName("title") val title: String,
+    @SerialName("description") val description: String,
     @SerialName("image_url") val imageUrl: String
 )
 
