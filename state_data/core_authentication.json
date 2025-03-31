@@ -1,0 +1,158 @@
+{
+  "path": "composeApp/src/commonMain/kotlin/com/mixedwash/core/data",
+  "name": "Authentication",
+  "type": "core",
+  "purpose": "Provides authentication services and user management for the Mixed Wash application using Firebase Authentication and Firestore.",
+  "lastUpdated": {
+    "date": "2025-04-01",
+    "commit": "209101caec9ef7e157d1392ba29076d61a4c2a79"
+  },
+  "change_log": [
+    {
+      "commit_range": "209101caec9ef7e157d1392ba29076d61a4c2a79",
+      "date": "2025-04-01",
+      "summary": "Updated state file with current commit hash"
+    },
+    {
+      "commit_range": "current_commit",
+      "date": "2025-04-01",
+      "summary": "Initial state capture of authentication core module"
+    }
+  ],
+  "architecture": {
+    "pattern": "Clean Architecture",
+    "layers": [
+      {
+        "name": "Data",
+        "description": "Implementation of user service and authentication state management"
+      },
+      {
+        "name": "Presentation",
+        "description": "Navigation and UI components for authentication flow"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "UserService",
+      "type": "Interface",
+      "purpose": "Defines operations for user authentication and profile management"
+    },
+    {
+      "name": "FirebaseUserService",
+      "type": "Implementation",
+      "purpose": "Implements UserService using Firebase Authentication and Firestore"
+    },
+    {
+      "name": "UserMetadata",
+      "type": "Model",
+      "purpose": "Represents user profile information stored in Firestore"
+    },
+    {
+      "name": "AuthState",
+      "type": "State",
+      "purpose": "Represents different authentication states (Loading, Authenticated, Authenticating, Unauthenticated)"
+    },
+    {
+      "name": "User",
+      "type": "Model",
+      "purpose": "Represents an authenticated user with Firebase ID and metadata"
+    },
+    {
+      "name": "AuthNav",
+      "type": "Navigation",
+      "purpose": "Navigation graph for authentication flow including sign-in and phone verification"
+    },
+    {
+      "name": "SignInScreen",
+      "type": "Screen",
+      "purpose": "User interface for signing in to the application"
+    },
+    {
+      "name": "PhoneScreen",
+      "type": "Screen",
+      "purpose": "User interface for phone number verification"
+    }
+  ],
+  "dependencies": [
+    {
+      "name": "Firebase Auth",
+      "type": "external",
+      "purpose": "Authentication services"
+    },
+    {
+      "name": "Firebase Firestore",
+      "type": "external", 
+      "purpose": "User profile storage"
+    },
+    {
+      "name": "Koin",
+      "type": "external",
+      "purpose": "Dependency injection"
+    },
+    {
+      "name": "Compose",
+      "type": "external",
+      "purpose": "UI implementation for authentication screens"
+    },
+    {
+      "name": "Navigation Compose",
+      "type": "external",
+      "purpose": "Navigation for authentication flow"
+    },
+    {
+      "name": "Kotlinx Coroutines",
+      "type": "external",
+      "purpose": "Asynchronous programming and state management"
+    }
+  ],
+  "integrationPoints": [
+    {
+      "name": "Main App Flow",
+      "description": "Provides authentication state to control access to protected features"
+    },
+    {
+      "name": "User Profile",
+      "description": "Provides user information for the profile feature"
+    },
+    {
+      "name": "Address Management",
+      "description": "Stores user's address information in user metadata"
+    }
+  ],
+  "userFlows": [
+    {
+      "name": "User Sign In",
+      "steps": [
+        "User navigates to sign-in screen",
+        "User signs in with supported authentication method",
+        "User metadata is created or retrieved from Firestore",
+        "User is navigated to the home screen or phone verification if needed"
+      ]
+    },
+    {
+      "name": "Phone Verification",
+      "steps": [
+        "User enters phone number",
+        "System sends verification code",
+        "User enters verification code",
+        "Phone number is added to user metadata",
+        "User is navigated to the home screen"
+      ]
+    },
+    {
+      "name": "User Sign Out",
+      "steps": [
+        "User requests to sign out",
+        "System clears authentication state",
+        "User is navigated to the sign-in screen"
+      ]
+    }
+  ],
+  "manipulationRules": [
+    "Handle authentication state changes consistently across the application",
+    "Use proper error handling for authentication failures",
+    "Ensure user metadata is properly initialized for new users",
+    "Maintain secure access to user-specific data through proper authentication checks"
+  ]
+}

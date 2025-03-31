@@ -1,0 +1,209 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://mixedwash.com/state-schema.json",
+  "title": "Mixed Wash State File Schema",
+  "description": "Schema definition for Mixed Wash state files",
+  "type": "object",
+  "required": ["path", "name", "type", "purpose", "lastUpdated", "change_log"],
+  "properties": {
+    "path": {
+      "type": "string",
+      "description": "The relative path to the component within the project"
+    },
+    "name": {
+      "type": "string",
+      "description": "The name of the component"
+    },
+    "type": {
+      "type": "string",
+      "enum": ["sourceSet", "feature", "core"],
+      "description": "The type of the component"
+    },
+    "purpose": {
+      "type": "string",
+      "description": "A brief description of the component's purpose"
+    },
+    "lastUpdated": {
+      "type": "object",
+      "description": "Information about the last update to the state file",
+      "required": ["date", "commit"],
+      "properties": {
+        "date": {
+          "type": "string",
+          "format": "date",
+          "description": "The date when the state file was last updated (YYYY-MM-DD)"
+        },
+        "commit": {
+          "type": "string",
+          "description": "(MANDATORY) The Git commit hash at the time of editing or creating this file. Please provide the actual hash"
+        }
+      }
+    },
+    "change_log": {
+      "type": "array",
+      "description": "A log of changes to the component",
+      "items": {
+        "type": "object",
+        "required": ["commit_range", "date", "summary"],
+        "properties": {
+          "commit_range": {
+            "type": "string",
+            "description": "Single commit hash or range of commit hashes (old-hash to new-hash)"
+          },
+          "date": {
+            "type": "string",
+            "format": "date",
+            "description": "The date of the change (YYYY-MM-DD)"
+          },
+          "summary": {
+            "type": "string",
+            "description": "A summary of the changes made"
+          }
+        }
+      }
+    },
+    "architecture": {
+      "type": "object",
+      "description": "The architecture of the component",
+      "properties": {
+        "pattern": {
+          "type": "string",
+          "description": "The architectural pattern used (e.g., MVVM, Clean Architecture)"
+        },
+        "description": {
+          "type": "string",
+          "description": "A description of the architecture"
+        },
+        "layers": {
+          "type": "array",
+          "description": "The architectural layers",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "The name of the layer"
+              },
+              "description": {
+                "type": "string",
+                "description": "A description of the layer"
+              }
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "type": "array",
+      "description": "The components that make up this feature or module",
+      "items": {
+        "type": "object",
+        "required": ["name", "type", "purpose"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the component"
+          },
+          "type": {
+            "type": "string",
+            "description": "The type of the component (e.g., Repository, ViewModel, Screen)"
+          },
+          "purpose": {
+            "type": "string",
+            "description": "The purpose of the component"
+          },
+          "details": {
+            "type": "object",
+            "description": "A JSON object containing detailed information about the component implementation",
+            "properties": {
+              "implementation": {
+                "type": "string",
+                "description": "Description of how the component is implemented"
+              },
+              "subComponents": {
+                "type": "array",
+                "description": "Details about sub-components",
+                "items": {
+                  "type": "object",
+                  "required": ["name", "details"],
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "description": "The name of the sub-component"
+                    },
+                    "details": {
+                      "type": "string",
+                      "description": "Implementation details for this sub-component"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "subComponents": {
+            "type": "array",
+            "description": "Sub-components",
+            "items": {
+              "type": "string"
+            }
+          },
+          "values": {
+            "type": "array",
+            "description": "Values for enum-type components",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "dependencies": {
+      "type": "array",
+      "description": "Dependencies used by this component",
+      "items": {
+        "type": "object",
+        "required": ["name", "type", "purpose"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the dependency"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["internal", "external"],
+            "description": "Whether the dependency is internal or external to the project"
+          },
+          "purpose": {
+            "type": "string",
+            "description": "The purpose of the dependency"
+          }
+        }
+      }
+    },
+    "integrationPoints": {
+      "type": "array",
+      "description": "Points of integration with other components",
+      "items": {
+        "type": "object",
+        "required": ["name", "description"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the integration point"
+          },
+          "description": {
+            "type": "string",
+            "description": "A description of the integration point"
+          }
+        }
+      }
+    },
+    "manipulationRules": {
+      "type": "array",
+      "description": "Rules for manipulating or modifying this component",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

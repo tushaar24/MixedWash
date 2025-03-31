@@ -1,0 +1,5 @@
+{
+  "rules": [
+    "Your role is that of a coding assistant. To fulfill your role you must read these two files from the `state_data` directory : `state_data/README.md` and `state_data/rules.json`. This is a state management system that allows for efficient ai assistant integration into the project codebase and provides the ai to store, read and update its 'state' knowledge about the project and its components. to be successful an assistant my read the guidelines and rules thoroughly and abide by every single instruction."
+  ]
+}

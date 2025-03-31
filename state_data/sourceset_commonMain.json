@@ -1,0 +1,139 @@
+{
+  "path": "composeApp/src/commonMain",
+  "name": "CommonSourceSet",
+  "type": "sourceSet",
+  "purpose": "Contains shared Kotlin code that runs on both Android and iOS platforms, representing the core functionality of the Mixed Wash application.",
+  "lastUpdated": {
+    "date": "2025-04-01",
+    "commit": "209101caec9ef7e157d1392ba29076d61a4c2a79"
+  },
+  "change_log": [
+    {
+      "commit_range": "209101caec9ef7e157d1392ba29076d61a4c2a79",
+      "date": "2025-04-01",
+      "summary": "Updated state file with current commit hash"
+    }
+  ],
+  "architecture": {
+    "pattern": "Clean Architecture",
+    "description": "The project follows Clean Architecture principles with data, domain, and presentation layers across all features.",
+    "layers": [
+      {
+        "name": "Data",
+        "description": "Contains repositories, data sources, and models for API and local storage"
+      },
+      {
+        "name": "Domain",
+        "description": "Contains use cases, business logic, and domain models"
+      },
+      {
+        "name": "Presentation",
+        "description": "Contains ViewModels, UI state, and Composable UI components"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Core",
+      "type": "Package",
+      "purpose": "Contains fundamental components and utilities used across the application",
+      "subComponents": ["core/data", "core/di", "core/domain", "core/presentation", "core/booking"]
+    },
+    {
+      "name": "Features",
+      "type": "Package",
+      "purpose": "Contains feature-specific implementations organized in feature modules",
+      "subComponents": [
+        "features/address", 
+        "features/booking_details", 
+        "features/common", 
+        "features/getting_started",
+        "features/history",
+        "features/home",
+        "features/laundryServices",
+        "features/local_cart",
+        "features/location_availability",
+        "features/onboarding",
+        "features/order_confirmation",
+        "features/profile",
+        "features/services",
+        "features/slot_selection",
+        "features/support"
+      ]
+    },
+    {
+      "name": "UI and Theme",
+      "type": "Package",
+      "purpose": "Contains themes, colors, typography, and other style resources",
+      "subComponents": ["ui/theme"]
+    },
+    {
+      "name": "App.kt",
+      "type": "Entry Point",
+      "purpose": "Main entry point that sets up the application's theme, navigation, and state management"
+    }
+  ],
+  "dependencies": [
+    {
+      "name": "Jetpack Compose",
+      "type": "external",
+      "purpose": "UI framework for building native UIs"
+    },
+    {
+      "name": "Koin",
+      "type": "external",
+      "purpose": "Dependency injection framework"
+    },
+    {
+      "name": "Ktor",
+      "type": "external",
+      "purpose": "Networking and HTTP client"
+    },
+    {
+      "name": "Room",
+      "type": "external",
+      "purpose": "Local database persistence"
+    },
+    {
+      "name": "Kotlinx.Serialization",
+      "type": "external",
+      "purpose": "JSON serialization/deserialization"
+    },
+    {
+      "name": "Kotlinx.Coroutines",
+      "type": "external",
+      "purpose": "Asynchronous programming"
+    },
+    {
+      "name": "Coil",
+      "type": "external",
+      "purpose": "Image loading library"
+    },
+    {
+      "name": "DataStore",
+      "type": "external",
+      "purpose": "Preferences storage"
+    },
+    {
+      "name": "KMP-Auth",
+      "type": "external",
+      "purpose": "Cross-platform authentication"
+    },
+    {
+      "name": "Firebase",
+      "type": "external",
+      "purpose": "Backend services including authentication and Firestore"
+    },
+    {
+      "name": "Navigation Compose",
+      "type": "external",
+      "purpose": "Navigation framework for Compose"
+    }
+  ],
+  "manipulationRules": [
+    "Follow Clean Architecture principles for all new code",
+    "Leverage dependency injection with Koin",
+    "Use Compose for all UI components",
+    "Implement expect/actual pattern for platform-specific code"
+  ]
+}

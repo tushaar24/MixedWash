@@ -1,0 +1,110 @@
+{
+  "path": "composeApp/src/commonMain/kotlin/com/mixedwash/features/booking_details",
+  "name": "BookingDetails",
+  "type": "feature",
+  "purpose": "Provides a detailed view of a laundry service booking, displaying order information, selected services, pricing, and booking status.",
+  "lastUpdated": {
+    "date": "2025-04-01",
+    "commit": "209101caec9ef7e157d1392ba29076d61a4c2a79"
+  },
+  "change_log": [
+    {
+      "commit_range": "209101caec9ef7e157d1392ba29076d61a4c2a79",
+      "date": "2025-04-01",
+      "summary": "Updated state file with current commit hash"
+    },
+    {
+      "commit_range": "current_commit",
+      "date": "2025-04-01",
+      "summary": "Initial state capture of booking_details feature structure and components"
+    }
+  ],
+  "architecture": {
+    "pattern": "Clean Architecture with MVVM",
+    "layers": [
+      {
+        "name": "Presentation",
+        "description": "BookingDetailsScreen, ViewModel, and UI components for displaying booking details"
+      },
+      {
+        "name": "DI",
+        "description": "Dependency injection module for booking details feature"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "BookingDetailsScreen",
+      "type": "Screen",
+      "purpose": "Main UI for displaying booking details including summary, items, and actions"
+    },
+    {
+      "name": "BookingDetailsScreenViewModel",
+      "type": "ViewModel",
+      "purpose": "Manages the state and business logic for the booking details screen"
+    },
+    {
+      "name": "BookingDetailsSummary",
+      "type": "UI Component",
+      "purpose": "Displays summary information about the booking including price, date, and status"
+    },
+    {
+      "name": "BookingItem",
+      "type": "UI Component",
+      "purpose": "Displays individual service items included in the booking with details"
+    },
+    {
+      "name": "ActionText",
+      "type": "UI Component",
+      "purpose": "Interactive text component for booking-related actions"
+    }
+  ],
+  "dependencies": [
+    {
+      "name": "Koin",
+      "type": "external",
+      "purpose": "Dependency injection for booking details components"
+    },
+    {
+      "name": "Compose",
+      "type": "external",
+      "purpose": "UI implementation for booking details screen and components"
+    },
+    {
+      "name": "Navigation",
+      "type": "internal",
+      "purpose": "Navigation to and from booking details screen"
+    }
+  ],
+  "integrationPoints": [
+    {
+      "name": "Order History",
+      "description": "Integrates with order history to display booking details when selected"
+    },
+    {
+      "name": "Order Confirmation",
+      "description": "Connects with order confirmation flow to show details after booking completion"
+    },
+    {
+      "name": "Booking Cancellation",
+      "description": "Provides interface for cancelling or modifying bookings"
+    }
+  ],
+  "userFlows": [
+    {
+      "name": "View Booking Details",
+      "steps": [
+        "User selects a booking from history or notifications",
+        "System loads and displays detailed booking information",
+        "User can view service items, pricing, and delivery details",
+        "User can take actions like cancellation or rescheduling if eligible"
+      ]
+    }
+  ],
+  "manipulationRules": [
+    "Handle different booking statuses with appropriate UI states",
+    "Ensure booking information is clearly presented with visual hierarchy",
+    "Implement proper loading states for booking data retrieval",
+    "Disable action buttons based on booking status and eligibility"
+  ]
+}

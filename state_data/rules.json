@@ -1,0 +1,125 @@
+{
+  "projectRules": [
+    "Project is a laundry service application called 'Mixed Wash' built with Kotlin Multiplatform",
+    "The application follows Clean Architecture with data, domain, and presentation layers",
+    "Use Jetpack Compose for UI development with Material 3 design system",
+    "Use Koin for dependency injection",
+    "Use Ktor for networking calls",
+    "Use Room for local database storage",
+    "Use Firebase services for authentication and Firestore"
+  ],
+  "stateManagement": {
+    "baseDirectory": "state_data",
+    "fileFormat": "JSON",
+    "stateTypes": ["sourceSet", "feature", "core"],
+    "requiredFields": ["path", "name", "type", "purpose", "lastUpdated", "change_log"],
+    "versionControl": {
+      "trackCommits": true,
+      "optimizeByChanges": true
+    },
+    "behavior_flags": {
+      "readRulesOnQuery": true,
+      "readReadmeOnQuery": true,
+      "validatedStateFileSchema": true
+    },
+    "schema": {
+      "schemaFile": "state_data/state-schema.json",
+      "requiredStructure": {
+        "path": "string",
+        "name": "string",
+        "type": "enum(sourceSet,feature,core)",
+        "purpose": "string",
+        "lastUpdated": {
+          "date": "string(YYYY-MM-DD)",
+          "commit": "string"
+        },
+        "change_log": "array"
+      }
+    },
+    "rules": [
+      "Always read State Files from the state_data directory to understand components",
+      "When handling command 'state update <state_file_name_args>', update specified State Files or all if no args",
+      "When handling command 'state defragment-changes <state_file_name_args>', consolidate commits in change_log older than 10 entries",
+      "When updating State Files, update the lastUpdated.date and commit fields with the current date and commit hash",
+      "Always ensure the path field in State Files accurately reflects the current path of the component",
+      "Include relative file paths for each component to improve navigation through the codebase",
+      "Focus on including details for complex or novel implementations only",
+      "Keep state focused on the specific feature without including details that might change independently",
+      "When adding new code, ensure it follows the architecture patterns described in State Files",
+      "Only derive state information strictly from the codebase, never make assumptions or hallucinations",
+      "Maintain proper version control integration by tracking commit hashes in all State Files",
+      "Follow the naming convention: 'sourceset_<sourceSetName>.json', 'core_<coreName>.json', or 'feature_<featureName>.json'",
+      "Always include a change_log array in State Files to track historical changes",
+      "STRICTLY follow the schema defined in state-schema.json for all State Files",
+      "The 'details' field for components is optional and should be used only for complex components needing additional context"
+    ]
+  },
+  "actions": {
+    "create": {
+      "description": "Creates new State Files for specified components or features",
+      "command": "state create [state_file_names...]",
+      "implementation": [
+        "1. Identify which components or features to create State Files for",
+        "2. Get the current Git commit hash for tracking purposes",
+        "3. Analyze the component's code to extract factual information only",
+        "4. Create new State File with appropriate structure following naming conventions",
+        "5. Set the lastUpdated object with current date and commit hash",
+        "6. Initialize the change_log with the first entry",
+        "7. Validate the State File against schema to ensure compliance"
+      ]
+    },
+    "update": {
+      "description": "Updates specified State Files or all if no arguments are provided",
+      "command": "state update [state_file_names...]",
+      "implementation": [
+        "1. Identify state files to update based on arguments (specific files or all if no arguments)",
+        "2. Get the current Git commit hash for tracking purposes",
+        "3. Skip file if current commit hash matches the commit hash given in the file",
+        "3. For each state file, examine the corresponding code structure in the project",
+        "4. Update components list with any new, modified, or removed components",
+        "5. Add component paths to improve navigation and understanding",
+        "6. Add a new entry to the change_log with a meaningful summary of modifications",
+        "7. Update the lastUpdated object with current date and commit hash",
+        "8. Ensure all required fields are properly populated and accurate",
+        "9. Validate the updated State File against the schema"
+      ]
+    },
+    "defragment-changes": {
+      "description": "Consolidates commit records in change_log older than 10 entries",
+      "command": "state defragment-changes [state_file_names...]",
+      "implementation": [
+        "1. Identify which State Files to process based on arguments",
+        "2. For each file, analyze the change_log entries",
+        "3. If there are more than 10 entries, consolidate older entries into commit ranges",
+        "4. Create summary descriptions for consolidated change ranges",
+        "5. Update the change_log with consolidated entries while keeping recent 10 entries intact",
+        "6. Update the lastUpdated object with current date and commit hash",
+        "7. Validate the modified State File against the schema to maintain compliance"
+      ]
+    }
+  },
+  "codeGeneration": {
+    "principles": [
+      "Follow Clean Architecture principles for all new code",
+      "Implement proper separation between data, domain, and presentation layers",
+      "Write testable code with clear responsibilities",
+      "Follow Material 3 design guidelines for UI components",
+      "Use proper error handling and resource management"
+    ],
+    "naming": {
+      "classes": "PascalCase",
+      "functions": "camelCase",
+      "variables": "camelCase",
+      "constants": "SCREAMING_SNAKE_CASE",
+      "interfaces": "Prefix with 'I' when appropriate"
+    },
+    "dependencies": {
+      "di": "Koin",
+      "networking": "Ktor",
+      "database": "Room",
+      "ui": "Jetpack Compose",
+      "auth": "Firebase Auth",
+      "storage": "Firestore"
+    }
+  }
+}
