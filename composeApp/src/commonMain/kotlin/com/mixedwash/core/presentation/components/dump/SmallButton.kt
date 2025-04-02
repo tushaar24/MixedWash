@@ -56,3 +56,30 @@ fun SmallButton(
         )
     }
 }
+
+@Composable
+fun SmallButton(
+    onClick: () -> Unit,
+    shape: Shape = RoundedCornerShape(12.dp),
+    borderColor: Color = BrandTheme.colors.gray.darker,
+    modifier: Modifier = Modifier,
+    interactionSource: MutableInteractionSource = MutableInteractionSource(),
+    containerColor: Color = Color.Transparent,
+    contentPadding: PaddingValues = PaddingValues(14.dp, 6.dp),
+    content: @Composable() ()-> Unit
+    ) {
+    Button(
+        modifier = modifier.indication(
+            interactionSource = interactionSource,
+            indication = null
+        ),
+        onClick = onClick,
+        shape = shape,
+        border = BorderStroke(1.dp, borderColor),
+        interactionSource = interactionSource,
+        colors = ButtonDefaults.buttonColors(containerColor = containerColor),
+        contentPadding = contentPadding,
+    ) {
+        content()
+    }
+}

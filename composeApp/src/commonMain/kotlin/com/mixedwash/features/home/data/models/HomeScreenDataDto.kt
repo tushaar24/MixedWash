@@ -31,14 +31,12 @@ data class HomeBannerDto(
 @Serializable
 data class HomeOfferCardDto(
     @SerialName("text") val text: String,
-    @SerialName("big_text") val bigText: List<String>,
+    @SerialName("description") val description: String,
     @SerialName("offer_id") val offerId: String,
     @SerialName("image_url") val imageUrl: String,
-    @SerialName("button_label") val buttonLabel: String,
     @SerialName("link") val link: String,
     @SerialName("gradient") val gradient: GradientDto,
     @SerialName("content_text_color") val contentTextColor: String,
-    @SerialName("button_text_color") val buttonTextColor: String
 )
 
 @Serializable

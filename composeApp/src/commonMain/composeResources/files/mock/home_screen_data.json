@@ -7,7 +7,7 @@
       "description": "Don't worry, we have trained experts for that sort of thing",
       "button": "Get Help Now",
       "link": "pickup_screen",
-      "ui_text_color": "#F4F4F4",
+      "ui_text_color": "#C3C3C3",
       "content_text_color": "#a5a5a5",
       "gradient": {
         "gradient_colors": [
@@ -119,20 +119,16 @@
   "preferred_banner_id": "banner_washing_bed_sheets",
   "offer_cards": [
     {
-      "text": "20% OFF on your first order",
-      "big_text": [
-        "20% OFF"
-      ],
+      "text": "**20% OFF** on your first order",
+      "description": "flat discount applicable",
       "offer_id": "WELCOME20",
       "image_url": "https://assets-aac.pages.dev/assets/sku_offer_card_image.png",
-      "button_label": ">",
       "link": "add_to_cart",
-      "content_text_color": "#328756",
-      "button_text_color": "#FBFBFB",
+      "content_text_color": "#75B13D",
       "gradient": {
         "gradient_colors": [
           {
-            "color_hex": "#EFF5EE",
+            "color_hex": "#EBF4E4",
             "color_stop": 0.0
           }
         ],
@@ -144,31 +140,31 @@
     {
       "service_id": "service_wash_and_iron",
       "title": "Wash & Iron",
-      "description": "dress shirts, trousers and more",
+      "description": "**only ₹150/**kg",
       "image_url": "https://assets-aac.pages.dev/assets/sku_was_and_iron_new.png"
     },
     {
       "service_id": "service_wash_and_fold",
       "title": "Wash & Fold",
-      "description": "regular wash for daily wear items",
+      "description": "**only ₹95**/kg",
       "image_url": "https://assets-aac.pages.dev/assets/sku_wash_and_fold_new.png"
     },
     {
       "service_id": "service_dry_clean",
       "title": "Dry Clean",
-      "description": "for delicates and stained",
+      "description": "**from ₹120**",
       "image_url": "https://assets-aac.pages.dev/assets/sku_dry_clean_new.png"
     },
     {
       "service_id": "service_shoe_clean",
       "title": "Shoe Clean",
-      "description": "sheets blankets jeans?",
+      "description": "**₹350/pair**",
       "image_url": "https://assets-aac.pages.dev/assets/sku_shoe_clean_new.png"
     },
     {
       "service_id": "service_heavy_wash",
       "title": "Heavy Wash",
-      "description": "sheets blankets jeans?",
+      "description": "**only ₹140**/kg",
       "image_url": "https://assets-aac.pages.dev/assets/sku_heavy_wash_new.png"
     }
   ],
@@ -177,8 +173,8 @@
     "heading": "Getting Started?",
     "image_url": "https://assets-aac.pages.dev/assets/getting_started.png",
     "description": "See how MixedWash works and learn more about our services.",
-    "button_text": "Take Tour >>",
-    "content_text_color": "#262626",
+    "button_text": "Take Tour",
+    "content_text_color": "#474747",
     "button_text_color": "#F4F4F4",
     "gradient": {
       "gradient_colors": [

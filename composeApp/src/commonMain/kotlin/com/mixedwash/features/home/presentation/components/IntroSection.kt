@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -28,7 +29,9 @@ import com.mixedwash.features.common.util.parse
 import com.mixedwash.features.home.presentation.model.Gradient
 import mixedwash.composeapp.generated.resources.Res
 import mixedwash.composeapp.generated.resources.ic_drop
+import mixedwash.composeapp.generated.resources.ic_right_cheveron
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.vectorResource
 
 @Composable
 fun IntroSection(
@@ -39,29 +42,28 @@ fun IntroSection(
     imageUrl: String,
     buttonLabel: String,
     gradient: Gradient,
-    contentColor: String,
-    buttonTextColor: String
+    contentColor: Color,
+    buttonTextColor: Color
 ) {
     Box(
         modifier = modifier.fillMaxWidth().clip(BrandTheme.shapes.card).gradient(gradient),
         contentAlignment = Alignment.Center
     ) {
-        val contentColor = Color.parse(contentColor)
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 32.dp)
         ) {
             Column(
-                verticalArrangement = Arrangement.spacedBy(12.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier.weight(weight = 1f)
             ) {
                 Text(
                     text = title,
                     color = contentColor,
-                    lineHeight = 16.sp,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium
+                    lineHeight = 18.sp,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.SemiBold
                 )
 
                 Text(
@@ -74,13 +76,24 @@ fun IntroSection(
 
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     SmallButton(
-                        text = buttonLabel,
                         onClick = onClick,
-                        containerColor = contentColor,
-                        contentColor = Color.parse(buttonTextColor),
-                        fontSize = 12.sp
-
-                    )
+                        containerColor = BrandTheme.colors.gray.darker,
+                    ) {
+                        Row(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                text = buttonLabel,
+                                color = buttonTextColor,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Medium
+                            )
+                            Icon(
+                                modifier = Modifier.size(16.dp),
+                                tint = buttonTextColor,
+                                imageVector = vectorResource(Res.drawable.ic_right_cheveron),
+                                contentDescription = null
+                            )
+                        }
+                    }
 
                 }
             }

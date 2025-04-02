@@ -18,7 +18,7 @@ fun Modifier.gradient(
 ): Modifier = this.then(
     drawBehind {
         // Convert the angle to radians
-        val angleRad = toRadians(gradient.angle.toDouble())
+        val angleRad = toRadians(gradient.angle.toDouble()+180f)
         // Find the center of the drawing area
         val center = Offset(size.width / 2, size.height / 2)
         // Calculate half the diagonal length to ensure the gradient covers the full area

@@ -3,6 +3,7 @@ package com.mixedwash.features.home.presentation.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -63,9 +64,10 @@ fun HomeTopBar(
             )
 
             VerticalDivider(
-                color = contentColor.copy(alpha = 0.2f),
+                color = contentColor.copy(alpha = 0.1f),
                 modifier = Modifier
                     .width(2.dp)
+                    .fillMaxHeight(0.8f)
                     .padding(vertical = 4.dp, horizontal = 0.dp)
             )
 

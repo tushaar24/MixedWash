@@ -272,7 +272,6 @@ fun HomeScreen(
     Box {
         Column(
             modifier = modifier.navigationBarsPadding().verticalScroll(scrollState),
-            verticalArrangement = Arrangement.spacedBy(24.dp),
         ) {
             state.banner?.let { banner ->
                 HomeBanner(
@@ -283,18 +282,14 @@ fun HomeScreen(
             }
 
             Column(
-                modifier = Modifier.padding(horizontal = 16.dp),
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 24.dp),
                 verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
 
-                val offerCard = state.offerCards?.get(0)
-
-
                 state.services?.let {
                     ServicesSection(
-                        modifier = Modifier.navigationBarsPadding(),
+                        modifier = Modifier,
                         serviceItems = it,
-                        onSeeAll = { onEvent(HomeScreenEvent.OnSeeAllServicesClicked) },
                         onServiceClicked = { serviceId ->
                             onEvent(
                                 HomeScreenEvent.OnServiceClicked(
@@ -305,15 +300,13 @@ fun HomeScreen(
                     )
                 }
 
-                offerCard?.let {
+                state.offerCards?.get(0)?.let { offerCard ->
                     OfferCard(
                         text = offerCard.text,
-                        bigText = offerCard.bigText,
+                        description = offerCard.description,
                         imageUrl = offerCard.imageUrl,
-                        buttonLabel = offerCard.buttonLabel,
                         gradient = offerCard.gradient,
-                        contentColor = offerCard.contentTextColor,
-                        buttonTextColor = offerCard.buttonTextColor,
+                        contentColor = Color.parse(offerCard.contentTextColor),
                         onClick = { onEvent(HomeScreenEvent.OnOfferClick(offerCard.offerId)) }
                     )
                 }
@@ -325,8 +318,8 @@ fun HomeScreen(
                         imageUrl = it.imageUrl,
                         buttonLabel = it.buttonText,
                         gradient = it.gradient,
-                        contentColor = it.contentTextColor,
-                        buttonTextColor = it.buttonTextColor,
+                        contentColor = Color.parse(it.contentTextColor),
+                        buttonTextColor = Color.parse(it.buttonTextColor),
                         onClick = { onEvent(HomeScreenEvent.OnIntroClick) },
                         modifier = Modifier,
                     )
