@@ -1,0 +1,125 @@
+{
+  "path": "composeApp/src/commonMain/kotlin/com/mixedwash/features/getting_started",
+  "name": "GettingStarted",
+  "type": "feature",
+  "purpose": "Provides the initial onboarding experience for new users, introducing them to the Mixed Wash application's features and services through an interactive walkthrough.",
+  "lastUpdated": {
+    "date": "2025-04-01",
+    "commit": "caf2977cfc4d11e9a1d77509d722f370dca9d86e"
+  },
+  "change_log": [
+    {
+      "commit_range": "caf2977cfc4d11e9a1d77509d722f370dca9d86e",
+      "date": "2025-04-01",
+      "summary": "Updated state file with current commit hash"
+    },
+    {
+      "commit_range": "caf2977cfc4d11e9a1d77509d722f370dca9d86e",
+      "date": "2025-04-01",
+      "summary": "Initial state capture of the getting_started feature"
+    }
+  ],
+  "architecture": {
+    "pattern": "Clean Architecture with MVI",
+    "description": "The feature follows MVI (Model-View-Intent) architecture pattern with a contract defining UI state and events.",
+    "layers": [
+      {
+        "name": "Presentation",
+        "description": "Contains contract defining UI state, events, and UI events for the onboarding experience"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "OnboardingScreenContract",
+      "type": "Contract",
+      "purpose": "Defines the UI state, events, and UI events for the onboarding screen",
+      "path": "OnboardingScreenContract.kt",
+      "implementation_description": "Contains OnboardingScreenState data class, OnboardingScreenEvent sealed interface, and OnboardingScreenUiEvent sealed interface for managing the onboarding screen state and user interactions"
+    },
+    {
+      "name": "OnboardingScreenState",
+      "type": "State Model",
+      "purpose": "Represents the state of the onboarding screen, including list of onboarding items and current page index",
+      "path": "OnboardingScreenContract.kt",
+      "implementation_description": "Data class with fields for items (List<OnboardingItem>) and currentIndex (Int) to track the current page in the onboarding carousel"
+    },
+    {
+      "name": "OnboardingScreenEvent",
+      "type": "Event",
+      "purpose": "Represents user interactions with the onboarding screen",
+      "path": "OnboardingScreenContract.kt",
+      "implementation_description": "Sealed interface with events: OnNavigateToHelpCenter and OnExplore that represent user's choice at the end of onboarding"
+    },
+    {
+      "name": "OnboardingScreenUiEvent",
+      "type": "UI Event",
+      "purpose": "Represents one-time events that should be handled by the UI layer",
+      "path": "OnboardingScreenContract.kt",
+      "implementation_description": "Sealed interface with Navigate event that contains the destination route for navigation after onboarding completion"
+    }
+  ],
+  "contracts": [
+    {
+      "name": "OnboardingScreenContract",
+      "path": "OnboardingScreenContract.kt",
+      "states": [
+        "OnboardingScreenState"
+      ],
+      "events": [
+        "OnboardingScreenEvent"
+      ],
+      "effects": [
+        "OnboardingScreenUiEvent"
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "name": "Onboarding Feature",
+      "type": "internal",
+      "purpose": "Provides the OnboardingItem model and implementations for the onboarding experience"
+    },
+    {
+      "name": "Navigation",
+      "type": "internal",
+      "purpose": "Navigation to different routes after onboarding completion"
+    }
+  ],
+  "integrationPoints": [
+    {
+      "name": "App Entry Flow",
+      "description": "Serves as an entry point for new users to familiarize themselves with the application"
+    },
+    {
+      "name": "Services Screen",
+      "description": "Users can navigate to the Services screen after completing onboarding"
+    },
+    {
+      "name": "Help Center",
+      "description": "Users can navigate to the FAQ/Help Center screen from the onboarding flow"
+    }
+  ],
+  "userFlows": [
+    {
+      "name": "Onboarding Walkthrough",
+      "steps": [
+        "User opens the app for the first time",
+        "User is presented with a series of onboarding screens",
+        "User can navigate through screens using the next button or skip ahead",
+        "User completes onboarding by selecting either 'Explore' or 'Help Center'"
+      ]
+    }
+  ],
+  "dataFlow": {
+    "description": "The getting_started feature serves as a lightweight entry point to the onboarding experience",
+    "sources": [
+      "Onboarding feature for onboarding items data"
+    ],
+    "transformations": [],
+    "destinations": [
+      "Navigation events to other screens"
+    ]
+  },
+  "developers_notes": "The getting_started feature is currently a minimal wrapper around the onboarding feature, serving primarily as a contract definition. It doesn't contain its own implementation but relies on the onboarding feature for the actual functionality. Future development might involve expanding this into a more standalone feature with its own implementation or consolidating it entirely into the onboarding feature. Since the getting_started feature is so closely tied to the onboarding feature, any changes to onboarding will likely require corresponding updates here."
+}

@@ -5,18 +5,18 @@
   "purpose": "Serves as the main dashboard for the Mixed Wash application, providing users with a centralized entry point to access key functionality, view service recommendations, and manage their laundry services.",
   "lastUpdated": {
     "date": "2025-04-01",
-    "commit": "209101caec9ef7e157d1392ba29076d61a4c2a79"
+    "commit": "caf2977cfc4d11e9a1d77509d722f370dca9d86e"
   },
   "change_log": [
     {
-      "commit_range": "209101caec9ef7e157d1392ba29076d61a4c2a79",
+      "commit_range": "caf2977cfc4d11e9a1d77509d722f370dca9d86e",
       "date": "2025-04-01",
       "summary": "Updated state file with current commit hash"
     },
     {
-      "commit_range": "current_commit",
+      "commit_range": "209101caec9ef7e157d1392ba29076d61a4c2a79 to caf2977cfc4d11e9a1d77509d722f370dca9d86e",
       "date": "2025-04-01",
-      "summary": "Updated state file with current date and commit"
+      "summary": "Updated state file with current commit hash"
     },
     {
       "commit_range": "abc123def456",
@@ -154,11 +154,5 @@
         "User can navigate to special deals"
       ]
     }
-  ],
-  "manipulationRules": [
-    "Ensure Carousel component maintains smooth performance with large image sets",
-    "Use StateFlow for UI state management in the ViewModel",
-    "Keep promotion banner data lightweight to prevent loading delays",
-    "Handle network errors gracefully with appropriate fallback content"
   ]
 }

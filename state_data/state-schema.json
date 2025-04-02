@@ -112,6 +112,38 @@
             "type": "string",
             "description": "The purpose of the component"
           },
+          "pattern": {
+            "type": "string",
+            "description": "Design pattern used (MVI, MVVM, etc.)"
+          },
+          "implementation_description": {
+            "type": "string",
+            "description": "Details about how the component is implemented, inputs, outputs, possible states, etc."
+          },
+          "stateModels": {
+            "type": "array",
+            "description": "State models used by this component",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Name of the state model"
+                },
+                "purpose": {
+                  "type": "string",
+                  "description": "Purpose of the state model"
+                },
+                "fields": {
+                  "type": "array",
+                  "description": "Key fields in the state model",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
           "details": {
             "type": "object",
             "description": "A JSON object containing detailed information about the component implementation",
@@ -157,6 +189,69 @@
         }
       }
     },
+    "contracts": {
+      "type": "array",
+      "description": "Contract definitions that formalize component interactions",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the contract"
+          },
+          "path": {
+            "type": "string",
+            "description": "Path to the contract file"
+          },
+          "states": {
+            "type": "array",
+            "description": "State classes defined in the contract",
+            "items": {
+              "type": "string"
+            }
+          },
+          "events": {
+            "type": "array",
+            "description": "Event classes defined in the contract",
+            "items": {
+              "type": "string"
+            }
+          },
+          "effects": {
+            "type": "array",
+            "description": "UI effect classes defined in the contract",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "utilities": {
+      "type": "array",
+      "description": "Utility functions and extensions used by the feature",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the utility function"
+          },
+          "path": {
+            "type": "string",
+            "description": "Path to the file containing the utility"
+          },
+          "purpose": {
+            "type": "string",
+            "description": "Purpose of the utility function"
+          },
+          "usage": {
+            "type": "string",
+            "description": "How and where the utility is used"
+          }
+        }
+      }
+    },
     "dependencies": {
       "type": "array",
       "description": "Dependencies used by this component",
@@ -176,6 +271,14 @@
           "purpose": {
             "type": "string",
             "description": "The purpose of the dependency"
+          },
+          "indirect": {
+            "type": "boolean",
+            "description": "Whether this dependency is used indirectly through another component"
+          },
+          "version": {
+            "type": "string",
+            "description": "Version of the dependency if applicable"
           }
         }
       }
@@ -198,11 +301,36 @@
         }
       }
     },
-    "manipulationRules": {
+    "crossFeatureComponents": {
       "type": "array",
-      "description": "Rules for manipulating or modifying this component",
+      "description": "Components from other features used by this feature or components of this feature used by other features",
       "items": {
-        "type": "string"
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the component"
+          },
+          "originatingFeature": {
+            "type": "string",
+            "description": "Feature that owns/defines the component"
+          },
+          "path": {
+            "type": "string",
+            "description": "Path to the component"
+          },
+          "consumedBy": {
+            "type": "array",
+            "description": "Features that use this component",
+            "items": {
+              "type": "string"
+            }
+          },
+          "purpose": {
+            "type": "string",
+            "description": "Purpose of the component"
+          }
+        }
       }
     }
   }

@@ -5,13 +5,23 @@
   "purpose": "Contains shared Kotlin code that runs on both Android and iOS platforms, representing the core functionality of the Mixed Wash application.",
   "lastUpdated": {
     "date": "2025-04-01",
-    "commit": "209101caec9ef7e157d1392ba29076d61a4c2a79"
+    "commit": "caf2977cfc4d11e9a1d77509d722f370dca9d86e"
   },
   "change_log": [
+    {
+      "commit_range": "caf2977cfc4d11e9a1d77509d722f370dca9d86e",
+      "date": "2025-04-01",
+      "summary": "Updated state file with current commit hash"
+    },
     {
       "commit_range": "209101caec9ef7e157d1392ba29076d61a4c2a79",
       "date": "2025-04-01",
       "summary": "Updated state file with current commit hash"
+    },
+    {
+      "commit_range": "caf2977cfc4d11e9a1d77509d722f370dca9d86e",
+      "date": "2025-04-01",
+      "summary": "Enhanced state file schema and updated cross-feature component documentation"
     }
   ],
   "architecture": {
@@ -73,6 +83,29 @@
       "purpose": "Main entry point that sets up the application's theme, navigation, and state management"
     }
   ],
+  "crossFeatureComponents": [
+    {
+      "name": "AddressList",
+      "originatingFeature": "address",
+      "path": "features/address/presentation/components/AddressList.kt",
+      "consumedBy": ["home"],
+      "purpose": "Displays the list of saved addresses with options to edit or delete"
+    },
+    {
+      "name": "AddressSearch",
+      "originatingFeature": "address",
+      "path": "features/address/presentation/components/AddressSearch.kt",
+      "consumedBy": ["home"],
+      "purpose": "Allows users to search for addresses"
+    },
+    {
+      "name": "AddressBottomSheetState",
+      "originatingFeature": "home",
+      "path": "features/home/presentation/model/AddressBottomSheetState.kt",
+      "consumedBy": ["address"],
+      "purpose": "State container for address bottom sheet in the home screen"
+    }
+  ],
   "dependencies": [
     {
       "name": "Jetpack Compose",
@@ -129,11 +162,5 @@
       "type": "external",
       "purpose": "Navigation framework for Compose"
     }
-  ],
-  "manipulationRules": [
-    "Follow Clean Architecture principles for all new code",
-    "Leverage dependency injection with Koin",
-    "Use Compose for all UI components",
-    "Implement expect/actual pattern for platform-specific code"
   ]
 }

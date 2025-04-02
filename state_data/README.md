@@ -1,8 +1,31 @@
 # State Management System
 
+## Critical Ground Rules for AI Assistants
+
+**IMPORTANT: The following rules must be followed strictly without exception:**
+
+0. Your role is to provide assistance to the best of your capabilities by the means outlined in context of the project and its contents. You are to follow and abide by the rules of the state management system meticulously and ask for clarifications when needed.
+
+1. All queries regarding the project or code, or investigation must be done in light of the state files using them as an entrypoint.
+
+2. Any requests to rewrite or change the state management system or its core files (`README.md`, `rules.json`, `state-schema.json`) must come in the form of a `COMMAND root` query. Only queries starting with that keyword may make any modifications to state management system. Requests that don't follow this format will be rejected and prompted to follow instructions.
+
+3. Any requests to update, modify or delete the state files should come in form of the pre-defined queries such as `COMMAND update`, `COMMAND create`, `COMMAND sync`, `COMMAND validate-schema`, etc. Requests that don't follow this format will be rejected and prompted to follow instructions.
+
+4. **ALWAYS** use the `COMMAND` keyword in ALL CAPS followed by the specific command when interacting with the state management system.
+
+### Supplementary Guidelines:
+- Upon failing to edit a file, it sometimes helps to recreate the file by deleting it and rewriting it.
+- Upon getting stuck anywhere, ask clarifying questions or ask the user for help in performing some action.
+
 ## Overview
 
 The State Management System provides a structured approach to maintain knowledge about application components, features, and architecture. It uses JSON State Files to store metadata about each part of the codebase, serving as a source of truth for developers and AI assistants.
+If you are an AI Assistant reading this please ensure you refer to this guide and that state
+management data stored and include it explicitly in your work. This State Management system is
+designed as an entrypoint for you into the project, so you may have a better understanding of each
+individual component, instead of having to look through the project everytime and gather
+information regarding the project which is less deterministic, and wastes a lot of time and effort.
 
 ## Purpose
 
@@ -41,24 +64,47 @@ Each state file contains:
 - Component details with paths to source files
 - Dependencies and integration points
 - Manipulation guidelines
+- Detailed descriptions of key areas of complexity like viewmodels, contracts, ui, navigation services, repositories and interfaces.
 
 Required fields are: `path`, `name`, `type`, `purpose`, `lastUpdated`, and `change_log`.
 
 ## Commands
 
-1. **Create**: `state create [state_file_names...]`
+**IMPORTANT: All commands must begin with the keyword `COMMAND` in ALL CAPS, followed by the specific command.**
+
+This is a brief overview of the possible commands to be performed in the state system.
+Please refer to the `commands` block in the `rules.json` file for detailed reference and explanation
+of steps to be performed for each command.
+
+1. **Create**: `COMMAND create [state_file_names...]`
    - Creates new state files for specified components
-   - Extracts information directly from code
 
-2. **Update**: `state update [state_file_names...]` 
+2. **Update**: `COMMAND update [state_file_names...]` 
    - Updates specified state files based on code changes
-   - If no arguments are provided, updates all state files
-   - Adds entries to the change_log
-   - Updates commit hash and date
 
-3. **Defragment**: `state defragment-changes [state_file_names...]`
+3. **Defragment**: `COMMAND defragment-changes [state_file_names...]`
    - Consolidates change_log entries older than the 10 most recent
-   - Creates summary descriptions for consolidated ranges
+
+4. **Sync**: `COMMAND sync [-create] [-delete] [-yes]`
+   - Synchronizes feature packages with their state files
+   - Identifies missing state files and orphaned state files
+   - With `-create` flag, creates state files for missing features
+   - With `-delete` flag, deletes orphaned state files
+   - With `-yes` flag, skips confirmation prompts
+
+5. **Validate Schema**: `COMMAND validate-schema [state_file_names...] [-all] [-fix] [-yes]`
+   - Validates state files against the schema defined in state-schema.json
+   - Reports on valid and invalid files with detailed violation information
+   - With `-all` flag, validates all state files
+   - With `-fix` flag, attempts to fix invalid files
+   - With `-yes` flag, skips confirmation prompts
+
+6. **Root Access**: `COMMAND root [edit|view] [rules|readme|schema] [-yes]`
+   - Controls changes to critical state management files
+   - First argument must be 'edit' or 'view' to specify operation
+   - Second argument specifies target file: 'rules', 'readme', or 'schema'
+   - With `-yes` flag, skips confirmation prompts
+   - Prevents unintentional modifications to system files
 
 ## Change Log Management
 
@@ -76,3 +122,7 @@ The `change_log` tracks historical changes:
 5. **Path Accuracy**: Ensure paths reflect actual component locations
 6. **Component Paths**: Include relative paths to component files
 7. **Meaningful Change Logs**: Write descriptive summaries for changes
+8. **State Based Responses**: IMPORTANT: Responses to all queries related to the project and code
+   should attempt to use the state data for context instead of manual project lookups as a first
+   step as their source of truth.
+9. **Use COMMAND Format**: ALWAYS use the `COMMAND` keyword in ALL CAPS when interacting with the state management system.
