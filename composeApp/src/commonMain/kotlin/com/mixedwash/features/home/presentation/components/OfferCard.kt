@@ -2,6 +2,7 @@ package com.mixedwash.features.home.presentation.components
 
 import BrandTheme
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.mixedwash.core.presentation.components.gradient
 import com.mixedwash.core.presentation.util.processBoldText
+import com.mixedwash.features.common.util.parse
 import com.mixedwash.features.home.presentation.model.Gradient
 
 @Composable
@@ -39,26 +41,27 @@ fun OfferCard(
     onClick: () -> Unit,
     contentColor: Color,
 ) {
-
     Row(
-        modifier = modifier.fillMaxWidth().clip(shape = BrandTheme.shapes.card)
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(shape = BrandTheme.shapes.card)
+            .clickable(onClick = onClick)
             .gradient(gradient = gradient)
-            .padding(24.dp),
+            .padding(horizontal = 16.dp, vertical = 18.dp),
         horizontalArrangement = Arrangement.spacedBy(32.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(
             modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-
             val normalStyle = SpanStyle(
-                fontSize = 14.sp,
+                fontSize = 12.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = contentColor
             )
             val bigStyle = SpanStyle(
-                fontSize = 16.sp,
+                fontSize = 14.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = contentColor
             )
@@ -79,10 +82,11 @@ fun OfferCard(
                     modifier = Modifier.size(14.dp).clip(CircleShape).background(contentColor),
                     contentAlignment = Alignment.Center
                 ) {
+                    val iconColor = Color.parse(gradient.gradientColors.last().colorHex)
                     Icon(
                         imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
                         contentDescription = null,
-                        tint = BrandTheme.colors.gray.lighter,
+                        tint = iconColor
                     )
                 }
 
@@ -98,11 +102,9 @@ fun OfferCard(
 
         AsyncImage(
             model = imageUrl,
-            modifier = Modifier.size(58.dp),
+            modifier = Modifier.size(44.dp),
             contentScale = ContentScale.Fit,
             contentDescription = null
         )
     }
-
-
 }

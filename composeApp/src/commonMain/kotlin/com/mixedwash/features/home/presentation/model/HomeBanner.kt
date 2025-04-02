@@ -6,7 +6,7 @@ data class HomeBanner(
     val id: String,
     val heading: String,
     val imageUrl: String,
-    val description: String,
+    val description: String? = null,
     val button: String? = null,
     val link: String? = null,
     val uiTextColor: String,

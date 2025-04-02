@@ -34,21 +34,18 @@ fun HomeBanner(
     modifier: Modifier = Modifier
 ) {
 
-    Box(modifier = Modifier.height(statusBarHeight + 300.dp)) {
-        Box(
-            modifier = modifier.matchParentSize()
-                .gradient(gradient = banner.gradient)
-        )
-
+    Box(modifier = Modifier.height( 300.dp)) {
+        Box(modifier = modifier.matchParentSize().gradient( gradient = banner.gradient ))
         Column(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.Center,
         ) {
             val contentColor = Color.parse(banner.contentTextColor)
-
             Spacer(Modifier.height(statusBarHeight))
 
             Row(
-                modifier = Modifier.padding(top = 30.5.dp).fillMaxWidth()
+                modifier = Modifier.padding(top = 30.5.dp).fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Box(modifier = Modifier.height(276.dp)) {
                     Logger.d("TAG", banner.imageUrl)
@@ -61,25 +58,27 @@ fun HomeBanner(
                 }
 
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(
+                        16.dp,
+                        alignment = Alignment.CenterVertically
+                    ),
                     modifier = Modifier.padding(end = 16.dp)
                 ) {
-
-                    Spacer(modifier = Modifier.height(40.dp))
 
                     Text(
                         text = banner.heading,
                         color = contentColor,
                         fontWeight = FontWeight.SemiBold,
-                        fontSize = 18.sp,
+                        fontSize = 16.sp,
                     )
-
-                    Text(
-                        text = banner.description,
-                        fontSize = 12.sp,
-                        lineHeight = 18.sp,
-                        color = Color.parse(banner.contentTextColor)
-                    )
+                    banner.description?.let { description ->
+                        Text(
+                            text = description,
+                            fontSize = 12.sp,
+                            lineHeight = 18.sp,
+                            color = Color.parse(banner.contentTextColor)
+                        )
+                    }
 
                     banner.button?.let {
                         SmallButton(

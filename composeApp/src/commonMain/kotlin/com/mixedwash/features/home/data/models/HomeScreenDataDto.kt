@@ -20,7 +20,7 @@ data class HomeBannerDto(
     @SerialName("id") val id: String,
     @SerialName("heading") val heading: String,
     @SerialName("image_url") val imageUrl: String,
-    @SerialName("description") val description: String,
+    @SerialName("description") val description: String? = null,
     @SerialName("button") val button: String? = null,
     @SerialName("link") val link: String? = null,
     @SerialName("ui_text_color") val uiTextColor: String,

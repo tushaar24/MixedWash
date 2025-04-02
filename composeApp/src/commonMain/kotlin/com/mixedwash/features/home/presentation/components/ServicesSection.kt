@@ -4,10 +4,12 @@ import BrandTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -16,16 +18,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush.Companion.linearGradient
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
@@ -57,37 +55,61 @@ fun ServicesSection(
                         onClick = { onServiceClicked(serviceItems[i + 1].serviceID) },
                         modifier = Modifier.weight(1f)
                     )
-                } else {
-                    Spacer(Modifier.weight(1f))
-                }
+                } else { Spacer(Modifier.weight(1f)) }
+            }
+            if (i + 1 == 3) break
+        }
+
+        // View All Divider
+        Box(
+            modifier = Modifier.fillMaxWidth().clickable(onClick = { onServiceClicked("") }).padding(8.dp), contentAlignment = Alignment.Center
+        ) {
+            Box(
+                modifier = Modifier.height(1.dp).fillMaxWidth().background(
+                    brush = linearGradient(
+                        colors = listOf(
+                            BrandTheme.colors.gray.lighter,
+                            BrandTheme.colors.gray.c300,
+                            BrandTheme.colors.gray.lighter
+                        )
+                    )
+                ),
+            )
+            Box(
+                Modifier
+                    .padding(horizontal = 8.dp)
+                    .background(BrandTheme.colors.gray.lighter),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "view all",
+                    fontSize = 10.sp,
+                    lineHeight = 10.sp,
+                    color = BrandTheme.colors.gray.c500,
+                    fontWeight = FontWeight.SemiBold
+                )
             }
         }
     }
 }
 
+
 @Composable
 fun ServiceCard(serviceItem: HomeService, onClick: () -> Unit, modifier: Modifier = Modifier) {
     BoxWithConstraints(
-        modifier = modifier
+        modifier = modifier.height(80.dp)
             .clip(RoundedCornerShape(12.dp))
             .background(Gray100)
             .clickable(onClick = onClick)
     ) {
 
         Column(
-            modifier = Modifier
-                .padding(start = 16.dp, top = 16.dp, end = 32.dp, bottom = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(
-                8.dp,
-                alignment = Alignment.CenterVertically
-            )
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp, alignment = Alignment.CenterVertically)
         ) {
-
             Text(
-                text = serviceItem.title,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.SemiBold,
-                lineHeight = 16.sp,
+                text = serviceItem.title, fontSize = 13.sp,
+                fontWeight = FontWeight.SemiBold, lineHeight = 14.sp,
                 color = BrandTheme.colors.gray.dark
             )
 
@@ -95,16 +117,13 @@ fun ServiceCard(serviceItem: HomeService, onClick: () -> Unit, modifier: Modifie
             val annotatedText = processBoldText(serviceItem.description)
 
             Text(
-                text = annotatedText,
-                fontSize = 12.sp,
-                lineHeight = 16.sp,
+                text = annotatedText, fontSize = 10.sp, lineHeight = 12.sp,
                 color = Gray600
             )
 
-            Spacer(Modifier.height(32.dp))
         }
 
-        val imageSize = (maxWidth.value * 0.36).dp
+        val imageSize = (maxWidth.value * 0.30).dp
         AsyncImage(
             model = serviceItem.imageUrl,
             contentDescription = null,

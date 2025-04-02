@@ -4,7 +4,6 @@
       "id": "banner_washing_bed_sheets",
       "heading": "Washing bed sheets got you scared?",
       "image_url": "https://assets-aac.pages.dev/assets/sheet_ghost.png",
-      "description": "Don't worry, we have trained experts for that sort of thing",
       "button": "Get Help Now",
       "link": "pickup_screen",
       "ui_text_color": "#C3C3C3",
@@ -124,11 +123,11 @@
       "offer_id": "WELCOME20",
       "image_url": "https://assets-aac.pages.dev/assets/sku_offer_card_image.png",
       "link": "add_to_cart",
-      "content_text_color": "#75B13D",
+      "content_text_color": "#FBFBFB",
       "gradient": {
         "gradient_colors": [
           {
-            "color_hex": "#EBF4E4",
+            "color_hex": "#8AAA6B",
             "color_stop": 0.0
           }
         ],
@@ -172,7 +171,7 @@
   "intro_section": {
     "heading": "Getting Started?",
     "image_url": "https://assets-aac.pages.dev/assets/getting_started.png",
-    "description": "See how MixedWash works and learn more about our services.",
+    "description": "See how we process orders at MixedWash and learn more about our services.",
     "button_text": "Take Tour",
     "content_text_color": "#474747",
     "button_text_color": "#F4F4F4",
