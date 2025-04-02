@@ -27,6 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import com.mixedwash.core.presentation.components.noRippleClickable
 import com.mixedwash.core.presentation.util.processBoldText
 import com.mixedwash.features.home.presentation.model.HomeService
 import com.mixedwash.ui.theme.Gray100
@@ -62,7 +63,7 @@ fun ServicesSection(
 
         // View All Divider
         Box(
-            modifier = Modifier.fillMaxWidth().clickable(onClick = { onServiceClicked("") }).padding(8.dp), contentAlignment = Alignment.Center
+            modifier = Modifier.fillMaxWidth().noRippleClickable(onClick = { onServiceClicked("") }).padding(8.dp), contentAlignment = Alignment.Center
         ) {
             Box(
                 modifier = Modifier.height(1.dp).fillMaxWidth().background(

@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -282,10 +283,9 @@ fun HomeScreen(
             }
 
             Column(
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 24.dp),
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 32.dp, bottom=24.dp),
                 verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
-
                 state.services?.let {
                     ServicesSection(
                         modifier = Modifier,
@@ -370,7 +370,7 @@ fun HomeScreen(
                         onProfileClick = { onEvent(HomeScreenEvent.OnNavigateToProfile) },
                         onFAQsClick = { onEvent(HomeScreenEvent.OnNavigateToFaqs) },
                         contentColor = topBarContentColor,
-                        modifier = Modifier.padding(bottom = 4.dp)
+                        modifier = Modifier.padding(vertical = 4.dp)
                     )
                 }
             }

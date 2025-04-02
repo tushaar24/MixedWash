@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -60,19 +61,20 @@ fun IntroSection(
             ) {
                 Text(
                     text = title,
-                    color = contentColor, lineHeight = 14.sp,
-                    fontSize = 18.sp,
+                    color = contentColor,
+                    fontSize = 14.sp,
+                    lineHeight = 16.sp,
                     fontWeight = FontWeight.SemiBold
                 )
 
                 Text(
                     text = description,
-                    color = contentColor, lineHeight = 16.sp,
+                    color = contentColor,
                     fontSize = 12.sp,
+                    lineHeight = 16.sp,
                     fontWeight = FontWeight.Normal
                 )
 
-                Spacer(modifier = Modifier.height(12.dp))
 
                 SmallButton(
                     onClick = onClick,
@@ -102,7 +104,6 @@ fun IntroSection(
                     .build(),
                 modifier = Modifier.size(140.dp),
                 contentScale = ContentScale.Fit,
-                placeholder = painterResource(Res.drawable.ic_drop),
                 contentDescription = null
             )
         }

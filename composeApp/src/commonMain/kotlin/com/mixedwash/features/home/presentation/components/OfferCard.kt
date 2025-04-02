@@ -47,7 +47,7 @@ fun OfferCard(
             .clip(shape = BrandTheme.shapes.card)
             .clickable(onClick = onClick)
             .gradient(gradient = gradient)
-            .padding(horizontal = 16.dp, vertical = 18.dp),
+            .padding(horizontal = 24.dp, vertical = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(32.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -79,7 +79,7 @@ fun OfferCard(
                 )
 
                 Box(
-                    modifier = Modifier.size(14.dp).clip(CircleShape).background(contentColor),
+                    modifier = Modifier.size(12.dp).clip(CircleShape).background(contentColor),
                     contentAlignment = Alignment.Center
                 ) {
                     val iconColor = Color.parse(gradient.gradientColors.last().colorHex)
