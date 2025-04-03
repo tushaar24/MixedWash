@@ -18,6 +18,7 @@ import com.mixedwash.features.services.presentation.model.ItemPricing
 
 @Composable
 fun CartItemEntry(
+    minPrice: Int?,
     modifier: Modifier = Modifier,
     name: String,
     quantity: Int,
@@ -80,6 +81,7 @@ fun CartItemEntry(
                 onIncrement = onIncrement,
                 onDecrement = onDecrement,
                 onAdd = onAdd,
+                minPrice = minPrice,
             )
             Text(
                 text = itemPrice,

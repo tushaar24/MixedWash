@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -47,7 +46,7 @@ import coil3.request.crossfade
 import com.mixedwash.features.local_cart.domain.model.CartItem
 import com.mixedwash.features.services.presentation.ServicesScreenEvent
 import com.mixedwash.features.services.presentation.model.ServicePresentation
-import com.mixedwash.ui.theme.Gray100
+import com.mixedwash.ui.theme.Gray50
 import com.mixedwash.ui.theme.Gray600
 import mixedwash.composeapp.generated.resources.Res
 import mixedwash.composeapp.generated.resources.ic_arrow_right
@@ -61,9 +60,7 @@ fun ServiceDetail(
     modifier: Modifier = Modifier,
     serviceCartItems: List<CartItem>
 ) {
-    Box(
-        modifier = modifier.clip(RoundedCornerShape(18.dp)).background(Gray100)
-    ) {
+    Box(modifier = modifier.background(Gray50)) {
 
         val scrollState = rememberScrollState()
         val startThreshold = 150.dp.value
@@ -100,11 +97,10 @@ fun ServiceDetail(
 
         Column(
             modifier = Modifier.fillMaxWidth()
-                .padding(horizontal = 16.dp)
+                .padding(end = 16.dp)
                 .verticalScroll(scrollState),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            Spacer(Modifier.height(16.dp))
             Column(
                 modifier = Modifier.width(200.dp),
                 verticalArrangement = Arrangement.spacedBy(18.dp)
@@ -153,7 +149,7 @@ fun ServiceDetail(
                 Text(
                     text = service.description.lowercase(),
                     color = Gray600,
-                    fontSize = 14.sp,
+                    fontSize = 12.sp,
                     lineHeight = 16.8.sp,
                 )
 
@@ -163,15 +159,15 @@ fun ServiceDetail(
                     )
                 }
 
-                service.note?.let {
-                    Text(
-                        text = it.lowercase(),
-                        fontWeight = FontWeight.Normal,
-                        fontSize = 12.sp,
-                        lineHeight = 16.sp,
-                        color = Gray600
-                    )
-                }
+//                service.note?.let {
+//                    Text(
+//                        text = it.lowercase(),
+//                        fontWeight = FontWeight.Normal,
+//                        fontSize = 12.sp,
+//                        lineHeight = 16.sp,
+//                        color = Gray600
+//                    )
+//                }
 
 
             }
@@ -180,41 +176,18 @@ fun ServiceDetail(
 
             DetailsList(modifier = Modifier.padding(vertical = 18.dp), details = service.details)
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(BrandTheme.shapes.card)
-                    .clickable { onEvent(ServicesScreenEvent.OnProcessingDetailsClicked) }
-                    .background(BrandTheme.colors.gray.c300)
-                    .padding(top = 16.dp, bottom = 16.dp, start = 16.dp, end = 8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Column(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    val contentColor = BrandTheme.colors.gray.c700
-                    Text(
-                        "Processing Details",
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = contentColor
-                    )
-                    Text(
-                        "Inclusions, Exclusions and recommendations",
-                        fontSize = 12.sp,
-                        lineHeight = 16.sp,
-                        fontWeight = FontWeight.Normal,
-                        color = contentColor
-                    )
-                }
-                Icon(
-                    imageVector = vectorResource(resource = Res.drawable.ic_arrow_right),
-                    modifier = Modifier.size(22.dp),
-                    tint = BrandTheme.colors.gray.normal,
-                    contentDescription = null
-                )
-            }
+            ServiceInfoTab(
+                title = "Processing Details",
+                description = "Inclusions, Exclusions and recommendations",
+                onClick = { onEvent(ServicesScreenEvent.OnProcessingDetailsClicked) }
+            )
+
+            ServiceInfoTab(
+                title = "Unsure about your load?",
+                description = "Use our load estimator to get a rough weight approximate",
+                onClick = {  }  // todo
+            )
+
             Spacer(Modifier.height(32.dp))
         }
 
@@ -234,24 +207,64 @@ fun ServiceDetail(
                 )
         )
 
-        Box(
-            modifier = Modifier
-                .height(32.dp)
-                .align(Alignment.TopCenter)
-                .fillMaxWidth()
-                .background(
-                    brush = Brush.verticalGradient(
-                        colorStops = arrayOf(
-                            Pair(0f, BrandTheme.colors.gray.light),
-                            Pair(1f, Color.Transparent),
-                        ),
-                        startY = 0f,
-                    )
-                )
-        )
+//        Box(
+//            modifier = Modifier
+//                .height(32.dp)
+//                .align(Alignment.TopCenter)
+//                .fillMaxWidth()
+//                .background(
+//                    brush = Brush.verticalGradient(
+//                        colorStops = arrayOf(
+//                            Pair(0f, BrandTheme.colors.gray.light),
+//                            Pair(1f, Color.Transparent),
+//                        ),
+//                        startY = 0f,
+//                    )
+//                )
+//        )
 
     }
 }
 
-
-
+@Composable
+fun ServiceInfoTab(
+    title: String,
+    description: String,
+    onClick: () -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(BrandTheme.shapes.card)
+            .clickable { onClick() }
+            .background(BrandTheme.colors.gray.c100)
+            .padding(top = 16.dp, bottom = 16.dp, start = 16.dp, end = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            val contentColor = BrandTheme.colors.gray.c700
+            Text(
+                text = title,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Medium,
+                color = contentColor
+            )
+            Text(
+                text = description,
+                fontSize = 12.sp,
+                lineHeight = 16.sp,
+                fontWeight = FontWeight.Normal,
+                color = contentColor
+            )
+        }
+        Icon(
+            imageVector = vectorResource(resource = Res.drawable.ic_arrow_right),
+            modifier = Modifier.size(22.dp),
+            tint = BrandTheme.colors.gray.normal,
+            contentDescription = null
+        )
+    }
+}

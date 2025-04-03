@@ -4,7 +4,7 @@
       "service_id": "service_wash_and_fold",
       "title": "Wash & Fold",
       "description": "Best for shirts, t-shirts, trousers, inner-wears & regular daily wears",
-      "image_url": "https://assets-aac.pages.dev/assets/sku_wash_and_fold.png",
+      "image_url": "https://assets-aac.pages.dev/assets/sku_wash_and_fold_new.png",
       "items": [
         {
           "item_id": "item_service_wash_and_fold",
@@ -53,7 +53,7 @@
       "service_id": "service_wash_and_iron",
       "title": "Wash & Iron",
       "description": "Best for shirts, t-shirts, trousers & office-wear",
-      "image_url": "https://assets-aac.pages.dev/assets/sku_wash_and_iron.png",
+      "image_url": "https://assets-aac.pages.dev/assets/sku_was_and_iron_new.png",
       "items": [
         {
           "item_id": "item_service_wash_and_iron",
@@ -101,7 +101,7 @@
       "service_id": "service_dry_clean",
       "title": "Dry Clean",
       "description": "Best for stained items & delicate garments",
-      "image_url": "https://assets-aac.pages.dev/assets/sku_dry_clean.png",
+      "image_url": "https://assets-aac.pages.dev/assets/sku_dry_clean_new.png",
       "note": "A Service Charge of ₹50 will be charged on orders below ₹200",
       "items": [
         {
@@ -351,7 +351,7 @@
       "title": "Heavy Wash",
       "description": "Best for blankets, towels, bedsheets & fabric mats",
       "note": "final cost is calculated as per order weight before delivery",
-      "image_url": "https://assets-aac.pages.dev/assets/sku_heavy_wash.png",
+      "image_url": "https://assets-aac.pages.dev/assets/sku_heavy_wash_new.png",
       "items": [
         {
           "item_id": "item_service_heavy_wash",
@@ -392,7 +392,7 @@
       "title": "Shoe Cleaning",
       "description": "Best for sneakers, sports & casual shoes",
       "note": "final cost is calculated as per order weight before delivery",
-      "image_url" : "https://assets-aac.pages.dev/assets/sku_shoe_clean.png",
+      "image_url" : "https://assets-aac.pages.dev/assets/sku_shoe_clean_new.png",
       "items": [
         {
           "item_id": "item_service_shoe_cleaning",

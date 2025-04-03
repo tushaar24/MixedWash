@@ -258,6 +258,10 @@ class ServicesScreenViewModel(
                     }
                 }
             }
+
+            ServicesScreenEvent.OnFaqClick -> {
+                sendUiEvent(ServicesScreenUiEvent.NavigateToRoute(Route.FaqRoute))
+            }
         }
     }
 

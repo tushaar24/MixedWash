@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.mixedwash.features.local_cart.domain.model.CartItem
 import com.mixedwash.features.services.presentation.ServicesScreenEvent
+import com.mixedwash.features.services.presentation.model.ItemPricing
 import com.mixedwash.features.services.presentation.model.PricingMetadataPresentation
 import com.mixedwash.features.services.presentation.model.ServicePresentation
 import com.mixedwash.ui.theme.dividerBlack
@@ -24,16 +25,16 @@ fun ServiceCartItemsList(
     onEvent: (ServicesScreenEvent) -> Unit,
     service: ServicePresentation
 ) {
-    HorizontalDivider(
-        color = dividerBlack,
-        thickness = 1.dp,
-        modifier = Modifier.padding(top = 8.dp)
-    )
-
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+        HorizontalDivider(
+            color = dividerBlack,
+            thickness = 1.dp,
+            modifier = Modifier.padding(top = 8.dp)
+        )
+
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
@@ -49,7 +50,8 @@ fun ServiceCartItemsList(
                     pricing = item.itemPricing,
                     onIncrement = { onEvent(ServicesScreenEvent.OnItemIncrement(item.itemId)) },
                     onDecrement = { onEvent(ServicesScreenEvent.OnItemDecrement(item.itemId)) },
-                    onAdd = { onEvent(ServicesScreenEvent.OnItemAdd(item.itemId)) }
+                    onAdd = { onEvent(ServicesScreenEvent.OnItemAdd(item.itemId)) },
+                    minPrice = if (item.itemPricing is ItemPricing.ServiceItemPricingPresentation) item.itemPricing.minimumPrice else null
                 )
             }
 
@@ -58,33 +60,37 @@ fun ServiceCartItemsList(
             service.pricingMetadata is PricingMetadataPresentation.SubItemsPricingPresentation
         ) {
             service.pricingMetadata?.let { pricingMetadata ->
-                AddItemButton(onClick = {
-                    when (pricingMetadata) {
-                        is PricingMetadataPresentation.ServicePricingPresentation -> {
-                            onEvent(
-                                ServicesScreenEvent.OnItemAdd(
-                                    itemId = service.items?.first()?.itemId ?: ""
+                AddItemButton(
+                    onClick = {
+                        when (pricingMetadata) {
+                            is PricingMetadataPresentation.ServicePricingPresentation -> {
+                                onEvent(
+                                    ServicesScreenEvent.OnItemAdd(
+                                        itemId = service.items?.first()?.itemId ?: ""
+                                    )
                                 )
-                            )
-                        }
+                            }
 
-                        is PricingMetadataPresentation.SubItemsPricingPresentation -> {
-                            onEvent(
-                                ServicesScreenEvent.OnOpenSubItemsSheet(
-                                    serviceId = service.serviceId
+                            is PricingMetadataPresentation.SubItemsPricingPresentation -> {
+                                onEvent(
+                                    ServicesScreenEvent.OnOpenSubItemsSheet(
+                                        serviceId = service.serviceId
+                                    )
                                 )
-                            )
+                            }
                         }
-                    }
-                })
+                    },
 
-                }
+                    subItems = service.pricingMetadata is PricingMetadataPresentation.SubItemsPricingPresentation
+                )
+
             }
-    }
+        }
 
-    HorizontalDivider(
-        color = dividerBlack,
-        thickness = 1.dp,
-        modifier = Modifier.padding(bottom = 8.dp)
-    )
+        HorizontalDivider(
+            color = dividerBlack,
+            thickness = 1.dp,
+            modifier = Modifier.padding(vertical = 8.dp)
+        )
+    }
 }

@@ -39,6 +39,7 @@ sealed class ServicesScreenEvent {
     data object OnClosedSubItemsSheet : ServicesScreenEvent()
     data object OnProcessingDetailsClicked : ServicesScreenEvent()
     data object OnSubmit : ServicesScreenEvent()
+    data object OnFaqClick : ServicesScreenEvent()
 }
 
 sealed class ServicesScreenUiEvent {

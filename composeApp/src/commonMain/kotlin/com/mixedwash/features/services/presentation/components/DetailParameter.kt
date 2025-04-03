@@ -15,12 +15,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.mixedwash.ui.theme.Gray700
 import com.mixedwash.ui.theme.Gray800
 
 @Composable
 fun DetailParameter(key: String, value: String, modifier: Modifier = Modifier) {
     Row(
-        modifier = modifier.fillMaxWidth().padding(vertical = 8.dp),
+        modifier = modifier.fillMaxWidth().padding(bottom = 8.dp),
         verticalAlignment = Alignment.Top,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -38,7 +39,7 @@ fun DetailParameter(key: String, value: String, modifier: Modifier = Modifier) {
         Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.TopEnd) {
             Text(
                 text = value,
-                color = Gray800,
+                color = Gray700,
                 style = BrandTheme.typography.subtitle1,
                 fontSize = 12.sp,
                 lineHeight = 16.sp,

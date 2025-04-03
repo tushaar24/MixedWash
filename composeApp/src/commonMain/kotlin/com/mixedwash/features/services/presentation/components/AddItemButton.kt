@@ -21,6 +21,7 @@ import org.jetbrains.compose.resources.vectorResource
 
 @Composable
 fun AddItemButton(
+    subItems: Boolean = false,
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
@@ -43,7 +44,7 @@ fun AddItemButton(
         )
 
         Text(
-            "ADD",
+            text = if (subItems) "Add Items" else "Add",
             fontSize = 12.sp,
             fontWeight = FontWeight.Medium,
             color = BrandTheme.colors.gray.lighter

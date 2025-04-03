@@ -9,17 +9,20 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -28,6 +31,7 @@ import androidx.navigation.NavController
 import com.mixedwash.core.presentation.components.DefaultHeader
 import com.mixedwash.core.presentation.components.HeadingAlign
 import com.mixedwash.core.presentation.components.HeadingSize
+import com.mixedwash.core.presentation.components.noRippleClickable
 import com.mixedwash.core.presentation.models.SnackbarHandler
 import com.mixedwash.core.presentation.util.ObserveAsEvents
 import com.mixedwash.features.services.presentation.components.ServiceDetail
@@ -39,6 +43,9 @@ import com.mixedwash.ui.theme.headerContentSpacing
 import com.mixedwash.windowInsetsContainer
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import mixedwash.composeapp.generated.resources.Res
+import mixedwash.composeapp.generated.resources.ic_faq
+import org.jetbrains.compose.resources.vectorResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -144,11 +151,10 @@ fun ServicesScreen(
         }
     }
 
-
-
     Column(modifier = modifier.fillMaxSize().windowInsetsContainer()) {
 
-        DefaultHeader(title = "Select Services",
+        DefaultHeader(
+            title = "",
             headingSize = HeadingSize.Subtitle1,
             headingAlign = HeadingAlign.Start,
             navigationButton = {
@@ -156,6 +162,25 @@ fun ServicesScreen(
                     imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowLeft,
                     onClick = { navController.navigateUp() }
                 )
+            },
+            actionButtons = {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(end = 16.dp).noRippleClickable { onEvent(ServicesScreenEvent.OnFaqClick) }
+                ) {
+                    Icon(
+                        imageVector = vectorResource(Res.drawable.ic_faq),
+                        contentDescription = null,
+                        modifier = Modifier.size(12.dp)
+                    )
+                    Text(
+                        text = "faqs",
+                        lineHeight = 18.sp,
+                        fontSize = 14.sp,
+                        letterSpacing = (-0.5).sp
+                    )
+                }
             }
         )
         Spacer(modifier = Modifier.height(headerContentSpacing))
@@ -172,7 +197,7 @@ fun ServicesScreen(
                             addedToCart = state.cartItems.any { it.serviceId == service.serviceId },
                             isSelected = service.serviceId == state.selectedServiceId,
                             onClick = { onEvent(ServicesScreenEvent.OnServiceClick(service.serviceId)) },
-                            modifier = Modifier.padding(horizontal = 8.dp),
+                            modifier = Modifier.padding(horizontal = 16.dp),
                         )
                     }
                 }
@@ -188,11 +213,12 @@ fun ServicesScreen(
                 }
             }
 
-            ServicesFooter(
-                selectedItemsSize = state.cartItems.fold(initial = 0) { acc, cartItem -> acc + cartItem.quantity },
-                onProceed = { onEvent(ServicesScreenEvent.OnSubmit) },
-                allowProceed = state.cartItems.isNotEmpty()
-            )
+            if (state.cartItems.isNotEmpty()) {
+                ServicesFooter(
+                    selectedItemsSize = state.cartItems.fold(initial = 0) { acc, cartItem -> acc + cartItem.quantity },
+                    onProceed = { onEvent(ServicesScreenEvent.OnSubmit) },
+                )
+            }
         }
     }
 }

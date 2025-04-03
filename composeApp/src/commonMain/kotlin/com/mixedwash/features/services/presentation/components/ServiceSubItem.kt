@@ -54,7 +54,8 @@ fun ServiceSubItem(
                 quantity = quantity,
                 onIncrement = onIncrement,
                 onDecrement = onDecrement,
-                onAdd = onAdd
+                onAdd = onAdd,
+                minPrice = null,
             )
         }
 
