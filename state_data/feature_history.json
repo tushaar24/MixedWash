@@ -1,0 +1,181 @@
+{
+  "path": "composeApp/src/commonMain/kotlin/com/mixedwash/features/history",
+  "name": "History",
+  "type": "feature",
+  "purpose": "Provides functionality for displaying and managing user order history, including past and current orders, order details, and order metrics or insights.",
+  "lastUpdated": {
+    "date": "2025-04-01",
+    "commit": "caf2977cfc4d11e9a1d77509d722f370dca9d86e"
+  },
+  "change_log": [
+    {
+      "commit_range": "caf2977cfc4d11e9a1d77509d722f370dca9d86e",
+      "date": "2025-04-01",
+      "summary": "Initial state capture of the history feature"
+    }
+  ],
+  "architecture": {
+    "pattern": "Clean Architecture with MVVM",
+    "description": "The history feature follows Clean Architecture with MVVM pattern, separating concerns into domain and presentation layers.",
+    "layers": [
+      {
+        "name": "Domain",
+        "description": "Contains domain models representing order history data and status enums"
+      },
+      {
+        "name": "Presentation",
+        "description": "Contains UI components, ViewModel, and contract for the order history screen"
+      },
+      {
+        "name": "DI",
+        "description": "Contains dependency injection module for the history feature"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "InsightMetric",
+      "type": "Domain Model",
+      "purpose": "Represents an insight or metric about the user's order history",
+      "path": "domain/model/InsightMetrics.kt",
+      "implementation_description": "Data class with fields for metric type, title, value, and icon to display order metrics and insights visually in the UI."
+    },
+    {
+      "name": "OrderDeliveryStatus",
+      "type": "Domain Model",
+      "purpose": "Enumeration of possible order delivery statuses",
+      "path": "domain/model/OrderDeliveryStatus.kt",
+      "implementation_description": "Enum defining various states of order delivery status used for filtering and displaying orders based on their current status."
+    },
+    {
+      "name": "OrderHistoryScreen",
+      "type": "Screen",
+      "purpose": "Main UI component for displaying user's order history",
+      "path": "presentation/OrderHistoryScreen.kt",
+      "implementation_description": "Composable function that displays past orders with filtering options, order details, and metrics/insights. Implements visual indicators for order status and allows navigation to detailed order views."
+    },
+    {
+      "name": "OrderHistoryScreenViewModel",
+      "type": "ViewModel",
+      "purpose": "Manages the state and business logic for the order history screen",
+      "path": "presentation/OrderHistoryScreenViewModel.kt",
+      "implementation_description": "ViewModel that loads order history data from the bookings repository, calculates insights/metrics, and handles navigation to order details. Uses StateFlow for UI state management."
+    },
+    {
+      "name": "OrderHistoryScreenContract",
+      "type": "Contract",
+      "purpose": "Defines the state and events for the order history screen",
+      "path": "presentation/OrderHistoryContract.kt",
+      "implementation_description": "Contains OrderHistoryScreenState data class with orders and insights, OrderHistoryScreenEvent sealed interface for user actions, and OrderHistoryScreenUiEvent sealed interface for UI events."
+    },
+    {
+      "name": "formatIndianCurrency",
+      "type": "Utility",
+      "purpose": "Formats currency values in Indian format",
+      "path": "presentation/OrderHistoryContract.kt",
+      "implementation_description": "Utility function that formats numeric values into Indian currency format with appropriate thousand separators."
+    },
+    {
+      "name": "HistoryModule",
+      "type": "DI Module",
+      "purpose": "Provides dependency injection for history feature components",
+      "path": "di/HistoryModule.kt",
+      "implementation_description": "Koin module that registers OrderHistoryScreenViewModel for dependency injection."
+    }
+  ],
+  "contracts": [
+    {
+      "name": "OrderHistoryScreenContract",
+      "path": "presentation/OrderHistoryContract.kt",
+      "states": [
+        "OrderHistoryScreenState"
+      ],
+      "events": [
+        "OrderHistoryScreenEvent"
+      ],
+      "effects": [
+        "OrderHistoryScreenUiEvent"
+      ]
+    }
+  ],
+  "utilities": [
+    {
+      "name": "formatIndianCurrency",
+      "path": "presentation/OrderHistoryContract.kt",
+      "purpose": "Currency formatting function",
+      "usage": "Used to display order amounts in the proper Indian currency format"
+    }
+  ],
+  "dependencies": [
+    {
+      "name": "Koin",
+      "type": "external",
+      "purpose": "Dependency injection for history feature components"
+    },
+    {
+      "name": "Compose",
+      "type": "external",
+      "purpose": "UI implementation for order history screen"
+    },
+    {
+      "name": "BookingsModule",
+      "type": "internal",
+      "purpose": "Provides booking data for displaying order history"
+    },
+    {
+      "name": "Navigation",
+      "type": "internal",
+      "purpose": "Navigation to order details screen"
+    }
+  ],
+  "integrationPoints": [
+    {
+      "name": "Profile Screen",
+      "description": "Order history can be accessed from the profile screen"
+    },
+    {
+      "name": "Booking Details",
+      "description": "Users can navigate to detailed booking information from the order history screen"
+    },
+    {
+      "name": "Booking System",
+      "description": "Order history integrates with the booking system to retrieve past and current orders"
+    }
+  ],
+  "userFlows": [
+    {
+      "name": "View Order History",
+      "steps": [
+        "User navigates to order history screen from profile or home screen",
+        "System retrieves and displays past orders with status indicators",
+        "User can see order metrics and insights",
+        "User can filter orders by status or date"
+      ]
+    },
+    {
+      "name": "View Order Details",
+      "steps": [
+        "User taps on a specific order in the history list",
+        "System navigates to the detailed view of the selected order",
+        "User can view complete order information including items, pricing, and delivery details"
+      ]
+    }
+  ],
+  "dataFlow": {
+    "description": "The history feature retrieves booking data and transforms it for display in the order history UI",
+    "sources": [
+      "Bookings repository for order data",
+      "User interactions for filtering and navigation"
+    ],
+    "transformations": [
+      "Calculation of order insights and metrics",
+      "Currency formatting for display",
+      "Status categorization of orders"
+    ],
+    "destinations": [
+      "Order history UI components",
+      "Navigation to detailed order views"
+    ]
+  },
+  "developers_notes": "The history feature currently provides a basic implementation for displaying order history with some visual insights. Future enhancements could include more advanced filtering options, sorting capabilities, and detailed analytics about spending patterns or service preferences. The currency formatting function is specific to Indian currency format, which aligns with the target market but may need adaptation for international expansion. The feature relies heavily on the booking module for data, creating a tight coupling that should be monitored as the application evolves. Additionally, the insights metrics are currently calculated locally in the ViewModel rather than being provided by a backend service, which limits their complexity and accuracy."
+}

@@ -1,0 +1,225 @@
+{
+  "path": "composeApp/src/commonMain/kotlin/com/mixedwash/features/slot_selection",
+  "name": "SlotSelection",
+  "type": "feature",
+  "purpose": "Allows users to select pickup and delivery time slots for their laundry service, view available dates and times, and apply offers or promotions.",
+  "lastUpdated": {
+    "date": "2025-04-01",
+    "commit": "caf2977cfc4d11e9a1d77509d722f370dca9d86e"
+  },
+  "change_log": [
+    {
+      "commit_range": "caf2977cfc4d11e9a1d77509d722f370dca9d86e",
+      "date": "2025-04-01",
+      "summary": "No updates only updating commit hash and updated date"
+    },
+    {
+      "commit_range": "caf2977cfc4d11e9a1d77509d722f370dca9d86e",
+      "date": "2025-04-01",
+      "summary": "Initial state capture of the slot_selection feature"
+    }
+  ],
+  "architecture": {
+    "pattern": "Clean Architecture with MVVM",
+    "description": "The slot_selection feature follows Clean Architecture with MVVM pattern, separating concerns into data, domain, and presentation layers.",
+    "layers": [
+      {
+        "name": "Data",
+        "description": "Contains repository implementation, API implementations, and data models for slot data"
+      },
+      {
+        "name": "Domain",
+        "description": "Contains repository interfaces, API interfaces, and domain models for slots and offers"
+      },
+      {
+        "name": "Presentation",
+        "description": "Contains UI components, ViewModel, and contract for the slot selection screen"
+      },
+      {
+        "name": "DI",
+        "description": "Contains dependency injection module for the slot selection feature"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "DateSlot",
+      "type": "Domain Model",
+      "purpose": "Represents a date option for pickup or delivery",
+      "path": "domain/model/response/DateSlot.kt",
+      "implementation_description": "Data class containing date information and available time slots for that date."
+    },
+    {
+      "name": "TimeSlot",
+      "type": "Domain Model",
+      "purpose": "Represents a time option for pickup or delivery on a specific date",
+      "path": "domain/model/response/TimeSlot.kt",
+      "implementation_description": "Data class containing time information, availability status, and offer details for specific time slots."
+    },
+    {
+      "name": "Offer",
+      "type": "Domain Model",
+      "purpose": "Represents a discount or promotion that can be applied during slot selection",
+      "path": "domain/model/response/Offer.kt",
+      "implementation_description": "Data class containing offer code, description, discount information, and validity details."
+    },
+    {
+      "name": "SlotsApi",
+      "type": "API Interface",
+      "purpose": "Defines operations for fetching available slots from backend",
+      "path": "domain/api/SlotsApi.kt",
+      "implementation_description": "Interface with methods for retrieving available pickup and delivery slots."
+    },
+    {
+      "name": "MockSlotsApiImpl",
+      "type": "API Implementation",
+      "purpose": "Provides mock data for slot selection during development",
+      "path": "data/api/MockSlotsApiImpl.kt",
+      "implementation_description": "Implementation that generates realistic mock data for slot selection testing and development."
+    },
+    {
+      "name": "FillerSlotsApi",
+      "type": "API Interface",
+      "purpose": "Defines operations for generating filler slots when there are gaps",
+      "path": "domain/api/FillerSlotsApi.kt",
+      "implementation_description": "Interface with methods for generating placeholder slots to maintain UI consistency when there are gaps in availability."
+    },
+    {
+      "name": "FillerSlotsApiImpl",
+      "type": "API Implementation",
+      "purpose": "Implements the generation of filler slots",
+      "path": "data/api/FillerSlotsApiImpl.kt",
+      "implementation_description": "Implementation that creates disabled slot placeholders to ensure a consistent grid of options."
+    },
+    {
+      "name": "SlotsRepository",
+      "type": "Repository Interface",
+      "purpose": "Defines operations for managing slot data and selection",
+      "path": "domain/repository/SlotsRepository.kt",
+      "implementation_description": "Interface with methods for retrieving and processing slot data, including date normalization and availability checking."
+    },
+    {
+      "name": "SlotsRepositoryImpl",
+      "type": "Repository Implementation",
+      "purpose": "Implements the SlotsRepository interface",
+      "path": "data/repository/SlotsRepositoryImpl.kt",
+      "implementation_description": "Implementation that delegates to SlotsApi for fetching data and performs additional processing to prepare slots for display."
+    },
+    {
+      "name": "SlotSelectionScreen",
+      "type": "Screen",
+      "purpose": "UI component for slot selection",
+      "path": "presentation/SlotSelectionScreen.kt",
+      "implementation_description": "Composable function implementing the slot selection UI with date and time selection, offer selection, and delivery notes input."
+    },
+    {
+      "name": "SlotSelectionScreenViewModel",
+      "type": "ViewModel",
+      "purpose": "Manages the state and business logic for the slot selection screen",
+      "path": "presentation/SlotSelectionScreenViewModel.kt",
+      "implementation_description": "ViewModel that loads slot data from repository, handles slot selection, validates selections, and processes offer application."
+    },
+    {
+      "name": "SlotSelectionScreenContract",
+      "type": "Contract",
+      "purpose": "Defines the state and events for the slot selection screen",
+      "path": "presentation/SlotSelectionScreenContract.kt",
+      "implementation_description": "Contains SlotSelectionScreenState data class with slot and selection data, SlotSelectionScreenEvent sealed class for user actions, and SlotSelectionScreenUiEvent sealed class for UI events."
+    },
+    {
+      "name": "SlotSelectionModule",
+      "type": "DI Module",
+      "purpose": "Provides dependency injection for slot selection components",
+      "path": "di/SlotSelectionModule.kt",
+      "implementation_description": "Koin module that registers SlotSelectionScreenViewModel, SlotsRepository, SlotsApi, and FillerSlotsApi for dependency injection."
+    }
+  ],
+  "contracts": [
+    {
+      "name": "SlotSelectionScreenContract",
+      "path": "presentation/SlotSelectionScreenContract.kt",
+      "states": [
+        "SlotSelectionScreenState"
+      ],
+      "events": [
+        "SlotSelectionScreenEvent"
+      ],
+      "effects": [
+        "SlotSelectionScreenUiEvent"
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "name": "Koin",
+      "type": "external",
+      "purpose": "Dependency injection for slot selection components"
+    },
+    {
+      "name": "Compose",
+      "type": "external",
+      "purpose": "UI implementation for slot selection screen"
+    },
+    {
+      "name": "BookingsModule",
+      "type": "internal",
+      "purpose": "Integration with booking system for creating bookings with selected slots"
+    }
+  ],
+  "integrationPoints": [
+    {
+      "name": "Service Selection",
+      "description": "Slot selection follows after users select laundry services"
+    },
+    {
+      "name": "Booking Review",
+      "description": "Selected slots are passed to the booking review screen for final confirmation"
+    },
+    {
+      "name": "Booking System",
+      "description": "Slot selection integrates with booking system to validate and reserve selected slots"
+    }
+  ],
+  "userFlows": [
+    {
+      "name": "Select Pickup and Delivery Slots",
+      "steps": [
+        "User navigates to slot selection after selecting services",
+        "User sees calendar view with available pickup dates",
+        "User selects a pickup date",
+        "User selects a pickup time from available time slots",
+        "User sees calendar view with available delivery dates based on pickup selection",
+        "User selects a delivery date",
+        "User selects a delivery time from available time slots",
+        "User can optionally add delivery notes",
+        "User proceeds to booking review"
+      ]
+    },
+    {
+      "name": "Apply Offers",
+      "steps": [
+        "User views available offers for selected slots",
+        "User selects an offer to apply to their booking",
+        "System applies the discount and updates the price"
+      ]
+    }
+  ],
+  "dataFlow": {
+    "description": "The slot_selection feature manages the flow of slot data from API to UI and user selections back to the booking system",
+    "sources": [
+      "Slots API for available dates and times",
+      "Offers associated with specific slots",
+      "User selections and preferences"
+    ],
+    "transformations": [
+      "Processing of raw slot data into UI-friendly format",
+      "Generation of filler slots for consistent UI",
+      "Validation of slot selections for booking rules"
+    ],
+    "destinations": [
+      "Slot selection UI components",
+      "Booking data for subsequent order processing"
+    ]
+  },
+  "developers_notes": "The slot_selection feature currently uses mock data instead of real API integration, which simplifies development but will require refactoring when connecting to actual backend services. The slot selection UI is quite complex, handling interdependent pickup and delivery date selections, time slot availability that changes based on date selections, and offer application. A key challenge is maintaining a consistent calendar UI while accurately representing available and unavailable slots - this is addressed with the FillerSlotsApi which generates disabled placeholder slots. The feature implements business rules such as minimum processing time between pickup and delivery, which may need adjustment based on operational capabilities. The use of mock data allows for testing various scenarios including fully booked dates and special offers without requiring backend changes. Future enhancements should include real-time slot availability updates, better handling of timezone differences, and integration with a customer preference system to remember preferred delivery windows."
+}

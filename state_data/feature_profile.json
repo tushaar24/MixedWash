@@ -1,0 +1,233 @@
+{
+  "path": "composeApp/src/commonMain/kotlin/com/mixedwash/features/profile",
+  "name": "Profile",
+  "type": "feature",
+  "purpose": "Provides user profile management functionality, allowing users to view and edit their personal information, manage account settings, and access various app functions like order history and address management.",
+  "lastUpdated": {
+    "date": "2025-04-01",
+    "commit": "caf2977cfc4d11e9a1d77509d722f370dca9d86e"
+  },
+  "change_log": [
+    {
+      "commit_range": "caf2977cfc4d11e9a1d77509d722f370dca9d86e",
+      "date": "2025-04-01",
+      "summary": "Updated state file with current commit hash"
+    },
+    {
+      "commit_range": "caf2977cfc4d11e9a1d77509d722f370dca9d86e",
+      "date": "2025-04-01",
+      "summary": "Initial state capture of the profile feature"
+    }
+  ],
+  "architecture": {
+    "pattern": "Clean Architecture with MVVM and MVI concepts",
+    "description": "The profile feature implements MVVM (Model-View-ViewModel) architecture with MVI (Model-View-Intent) concepts for state management. It separates the presentation layer for profile viewing and editing.",
+    "layers": [
+      {
+        "name": "Presentation",
+        "description": "Contains UI components, ViewModels, and contracts for the profile screen and profile edit screen"
+      },
+      {
+        "name": "DI",
+        "description": "Contains dependency injection module for the profile feature"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "ProfileScreen",
+      "type": "Screen",
+      "purpose": "Main UI component that displays user profile information and navigation options",
+      "path": "presentation/ProfileScreen.kt",
+      "implementation_description": "Composable function that displays user profile information (name, email, phone, profile picture) and sectioned menu options for various app features. Implements UI for profile actions like editing profile and logging out."
+    },
+    {
+      "name": "ProfileScreenViewModel",
+      "type": "ViewModel",
+      "purpose": "Manages the state and business logic for the profile screen",
+      "path": "presentation/ProfileScreenViewModel.kt",
+      "implementation_description": "ViewModel that initializes profile data from UserService, organizes profile menu sections, and handles user events like logout and profile editing. Uses StateFlow for UI state and Channel for one-time events."
+    },
+    {
+      "name": "ProfileScreenContract",
+      "type": "Contract",
+      "purpose": "Defines the state, events, and UI events for the profile screen",
+      "path": "presentation/ProfileScreenContract.kt",
+      "implementation_description": "Contains ProfileScreenState data class with user information and menu sections, ProfileScreenEvent sealed interface for user actions, and ProfileScreenUiEvent sealed interface for navigation events."
+    },
+    {
+      "name": "ProfileSection",
+      "type": "Model",
+      "purpose": "Represents a group of related menu items in the profile screen",
+      "path": "presentation/ProfileScreenViewModel.kt",
+      "implementation_description": "Data class with title and list of ProfileSectionItem objects that define the sections displayed in the profile screen menu."
+    },
+    {
+      "name": "ProfileSectionItem",
+      "type": "Model",
+      "purpose": "Represents an individual menu item in a profile section",
+      "path": "presentation/ProfileScreenViewModel.kt",
+      "implementation_description": "Data class with icon resource, text label, click handler, and optional comingSoon flag for menu items in the profile screen."
+    },
+    {
+      "name": "ProfileEditScreen",
+      "type": "Screen",
+      "purpose": "UI component for editing user profile information",
+      "path": "profile_edit/ProfileEditScreen.kt",
+      "implementation_description": "Composable function with form fields for editing user name, email, phone number, and profile picture. Implements validation and confirmation dialogs for unsaved changes."
+    },
+    {
+      "name": "ProfileEditScreenViewModel",
+      "type": "ViewModel",
+      "purpose": "Manages the state and business logic for the profile edit screen",
+      "path": "profile_edit/ProfileEditScreenViewModel.kt",
+      "implementation_description": "ViewModel that handles form field updates with validation, profile picture changes, and saving updated profile information to UserService. Implements change tracking and confirmation dialogs for unsaved changes."
+    },
+    {
+      "name": "ProfileEditScreenEvent",
+      "type": "Event",
+      "purpose": "Represents user interactions with the profile edit screen",
+      "path": "profile_edit/ProfileEditScreenViewModel.kt",
+      "implementation_description": "Sealed class with events: OnBackClicked, OnChangePicture, OnFieldUpdate, and OnSave for handling user actions in the profile edit screen."
+    },
+    {
+      "name": "ProfileEditScreenState",
+      "type": "State",
+      "purpose": "Represents the state of the profile edit screen",
+      "path": "profile_edit/ProfileEditScreenViewModel.kt",
+      "implementation_description": "Data class with fields for form fields, image URL, loading state, and dialog visibility for the profile edit screen."
+    },
+    {
+      "name": "ProfileEditScreenUiEvent",
+      "type": "UI Event",
+      "purpose": "Represents one-time events that should be handled by the UI layer",
+      "path": "profile_edit/ProfileEditScreenViewModel.kt",
+      "implementation_description": "Sealed class with events: OnNavigateBack, ShowPopup, ClosePopup, and ShowSnackbar for handling UI effects in the profile edit screen."
+    },
+    {
+      "name": "ProfileModule",
+      "type": "DI Module",
+      "purpose": "Provides dependency injection for profile components",
+      "path": "di/ProfileModule.kt",
+      "implementation_description": "Koin module that registers ProfileScreenViewModel and ProfileEditScreenViewModel for dependency injection."
+    }
+  ],
+  "contracts": [
+    {
+      "name": "ProfileScreenContract",
+      "path": "presentation/ProfileScreenContract.kt",
+      "states": [
+        "ProfileScreenState"
+      ],
+      "events": [
+        "ProfileScreenEvent"
+      ],
+      "effects": [
+        "ProfileScreenUiEvent"
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "name": "Koin",
+      "type": "external",
+      "purpose": "Dependency injection for profile components"
+    },
+    {
+      "name": "Compose",
+      "type": "external",
+      "purpose": "UI implementation for profile screens"
+    },
+    {
+      "name": "Navigation Compose",
+      "type": "external",
+      "purpose": "Navigation between profile screens and other app features"
+    },
+    {
+      "name": "UserService",
+      "type": "internal",
+      "purpose": "Access to user data and authentication state"
+    },
+    {
+      "name": "Core Validation",
+      "type": "internal",
+      "purpose": "Form field validation for email and phone number"
+    },
+    {
+      "name": "Core UI Components",
+      "type": "internal",
+      "purpose": "Shared UI components like buttons, dialogs, and snackbars"
+    }
+  ],
+  "integrationPoints": [
+    {
+      "name": "User Authentication",
+      "description": "Integrates with authentication system for logout functionality and accessing user data"
+    },
+    {
+      "name": "Order History",
+      "description": "Navigation to order history screen from profile menu"
+    },
+    {
+      "name": "Address Book",
+      "description": "Navigation to address management screen from profile menu"
+    },
+    {
+      "name": "Help Center",
+      "description": "Navigation to FAQ/help center from profile menu"
+    }
+  ],
+  "userFlows": [
+    {
+      "name": "View Profile",
+      "steps": [
+        "User navigates to profile screen",
+        "User's personal information is displayed at the top",
+        "User can view organized sections of app features and settings"
+      ]
+    },
+    {
+      "name": "Edit Profile",
+      "steps": [
+        "User taps edit button on profile screen",
+        "User is taken to profile edit screen",
+        "User can modify name, email, phone number, and profile picture",
+        "System validates input in real-time",
+        "User saves changes or cancels with confirmation dialog for unsaved changes"
+      ]
+    },
+    {
+      "name": "Profile Navigation",
+      "steps": [
+        "User taps on menu items in profile sections",
+        "User is navigated to corresponding feature screens",
+        "Coming soon features are indicated visually"
+      ]
+    },
+    {
+      "name": "Logout",
+      "steps": [
+        "User taps logout button",
+        "User is logged out and redirected to authentication flow"
+      ]
+    }
+  ],
+  "dataFlow": {
+    "description": "The profile feature retrieves and updates user data through UserService",
+    "sources": [
+      "UserService for user metadata",
+      "Form input for profile updates"
+    ],
+    "transformations": [
+      "Validation of email and phone number inputs",
+      "Transformation of user metadata to UI state",
+      "Organization of menu items into sections"
+    ],
+    "destinations": [
+      "UserService for persistent storage of profile updates",
+      "UI components displaying user information",
+      "Navigation events to other app features"
+    ]
+  },
+  "developers_notes": "The profile feature is a central hub for user account management and navigation to many other features. Currently, the feature lacks comprehensive image handling capabilities; profile pictures can be set but there's no cropping or editing functionality which would enhance user experience. The profile edit form implements real-time validation but could benefit from more sophisticated error messaging. A notable limitation is that profile changes are currently synchronized only with Firestore and not with the authentication provider, which could lead to inconsistencies in user data across systems. The menu structure is currently hardcoded in the ViewModel, which makes it difficult to dynamically update menu items without code changes. Some menu features are marked as 'coming soon' and will need implementation in future sprints. Integration with platform-specific share functionality is also currently missing from the 'Share App' option."
+}

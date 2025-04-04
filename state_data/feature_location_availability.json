@@ -1,0 +1,176 @@
+{
+  "path": "composeApp/src/commonMain/kotlin/com/mixedwash/features/location_availability",
+  "name": "LocationAvailability",
+  "type": "feature",
+  "purpose": "Verifies if laundry services are available at a given location by checking user coordinates or pin code against serviceable areas defined in the backend.",
+  "lastUpdated": {
+    "date": "2025-04-01",
+    "commit": "caf2977cfc4d11e9a1d77509d722f370dca9d86e"
+  },
+  "change_log": [
+    {
+      "commit_range": "caf2977cfc4d11e9a1d77509d722f370dca9d86e",
+      "date": "2025-04-01",
+      "summary": "Initial state capture of the location_availability feature"
+    }
+  ],
+  "architecture": {
+    "pattern": "Clean Architecture",
+    "description": "The location_availability feature follows Clean Architecture principles with clear separation between data, domain, and presentation layers.",
+    "layers": [
+      {
+        "name": "Data",
+        "description": "Contains repository implementation and services for location availability verification"
+      },
+      {
+        "name": "Domain",
+        "description": "Contains repository interface, service definitions, and data models"
+      },
+      {
+        "name": "Presentation",
+        "description": "Contains UI components for service area display and validation"
+      },
+      {
+        "name": "DI",
+        "description": "Contains dependency injection module for the location availability feature"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "LocationAvailabilityDTO",
+      "type": "Domain Model",
+      "purpose": "Represents the response from location availability check",
+      "path": "domain/model/LocationAvailabilityDTO.kt",
+      "implementation_description": "Data class containing availability status, serviceZoneList, and other location availability information."
+    },
+    {
+      "name": "LocationDataDTO",
+      "type": "Domain Model",
+      "purpose": "Represents location information for availability checks",
+      "path": "domain/model/LocationDataDTO.kt",
+      "implementation_description": "Data class with coordinates, pin code, and address information used for location availability queries."
+    },
+    {
+      "name": "ServiceAreaDTO",
+      "type": "Domain Model",
+      "purpose": "Defines a geographic service area where services are available",
+      "path": "domain/model/ServiceAreaDTO.kt",
+      "implementation_description": "Data class representing a serviceable area with its boundaries, status, and related metadata."
+    },
+    {
+      "name": "LocationAvailabilityRepository",
+      "type": "Repository Interface",
+      "purpose": "Defines operations for checking service availability at locations",
+      "path": "domain/LocationAvailabilityRepository.kt",
+      "implementation_description": "Interface with isLocationServiceable method that takes coordinates and pin code, returning Result<Boolean> to indicate availability."
+    },
+    {
+      "name": "LocationAvailabilityRepositoryImpl",
+      "type": "Repository Implementation",
+      "purpose": "Implements the LocationAvailabilityRepository interface",
+      "path": "data/LocationAvailabilityRepositoryImpl.kt",
+      "implementation_description": "Implementation that delegates to LocationAvailabilityService for checking service availability with additional validation and error handling."
+    },
+    {
+      "name": "LocationAvailabilityService",
+      "type": "Service Interface",
+      "purpose": "Defines the contract for location verification services",
+      "path": "domain/LocationAvailabilityService.kt",
+      "implementation_description": "Interface with a method for checking if a location is within a service area."
+    },
+    {
+      "name": "FirebaseLocationAvailabilityService",
+      "type": "Service Implementation",
+      "purpose": "Implements location availability checks using Firebase",
+      "path": "data/FirebaseLocationAvailabilityService.kt",
+      "implementation_description": "Service implementation that queries Firebase for service area data and performs location matching."
+    },
+    {
+      "name": "MockLocationAvailabilityService",
+      "type": "Service Implementation",
+      "purpose": "Provides mock data for location availability checks during development",
+      "path": "data/MockLocationAvailabilityService.kt",
+      "implementation_description": "Mock implementation that returns hardcoded availability data for testing and development."
+    },
+    {
+      "name": "LocationAvailabilityModule",
+      "type": "DI Module",
+      "purpose": "Provides dependency injection for location availability components",
+      "path": "di/LocationAvailabilityModule.kt",
+      "implementation_description": "Koin module that registers LocationAvailabilityService implementation and LocationAvailabilityRepository for dependency injection."
+    }
+  ],
+  "dependencies": [
+    {
+      "name": "Koin",
+      "type": "external",
+      "purpose": "Dependency injection for location availability components"
+    },
+    {
+      "name": "Firebase Firestore",
+      "type": "external",
+      "purpose": "Storage and retrieval of service area definitions"
+    },
+    {
+      "name": "Core Domain Models",
+      "type": "internal",
+      "purpose": "Shared domain models and Result class for error handling"
+    },
+    {
+      "name": "Loki",
+      "type": "external",
+      "purpose": "Geolocation services for coordinate-based checks",
+      "version": "1.0"
+    }
+  ],
+  "integrationPoints": [
+    {
+      "name": "Address Feature",
+      "description": "Location availability is verified when users select or input addresses"
+    },
+    {
+      "name": "Checkout Flow",
+      "description": "Delivery availability is verified before allowing order placement"
+    },
+    {
+      "name": "Service Screen",
+      "description": "Service availability may be filtered based on location"
+    }
+  ],
+  "userFlows": [
+    {
+      "name": "Check Address Serviceability",
+      "steps": [
+        "User enters or selects an address",
+        "System extracts coordinates and/or pin code",
+        "System queries the location availability service",
+        "System notifies user if the address is serviceable or not"
+      ]
+    },
+    {
+      "name": "Verify Location for Checkout",
+      "steps": [
+        "User attempts to checkout with selected address",
+        "System verifies address is in a serviceable area",
+        "If serviceable, checkout proceeds; if not, user is notified"
+      ]
+    }
+  ],
+  "dataFlow": {
+    "description": "The location_availability feature handles the flow of location data to determine service availability",
+    "sources": [
+      "User-provided addresses and coordinates",
+      "Firebase for service area definitions"
+    ],
+    "transformations": [
+      "Extraction of coordinates and pin codes from addresses",
+      "Comparison of location data with service area boundaries"
+    ],
+    "destinations": [
+      "Availability status returned to calling features",
+      "UI notifications for users about service availability"
+    ]
+  },
+  "developers_notes": "The location_availability feature currently supports both coordinate-based and pin code-based verification methods. The feature includes a bypass flag (bypassLocationCheck) which enables testing without actual location verification, useful in development environments or regions where service is being introduced without firm boundaries. The Firebase implementation relies on Firestore for service area data, which allows for dynamic updates to service areas without app updates but requires proper indexing for efficient queries. The current implementation uses simplified polygon matching for geo-verification but may need more sophisticated algorithms for complex service area boundaries as the service expands. The presentation layer is minimal, primarily consisting of notification components for non-serviceable areas."
+}

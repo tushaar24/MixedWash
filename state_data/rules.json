@@ -1,0 +1,215 @@
+{
+  "projectRules": [
+    "Project is a laundry service application called 'Mixed Wash' built with Kotlin Multiplatform",
+    "The application follows Clean Architecture with data, domain, and presentation layers",
+    "Use Jetpack Compose for UI development with Material 3 design system",
+    "Use Koin for dependency injection",
+    "Use Ktor for networking calls",
+    "Use Room for local database storage",
+    "Use Firebase services for authentication and Firestore"
+  ],
+  "stateManagement": {
+    "baseDirectory": "state_data",
+    "fileFormat": "JSON",
+    "stateTypes": ["sourceSet", "feature", "core"],
+    "requiredFields": ["path", "name", "type", "purpose", "lastUpdated", "change_log"],
+    "versionControl": {
+      "trackCommits": true,
+      "optimizeByChanges": true
+    },
+    "behavior_flags": {
+      "readRulesOnQuery": true,
+      "readReadmeOnQuery": true,
+      "validatedStateFileSchema": true,
+      "intelligentCommitUpdates": true
+    },
+    "schema": {
+      "schemaFile": "state_data/state-schema.json",
+      "requiredStructure": {
+        "path": "string",
+        "name": "string",
+        "type": "enum(sourceSet,feature,core)",
+        "purpose": "string",
+        "lastUpdated": {
+          "date": "string(YYYY-MM-DD)",
+          "commit": "string"
+        },
+        "change_log": "array"
+      }
+    },
+    "rules": [
+      "Always look for and read State Files from the state_data directory as an entrypoint into the project to understand components",
+      "ALL commands interacting with the state management system MUST begin with the keyword 'COMMAND' in ALL CAPS, followed by the specific command",
+      "When handling command 'COMMAND update <state_file_name_args>', update specified State Files or all if no args",
+      "When handling command 'COMMAND defragment-changes <state_file_name_args>', consolidate commits in change_log older than 10 entries",
+      "When handling command 'COMMAND sync [-create] [-delete] [-yes]', synchronize feature packages with their state files",
+      "When handling command 'COMMAND validate-schema [state_file_names...] [-all] [-fix] [-yes]', validate state files against the schema defined in state-schema.json",
+      "When updating State Files, update the lastUpdated.date and commit fields with the current date and commit hash. NEVER USE A PLACEHOLDER. always run a terminal command to find the current commit hash",
+      "Always ensure the path field in State Files accurately reflects the current path of the component",
+      "Include relative file paths for each component to improve navigation through the codebase",
+      "Focus on including details for complex or novel implementations only",
+      "Common Areas of Business Logic Complexity Include : 1. Presentation Layer: The ViewModel files, they are essentially a statemachine that capture and update the state of a screen. ScreenContract files in the presentation layer that describe how the viewmodel, and UI will interact. 2. Domain Layer : Models, repositories and Usecases, 3. Data Layer : Implementations",
+      "Ensure that these areas of complexity are clearly outlined and summarised in each state file. VERY IMPORTANT",
+      "Keep state focused on the specific feature without including details that might change independently",
+      "When adding new code, ensure it follows the architecture patterns described in State Files",
+      "Only derive state information strictly from the codebase, never make assumptions or hallucinations",
+      "Maintain proper version control integration by tracking commit hashes in all State Files",
+      "Follow the naming convention: 'sourceset_<sourceSetName>.json', 'core_<coreName>.json', or 'feature_<featureName>.json'",
+      "Always include a change_log array in State Files to track historical changes",
+      "STRICTLY follow the schema defined in state-schema.json for all State Files",
+      "The 'details' field for components is optional and should be used only for complex components needing additional context",
+      "When updating a State File, check Git history to determine if files in the feature package have changed since the last recorded commit",
+      "If no changes are detected in the feature package files since the last recorded commit, update only the commit hash and add a minimal change_log entry unless -force flag is used",
+      "When -force flag is used with 'COMMAND update', perform a full analysis and update of the State File regardless of whether changes are detected",
+      "When implementing a design pattern (MVI, MVVM, etc.), document the pattern and its key components in the feature state file",
+      "Document significant utility functions, especially those that transform data between systems or integrate with external services",
+      "For each feature, document the data flow patterns including sources, transformations, and destinations",
+      "When analyzing feature code, identify components used across multiple features and update the source set state file with this cross-feature usage information",
+      "Feature state files should only document their own components; shared component usage across features should ONLY be documented in source set state files",
+      "Always include implementation_description for complex components to provide details about inputs, outputs, and possible states"
+    ]
+  },
+  "commands": {
+    "create": {
+      "description": "Creates new State Files for specified components or features",
+      "command": "COMMAND create [state_file_names...]",
+      "implementation": [
+        "1. Identify which components or features to create State Files for",
+        "2. Get the current Git commit hash for tracking purposes",
+        "3. Analyze the component's code to extract factual information only",
+        "4. Create new State File with appropriate structure following schema specified in `state-schema.json`",
+        "5. Set the lastUpdated object with current date and commit hash",
+        "6. Initialize the change_log with the first entry",
+        "7. Validate the State File against schema to ensure compliance"
+      ]
+    },
+    "update": {
+      "description": "Updates specified Feature State Files or scans the project for all features and creates state files for them if [-all] supplied",
+      "command": "COMMAND update [state_file_names...] [-all] [-force]",
+      "implementation": [
+        "0. The definition for a feature is a little nebulous, typically it is contained in a directory, and usually has a standalone feature eg: 'home' 'sign-in' '*service' etc.",
+        "0. This is a complex query so follow each instruction and print an output on following each step. Use lists as prescribed for avoiding any errors.",
+        "1. Make a list of state files that need to be updated based on arguments. If -all is supplied then the entire project's feature package names need to be listed. Otherwise only the feature packages specified. The list should be called `all possible state files` and should be explicitly printed before continuing. ",
+        "2. For each feature package in the list check if there exists a State File in the `state_data` directory. if there is add it to the `state file exists` list if it doesn't add it to the `no state file` list. print the two lists before continuing",
+        "3. Get the current Git Commit Hash and Today's Date from the terminal and create a new list `state file not updated` that only include files from the `state file exists` list that don't contain the current commit hash. re-read the files if you need and print the resulting list",
+        "4. Title a new list `FINAL LIST`. If [-force] flag is supplied then include all the items in the `state file exists` and `no state file` lists printed before. If [-force] flag is not supplied then only the items in `no state file exists` and `state file not updated` lists will be added to the list. please print the list explicitly before continuing any further",
+        "5. Only the state files in `FINAL LIST` need to be updated (or created from scratch). You may do that as follows:",
+        "6. Using the current commit and the commit included in each state file check its git history to check if its feature package had any changes made in between the two commits. If no changes found then you may skip updating the file by only updating the commit, and updating the change_log: 'no updates only updating commit hash and updated date'",
+        "7. If changes are found in the feature package between the two commits, or if the state file does not exist : PERFORM A FULL ANALYSIS :",
+        "   a. Read current content and analyze the feature package directory structure",
+        "   b. Analyze changes between the last recorded commit and the current commit to identify modifications",
+        "   c. Ensure you follow valid schema to make updates to the state file. The schema can be found in `state-schema.json`. Update the state information to reflect the current code state with factual information only",
+        "   d. Add detailed entries to the change_log with commit range and summary of modifications",
+        "   e. Update the lastUpdated object with current date and commit hash for version tracking",
+        "   f. Ensure the path field reflects the current location of the component in the project structure",
+        "   g. Ensure all components have detailed JSON objects with proper structure",
+        "8. Validate the updated State File against the schema defined in state-schema.json"
+      ]
+    },
+    "defragment-changes": {
+      "description": "Consolidates commit records in change_log older than 10 entries",
+      "command": "COMMAND defragment-changes [state_file_names...]",
+      "implementation": [
+        "1. Identify which State Files to process based on arguments",
+        "2. For each file, analyze the change_log entries",
+        "3. If there are more than 10 entries, consolidate older entries into commit ranges",
+        "4. Create summary descriptions for consolidated change ranges",
+        "5. Update the change_log with consolidated entries while keeping recent 10 entries intact",
+        "6. Update the lastUpdated object with current date and commit hash",
+        "7. Validate the modified State File against the schema to maintain compliance"
+      ]
+    },
+    "sync": {
+      "description": "Synchronizes feature packages with their state files, identifying missing state files and orphaned state files",
+      "command": "COMMAND sync [-create] [-delete] [-yes]",
+      "implementation": [
+        "1. Scan the project directory structure to identify all feature packages",
+        "2. List all feature state files in the state_data directory",
+        "3. Generate and display a report with three categories:",
+        "   a. Synced: Feature packages that have corresponding state files",
+        "   b. Missing: Feature packages that don't have corresponding state files",
+        "   c. Orphaned: State files that don't have corresponding feature packages",
+        "4. If the -create flag is provided:",
+        "   a. If -yes flag is not provided, ask for confirmation before creating state files",
+        "   b. Create state files for all missing feature packages using the create command implementation",
+        "5. If the -delete flag is provided:",
+        "   a. If -yes flag is not provided, ask for confirmation before deleting orphaned state files",
+        "   b. Delete all orphaned state files",
+        "6. Display a summary of actions taken and current sync status",
+        "7. Get the current Git commit hash for tracking purposes",
+        "8. Update the lastUpdated object with current date and commit hash for all modified state files",
+        "9. Validate all created or modified State Files against the schema defined in state-schema.json"
+      ]
+    },
+    "validate-schema": {
+      "description": "Validates state files against the schema defined in state-schema.json",
+      "command": "COMMAND validate-schema [state_file_names...] [-all] [-fix] [-yes]",
+      "implementation": [
+        "1. Identify which State Files to process based on arguments (specific files or all if -all flag is provided)",
+        "2. For each State File, validate against the schema defined in state-schema.json",
+        "3. Generate a report of validation results categorizing files into:",
+        "   a. Valid: Files that comply with the schema",
+        "   b. Invalid: Files that have schema violations with details of the violations",
+        "4. If the -fix flag is provided:",
+        "   a. If -yes flag is not provided, ask for confirmation before fixing invalid files",
+        "   b. For each invalid file:",
+        "      i. Make necessary adjustments to comply with the schema",
+        "      ii. Preserve existing data wherever possible",
+        "      iii. Add missing required fields with placeholder values clearly marked for review",
+        "      iv. Remove properties not defined in the schema",
+        "   c. Add an entry to the change_log indicating schema fixes were applied",
+        "5. Get the current Git commit hash for tracking purposes",
+        "6. Update the lastUpdated object with current date and commit hash for all modified State Files",
+        "7. Display a summary of validation results and any fixes applied"
+      ]
+    },
+    "root": {
+      "description": "Controls changes to critical state management files (rules.json, README.md, state-schema.json) with explicit permission",
+      "command": "COMMAND root [edit|view] [rules|readme|schema] [-yes]",
+      "implementation": [
+        "1. Verify the command is properly formed with required arguments:",
+        "   a. First argument must be 'edit' or 'view' to specify the operation",
+        "   b. Second argument must specify the target file: 'rules', 'readme', or 'schema'",
+        "2. For 'view' operations:",
+        "   a. Simply display the content of the specified file with proper formatting",
+        "3. For 'edit' operations:",
+        "   a. If -yes flag is not provided, show a warning message requiring explicit permission and ask for confirmation",
+        "   b. If permission is granted or -yes flag is used:",
+        "      i. For 'rules', allow editing of the rules.json file",
+        "      ii. For 'readme', allow editing of the README.md file",
+        "      iii. For 'schema', allow editing of the state-schema.json file",
+        "   c. Get the current Git commit hash for tracking purposes",
+        "   d. Track changes made to the critical files in a dedicated log file",
+        "   e. After editing, validate the edited file to ensure it maintains proper structure:",
+        "      i. For rules.json and state-schema.json, validate JSON structure",
+        "      ii. For README.md, verify markdown structure",
+        "4. After any operation, display a confirmation message with a summary of actions taken",
+        "5. If an unauthorized edit attempt is made to rules.json, README.md, or state-schema.json outside of this command, block the operation and suggest using the root command instead"
+      ]
+    }
+  },
+  "codeGeneration": {
+    "principles": [
+      "Follow Clean Architecture principles for all new code. We don't use Usecases, repositories are generally directly injected into viewmodels. only for usecases requiring combination of multiple different repositories should usecases be used",
+      "Implement proper separation between data, domain, and presentation layers",
+      "Write testable code with clear responsibilities. But don't write tests",
+      "Follow Material 3 design guidelines for UI components",
+      "Use proper error handling and resource management. Use the kotlin Result class."
+    ],
+    "naming": {
+      "classes": "PascalCase",
+      "functions": "camelCase",
+      "variables": "camelCase",
+      "constants": "SCREAMING_SNAKE_CASE",
+      "interfaces": "PascalCase"
+    },
+    "dependencies": {
+      "di": "Koin",
+      "networking": "Ktor",
+      "database": "Room",
+      "ui": "Jetpack Compose",
+      "auth": "Firebase Auth",
+      "storage": "Firestore"
+    }
+  }
+}

@@ -1,0 +1,199 @@
+{
+  "path": "composeApp/src/commonMain/kotlin/com/mixedwash/features/common",
+  "name": "Common",
+  "type": "feature",
+  "purpose": "Provides shared functionality, components, and services used across multiple features in the Mixed Wash application, including location services, utility functions, and common presentation components.",
+  "lastUpdated": {
+    "date": "2025-04-01",
+    "commit": "caf2977cfc4d11e9a1d77509d722f370dca9d86e"
+  },
+  "change_log": [
+    {
+      "commit_range": "caf2977cfc4d11e9a1d77509d722f370dca9d86e",
+      "date": "2025-04-01",
+      "summary": "Initial state capture of the common feature"
+    }
+  ],
+  "architecture": {
+    "pattern": "Clean Architecture",
+    "description": "The common feature provides shared functionality across features, following Clean Architecture principles with clear separation of concerns.",
+    "layers": [
+      {
+        "name": "Data",
+        "description": "Contains repository implementations and services shared across features"
+      },
+      {
+        "name": "Domain",
+        "description": "Contains repository interfaces and use cases for common functionality"
+      },
+      {
+        "name": "Presentation",
+        "description": "Contains shared UI components, screens, and view models"
+      },
+      {
+        "name": "Util",
+        "description": "Contains utility functions and extensions used across features"
+      },
+      {
+        "name": "DI",
+        "description": "Contains dependency injection modules that integrate with other feature modules"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "LocationService",
+      "type": "Service",
+      "purpose": "Provides location-related services including geolocation, geocoding, and place autocomplete",
+      "path": "data/service/LocationService.kt",
+      "implementation_description": "Service class that integrates with the Loki library to provide geolocation, geocoding, and place autocomplete capabilities. Used by multiple features for address management and location-based services."
+    },
+    {
+      "name": "FindUserByPhoneUseCase",
+      "type": "Use Case",
+      "purpose": "Provides functionality to find user accounts associated with phone numbers",
+      "path": "domain/usecases/FindUserByPhoneUseCase.kt",
+      "implementation_description": "Use case that integrates with authentication services to find user accounts by phone number, used in the login and registration flows."
+    },
+    {
+      "name": "PhoneScreen",
+      "type": "Screen",
+      "purpose": "Common screen for phone number input and validation",
+      "path": "presentation/phone/PhoneScreen.kt",
+      "implementation_description": "Composable function that implements phone number input UI with validation and country code selection. Used in login and profile editing flows."
+    },
+    {
+      "name": "PhoneScreenViewModel",
+      "type": "ViewModel",
+      "purpose": "Manages state and logic for phone number input screen",
+      "path": "presentation/phone/PhoneScreenViewModel.kt",
+      "implementation_description": "ViewModel that handles phone number validation, formatting, and submission. Implements error handling and integration with FindUserByPhoneUseCase."
+    },
+    {
+      "name": "PhoneScreenContract",
+      "type": "Contract",
+      "purpose": "Defines state and events for phone number input screen",
+      "path": "presentation/phone/PhoneScreenContract.kt",
+      "implementation_description": "Contains PhoneScreenState data class with phone number input state, PhoneScreenEvent sealed interface for user actions, and PhoneScreenUiEvent sealed interface for UI events."
+    },
+    {
+      "name": "SignInScreen",
+      "type": "Screen",
+      "purpose": "Common screen for user sign-in",
+      "path": "presentation/signin/SignInScreen.kt",
+      "implementation_description": "Composable function that implements sign-in UI with multiple authentication options including phone, email, and social media. Used in authentication flows."
+    },
+    {
+      "name": "ColorUtil",
+      "type": "Utility",
+      "purpose": "Utilities for color manipulation and conversion",
+      "path": "util/ColorUtil.kt",
+      "implementation_description": "Utility functions for color operations including parsing color strings."
+    },
+    {
+      "name": "CommonModule",
+      "type": "DI Module",
+      "purpose": "Provides dependency injection for common components and integrates with other feature modules",
+      "path": "di/CommonModule.kt",
+      "implementation_description": "Koin module that includes other feature modules and registers common services, repositories, and ViewModels for dependency injection."
+    }
+  ],
+  "contracts": [
+    {
+      "name": "PhoneScreenContract",
+      "path": "presentation/phone/PhoneScreenContract.kt",
+      "states": [
+        "PhoneScreenState"
+      ],
+      "events": [
+        "PhoneScreenEvent"
+      ],
+      "effects": [
+        "PhoneScreenUiEvent"
+      ]
+    }
+  ],
+  "utilities": [
+    {
+      "name": "ColorUtil",
+      "path": "util/ColorUtil.kt",
+      "purpose": "Color utilities",
+      "usage": "Used by multiple features for color parsing and manipulation"
+    }
+  ],
+  "dependencies": [
+    {
+      "name": "Koin",
+      "type": "external",
+      "purpose": "Dependency injection for common components"
+    },
+    {
+      "name": "Compose",
+      "type": "external",
+      "purpose": "UI implementation for common screens and components"
+    },
+    {
+      "name": "Loki",
+      "type": "external",
+      "purpose": "Location services including geolocation, geocoding, and place autocomplete",
+      "version": "1.0"
+    },
+    {
+      "name": "Firebase Auth",
+      "type": "external",
+      "purpose": "Authentication services for phone number verification"
+    }
+  ],
+  "integrationPoints": [
+    {
+      "name": "Address Feature",
+      "description": "Common location services are used by the address feature for geocoding and place search"
+    },
+    {
+      "name": "Authentication System",
+      "description": "Common phone screen and sign-in components are used in the authentication flow"
+    },
+    {
+      "name": "Location-based Features",
+      "description": "Location services are used by multiple features that require geolocation"
+    }
+  ],
+  "userFlows": [
+    {
+      "name": "Phone Number Input",
+      "steps": [
+        "User navigates to a flow requiring phone number (login, registration, etc.)",
+        "User is presented with the phone input screen",
+        "User selects country code and enters phone number",
+        "System validates phone number format in real-time",
+        "User submits validated phone number for verification"
+      ]
+    },
+    {
+      "name": "Sign In",
+      "steps": [
+        "User navigates to sign-in screen",
+        "User selects authentication method (phone, email, social)",
+        "User completes authentication flow specific to selected method",
+        "System verifies credentials and grants access"
+      ]
+    }
+  ],
+  "dataFlow": {
+    "description": "The common feature provides shared services and components that facilitate data flow across multiple features",
+    "sources": [
+      "Location APIs for geolocation and place data",
+      "User input for phone numbers and authentication credentials"
+    ],
+    "transformations": [
+      "Geocoding of coordinates to addresses",
+      "Validation and formatting of phone numbers",
+      "Authentication of user credentials"
+    ],
+    "destinations": [
+      "Other features consuming location and user data",
+      "Authentication system for user verification"
+    ]
+  },
+  "developers_notes": "The common feature serves as a shared utility package across the application, centralizing functionality that would otherwise be duplicated in multiple features. This approach reduces redundancy but creates dependencies between features that should be carefully managed. The location services implemented through the Loki library are particularly valuable for address-related features but may increase the app's permission requirements. The phone input and sign-in components are designed to be reusable across different authentication flows, but their tight coupling with specific authentication providers may limit flexibility when adding new authentication methods. Future enhancements should focus on further abstracting these components to be more provider-agnostic. The CommonModule's inclusion of multiple feature modules creates a centralized dependency graph, which simplifies integration but may lead to circular dependencies if not carefully managed."
+}

@@ -1,0 +1,141 @@
+{
+  "path": "composeApp/src/commonMain/kotlin/com/mixedwash/features/order_confirmation",
+  "name": "OrderConfirmation",
+  "type": "feature",
+  "purpose": "Displays a confirmation screen after successful order placement, providing order summary information and navigation options for the user.",
+  "lastUpdated": {
+    "date": "2025-04-01",
+    "commit": "caf2977cfc4d11e9a1d77509d722f370dca9d86e"
+  },
+  "change_log": [
+    {
+      "commit_range": "caf2977cfc4d11e9a1d77509d722f370dca9d86e",
+      "date": "2025-04-01",
+      "summary": "Initial state capture of the order_confirmation feature"
+    }
+  ],
+  "architecture": {
+    "pattern": "Clean Architecture with MVVM",
+    "description": "The order_confirmation feature follows MVVM architecture with a focus on the presentation layer, as it primarily serves as a UI component after order processing.",
+    "layers": [
+      {
+        "name": "Presentation",
+        "description": "Contains UI components, ViewModel, and contract for the order confirmation screen"
+      },
+      {
+        "name": "DI",
+        "description": "Contains dependency injection module for the order confirmation feature"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "OrderConfirmationScreen",
+      "type": "Screen",
+      "purpose": "Displays confirmation message and options after successful order placement",
+      "path": "presentation/OrderConfirmationScreen.kt",
+      "implementation_description": "Composable function that displays order confirmation UI with success animation, order details, and action buttons for post-order navigation."
+    },
+    {
+      "name": "OrderConfirmationScreenViewModel",
+      "type": "ViewModel",
+      "purpose": "Manages the state and navigation for the order confirmation screen",
+      "path": "presentation/OrderConfirmationScreenViewModel.kt",
+      "implementation_description": "Simple ViewModel that handles user actions and navigation events after order confirmation, providing confirmation title and description."
+    },
+    {
+      "name": "OrderConfirmationScreenContract",
+      "type": "Contract",
+      "purpose": "Defines the state and events for the order confirmation screen",
+      "path": "presentation/OrderConfirmationScreenContract.kt",
+      "implementation_description": "Contains OrderConfirmationScreenState data class with title and description, OrderConfirmationScreenEvent sealed interface for user actions, and OrderConfirmationScreenUiEvent sealed interface for navigation events."
+    },
+    {
+      "name": "OrderConfirmationModule",
+      "type": "DI Module",
+      "purpose": "Provides dependency injection for order confirmation components",
+      "path": "di/OrderConfirmationModule.kt",
+      "implementation_description": "Koin module that registers OrderConfirmationScreenViewModel for dependency injection."
+    }
+  ],
+  "contracts": [
+    {
+      "name": "OrderConfirmationScreenContract",
+      "path": "presentation/OrderConfirmationScreenContract.kt",
+      "states": [
+        "OrderConfirmationScreenState"
+      ],
+      "events": [
+        "OrderConfirmationScreenEvent"
+      ],
+      "effects": [
+        "OrderConfirmationScreenUiEvent"
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "name": "Koin",
+      "type": "external",
+      "purpose": "Dependency injection for order confirmation components"
+    },
+    {
+      "name": "Compose",
+      "type": "external",
+      "purpose": "UI implementation for order confirmation screen"
+    },
+    {
+      "name": "Navigation",
+      "type": "internal",
+      "purpose": "Navigation to home screen, order status, or contact screens"
+    },
+    {
+      "name": "Compose Animation",
+      "type": "external",
+      "purpose": "Animation effects for success confirmation"
+    }
+  ],
+  "integrationPoints": [
+    {
+      "name": "Order Placement Flow",
+      "description": "Order confirmation is displayed after successful order placement"
+    },
+    {
+      "name": "Home Screen",
+      "description": "Users can return to home screen after viewing confirmation"
+    },
+    {
+      "name": "Order History",
+      "description": "Users can navigate to order status/history from confirmation"
+    },
+    {
+      "name": "Support",
+      "description": "Users can contact customer support from the confirmation screen"
+    }
+  ],
+  "userFlows": [
+    {
+      "name": "Order Confirmation",
+      "steps": [
+        "User completes order placement process",
+        "System displays order confirmation screen with success animation",
+        "User views order confirmation details",
+        "User selects next action (return home, check order status, or contact support)"
+      ]
+    }
+  ],
+  "dataFlow": {
+    "description": "The order_confirmation feature presents a simple conclusion to the order flow",
+    "sources": [
+      "Previous order placement screen providing order details"
+    ],
+    "transformations": [
+      "Formatting of confirmation message and details"
+    ],
+    "destinations": [
+      "Order confirmation UI components",
+      "Navigation events to post-order destinations"
+    ]
+  },
+  "developers_notes": "The order_confirmation feature is intentionally simple, functioning primarily as a UI component at the end of the order flow rather than performing business logic. Its main responsibility is to provide a clear confirmation to users that their order was successful and offer navigation options for next steps. The feature currently does not retrieve or display detailed order information, which could be a potential enhancement to show order number, estimated delivery time, or other order-specific details. The success animation is implemented using Compose animation APIs and could be refined for better performance on lower-end devices. This feature has minimal dependencies on other components, making it stable and less prone to breaking changes."
+}
