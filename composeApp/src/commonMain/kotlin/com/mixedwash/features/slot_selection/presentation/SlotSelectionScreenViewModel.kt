@@ -296,7 +296,7 @@ class SlotSelectionScreenViewModel(
                 return false
             }
 
-            bookingsSlotStates.forEach { bookingSlot ->
+            bookingsSlotStates.filter{it.timeSlotSelectedId != null}.forEach { bookingSlot ->
                 val dropTimeSlot =
                     findTimeSlotById(bookingSlot.dateSlots, bookingSlot.timeSlotSelectedId!!)
                 val pickupTimeSlot =

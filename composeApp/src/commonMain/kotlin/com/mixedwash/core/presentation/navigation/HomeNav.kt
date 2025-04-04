@@ -1,10 +1,13 @@
 package com.mixedwash.core.presentation.navigation
 
+import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.animation.core.EaseOutExpo
+import androidx.compose.animation.core.tween
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -37,7 +40,30 @@ fun NavGraphBuilder.HomeNav(
         exitTransition = { fadeOut() }
     ) {
 
-        composable<Route.HomeRoute> {
+        composable<Route.HomeRoute>(
+            enterTransition = {
+                when (initialState.destination.route?.substringBefore('?')) {
+                    "services_route" -> {
+                        slideIntoContainer(
+                            towards = AnimatedContentTransitionScope.SlideDirection.End,
+                            animationSpec = tween(durationMillis = 500, easing = EaseOutExpo)
+                        )
+                    }
+                    else -> fadeIn() + scaleIn(initialScale = 0.8f)
+                }
+            },
+            exitTransition = {
+                when (targetState.destination.route?.substringBefore('?')) {
+                    "services_route" -> {
+                        slideOutOfContainer(
+                            towards = AnimatedContentTransitionScope.SlideDirection.Start,
+                            animationSpec = tween(durationMillis = 500, easing = EaseOutExpo)
+                        )
+                    }
+                    else -> fadeOut()
+                }
+            }
+        ) {
             val viewModel = koinViewModel<HomeScreenViewModel>()
             val state by viewModel.state.collectAsStateWithLifecycle()
             HomeScreen(
@@ -49,7 +75,30 @@ fun NavGraphBuilder.HomeNav(
             )
         }
 
-        composable<Route.ServicesRoute>{
+        composable<Route.ServicesRoute>(
+            enterTransition = {
+                when (initialState.destination.route?.substringBefore('?')) {
+                    "home_route" -> {
+                        slideIntoContainer(
+                            towards = AnimatedContentTransitionScope.SlideDirection.Start,
+                            animationSpec = tween(durationMillis = 500, easing = EaseOutExpo)
+                        )
+                    }
+                    else -> fadeIn() + scaleIn(initialScale = 0.8f)
+                }
+            },
+            exitTransition = {
+                when (targetState.destination.route?.substringBefore('?')) {
+                    "home_route" -> {
+                        slideOutOfContainer(
+                            towards = AnimatedContentTransitionScope.SlideDirection.End,
+                            animationSpec = tween(durationMillis = 500, easing = EaseOutExpo)
+                        )
+                    }
+                    else -> fadeOut()
+                }
+            }
+        ){
             val viewmodel = koinViewModel<ServicesScreenViewModel>()
             val state by viewmodel.state.collectAsStateWithLifecycle()
             ServicesScreen(
