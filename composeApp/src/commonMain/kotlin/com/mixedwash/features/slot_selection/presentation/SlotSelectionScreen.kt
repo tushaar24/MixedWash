@@ -1,12 +1,9 @@
 package com.mixedwash.features.slot_selection.presentation
 
-import BrandTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -15,15 +12,15 @@ import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.mixedwash.WindowInsetsContainer
+import com.mixedwash.core.presentation.components.ClickableLoadingOverlay
 import com.mixedwash.core.presentation.components.DefaultHeader
 import com.mixedwash.core.presentation.components.ElevatedShape
 import com.mixedwash.core.presentation.components.HeadingAlign
@@ -34,12 +31,9 @@ import com.mixedwash.core.presentation.navigation.Route
 import com.mixedwash.core.presentation.util.Logger
 import com.mixedwash.core.presentation.util.ObserveAsEvents
 import com.mixedwash.features.services.presentation.components.DefaultButtonLarge
-import com.mixedwash.features.slot_selection.domain.model.response.DateSlot
-import com.mixedwash.features.slot_selection.presentation.components.SlotContainer
-import com.mixedwash.features.slot_selection.presentation.components.SlotContainerForPickup
-import com.mixedwash.features.slot_selection.presentation.components.DateRow
 import com.mixedwash.features.slot_selection.presentation.components.DeliveryNotes
-import com.mixedwash.features.slot_selection.presentation.components.TimeSlotGrid
+import com.mixedwash.features.slot_selection.presentation.components.BookingSlotContainer
+import com.mixedwash.features.slot_selection.presentation.components.PickupSlotContainer
 import com.mixedwash.ui.theme.components.HeaderIconButton
 import com.mixedwash.ui.theme.headerContentSpacing
 import com.mixedwash.ui.theme.screenHorizontalPadding
@@ -74,7 +68,7 @@ fun SlotSelectionScreen(
                     Route.OrderDetailsRoute(
                         bookingId = null,
                         destinationType = Route.OrderDetailsRoute.DestinationType.CONFIRM_DRAFT_ORDER
-                    )
+                    ),
                 )
 
             }
@@ -88,7 +82,7 @@ fun SlotSelectionScreen(
             verticalArrangement = Arrangement.Top
         ) {
             DefaultHeader(
-                title = state.title,
+                title = state.screenTitle,
                 headingSize = HeadingSize.Subtitle1,
                 headingAlign = HeadingAlign.Start,
                 navigationButton = {
@@ -115,14 +109,10 @@ fun SlotSelectionScreen(
                     32.dp, alignment = Alignment.Top
                 )
             ) {
-                Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                    Text(
-                        "Pickup Slot",
-                        style = BrandTheme.typography.subtitle1.copy(lineHeight = 24.sp)
-                    )
-                    Spacer(Modifier.height(2.dp))
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    SectionHeaderText("Pickup")
 
-                    SlotContainerForPickup(
+                    PickupSlotContainer(
                         pickupSlotState = state.pickupSlotState,
                         onDateSelected = { dateSlot ->
                             state.screenEvent(SlotSelectionScreenEvent.OnPickupDateSelected(dateSlot))
@@ -139,31 +129,49 @@ fun SlotSelectionScreen(
                     )
                 }
 
-                // Show booking slots for each service group
-                state.bookingsSlotStates.forEach { bookingSlotState ->
-                    SlotContainer(
-                        bookingSlotState = bookingSlotState,
-                        onDateSelected = { dateSlot ->
-                            state.screenEvent(SlotSelectionScreenEvent.OnBookingDateSelected(
-                                bookingId = bookingSlotState.id,
-                                dateSlot = dateSlot
-                            ))
-                        },
-                        onTimeSelected = { dateSlot, timeSlot ->
-                            state.screenEvent(SlotSelectionScreenEvent.OnBookingTimeSelected(
-                                bookingId = bookingSlotState.id,
-                                dateSlot = dateSlot,
-                                timeSlot = timeSlot
-                            ))
-                        },
-                        onToggleBookingExpanded = { bookingId ->
-                            state.screenEvent(
-                                SlotSelectionScreenEvent.OnToggleBookingExpanded(
-                                    bookingId
+                Column(
+                    modifier = Modifier,
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
+                    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                        SectionHeaderText("Delivery")
+                        Text(
+                            modifier = Modifier.fillMaxWidth(0.9f),
+                            text = "we can deliver your items as soon as they’re ready, right after the minimum processing time",
+                            lineHeight = 18.sp,
+                            fontSize = 12.sp
+                        )
+                    }
+                    // Show booking slots for each service group
+                    state.bookingsSlotStates.forEach { bookingSlotState ->
+                        BookingSlotContainer(
+                            bookingSlotState = bookingSlotState,
+                            onDateSelected = { dateSlot ->
+                                state.screenEvent(
+                                    SlotSelectionScreenEvent.OnBookingDateSelected(
+                                        bookingId = bookingSlotState.id,
+                                        dateSlot = dateSlot
+                                    )
                                 )
-                            )
-                        }
-                    )
+                            },
+                            onTimeSelected = { dateSlot, timeSlot ->
+                                state.screenEvent(
+                                    SlotSelectionScreenEvent.OnBookingTimeSelected(
+                                        bookingId = bookingSlotState.id,
+                                        dateSlot = dateSlot,
+                                        timeSlot = timeSlot
+                                    )
+                                )
+                            },
+                            onToggleBookingExpanded = { bookingId ->
+                                state.screenEvent(
+                                    SlotSelectionScreenEvent.OnToggleBookingExpanded(
+                                        bookingId
+                                    )
+                                )
+                            }
+                        )
+                    }
                 }
 
                 val onDeliveryNotesChange: (String) -> Unit = remember(state.screenEvent) {
@@ -178,23 +186,27 @@ fun SlotSelectionScreen(
                     onValueChange = onDeliveryNotesChange
                 )
             }
-            
-            val isEnabled by remember {
-                derivedStateOf {
-                    state.pickupSlotState.timeSlotSelectedId != null &&
-                    state.bookingsSlotStates.all { it.timeSlotSelectedId != null }
-                }
-            }
-            
+
             ElevatedShape(scrollState = scrollState) {
                 DefaultButtonLarge(
                     modifier = Modifier.fillMaxWidth().padding(horizontal = screenHorizontalPadding),
                     text = "BOOK ORDER",
-                    enabled = isEnabled,
+                    enabled = state.canSubmit(),
                     onClick = { state.screenEvent(SlotSelectionScreenEvent.OnSubmit) }
                 )
             }
 
         }
     }
+    ClickableLoadingOverlay(state.isLoading)
+}
+
+@Composable
+private fun SectionHeaderText(text: String) {
+    Text(
+        text = text,
+        lineHeight = 24.sp,
+        fontSize = 16.sp,
+        fontWeight = FontWeight.SemiBold,
+    )
 }

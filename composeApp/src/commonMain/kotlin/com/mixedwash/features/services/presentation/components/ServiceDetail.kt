@@ -136,7 +136,7 @@ fun ServiceDetail(
 
                             Text(
                                 text = text,
-                                fontSize = 12.sp,
+                                fontSize = 14.sp,
                                 letterSpacing = (-0.14).sp,
                                 lineHeight = 16.8.sp,
                                 fontWeight = FontWeight.Medium,
@@ -147,9 +147,9 @@ fun ServiceDetail(
                 }
                 Text(
                     text = service.description.lowercase(),
-                    color = Gray600,
+                    color = BrandTheme.colors.gray.c700,
                     fontSize = 12.sp,
-                    lineHeight = 16.8.sp,
+                    lineHeight = 16.sp,
                     minLines = 3
                 )
 
@@ -158,18 +158,6 @@ fun ServiceDetail(
                         pricingMetadata = pricingMetadata,
                     )
                 }
-
-//                service.note?.let {
-//                    Text(
-//                        text = it.lowercase(),
-//                        fontWeight = FontWeight.Normal,
-//                        fontSize = 12.sp,
-//                        lineHeight = 16.sp,
-//                        color = Gray600
-//                    )
-//                }
-
-
             }
 
             ServiceCartItemsList(serviceCartItems, onEvent, service)

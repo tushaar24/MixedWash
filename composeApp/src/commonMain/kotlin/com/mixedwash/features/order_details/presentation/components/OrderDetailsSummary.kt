@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -27,6 +25,10 @@ import com.mixedwash.core.presentation.util.formatHour
 import com.mixedwash.core.presentation.util.getDayAndDate
 import com.mixedwash.features.address.domain.model.Address
 import com.mixedwash.ui.theme.dividerBlack
+import mixedwash.composeapp.generated.resources.Res
+import mixedwash.composeapp.generated.resources.ic_location
+import mixedwash.composeapp.generated.resources.ic_location_outlined
+import org.jetbrains.compose.resources.vectorResource
 
 @Composable
 fun OrderDetailsSummary(
@@ -60,7 +62,8 @@ fun OrderDetailsSummary(
                 )
             ) {
                 Text(
-                    text = booking.bookingItems.foldRight("") { item, accumulator -> "$accumulator · ${item.name}" },
+                    text = booking.bookingItems.distinctBy { it.serviceName }
+                        .joinToString(separator = " · ") { it.serviceName },
                     style = BrandTheme.typography.subtitle3.copy(fontWeight = FontWeight.SemiBold),
                     modifier = Modifier.weight(weight = 1f)
                 )
@@ -77,7 +80,8 @@ fun OrderDetailsSummary(
                 ) {
                     Text(
                         text = "Pickup",
-                        style = BrandTheme.typography.body3.copy(fontWeight = FontWeight.Medium)
+                        style = BrandTheme.typography.body3.copy(fontWeight = FontWeight.Medium),
+                        color = BrandTheme.colors.gray.darker
                     )
                     val (day, date) = pickupSlot.startTimeStamp.getDayAndDate()
                     val startTime = pickupSlot.startTimeStamp.formatHour().run {
@@ -92,7 +96,8 @@ fun OrderDetailsSummary(
                         ${day.capitalize()}, $date 
                         $startTime - $endTime
                     """.trimIndent(), lineHeight = 1.5.em,
-                        fontSize = 12.sp
+                        fontSize = 12.sp,
+                        color = BrandTheme.colors.gray.dark
                     )
                 }
                 Column(
@@ -101,11 +106,12 @@ fun OrderDetailsSummary(
                 ) {
                     Text(
                         text = "Delivery",
-                        style = BrandTheme.typography.body3.copy(fontWeight = FontWeight.Medium)
+                        style = BrandTheme.typography.body3.copy(fontWeight = FontWeight.Medium),
+                        color = BrandTheme.colors.gray.darker
                     )
                     val (day, date) = dropSlot.startTimeStamp.getDayAndDate()
                     val startTime = dropSlot.startTimeStamp.formatHour().run {
-                        "$first - $second"
+                        "$first $second"
                     }
                     val endTime = dropSlot.endTimeStamp.formatHour().run {
                         "$first $second"
@@ -115,7 +121,11 @@ fun OrderDetailsSummary(
                         text = """
                         ${day.capitalize()}, $date 
                         $startTime - $endTime
-                        """.trimIndent(), lineHeight = 1.5.em, fontSize = 12.sp
+                        """.trimIndent(),
+                        lineHeight = 1.5.em,
+                        fontSize = 12.sp,
+                        color = BrandTheme.colors.gray.dark
+
                     )
                 }
             }
@@ -150,7 +160,7 @@ fun OrderDetailsSummary(
                     ), verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
-                        imageVector = Icons.Outlined.LocationOn,
+                        imageVector = vectorResource(Res.drawable.ic_location_outlined),
                         contentDescription = "Location Pin Icon",
                         modifier = Modifier.requiredSize(size = 14.dp)
                     )

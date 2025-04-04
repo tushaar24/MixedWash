@@ -8,6 +8,8 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 
+// Example String : "**only ₹95**/kg"
+
 @Composable
 fun processBoldText(
     text: String,

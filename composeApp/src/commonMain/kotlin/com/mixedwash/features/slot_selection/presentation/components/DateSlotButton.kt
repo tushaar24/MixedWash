@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.mixedwash.core.domain.util.capitalize
 import com.mixedwash.ui.theme.MixedWashTheme
 
@@ -60,14 +61,17 @@ fun DateSlotButton(
             text = date,
             color = contentColor,
             textAlign = TextAlign.Center,
-            style = BrandTheme.typography.largeButton.copy(fontWeight = FontWeight.Medium),
+            fontSize = 14.sp,
+            lineHeight = 18.sp,
+            fontWeight = FontWeight.Medium,
             modifier = Modifier.fillMaxWidth()
         )
         Text(
             text = day.capitalize(),
             color = contentColor,
             textAlign = TextAlign.Center,
-            style = BrandTheme.typography.tinyButton,
+            fontSize = 12.sp,
+            lineHeight = 12.sp,
             modifier = Modifier.fillMaxWidth()
         )
     }

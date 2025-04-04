@@ -56,16 +56,19 @@ fun OrderSummaryCard(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(horizontalArrangement = Arrangement.spacedBy(18.dp)) {
-                IndicationChip(
-                    text = orderId,
+            Row(
+                modifier = Modifier.weight(1f),
+                horizontalArrangement = Arrangement.spacedBy(18.dp)
+            ) {
+                IndicationChip (
+                    text = orderId.takeLast(6),
                     textColor = Gray100,
                     backgroundColor = Gray900,
                     borderColor = Gray800,
                     leadingIcon = '#'
                 )
 
-                IndicationChip(
+                IndicationChip (
                     text = status.toString().lowercase().replaceFirstChar { it.uppercase() },
                     textColor = when (status) {
                         OrderDeliveryStatus.PROCESSING -> Yellow

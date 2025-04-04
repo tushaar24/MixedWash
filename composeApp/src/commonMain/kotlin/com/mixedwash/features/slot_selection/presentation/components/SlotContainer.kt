@@ -47,18 +47,15 @@ import com.mixedwash.core.presentation.util.formattedHourTime
 import com.mixedwash.core.presentation.util.getDayOfWeekAbbrev
 import com.mixedwash.features.slot_selection.domain.model.response.DateSlot
 import com.mixedwash.features.slot_selection.domain.model.response.TimeSlot
-import com.mixedwash.features.slot_selection.presentation.model.BookingServiceMetadata
 import com.mixedwash.features.slot_selection.presentation.model.BookingSlotState
 import com.mixedwash.features.slot_selection.presentation.model.PickupSlotState
-import com.mixedwash.ui.theme.Gray100
-import com.mixedwash.ui.theme.Gray50
 import com.mixedwash.ui.theme.GreenDark
 import mixedwash.composeapp.generated.resources.Res
 import mixedwash.composeapp.generated.resources.ic_washing_machine
 import org.jetbrains.compose.resources.vectorResource
 
 @Composable
-fun SlotContainer(
+fun BookingSlotContainer(
     modifier: Modifier = Modifier,
     bookingSlotState: BookingSlotState,
     onDateSelected: (DateSlot) -> Unit,
@@ -84,7 +81,7 @@ fun SlotContainer(
 }
 
 @Composable
-fun SlotContainerForPickup(
+fun PickupSlotContainer(
     modifier: Modifier = Modifier,
     pickupSlotState: PickupSlotState,
     onDateSelected: (DateSlot) -> Unit,
@@ -127,14 +124,16 @@ private fun GenericSlotContainer(
     ) { derivedStateOf { isExpanded && slotsAvailable } }
 
     val arrowRotationState by animateFloatAsState(targetValue = if (isExpandedState) 0f else 180f)
-    val containerColor by animateColorAsState(if (isExpandedState) Gray100 else Gray50)
+    val containerColor by animateColorAsState(if (isExpandedState) BrandTheme.colors.gray.light else BrandTheme.colors.gray.lighter)
     val strokeColor = if (!isExpandedState) BrandTheme.colors.gray.c200 else Color.Transparent
 
     val titleFontWeight = if (isExpandedState) FontWeight.SemiBold else FontWeight.Medium
-    val titleColor =
-        if (slotsAvailable) BrandTheme.colors.gray.dark else BrandTheme.colors.gray.normalDark
-    val dateTimeTextColor =
-        if (slotsAvailable && timeSlotSelectedId != null) GreenDark else BrandTheme.colors.gray.normalDark
+    val titleColor = if (slotsAvailable) BrandTheme.colors.gray.dark else BrandTheme.colors.gray.normalDark
+    val dateTimeTextColor = if (slotsAvailable && timeSlotSelectedId != null) {
+        GreenDark
+    } else {
+        BrandTheme.colors.gray.normalDark
+    }
 
     Column(
         modifier = modifier
@@ -146,86 +145,70 @@ private fun GenericSlotContainer(
             })
             .padding(16.dp)
     ) {
-        Column(
-            modifier = Modifier
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.Top,
-                horizontalArrangement = Arrangement.SpaceBetween
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.Top,
+            horizontalArrangement = Arrangement.SpaceBetween
+        )
+        {
+            Column(
+                modifier = Modifier
             ) {
-                Column(modifier = Modifier.weight(1f)) {
-                    if (serviceDurationInHrs != null || !serviceImages.isNullOrEmpty()) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            if (serviceDurationInHrs != null) {
-                                Row(
-                                    modifier = Modifier
-                                        .height(28.dp)
-                                        .clip(RoundedCornerShape(6.dp))
-                                        .background(BrandTheme.colors.gray.c200)
-                                        .padding(horizontal = 6.dp),
-                                    horizontalArrangement = Arrangement.Center,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Icon(
-                                        imageVector = vectorResource(Res.drawable.ic_washing_machine),
-                                        contentDescription = "Washing Machine Icon",
-                                        modifier = Modifier.size(16.dp),
-                                        tint = BrandTheme.colors.gray.c700
-                                    )
+                if (serviceDurationInHrs != null || !serviceImages.isNullOrEmpty()) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        if (serviceDurationInHrs != null) {
+                            Row(
+                                modifier = Modifier
+                                    .height(28.dp)
+                                    .clip(RoundedCornerShape(6.dp))
+                                    .background(BrandTheme.colors.gray.c200)
+                                    .padding(horizontal = 6.dp),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    imageVector = vectorResource(Res.drawable.ic_washing_machine),
+                                    contentDescription = "Washing Machine Icon",
+                                    modifier = Modifier.size(16.dp),
+                                    tint = BrandTheme.colors.gray.c700
+                                )
 
-                                    Spacer(modifier = Modifier.width(4.dp))
+                                Spacer(modifier = Modifier.width(4.dp))
 
-                                    Text(
-                                        "$serviceDurationInHrs hrs",
-                                        fontSize = 12.sp,
-                                        fontWeight = FontWeight.Medium,
-                                        color = BrandTheme.colors.gray.c700
-                                    )
-                                }
-                            }
-
-                            Spacer(modifier = Modifier.width(12.dp))
-
-                            if (!serviceImages.isNullOrEmpty()) {
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    serviceImages.forEach { imageUrl ->
-                                        AsyncImage(
-                                            modifier = Modifier.size(24.dp),
-                                            model = ImageRequest.Builder(LocalPlatformContext.current)
-                                                .data(imageUrl)
-                                                .crossfade(true)
-                                                .build(),
-                                            contentDescription = null,
-                                        )
-                                        Spacer(modifier = Modifier.width(8.dp))
-                                    }
-                                }
+                                Text(
+                                    "$serviceDurationInHrs hrs",
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    color = BrandTheme.colors.gray.c700
+                                )
                             }
                         }
 
-                        Spacer(Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.width(12.dp))
+
+                        if (!serviceImages.isNullOrEmpty()) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                serviceImages.forEach { imageUrl ->
+                                    AsyncImage(
+                                        modifier = Modifier.size(24.dp),
+                                        model = ImageRequest.Builder(LocalPlatformContext.current)
+                                            .data(imageUrl)
+                                            .crossfade(true)
+                                            .build(),
+                                        contentDescription = null,
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                }
+                            }
+                        }
                     }
+                    Spacer(Modifier.height(8.dp))
                 }
 
-                if (slotsAvailable) {
-                    Icon(
-                        imageVector = Icons.Default.KeyboardArrowUp,
-                        contentDescription = if (isExpandedState) "Collapse" else "Expand",
-                        modifier = Modifier
-                            .size(16.dp)
-                            .rotate(arrowRotationState),
-                        tint = BrandTheme.colors.gray.normalDark
-                    )
-                }
-            }
+                Spacer(Modifier.height(4.dp))
 
-            Spacer(Modifier.height(4.dp))
-
-            Column {
                 Text(
                     text = title,
                     fontSize = 14.sp,
@@ -258,6 +241,18 @@ private fun GenericSlotContainer(
                     color = dateTimeTextColor
                 )
             }
+
+            if (slotsAvailable) {
+                Icon(
+                    imageVector = Icons.Default.KeyboardArrowUp,
+                    contentDescription = if (isExpandedState) "Collapse" else "Expand",
+                    modifier = Modifier
+                        .size(16.dp)
+                        .rotate(arrowRotationState),
+                    tint = BrandTheme.colors.gray.normalDark
+                )
+            }
+
         }
 
         // Expandable content

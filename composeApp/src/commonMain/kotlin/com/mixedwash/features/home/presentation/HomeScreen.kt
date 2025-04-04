@@ -55,6 +55,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
 import com.mixedwash.SetStatusBarColor
+import com.mixedwash.core.presentation.components.ClickableLoadingOverlay
 import com.mixedwash.core.presentation.components.DialogPopup
 import com.mixedwash.core.presentation.components.DialogPopupData
 import com.mixedwash.core.presentation.components.DropShadowConfig
@@ -378,20 +379,5 @@ fun HomeScreen(
         }
     }
 
-    Crossfade(targetState = loading) {
-        when (loading) {
-            true -> Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .zIndex(1f)
-                    .background(Color.Black.copy(alpha = 0.5f))
-                    .noRippleClickable(enabled = false, onClick = {}),
-                contentAlignment = Alignment.Center
-            ) {
-                DefaultCircularProgressIndicator()
-            }
-
-            false -> {}
-        }
-    }
+    ClickableLoadingOverlay(loading)
 }

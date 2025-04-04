@@ -1,5 +1,6 @@
 package com.mixedwash.features.services.presentation.components
 
+import BrandTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,6 +32,7 @@ fun ServicesFooter(
         Column(
             modifier = modifier.fillMaxWidth()
         ) {
+            HorizontalDivider(thickness = 0.5.dp, color = BrandTheme.colors.gray.c200)
             Row(
                 modifier = Modifier.fillMaxWidth().background(Gray100)
                     .padding(horizontal = 16.dp, vertical = 24.dp),
@@ -73,6 +75,7 @@ fun ServicesFooter(
                     Spacer(Modifier.height(12.dp))
 
                     Row(verticalAlignment = Alignment.CenterVertically) {
+/*
                         Text(
                             text = "$selectedItemsSize services added",
                             color = Gray900,
@@ -80,6 +83,7 @@ fun ServicesFooter(
                             lineHeight = 16.sp,
                             fontWeight = FontWeight.SemiBold
                         )
+*/
 
                         /*
                                         IconButton(onClick = {}) {

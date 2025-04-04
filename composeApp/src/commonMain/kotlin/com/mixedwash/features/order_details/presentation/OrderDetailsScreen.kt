@@ -237,7 +237,7 @@ fun OrderDetailsScreen(
                     DefaultButtonLarge(
                         modifier = Modifier
                             .fillMaxWidth().padding(horizontal = screenHorizontalPadding),
-                        text = "CONFIRM ORDER",
+                        text = "Place Order",
                         onClick = { onEvent(OrderDetailsScreenEvent.OnPlaceOrder) }
                     )
                 }

@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -94,18 +95,13 @@ fun FaqScreen(
                 }
             )
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             Box(modifier = modifier.fillMaxSize().padding(horizontal = 16.dp)) {
                 Column(
                     modifier = Modifier.fillMaxHeight(),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-//                Text(
-//                    text = "How can we help you?",
-//                    style = BrandTheme.typography.h5.copy(fontSize = 20.sp)
-//                )
-
                     SearchBar(
                         modifier = Modifier.fillMaxWidth(),
                         value = state.searchString,
@@ -133,7 +129,6 @@ fun FaqScreen(
                             state = listState,
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-
                             item { Spacer(Modifier.height(2.dp)) }
 
                             if (state.searchString.isEmpty()) {
@@ -214,7 +209,6 @@ fun FaqScreen(
                             item { Spacer(Modifier.height(64.dp)) }
                         }
 
-                        // Overlay a gradient drop shadow when the list is scrolled
                         if (isScrolled) {
                             Box(
                                 modifier = Modifier
@@ -276,7 +270,7 @@ fun FaqItemCard(item: FaqItemDTO, modifier: Modifier = Modifier) {
             .animateContentSize() // This automatically animates any size changes in the card.
     ) {
         Column(
-            modifier = Modifier.padding(12.dp),
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Row(
@@ -289,13 +283,15 @@ fun FaqItemCard(item: FaqItemDTO, modifier: Modifier = Modifier) {
                 Text(
                     text = item.question,
                     style = BrandTheme.typography.body2.copy(fontWeight = FontWeight.W500),
-                    modifier = Modifier.weight(1f)
+                    color = BrandTheme.colors.gray.dark,
+                    modifier = Modifier.weight(1f),
                 )
-
+                Spacer(modifier = Modifier.width(8.dp))
                 Icon(
-                    modifier = Modifier.padding(start = 16.dp),
+                    modifier = Modifier.size( 16.dp),
                     imageVector = if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
-                    contentDescription = "Expand"
+                    contentDescription = "Expand",
+                    tint = BrandTheme.colors.gray.normalDark
                 )
             }
 
@@ -330,7 +326,7 @@ fun LabelChip(
     ) {
         Text(
             modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp, horizontal = 8.dp),
-            color = if (selected) BrandTheme.colors.background else BrandTheme.colors.gray.dark,
+            color = if (selected) BrandTheme.colors.background else BrandTheme.colors.gray.c700,
             text = text,
             style = BrandTheme.typography.mediumButton.copy(fontSize = 12.sp)
         )
@@ -356,7 +352,7 @@ fun SearchBar(
         placeholder = {
             Text(
                 text = placeholder,
-                color = BrandTheme.colors.gray.normalDark
+                color = BrandTheme.colors.gray.normalDark,
             )
         },
         colors = TextFieldDefaults.colors(
@@ -376,6 +372,6 @@ fun SearchBar(
             }
         },
         shape = BrandTheme.shapes.textField,
-        textStyle = TextStyle(fontSize = 14.sp, fontFamily = Typography.Poppins())
+        textStyle = TextStyle(fontSize = 12.sp, fontFamily = Typography.Poppins())
     )
 }

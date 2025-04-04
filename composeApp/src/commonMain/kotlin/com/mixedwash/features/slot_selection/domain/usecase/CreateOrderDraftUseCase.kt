@@ -11,6 +11,9 @@ import com.mixedwash.features.local_cart.domain.model.CartItem
 import com.mixedwash.features.location_availability.domain.LocationAvailabilityRepository
 import com.mixedwash.features.slot_selection.domain.model.error.OrderDraftCreationException
 import com.mixedwash.features.slot_selection.domain.model.response.TimeSlot
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.withContext
 
 /**
  * Use case for creating an order draft from selected slots and cart items
@@ -35,23 +38,23 @@ class CreateOrderDraftUseCase(
         cartItemsByServiceId: Map<String, List<CartItem>>,
         dropTimeSlotsByServiceId: Map<String, TimeSlot>,
         deliveryNotes: String
-    ): Result<Order> {
+    ): Result<Order> = withContext(Dispatchers.IO) {
         // Get the current user ID
         val userId = userService.currentUser?.uid ?: ""
 
         if (cartItemsByServiceId.isEmpty()) {
-            return Result.failure(OrderDraftCreationException.EmptyCartException)
+            return@withContext Result.failure(OrderDraftCreationException.EmptyCartException)
         }
         
         // Ensure all services have drop slots
         val missingServiceDropSlots = cartItemsByServiceId.keys.any { !dropTimeSlotsByServiceId.containsKey(it) }
         if (missingServiceDropSlots) {
-            return Result.failure(OrderDraftCreationException.InvalidSlotsException)
+            return@withContext Result.failure(OrderDraftCreationException.InvalidSlotsException)
         }
         
         // Get current address
         val address = addressRepository.getCurrentAddress()
-            .getOrElse { return Result.failure(OrderDraftCreationException.AddressNotFoundException) }
+            .getOrElse { return@withContext Result.failure(OrderDraftCreationException.AddressNotFoundException) }
         
         // Check if address is serviceable
         val isServiceable = locationAvailabilityRepository.isLocationServiceable(
@@ -61,17 +64,17 @@ class CreateOrderDraftUseCase(
         ).getOrNull() ?: false
         
         if (!isServiceable) {
-            return Result.failure(OrderDraftCreationException.AddressNotServiceableException)
+            return@withContext Result.failure(OrderDraftCreationException.AddressNotServiceableException)
         }
         
         // Create booking data for each service
         val bookingsData = cartItemsByServiceId.map { (serviceId, items) ->
             val dropTimeSlot = dropTimeSlotsByServiceId[serviceId]
-                ?: return Result.failure(OrderDraftCreationException.InvalidSlotsException)
+                ?: return@withContext Result.failure(OrderDraftCreationException.InvalidSlotsException)
                 
             // Validate that drop time is after pickup time
             if (dropTimeSlot.startTimeStamp <= pickupTimeSlot.endTimeStamp) {
-                return Result.failure(OrderDraftCreationException.InvalidSlotsException)
+                return@withContext Result.failure(OrderDraftCreationException.InvalidSlotsException)
             }
             
             BookingData(
@@ -90,7 +93,7 @@ class CreateOrderDraftUseCase(
         }
         
         // Create order draft
-        return ordersRepository.setOrderDraft(
+        return@withContext ordersRepository.setOrderDraft(
             userId = userId,
             bookingsData = bookingsData,
             deliveryNotes = deliveryNotes,

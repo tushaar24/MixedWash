@@ -1,6 +1,7 @@
 package com.mixedwash.features.order_details.presentation.components
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,49 +22,40 @@ fun BookingItem(
     annotatedPriceText: AnnotatedString?,
     modifier: Modifier = Modifier
 ) {
-    Column(
+    Box(
         modifier = modifier.padding(vertical = 6.dp)
     ) {
+        // Bottom row: Description and Action
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.Top
         ) {
-            Text (
-                text = title,
-                fontSize = 14.sp,
-                lineHeight = 18.sp,
-                fontWeight = FontWeight.Medium,
-                modifier = Modifier
-                    .weight(1f, fill = true)
-                    .padding(end = 16.dp)
-            )
+            Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp, alignment = Alignment.CenterVertically)) {
+                Text(
+                    text = title,
+                    fontSize = 14.sp,
+                    lineHeight = 18.sp,
+                    fontWeight = FontWeight.Medium,
+                    modifier = Modifier
+                        .padding(end = 16.dp)
+                )
+                Text(
+                    text = description,
+                    fontSize = 12.sp,
+                    lineHeight = 12.sp,
+                    modifier = Modifier
+                        .padding(end = 16.dp)
+                )
+            }
 
             if (annotatedPriceText != null) {
                 Text(
                     text = annotatedPriceText
                 )
             }
-        }
-
-        // Add space between rows
-//        Spacer(modifier = Modifier.height(6.dp))
-
-        // Bottom row: Description and Action
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.Bottom
-        ) {
-            // Description with weight to take available space
-            Text(
-                text = description,
-                fontSize = 12.sp,
-                modifier = Modifier
-                    .weight(1f, fill = true)
-                    .padding(end = 16.dp)
-            )
 
         }
+
     }
 }

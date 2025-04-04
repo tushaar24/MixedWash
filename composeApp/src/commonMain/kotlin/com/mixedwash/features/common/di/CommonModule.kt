@@ -1,7 +1,7 @@
 package com.mixedwash.features.common.di
 
 import com.mixedwash.TestApiKeyConfig
-import com.mixedwash.core.orders.di.BookingsModule
+import com.mixedwash.core.orders.di.OrdersModule
 import com.mixedwash.core.presentation.navigation.NavigationModule
 import com.mixedwash.features.address.di.AddressModule
 import com.mixedwash.features.order_details.di.OrderDetailsModule
@@ -36,7 +36,7 @@ val CommonModule = module {
         HomeModule,
         ServicesModule,
         LocalCartModule,
-        BookingsModule,
+        OrdersModule,
         SlotSelectionModule,
         OrderDetailsModule
     )

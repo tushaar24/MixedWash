@@ -114,12 +114,11 @@ fun ServiceCard(serviceItem: HomeService, onClick: () -> Unit, modifier: Modifie
                 color = BrandTheme.colors.gray.dark
             )
 
-            // Example String : "**only ₹95**/kg"
             val annotatedText = processBoldText(serviceItem.description)
 
             Text(
                 text = annotatedText, fontSize = 10.sp, lineHeight = 12.sp,
-                color = Gray600
+                color = BrandTheme.colors.gray.normalDark
             )
 
         }

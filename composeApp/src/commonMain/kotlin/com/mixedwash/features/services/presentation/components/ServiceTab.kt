@@ -1,14 +1,13 @@
 package com.mixedwash.features.services.presentation.components
 
 import BrandTheme
-import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Done
 import androidx.compose.material3.Icon
@@ -17,8 +16,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
@@ -38,36 +35,26 @@ fun ServiceTab(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-//    Column(
-//        modifier = modifier
-//            .noRippleClickable(onClick = onClick)
-//            .width(100.dp)
-//            .clip(RoundedCornerShape(12.dp)),
-//        horizontalAlignment = Alignment.CenterHorizontally,
-//        verticalArrangement = Arrangement.Center
-//    ) {
-        val innerColor by animateColorAsState(if (isSelected) BrandTheme.colors.gray.light else BrandTheme.colors.gray.light)
-        val outerColor by animateColorAsState(if (isSelected) BrandTheme.colors.gray.c200 else BrandTheme.colors.gray.light)
-        val gradientBrush = Brush.radialGradient(0.45f to innerColor, 1f to outerColor)
 
+    Box(
+        modifier = modifier.size(80.dp).clip(BrandTheme.shapes.card)
+            .background(if (isSelected) BrandTheme.colors.gray.c200 else BrandTheme.colors.background)
+            .noRippleClickable(onClick = onClick)
+    ) {
         Box(
-            modifier = modifier.size(80.dp).clip(RoundedCornerShape(9.6.dp))
-                .background(if (isSelected) Gray100 else Color.Unspecified)
-                .noRippleClickable { onClick() }
+            modifier = Modifier
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center
         ) {
-            Box(
-                modifier = Modifier
-                    .padding(11.2.dp)
-                    .fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
+            Box(modifier = Modifier.size(58.dp), contentAlignment = Alignment.Center) {
+                val imageSize by animateFloatAsState(targetValue = if (isSelected) 48f else 44f)
                 AsyncImage(
                     model = ImageRequest.Builder(LocalPlatformContext.current)
                         .data(service.imageUrl)
                         .crossfade(true)
                         .build(),
                     contentDescription = null,
-                    modifier = Modifier.padding(7.2.dp).size(43.dp)
+                    modifier = Modifier.padding().size(imageSize.dp)
                 )
 
                 if (addedToCart) {
@@ -77,7 +64,10 @@ fun ServiceTab(
                             .size(24.dp)
                             .align(Alignment.BottomEnd)
                     ) {
-                        Box(modifier = Modifier.padding(3.dp).clip(CircleShape).background(Green)) {
+                        Box(
+                            modifier = Modifier.padding(3.dp).clip(CircleShape)
+                                .background(Green)
+                        ) {
                             Icon(
                                 imageVector = Icons.Outlined.Done,
                                 contentDescription = null,
@@ -91,4 +81,4 @@ fun ServiceTab(
         }
     }
 
-//}
+}

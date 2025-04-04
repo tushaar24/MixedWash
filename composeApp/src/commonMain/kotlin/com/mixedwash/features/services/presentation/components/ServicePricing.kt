@@ -29,6 +29,7 @@ fun ServicePricing(
     modifier: Modifier = Modifier
 ) {
     Row(horizontalArrangement = Arrangement.spacedBy(16.dp), modifier = modifier) {
+
         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Text(
                 text = "pricing",
@@ -38,16 +39,16 @@ fun ServicePricing(
             )
 
             val priceText = buildAnnotatedString {
-                when (val pricing = pricingMetadata) {
+                when (pricingMetadata) {
                     is PricingMetadataPresentation.ServicePricingPresentation -> {
-                        "${pricing.pricePerUnit}/${pricing.unit}"
+                        "${pricingMetadata.pricePerUnit}/${pricingMetadata.unit}"
                         withStyle(
                             style = SpanStyle(
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Medium
                             )
                         ) {
-                            append("₹${pricing.pricePerUnit.div(100)}")
+                            append("₹${pricingMetadata.pricePerUnit.div(100)}")
                         }
                         withStyle(
                             style = SpanStyle(
@@ -55,9 +56,8 @@ fun ServicePricing(
                                 fontWeight = FontWeight.Medium
                             )
                         ) {
-                            append(" /${pricing.unit}")
+                            append(" /${pricingMetadata.unit}")
                         }
-
                     }
 
                     is PricingMetadataPresentation.SubItemsPricingPresentation -> {
@@ -67,12 +67,12 @@ fun ServicePricing(
                                 fontWeight = FontWeight.Medium
                             )
                         ) {
-                            append("from ₹${pricing.startingPrice.floorDiv(100)}")
+                            append("from ₹${pricingMetadata.startingPrice.floorDiv(100)}")
                         }
 
                     }
 
-                    null -> {}
+                    null -> {  }
                 }
             }
 
@@ -134,6 +134,7 @@ fun ServicePricing(
                 )
             }
         }
+
     }
 }
 
