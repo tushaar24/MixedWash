@@ -61,8 +61,8 @@ fun ServiceDetail(
     Box(modifier = modifier.background(Gray50)) {
 
         val scrollState = rememberScrollState()
-        val startThreshold = 150.dp.value
-        val endThreshold = 250.dp.value
+        val startThreshold = 140.dp.value
+        val endThreshold = 240.dp.value
         val scrollValue = scrollState.value.toFloat()
 
         LaunchedEffect(service) {
@@ -75,7 +75,7 @@ fun ServiceDetail(
             modifier = Modifier
                 .size(180.dp)
                 .align(Alignment.TopEnd)
-                .offset(x = 90.dp, y = 40.dp)
+                .offset(x = 90.dp, y = 0.dp)
         ) { url ->
             AsyncImage(
                 model = ImageRequest
