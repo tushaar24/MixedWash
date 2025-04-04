@@ -2,8 +2,9 @@ package com.mixedwash.features.history.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mixedwash.core.orders.domain.model.BookingItemPricing
+import com.mixedwash.core.orders.domain.repository.OrdersRepository
 import com.mixedwash.core.presentation.navigation.Route
-import com.mixedwash.core.booking.domain.repository.BookingsRepository
 import com.mixedwash.features.history.domain.model.insightMetrics
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
@@ -14,7 +15,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class OrderHistoryScreenViewModel(private val bookingsRepository: BookingsRepository) :
+class OrderHistoryScreenViewModel(private val bookingsRepository: OrdersRepository) :
     ViewModel() {
 
     private val initialState = OrderHistoryScreenState(
@@ -39,9 +40,9 @@ class OrderHistoryScreenViewModel(private val bookingsRepository: BookingsReposi
                 viewModelScope.launch {
                     _uiEventsChannel.send(
                         OrderHistoryScreenUiEvent.Navigate(
-                            Route.BookingDetailsRoute(
+                            Route.OrderDetailsRoute(
                                 bookingId = event.orderId,
-                                destinationType = Route.BookingDetailsRoute.DestinationType.VIEW_BOOKING_BY_ID
+                                destinationType = Route.OrderDetailsRoute.DestinationType.VIEW_ORDER_BY_ID
                             )
                         )
                     )
@@ -53,13 +54,21 @@ class OrderHistoryScreenViewModel(private val bookingsRepository: BookingsReposi
     private fun loadInitialData() = viewModelScope.launch {
         _state.update {
             it.copy(
-                orders = bookingsRepository.getBookings().getOrNull() ?: emptyList()
+                orders = bookingsRepository.getOrders().getOrNull() ?: emptyList()
             )
         }
     }
 
     private fun calculateMetrics() {
-        val quantityInKg = _state.value.orders.sumOf { item -> item.bookingItems.sumOf { it.quantity } }
+        val quantityInKg = _state.value.orders.fold(0) { _, order ->
+            order.bookings.sumOf {
+                it.bookingItems.sumOf { bookingItem ->
+                    if (bookingItem.itemPricing is BookingItemPricing.ServiceItemPricing) {
+                        bookingItem.quantity
+                    } else 0
+                }
+            }
+        }
 
         _state.update {
             it.copy(

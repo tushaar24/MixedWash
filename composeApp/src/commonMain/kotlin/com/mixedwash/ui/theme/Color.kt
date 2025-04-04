@@ -49,7 +49,7 @@ val RedLight = Color(0xFFFFDCDC)
 val RedNormal = Color(0xFFFF6F6F)
 val RedDark = Color(0xFF9A4343)
 val Green = Color(0xFF84C16B)
-val GreenDark = Color(0xFF328756)
+val GreenDark = Color(0xFF79B062)
 val Yellow = Color(0xFFD49C52)
 
 val dividerBlack = Color(0xFF000000).copy(alpha = 0.05f)

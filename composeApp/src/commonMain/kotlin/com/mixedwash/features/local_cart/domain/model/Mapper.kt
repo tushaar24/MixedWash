@@ -10,7 +10,7 @@ import com.mixedwash.features.services.presentation.model.ItemPricing
 import com.mixedwash.features.services.presentation.model.ServiceItemMetadata
 import com.mixedwash.features.services.presentation.model.ServiceItemPresentation
 
-fun CartItemEntity.toDomain() = CartItem(
+fun CartItemEntity.toDomain() = CartItem (
     itemId = itemId,
     name = name,
     metadata = metadata?.toDomain(),
@@ -19,7 +19,8 @@ fun CartItemEntity.toDomain() = CartItem(
     deliveryTimeMinInHrs = deliveryTimeMinInHrs,
     deliveryTimeMaxInHrs = deliveryTimeMaxInHrs,
     quantity = quantity,
-    serviceName = serviceName
+    serviceName = serviceName,
+    serviceImageUrl = serviceImageUrl
 )
 
 fun ItemMetadataEntity.toDomain() = ServiceItemMetadata(
@@ -57,5 +58,6 @@ fun ServiceItemPresentation.toCartItem(deliveryTimeMinInHrs: Int, deliveryTimeMa
     deliveryTimeMinInHrs = deliveryTimeMinInHrs,
     deliveryTimeMaxInHrs = deliveryTimeMaxInHrs,
     quantity = 0,
-    serviceName = serviceName
+    serviceName = serviceName,
+    serviceImageUrl = serviceImageUrl
 )

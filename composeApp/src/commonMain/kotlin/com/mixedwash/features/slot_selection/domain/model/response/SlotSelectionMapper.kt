@@ -6,7 +6,7 @@ import com.mixedwash.features.slot_selection.data.model.TimeSlotDto
 import com.mixedwash.features.slot_selection.data.model.response.AvailableSlotsResponseDto
 
 object SlotSelectionMapper {
-    fun AvailableSlotsResponseDto.toDomain() = SlotsResponse(
+    fun AvailableSlotsResponseDto.toDomain() = AvailableSlotsResponse(
         pickupSlots = pickupSlots.map { it.toDomain() },
         dropSlots = dropSlots.map { it.toDomain() },
         commonOffers = commonOffers?.map { it.toDomain() }

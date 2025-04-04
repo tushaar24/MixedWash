@@ -14,14 +14,16 @@ import com.mixedwash.features.services.data.remote.model.ServiceItemDto
 import com.mixedwash.features.services.data.remote.model.ServiceItemMetadataDto
 
 // ServiceItem mapping
-fun ServiceItemDto.toPresentation(serviceId: String, serviceName: String): ServiceItemPresentation =
-    ServiceItemPresentation(
+fun ServiceItemDto.toPresentation(
+    serviceId: String, serviceName: String, serviceImageUrl: String
+): ServiceItemPresentation = ServiceItemPresentation(
     itemId = this.itemId,
     name = this.name,
     metadata = this.metadata?.toPresentation(),
     itemPricing = this.itemPricing.toPresentation(),
     serviceId = serviceId,
     serviceName = serviceName,
+    serviceImageUrl = serviceImageUrl
 )
 
 fun ServiceItemMetadataDto.toPresentation(): ServiceItemMetadata =
@@ -54,7 +56,7 @@ fun ServiceDto.toPresentation(): ServicePresentation = ServicePresentation(
     description = this.description,
     imageUrl = this.imageUrl,
     note = this.note,
-    items = this.items?.map { it.toPresentation(serviceId = serviceId, serviceName = title) },
+    items = this.items?.map { it.toPresentation(serviceId = serviceId, serviceName = title, serviceImageUrl = imageUrl) },
     pricingMetadata = this.pricingMetadata?.toPresentation(),
     inclusions = this.inclusions,
     exclusions = this.exclusions,
@@ -97,7 +99,8 @@ fun ServiceItemPresentation.toCartItemEntity(deliveryTimeMinInHrs: Int, delivery
         quantity = 1,
         deliveryTimeMinInHrs = deliveryTimeMinInHrs,
         deliveryTimeMaxInHrs = deliveryTimeMaxInHrs,
-        serviceName = serviceName
+        serviceName = serviceName,
+        serviceImageUrl = serviceImageUrl
     )
 }
 

@@ -11,4 +11,4 @@ data class TimeSlot(
     val isAvailable: Boolean,
     val unavailableText: String? = null,
     val offersAvailable: List<Offer> = emptyList(),
-) 
+)

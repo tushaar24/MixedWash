@@ -7,12 +7,11 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class CartItemEntity(
-    @PrimaryKey
-    val itemId: String,
-    @ColumnInfo(index = true)
-    val serviceId: String,
-    val name: String,
+    @PrimaryKey val itemId: String,
+    @ColumnInfo(index = true) val serviceId: String,
     val serviceName: String,
+    val serviceImageUrl: String,
+    val name: String,
     @Embedded val metadata: ItemMetadataEntity? = null,
     @Embedded val itemPricing: ItemPricingEntity,
     val deliveryTimeMinInHrs: Int,

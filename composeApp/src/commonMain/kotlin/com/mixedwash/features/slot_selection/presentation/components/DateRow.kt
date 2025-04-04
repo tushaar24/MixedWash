@@ -11,10 +11,15 @@ import com.mixedwash.core.presentation.util.getMonth
 import com.mixedwash.features.slot_selection.domain.model.response.DateSlot
 
 @Composable
-fun DateRow(slots: List<DateSlot>, onClick: (DateSlot) -> Unit, selectedDateId: Int? = null) {
+fun DateRow(
+    slots: List<DateSlot>,
+    onClick: (DateSlot) -> Unit,
+    selectedDateId: Int? = null,
+    modifier: Modifier = Modifier
+) {
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = Modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth()
     ) {
         val datesByMonth = slots.groupBy { it.timeStamp.getMonth() }
         datesByMonth.forEach { (month, dates) ->

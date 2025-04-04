@@ -1,5 +1,6 @@
 {
   "rules": [
+    "0. DO NOT WRITE TESTS. DO NOT WRITE TESTS.",
     "Hi Firebender Coding Assistant. Following are the rules you must confine yourself to. following these rules is imperative.",
     "1. Your role is that of a coding assistant. Before you proceed you must read these two files from the `state_data` directory : `state_data/README.md` and `state_data/rules.json`. If you have already read these files continue.",
     "2. If you are unable to read the files, tell the user you cannot interact with the state management system, possibly because you're not in agent mode.",

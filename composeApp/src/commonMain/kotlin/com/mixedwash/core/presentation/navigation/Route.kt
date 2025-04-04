@@ -47,21 +47,21 @@ sealed class Route {
 
     @SerialName("booking_details_route")
     @Serializable
-    data class BookingDetailsRoute(
+    data class OrderDetailsRoute(
         val bookingId: String? = null,
         val destinationType: DestinationType
     ) : Route() {
         @Serializable
         enum class DestinationType {
             @SerialName("confirm_draft_booking")
-            CONFIRM_DRAFT_BOOKING,
+            CONFIRM_DRAFT_ORDER,
 
             @SerialName("view_booking_by_id")
-            VIEW_BOOKING_BY_ID,
+            VIEW_ORDER_BY_ID,
         }
 
         init {
-            if (destinationType == DestinationType.VIEW_BOOKING_BY_ID && bookingId.isNullOrEmpty()) {
+            if (destinationType == DestinationType.VIEW_ORDER_BY_ID && bookingId.isNullOrEmpty()) {
                 Logger.e(
                     TAG,
                     "ERROR: Booking ID cannot be null or empty for screen type ViewBookingById"

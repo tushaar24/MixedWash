@@ -6,15 +6,17 @@ import com.mixedwash.features.slot_selection.data.repository.SlotsRepositoryImpl
 import com.mixedwash.features.slot_selection.domain.api.FillerSlotsApi
 import com.mixedwash.features.slot_selection.domain.api.SlotsApi
 import com.mixedwash.features.slot_selection.domain.repository.SlotsRepository
+import com.mixedwash.features.slot_selection.domain.usecase.CreateOrderDraftUseCase
 import com.mixedwash.features.slot_selection.presentation.SlotSelectionScreenViewModel
+import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
 val SlotSelectionModule = module {
     viewModelOf(::SlotSelectionScreenViewModel)
+    factoryOf(::CreateOrderDraftUseCase)
     single<SlotsRepository> { SlotsRepositoryImpl(get(), get()) } bind SlotsRepository::class
     single<FillerSlotsApi> { FillerSlotsApiImpl() } bind FillerSlotsApi::class
     single<SlotsApi> { MockSlotsApiImpl(get()) } bind SlotsApi::class
-
 }

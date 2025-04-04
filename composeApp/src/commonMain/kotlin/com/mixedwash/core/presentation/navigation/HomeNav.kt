@@ -12,8 +12,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.mixedwash.core.data.UserService
 import com.mixedwash.core.presentation.models.SnackbarHandler
-import com.mixedwash.features.booking_details.presentation.BookingDetailsScreen
-import com.mixedwash.features.booking_details.presentation.BookingDetailsScreenViewModel
+import com.mixedwash.features.order_details.presentation.OrderDetailsScreen
+import com.mixedwash.features.order_details.presentation.OrderDetailsScreenViewModel
 import com.mixedwash.features.home.presentation.HomeScreen
 import com.mixedwash.features.home.presentation.HomeScreenViewModel
 import com.mixedwash.features.onboarding.presentation.OnboardingScreen
@@ -75,11 +75,11 @@ fun NavGraphBuilder.HomeNav(
 
         }
 
-        composable<Route.BookingDetailsRoute> {
+        composable<Route.OrderDetailsRoute> {
 
-            val viewModel = koinViewModel<BookingDetailsScreenViewModel>()
+            val viewModel = koinViewModel<OrderDetailsScreenViewModel>()
             val state by viewModel.state.collectAsStateWithLifecycle()
-            BookingDetailsScreen(
+            OrderDetailsScreen(
                 state = state,
                 onEvent = viewModel::onEvent,
                 snackbarHandler = snackbarHandler,

@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.mixedwash.core.presentation.util.formatTime
+import com.mixedwash.core.presentation.util.formatHour
 import com.mixedwash.features.slot_selection.domain.model.response.DateSlot
 import com.mixedwash.features.slot_selection.domain.model.response.TimeSlot
 
@@ -40,8 +40,8 @@ fun TimeSlotGrid(
                             return@Row
                         }
                         val timeSlot = timeSlots[index + offset]
-                        val (startTime, startSuffix) = timeSlot.startTimeStamp.formatTime()
-                        val (endTime, endSuffix) = timeSlot.endTimeStamp.formatTime()
+                        val (startTime, startSuffix) = timeSlot.startTimeStamp.formatHour()
+                        val (endTime, endSuffix) = timeSlot.endTimeStamp.formatHour()
 
 
                         TimeSlotButton(
@@ -53,7 +53,6 @@ fun TimeSlotGrid(
                             selected = timeSlot.id == selectedTimeId,
                             unavailable = !timeSlot.isAvailable,
                             caption = when {
-                                !timeSlot.isAvailable -> "slot is full"
                                 timeSlot.offersAvailable.isNotEmpty() -> "${timeSlot.offersAvailable.size} offer${if (timeSlot.offersAvailable.size > 1) "s" else ""}"
                                 else -> null
                             },

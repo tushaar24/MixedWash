@@ -2,66 +2,57 @@ package com.mixedwash.features.slot_selection.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mixedwash.core.booking.domain.model.toBookingItem
-import com.mixedwash.core.booking.domain.model.toBookingTimeSlot
-import com.mixedwash.core.booking.domain.repository.BookingsRepository
 import com.mixedwash.core.presentation.models.SnackBarType
 import com.mixedwash.core.presentation.util.Logger
-import com.mixedwash.features.address.domain.repository.AddressRepository
-import com.mixedwash.features.home.presentation.ServiceAvailability
+import com.mixedwash.features.local_cart.data.model.CartItemEntity
 import com.mixedwash.features.local_cart.domain.LocalCartRepository
 import com.mixedwash.features.local_cart.domain.model.toDomain
-import com.mixedwash.features.location_availability.domain.LocationAvailabilityRepository
-import com.mixedwash.features.slot_selection.domain.model.response.SlotSelectionMapper.toDomain
+import com.mixedwash.features.slot_selection.domain.model.error.onErrorOrderDraftCreation
+import com.mixedwash.features.slot_selection.domain.model.response.DateSlot
 import com.mixedwash.features.slot_selection.domain.model.response.TimeSlot
 import com.mixedwash.features.slot_selection.domain.repository.SlotsRepository
+import com.mixedwash.features.slot_selection.domain.usecase.CreateOrderDraftUseCase
+import com.mixedwash.features.slot_selection.presentation.model.BookingServiceMetadata
+import com.mixedwash.features.slot_selection.presentation.model.BookingSlotState
+import com.mixedwash.features.slot_selection.presentation.model.PickupSlotState
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Instant
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 
 class SlotSelectionScreenViewModel(
     private val slotsRepository: SlotsRepository,
     private val localCartRepository: LocalCartRepository,
-    private val addressRepository: AddressRepository,
-    private val bookingsRepository: BookingsRepository,
-    private val locationAvailabilityRepository: LocationAvailabilityRepository
+    private val createOrderDraftUseCase: CreateOrderDraftUseCase
 ) : ViewModel() {
 
     private val initialState = SlotSelectionScreenState(
         isLoading = true,
-        title = "Book your slots",
-        pickupSlots = emptyList(),
-        dropSlots = emptyList(),
-        commonOffers = emptyList(),
+        title = "Book slots",
+        pickupSlotState = PickupSlotState(),
+        bookingsSlotStates = emptyList(),
+        deliveryNotes = "",
         screenEvent = { onEvent(it) }
     )
 
-    private val processingDurationInHrs: StateFlow<Int> = localCartRepository
-        .getMinimumProcessingDurationHrs()
-        .getOrDefault(emptyFlow())
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), 24)
-
     private val _state = MutableStateFlow(initialState)
-    val state: StateFlow<SlotSelectionScreenState> = _state.onStart {
-        reloadScreenState()
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
-        initialValue = initialState
-    )
+
+    val state = _state.stateIn(viewModelScope, SharingStarted.WhileSubscribed(3000), initialState)
 
     private val _uiEventsChannel = Channel<SlotSelectionScreenUiEvent>()
     val uiEventsFlow = _uiEventsChannel.receiveAsFlow()
+
+    init {
+        triggerScreenLoad()
+        viewModelScope.launch {
+            state.collect {
+                Logger.d("TAG", it.toString())
+            }
+        }
+    }
 
 
     private fun onEvent(event: SlotSelectionScreenEvent) {
@@ -69,93 +60,66 @@ class SlotSelectionScreenViewModel(
             is SlotSelectionScreenEvent.OnPickupDateSelected -> {
                 updateState {
                     copy(
-                        pickupDateSelectedId = event.dateSlot.id,
-                        pickupTimeSelectedId = null
+                        pickupSlotState = pickupSlotState.copy(dateSlotSelectedId = event.dateSlot.id)
                     )
                 }
-            }
-
-            is SlotSelectionScreenEvent.OnDropDateSelect -> {
-                updateState {
-                    copy(
-                        dropDateSelectedId = event.dateSlot.id,
-                        dropTimeSelectedId = null
-                    )
-                }
-            }
-
-            is SlotSelectionScreenEvent.OnDropTimeSelected -> {
-                updateState {
-                    copy(
-                        dropTimeSelectedId = event.timeSlot.id,
-                        selectedOfferCode = if (state.value.getOffers()
-                                .any { it.code == selectedOfferCode }
-                        ) selectedOfferCode else null
-                    )
-                }
-            }
-
-            is SlotSelectionScreenEvent.OnOfferSelected -> {
-                updateState { copy(selectedOfferCode = event.offer.code) }
             }
 
             is SlotSelectionScreenEvent.OnPickupTimeSelected -> {
-                val pickupDateTime = Instant.fromEpochSeconds(event.timeSlot.endTimeStamp)
-                    .toLocalDateTime(TimeZone.currentSystemDefault())
-                val pickupFormatted =
-                    "${pickupDateTime.date}, ${pickupDateTime.time}"
-                val dropDateTime = Instant.fromEpochSeconds(
-                    event.timeSlot.endTimeStamp.plusHours(processingDurationInHrs.value)
-                ).toLocalDateTime(TimeZone.currentSystemDefault())
-                val dropFormatted = "${dropDateTime.date}, ${dropDateTime.time}"
-
-                Logger.d(
-                    "SlotSelectionScreenViewModel",
-                    "PickupSlotEnd: $pickupFormatted | Expected DropSlotStart: $dropFormatted | Gap Hrs: ${processingDurationInHrs.value}"
-                )
 
                 updateState {
                     copy(
-                        pickupDateSelectedId = state.value.pickupSlots.first { dateSlot -> dateSlot.timeSlots.any { it.id == event.timeSlot.id } }.id,
-                        pickupTimeSelectedId = event.timeSlot.id,
-                        dropTimeSelectedId = dropTimeSelectedId?.let { dropId ->
-                            if (getTimeSlotById(dropId)!!.startTimeStamp >=
-                                event.timeSlot.endTimeStamp.plusHours(processingDurationInHrs.value)
-                            ) {
-                                dropTimeSelectedId
-                            } else {
-                                null
-                            }
-                        },
-                        dropSlots = dropSlots.map { dateSlot ->
-                            dateSlot.copy(
-                                timeSlots = dateSlot.timeSlots.map { dropTimeSlot ->
-                                    val isAvailable =
-                                        dropTimeSlot.startTimeStamp >= event.timeSlot.endTimeStamp.plusHours(
-                                            processingDurationInHrs.value
-                                        )
-                                    val dropSlotDateTime = Instant.fromEpochSeconds(dropTimeSlot.startTimeStamp).toLocalDateTime(TimeZone.currentSystemDefault())
-                                    val dropSlotFormatted = "${dropSlotDateTime.date}, ${dropSlotDateTime.time}"
-                                    Logger.d("SlotSelectionScreenViewModel", "DropSlotStart $dropSlotFormatted isAvailable: $isAvailable")
-                                    dropTimeSlot.copy(
-                                        isAvailable = isAvailable,
-                                    )
-                                }
+                        pickupSlotState = pickupSlotState.copy(
+                            timeSlotSelectedId = event.timeSlot.id,
+                            dateSlotSelectedId = event.dateSlot.id
+                        ),
+
+                        bookingsSlotStates = bookingsSlotStates.setAvailabilityAndEarliestSelection { startTimeStamp, _, bookingDurationInHrs, _ ->
+                            startTimeStamp >= event.timeSlot.startTimeStamp.plusHours(
+                                bookingDurationInHrs
                             )
                         }
                     )
                 }
-                runCatching {
-                    val result = state.value.dropSlots.firstOrNull { dateSlot ->
-                        dateSlot.isAvailable()
-                    }
-                    return@runCatching result
-                }.getOrNull()?.let {
-                    onEvent(SlotSelectionScreenEvent.OnDropDateSelect(it))
-                } ?: updateState { copy(dropDateSelectedId = null) }
+
             }
 
-            is SlotSelectionScreenEvent.OnDeliveryNotesChange -> {
+
+            is SlotSelectionScreenEvent.OnBookingDateSelected -> {
+                updateState {
+                    copy(
+                        bookingsSlotStates = bookingsSlotStates.map { bookingSlotState ->
+                            if (bookingSlotState.id == event.bookingId) {
+                                bookingSlotState.copy(
+                                    dateSlotSelectedId = event.dateSlot.id,
+                                    timeSlotSelectedId = null
+                                )
+                            } else bookingSlotState
+                        }
+                    )
+                }
+            }
+
+            is SlotSelectionScreenEvent.OnBookingTimeSelected -> {
+                updateState {
+                    copy(
+                        bookingsSlotStates = bookingsSlotStates.map { bookingSlotState ->
+                            if (bookingSlotState.id == event.bookingId) {
+                                bookingSlotState.copy(
+                                    timeSlotSelectedId = event.timeSlot.id,
+                                    dateSlotSelectedId = event.dateSlot.id
+                                )
+
+                            } else {
+                                bookingSlotState
+                            }
+                        }
+                    )
+                }
+            }
+
+
+            is SlotSelectionScreenEvent.OnDeliveryNotesUpdate -> {
                 if (event.value.length > 400) return
                 updateState {
                     copy(
@@ -167,84 +131,182 @@ class SlotSelectionScreenViewModel(
             SlotSelectionScreenEvent.OnSubmit -> {
                 viewModelScope.launch {
                     Logger.d("SlotSelectionScreenViewModel", "OnSubmit")
-                    runCatching {
-                        if (!submitValidation()) {
-                            throw IllegalStateException("Invalid Slots")
-                        }
-                        val address = addressRepository.getCurrentAddress()
-                            .getOrElse { throw Exception("Address has not been selected") }
-                        val isServiceable = locationAvailabilityRepository.isLocationServiceable(
-                            currentLat = address.lat,
-                            currentLon = address.long,
-                            currentPincode = address.pinCode
-                        ).getOrNull()?: throw Exception("Location Serviceability Undecided")
 
-                        if(!isServiceable) { throw Exception("Address is not serviceable") }
+                    if (submitValidation()) {
 
-                        val cartItems =
-                            localCartRepository.getCartItems().getOrThrow().map { it.toDomain() }
-                        bookingsRepository.setBookingDraft(
-                            pickupSlot = getTimeSlotById(state.value.pickupTimeSelectedId!!)!!.toBookingTimeSlot(),
-                            dropSlot = getTimeSlotById(state.value.dropTimeSelectedId!!)!!.toBookingTimeSlot(),
-                            offer = state.value.selectedOfferCode,
-                            deliveryNotes = state.value.deliveryNotes,
-                            bookingItems = cartItems.map { it.toBookingItem() },
-                            address = address
-                        ).onSuccess {
-                            _uiEventsChannel.send(SlotSelectionScreenUiEvent.NavigateToReview(it))
-                        }.onFailure {
-                            Logger.d("SlotSelectionScreenViewModel", "Error Booking")
-                            _uiEventsChannel.send(
-                                SlotSelectionScreenUiEvent.ShowSnackbar(
-                                    it.message ?: "Error Booking", type = SnackBarType.ERROR
+                        val pickupSlot =
+                            state.value.pickupSlotState.timeSlotSelectedId?.let { pickupSlotId ->
+                                findTimeSlotById(state.value.pickupSlotState.slots, pickupSlotId)
+                            } ?: run {
+                                snackbarEvent(
+                                    "Please select pickup slot",
+                                    type = SnackBarType.WARNING
                                 )
-                            )
+                                return@launch
+                            }
+
+                        val cartItems = localCartRepository.getCartItems()
+                            .getOrElse {
+                                snackbarEvent("Failed to get cart items", type = SnackBarType.ERROR)
+                                return@launch
+                            }
+
+                        // Convert cart items to domain models and group by service ID
+                        val itemsByServiceId = cartItems.map { it.toDomain() }
+                            .groupBy { it.serviceId }
+
+                        // Create a map of service ID to selected drop time slot
+                        val dropSlotsByServiceId = mutableMapOf<String, TimeSlot>()
+                        state.value.bookingsSlotStates.forEach { bookingState ->
+                            if (bookingState.timeSlotSelectedId != null) {
+                                val dropSlot = findTimeSlotById(
+                                    bookingState.dateSlots,
+                                    bookingState.timeSlotSelectedId
+                                )
+                                if (dropSlot != null) {
+                                    // Associate this drop slot with all services in this booking group
+                                    bookingState.bookingServices.forEach { service ->
+                                        dropSlotsByServiceId[service.serviceId] = dropSlot
+                                    }
+                                }
+                            }
                         }
-                    }.onFailure { e ->
-                        val message = e.message ?: "Error Booking"
-                        snackbarEvent(message, type = SnackBarType.ERROR)
-                        Logger.e("SlotSelectionScreenViewModel", message)
-                        e.printStackTrace()
+
+                        createOrderDraftUseCase(
+                            pickupTimeSlot = pickupSlot,
+                            cartItemsByServiceId = itemsByServiceId,
+                            dropTimeSlotsByServiceId = dropSlotsByServiceId,
+                            deliveryNotes = state.value.deliveryNotes
+                        ).onErrorOrderDraftCreation(
+                            addressNotFound = {
+                                snackbarEvent(
+                                    "No address has been selected",
+                                    type = SnackBarType.ERROR
+                                )
+                            },
+                            addressNotServiceable = {
+                                snackbarEvent(
+                                    "Selected address is not serviceable",
+                                    type = SnackBarType.ERROR
+                                )
+                            },
+                            emptyCart = {
+                                snackbarEvent("Your cart is empty", type = SnackBarType.ERROR)
+                            },
+                            noSlotsSelected = {
+                                snackbarEvent(
+                                    "Please select all slots",
+                                    type = SnackBarType.WARNING
+                                )
+                            },
+                            invalidSlots = {
+                                snackbarEvent("Invalid slots selected", type = SnackBarType.WARNING)
+                            },
+                            other = { e ->
+                                snackbarEvent(
+                                    e.message ?: "An unexpected error occurred",
+                                    type = SnackBarType.ERROR
+                                )
+                                e.printStackTrace()
+                            }
+                        ).onSuccess { _ ->
+                            _uiEventsChannel.send(SlotSelectionScreenUiEvent.NavigateToReview)
+                        }
                     }
                 }
             }
 
+            is SlotSelectionScreenEvent.OnToggleBookingExpanded -> {
+                var isExpanded: Boolean? = null
+                updateState {
+                        copy(bookingsSlotStates = bookingsSlotStates.map { booking ->
+                            if (booking.id == event.bookingId) {
+                                isExpanded = booking.isExpanded
+                                booking.copy(isExpanded = !booking.isExpanded)
+                            } else booking
+                        }
+                    )
+                }
+                    Logger.d("OnToggleBookingExpanded", "Booking with id ${event.bookingId} is expanded: ${isExpanded}")
+            }
+
+            SlotSelectionScreenEvent.OnTogglePickupExpanded -> {
+                updateState {
+                    copy(pickupSlotState = pickupSlotState.copy(isExpanded = !pickupSlotState.isExpanded))
+                }
+            }
         }
     }
 
-    private fun getTimeSlotById(id: Int): TimeSlot? {
-        state.value.run {
-            for (dateSlot in pickupSlots) {
-                for (timeSlot in dateSlot.timeSlots) {
-                    if (timeSlot.id == id) return timeSlot
-                }
-            }
-            for (dateSlot in dropSlots) {
-                for (timeSlot in dateSlot.timeSlots) {
-                    if (timeSlot.id == id) return timeSlot
-                }
-            }
-        }
-        return null
+    /**
+     * Updates availability status for each time slot in a list of BookingSlotStates and selects the first valid slot.
+     *
+     * @param validSlotPredicate Function that determines if a slot is valid/available based on:
+     *        - startTimeStamp: The start time of the slot
+     *        - endTimeStamp: The end time of the slot
+     *        - bookingDurationInHrs: The service duration required for the booking
+     *        - isAvailable: The current availability status of the slot
+     * @return List of BookingSlotStates with updated availability and earliest valid selection
+     */
+    private inline fun List<BookingSlotState>.setAvailabilityAndEarliestSelection(
+        crossinline validSlotPredicate: (startTimeStamp: Long, endTimeStamp: Long, bookingDurationInHrs: Int, isAvailable: Boolean) -> Boolean
+    ): List<BookingSlotState> = map { bookingSlot ->
+        var firstValidDateTimeSlotIds: Pair<Int, Int>? = null
+        bookingSlot.copy(
+            dateSlots = bookingSlot.dateSlots.map { dateSlot ->
+                dateSlot.copy(
+                    timeSlots = dateSlot.timeSlots.map { timeSlot ->
+                        val isValidSlot = validSlotPredicate(
+                            timeSlot.startTimeStamp,
+                            timeSlot.endTimeStamp,
+                            bookingSlot.serviceDurationInHrs,
+                            timeSlot.isAvailable
+                        )
+                        if (isValidSlot && firstValidDateTimeSlotIds == null) firstValidDateTimeSlotIds =
+                            dateSlot.id to timeSlot.id
+                        timeSlot.copy(
+                            isAvailable = isValidSlot
+                        )
+                    }
+                )
+            },
+            timeSlotSelectedId = firstValidDateTimeSlotIds?.second,
+            dateSlotSelectedId = firstValidDateTimeSlotIds?.first
+        )
     }
 
     private fun submitValidation(): Boolean {
         state.value.apply {
-            if (pickupTimeSelectedId == null || dropTimeSelectedId == null) {
-                snackbarEvent("Please select both Pick and Drop slots", type = SnackBarType.WARNING)
+            if (pickupSlotState.timeSlotSelectedId == null) {
+                snackbarEvent("Please select pickup slot", type = SnackBarType.WARNING)
                 return false
             }
-            // check if drop selected is atleast 24 after pickup
-            if (
-                getTimeSlotById(dropTimeSelectedId)!!.startTimeStamp < getTimeSlotById(
-                    pickupTimeSelectedId
-                )!!.endTimeStamp.plusHours(processingDurationInHrs.value)
-            ) {
-                snackbarEvent(
-                    "Pick and drop slots must be 24 hours apart",
-                    type = SnackBarType.WARNING
-                )
+
+            if (bookingsSlotStates.any { it.timeSlotSelectedId == null }) {
+                snackbarEvent("Please select slots for all bookings", type = SnackBarType.WARNING)
                 return false
+            }
+
+            bookingsSlotStates.forEach { bookingSlot ->
+                val dropTimeSlot =
+                    findTimeSlotById(bookingSlot.dateSlots, bookingSlot.timeSlotSelectedId!!)
+                val pickupTimeSlot =
+                    findTimeSlotById(pickupSlotState.slots, pickupSlotState.timeSlotSelectedId!!)
+
+                if (dropTimeSlot != null && pickupTimeSlot != null) {
+                    if (dropTimeSlot.startTimeStamp < pickupTimeSlot.endTimeStamp.plusHours(
+                            bookingSlot.serviceDurationInHrs
+                        )
+                    ) {
+                        val serviceNames =
+                            bookingSlot.bookingServices.joinToString(", ") { it.serviceName }
+                        snackbarEvent(
+                            "Pick and drop slots for $serviceNames must be at least ${bookingSlot.serviceDurationInHrs} hours apart",
+                            type = SnackBarType.WARNING
+                        )
+                        return false
+                    }
+                }
             }
         }
         return true
@@ -261,52 +323,93 @@ class SlotSelectionScreenViewModel(
     }
 
     /**
-     * Add duration in hours to UTC in seconds
+     * Helper function to find a TimeSlot by its ID within a list of DateSlots
+     */
+    private fun findTimeSlotById(
+        dateSlots: List<DateSlot>,
+        timeSlotId: Int
+    ): TimeSlot? {
+        for (dateSlot in dateSlots) {
+            for (timeSlot in dateSlot.timeSlots) {
+                if (timeSlot.id == timeSlotId) {
+                    return timeSlot
+                }
+            }
+        }
+        return null
+    }
+
+    /**
+     * Add duration in hours to seconds
      * */
     private fun Long.plusHours(durationInHours: Int): Long {
         return this + (durationInHours * 60 * 60)
     }
 
-    private fun reloadScreenState() {
+    private fun triggerScreenLoad() {
         viewModelScope.launch {
-            updateState {
-                copy(
-                    isLoading = true
-                )
-            }
+            updateState { copy(isLoading = true) }
 
-            slotsRepository.fetchAvailableSlots().onSuccess { slotsDto ->
-                val slots = slotsDto.toDomain()
+            runCatching {
+                val cartItems = localCartRepository.getCartItems()
+                    .getOrElse { throw Exception("Fetch cart items failed") }
+                val slotsResponse = slotsRepository.fetchAvailableSlots()
+                    .getOrElse { throw Exception("Fetch cart items failed") }
+
+                val bookingSlots: List<BookingSlotState> =
+                    generateBookingSlots(cartItems, slotsResponse.dropSlots).run {
+                        val pickupStartTimeStamp =
+                            slotsResponse.pickupSlots.firstOrNull()?.timeSlots?.firstOrNull()?.startTimeStamp
+                        return@run if (pickupStartTimeStamp != null) {
+                            setAvailabilityAndEarliestSelection { startTimeStamp, _, bookingDurationInHrs, _ ->
+                                startTimeStamp >= pickupStartTimeStamp.plusHours(
+                                    bookingDurationInHrs
+                                )
+                            }
+                        } else this
+                    }
+
                 updateState {
                     copy(
                         isLoading = false,
-                        pickupSlots = slots.pickupSlots,
-                        dropSlots = slots.dropSlots,
-                        commonOffers = slots.commonOffers ?: emptyList(),
-                        selectedOfferCode = null,
-                        dropDateSelectedId = null,
-                        dropTimeSelectedId = null,
-                        pickupDateSelectedId = null,
-                        pickupTimeSelectedId = null,
+                        pickupSlotState = initialState.pickupSlotState.copy(
+                            slots = slotsResponse.pickupSlots,
+                            dateSlotSelectedId = slotsResponse.pickupSlots.firstOrNull()?.id,
+                            timeSlotSelectedId = slotsResponse.pickupSlots.firstOrNull()?.timeSlots?.firstOrNull()?.id
+                        ),
+                        bookingsSlotStates = bookingSlots,
                     )
                 }
-
-                onEvent(event = SlotSelectionScreenEvent.OnPickupDateSelected(slots.pickupSlots.first { it.isAvailable() }))
-                onEvent(event = SlotSelectionScreenEvent.OnDropDateSelect(slots.dropSlots.first { it.isAvailable() }))
-            }.onFailure { e ->
-                snackbarEvent(
-                    message = e.message ?: "Error Fetching Available Slots",
-                    type = SnackBarType.ERROR
-                )
-                e.printStackTrace()
-                updateState {
-                    copy(isLoading = false)
-                }
             }
+
         }
+    }
+
+    private fun generateBookingSlots(
+        items: List<CartItemEntity>,
+        dropSlots: List<DateSlot>
+    ): List<BookingSlotState> = items.map {
+        BookingServiceMetadata(
+            serviceId = it.serviceId,
+            serviceName = it.serviceName,
+            imageUrl = it.serviceImageUrl,
+            durationInHrs = it.deliveryTimeMaxInHrs ?: it.deliveryTimeMinInHrs
+        )
+    }.distinctBy {
+        it.serviceId
+    }.groupBy {
+        it.durationInHrs
+    }.map { (durationInHours, bookingServiceMetadata) ->
+        BookingSlotState(
+            bookingServices = bookingServiceMetadata,
+            serviceDurationInHrs = durationInHours,
+            dateSlots = dropSlots,
+            isExpanded = false
+        )
     }
 
     private fun updateState(action: SlotSelectionScreenState.() -> SlotSelectionScreenState) {
         _state.update(action)
     }
+
 }

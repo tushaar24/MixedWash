@@ -1,10 +1,10 @@
 package com.mixedwash.features.common.di
 
 import com.mixedwash.TestApiKeyConfig
-import com.mixedwash.core.booking.di.BookingsModule
+import com.mixedwash.core.orders.di.BookingsModule
 import com.mixedwash.core.presentation.navigation.NavigationModule
 import com.mixedwash.features.address.di.AddressModule
-import com.mixedwash.features.booking_details.di.BookingDetailsModule
+import com.mixedwash.features.order_details.di.OrderDetailsModule
 import com.mixedwash.features.common.data.service.LocationService
 import com.mixedwash.features.common.domain.usecases.FindUserByPhoneUseCase
 import com.mixedwash.features.common.presentation.phone.PhoneScreenViewModel
@@ -38,7 +38,7 @@ val CommonModule = module {
         LocalCartModule,
         BookingsModule,
         SlotSelectionModule,
-        BookingDetailsModule
+        OrderDetailsModule
     )
 
     single<OnboardingRepository> { OnboardingRepositoryImpl() }

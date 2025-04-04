@@ -1,7 +1,6 @@
 package com.mixedwash.features.slot_selection.presentation
 
 import BrandTheme
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -36,7 +35,8 @@ import com.mixedwash.core.presentation.util.Logger
 import com.mixedwash.core.presentation.util.ObserveAsEvents
 import com.mixedwash.features.services.presentation.components.DefaultButtonLarge
 import com.mixedwash.features.slot_selection.domain.model.response.DateSlot
-import com.mixedwash.features.slot_selection.presentation.components.Coupon
+import com.mixedwash.features.slot_selection.presentation.components.SlotContainer
+import com.mixedwash.features.slot_selection.presentation.components.SlotContainerForPickup
 import com.mixedwash.features.slot_selection.presentation.components.DateRow
 import com.mixedwash.features.slot_selection.presentation.components.DeliveryNotes
 import com.mixedwash.features.slot_selection.presentation.components.TimeSlotGrid
@@ -71,9 +71,9 @@ fun SlotSelectionScreen(
             is SlotSelectionScreenUiEvent.NavigateToReview -> {
                 Logger.d("SlotSelectionScreen", "NavigateToReview")
                 navController.navigate(
-                    Route.BookingDetailsRoute(
+                    Route.OrderDetailsRoute(
                         bookingId = null,
-                        destinationType = Route.BookingDetailsRoute.DestinationType.CONFIRM_DRAFT_BOOKING
+                        destinationType = Route.OrderDetailsRoute.DestinationType.CONFIRM_DRAFT_ORDER
                     )
                 )
 
@@ -99,6 +99,7 @@ fun SlotSelectionScreen(
                 }
             )
 
+
             val scrollState = rememberScrollState()
             Column(
                 modifier = Modifier
@@ -115,95 +116,59 @@ fun SlotSelectionScreen(
                 )
             ) {
                 Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-
                     Text(
                         "Pickup Slot",
                         style = BrandTheme.typography.subtitle1.copy(lineHeight = 24.sp)
                     )
                     Spacer(Modifier.height(2.dp))
 
-                    val onPickupDateClick: (DateSlot) -> Unit = remember(state.screenEvent) {
-                        { dateSlot ->
+                    SlotContainerForPickup(
+                        pickupSlotState = state.pickupSlotState,
+                        onDateSelected = { dateSlot ->
                             state.screenEvent(SlotSelectionScreenEvent.OnPickupDateSelected(dateSlot))
-                        }
-                    }
-
-                    DateRow(
-                        slots = state.pickupSlots, onClick = onPickupDateClick,
-                        selectedDateId = state.pickupDateSelectedId
-                    )
-                    TimeSlotGrid(
-                        modifier = Modifier.fillMaxWidth(),
-                        dateSlot = state.pickupSlots.firstOrNull { it.id == state.pickupDateSelectedId },
-                        selectedTimeId = state.pickupTimeSelectedId,
-                        onSlotSelected = {
-                            state.screenEvent(SlotSelectionScreenEvent.OnPickupTimeSelected(it))
-                        }
-                    )
-
-
-                }
-
-                Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                    Text(
-                        "Drop Slot",
-                        style = BrandTheme.typography.subtitle1.copy(lineHeight = 24.sp)
-                    )
-                    Spacer(Modifier.height(2.dp))
-
-                    val onDropDateClick: (DateSlot) -> Unit = remember(state.screenEvent) {
-                        { dateSlot ->
-                            state.screenEvent(SlotSelectionScreenEvent.OnDropDateSelect(dateSlot))
-                        }
-                    }
-
-                    DateRow(
-                        slots = state.dropSlots, onClick = onDropDateClick,
-                        selectedDateId = state.dropDateSelectedId
-                    )
-
-
-                    TimeSlotGrid(modifier = Modifier.fillMaxWidth(),
-                        dateSlot = state.dropSlots.firstOrNull { it.id == state.dropDateSelectedId },
-                        selectedTimeId = state.dropTimeSelectedId,
-                        onSlotSelected = {
-                            state.screenEvent(SlotSelectionScreenEvent.OnDropTimeSelected(it))
-                        })
-
-                }
-
-                val offers = state.getOffers()
-                if (offers.isNotEmpty()) {
-                    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                        Text("Offers", style = BrandTheme.typography.subtitle1)
-
-                        Column(
-                            verticalArrangement = Arrangement.spacedBy(8.dp),
-                            modifier = Modifier.animateContentSize()
-                        ) {
-                            offers.forEach { offer ->
-                                Coupon(
-                                    title = offer.title,
-                                    subtitle = offer.subtitle,
-                                    selected = offer.code == state.selectedOfferCode,
-                                    onClick = {
-                                        state.screenEvent(
-                                            SlotSelectionScreenEvent.OnOfferSelected(
-                                                offer
-                                            )
-                                        )
-                                    },
-                                    icon = offer.icon
+                        },
+                        onTimeSelected = { dateSlot, timeSlot ->
+                            state.screenEvent(
+                                SlotSelectionScreenEvent.OnPickupTimeSelected(
+                                    dateSlot = dateSlot,
+                                    timeSlot = timeSlot
                                 )
-                            }
-                        }
+                            )
+                        },
+                        onTogglePickupExpanded = { state.screenEvent(SlotSelectionScreenEvent.OnTogglePickupExpanded) }
+                    )
+                }
 
-                    }
+                // Show booking slots for each service group
+                state.bookingsSlotStates.forEach { bookingSlotState ->
+                    SlotContainer(
+                        bookingSlotState = bookingSlotState,
+                        onDateSelected = { dateSlot ->
+                            state.screenEvent(SlotSelectionScreenEvent.OnBookingDateSelected(
+                                bookingId = bookingSlotState.id,
+                                dateSlot = dateSlot
+                            ))
+                        },
+                        onTimeSelected = { dateSlot, timeSlot ->
+                            state.screenEvent(SlotSelectionScreenEvent.OnBookingTimeSelected(
+                                bookingId = bookingSlotState.id,
+                                dateSlot = dateSlot,
+                                timeSlot = timeSlot
+                            ))
+                        },
+                        onToggleBookingExpanded = { bookingId ->
+                            state.screenEvent(
+                                SlotSelectionScreenEvent.OnToggleBookingExpanded(
+                                    bookingId
+                                )
+                            )
+                        }
+                    )
                 }
 
                 val onDeliveryNotesChange: (String) -> Unit = remember(state.screenEvent) {
                     { value ->
-                        state.screenEvent(SlotSelectionScreenEvent.OnDeliveryNotesChange(value))
+                        state.screenEvent(SlotSelectionScreenEvent.OnDeliveryNotesUpdate(value))
                     }
                 }
 
@@ -213,11 +178,14 @@ fun SlotSelectionScreen(
                     onValueChange = onDeliveryNotesChange
                 )
             }
-            val isEnabled by remember(state.pickupTimeSelectedId, state.dropTimeSelectedId) {
+            
+            val isEnabled by remember {
                 derivedStateOf {
-                    state.pickupTimeSelectedId != null && state.dropTimeSelectedId != null
+                    state.pickupSlotState.timeSlotSelectedId != null &&
+                    state.bookingsSlotStates.all { it.timeSlotSelectedId != null }
                 }
             }
+            
             ElevatedShape(scrollState = scrollState) {
                 DefaultButtonLarge(
                     modifier = Modifier.fillMaxWidth().padding(horizontal = screenHorizontalPadding),

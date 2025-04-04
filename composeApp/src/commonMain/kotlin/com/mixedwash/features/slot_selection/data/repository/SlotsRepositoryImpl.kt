@@ -4,6 +4,8 @@ import com.mixedwash.features.slot_selection.data.model.response.AvailableSlotsR
 import com.mixedwash.features.slot_selection.domain.api.FillerSlotsApi
 import com.mixedwash.features.slot_selection.domain.api.SlotsApi
 import com.mixedwash.features.slot_selection.domain.model.FillerConfig
+import com.mixedwash.features.slot_selection.domain.model.response.AvailableSlotsResponse
+import com.mixedwash.features.slot_selection.domain.model.response.SlotSelectionMapper.toDomain
 import com.mixedwash.features.slot_selection.domain.repository.SlotsRepository
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DatePeriod
@@ -16,7 +18,7 @@ class SlotsRepositoryImpl(
     private val fillerSlotsApi: FillerSlotsApi,
 ) : SlotsRepository {
 
-    override suspend fun fetchAvailableSlots(): Result<AvailableSlotsResponseDto> {
+    override suspend fun fetchAvailableSlots(): Result<AvailableSlotsResponse> {
         return runCatching {
             // Get today's date
             val today = Clock.System.now()
@@ -35,9 +37,8 @@ class SlotsRepositoryImpl(
             val allSlots = listOf(todaySlots) + futureSlots
             AvailableSlotsResponseDto(
                 pickupSlots = allSlots,
-                dropSlots = allSlots // Assuming same slots for pickup and drop
-            )
-
+                dropSlots = allSlots
+            ).toDomain()
         }
     }
 }

@@ -1,7 +1,6 @@
 package com.mixedwash.features.slot_selection.presentation.components
 
 import BrandTheme
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -15,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -56,18 +54,17 @@ fun TimeSlotButton(
     val strokeColor = if (unavailable) {
         BrandTheme.colors.gray.normal
     } else if (!selected) {
-        BrandTheme.colors.gray.normal
+        BrandTheme.colors.gray.normalDark
     } else {
         Color.Transparent
     }
 
-    val containerColor by animateColorAsState(
-        if (selected) {
+    val containerColor = if (selected) {
             BrandTheme.colors.gray.darker
         } else {
             Color.Transparent
         }
-    )
+
 
     val subtitleColor = if (unavailable) {
         BrandTheme.colors.gray.normal

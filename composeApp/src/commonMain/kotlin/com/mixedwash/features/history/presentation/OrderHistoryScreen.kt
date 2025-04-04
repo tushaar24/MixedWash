@@ -22,8 +22,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.mixedwash.WindowInsetsContainer
-import com.mixedwash.core.booking.domain.model.BookingState
-import com.mixedwash.core.booking.domain.model.calculateTotalPrice
+import com.mixedwash.core.orders.domain.model.BookingState
+import com.mixedwash.core.orders.domain.model.calculateTotalPrice
 import com.mixedwash.core.presentation.components.DefaultHeader
 import com.mixedwash.core.presentation.components.dump.TitleWithIcon
 import com.mixedwash.core.presentation.util.ObserveAsEvents
@@ -113,18 +113,20 @@ fun OrderHistoryScreen(
                             modifier = Modifier.padding(horizontal = 16.dp),
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
+                            val firstBooking = order.bookings.first()
+                            // TODO : NEED FIX
                             OrderSummaryCard(
                                 orderId = order.id,
-                                titles = order.bookingItems.map { it.serviceName },
-                                ordered = formatTimestamp(order.pickupSlotSelected.startTimeStamp),
-                                delivery = formatTimestamp(order.dropSlotSelected.startTimeStamp),
-                                status = when (order.state) {
+                                titles = order.bookings.flatMap { it.bookingItems.map { item -> item.serviceName } },
+                                ordered = formatTimestamp(firstBooking.pickupSlotSelected.startTimeStamp),
+                                delivery = formatTimestamp(firstBooking.dropSlotSelected.startTimeStamp),
+                                status = when (firstBooking.state) {
                                     is BookingState.Cancelled -> OrderDeliveryStatus.CANCELLED
                                     is BookingState.Delivered -> OrderDeliveryStatus.DELIVERED
                                     else -> OrderDeliveryStatus.PROCESSING
                                 },
-                                cost = if (order.state is BookingState.Delivered)
-                                    formatIndianCurrency(order.calculateTotalPrice())
+                                cost = if (firstBooking.state is BookingState.Delivered)
+                                    formatIndianCurrency(firstBooking.calculateTotalPrice())
                                 else null,
                                 onDetails = {
                                     onEvent(OrderHistoryScreenEvent.OnOrderDetailsScreen(order.id))
