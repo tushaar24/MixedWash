@@ -60,7 +60,13 @@ fun CartItemEntry(
 
     Row(modifier = modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
         Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            Text(text = name, fontSize = 12.sp, fontWeight = FontWeight.Medium, lineHeight = 16.sp)
+            Text(
+                text = name,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Medium,
+                lineHeight = 16.sp,
+                color = BrandTheme.colors.gray.dark
+            )
             Text(
                 text = description,
                 fontSize = 12.sp,

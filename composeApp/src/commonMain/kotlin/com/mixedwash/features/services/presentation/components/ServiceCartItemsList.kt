@@ -32,7 +32,7 @@ fun ServiceCartItemsList(
         HorizontalDivider(
             color = dividerBlack,
             thickness = 1.dp,
-            modifier = Modifier.padding(top = 8.dp)
+            modifier = Modifier.padding(vertical = 8.dp)
         )
 
         LazyColumn(

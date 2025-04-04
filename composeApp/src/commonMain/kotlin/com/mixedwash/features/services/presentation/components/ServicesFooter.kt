@@ -95,7 +95,7 @@ fun ServicesFooter(
 
                 DefaultButtonLarge(
                     onClick = onProceed,
-                    text = "PROCEED",
+                    text = "Proceed",
                 )
             }
         }

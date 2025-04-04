@@ -1,6 +1,5 @@
 package com.mixedwash.features.services.presentation.components
 
-import BrandTheme
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -13,6 +12,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mixedwash.features.services.presentation.model.ServiceDetailPresentation
+import com.mixedwash.ui.theme.Gray700
 
 
 @Composable
@@ -24,7 +24,7 @@ fun DetailsList(modifier: Modifier = Modifier, details: List<ServiceDetailPresen
             fontWeight = FontWeight.SemiBold,
             lineHeight = 24.sp,
             fontSize = 16.sp,
-            color = BrandTheme.colors.gray.normalDark
+            color = Gray700
         )
         Spacer(Modifier.height(16.dp))
         details.forEach { detail ->

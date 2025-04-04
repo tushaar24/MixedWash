@@ -32,7 +32,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.mixedwash.core.presentation.components.dropShadow
-import com.mixedwash.core.presentation.util.Logger
 import com.mixedwash.features.services.presentation.ServiceSubItemsListState
 import com.mixedwash.features.services.presentation.model.Gender
 import com.mixedwash.features.services.presentation.model.ItemPricing
@@ -70,7 +69,7 @@ fun SubItemsList(
             )
 
         }
-        Text(text = state.description, fontSize = 14.sp, fontWeight = FontWeight.Normal)
+//        Text(text = state.description, fontSize = 14.sp, fontWeight = FontWeight.Normal)
         DefaultSearchBar(
             query = state.query,
             placeHolder = state.placeHolder,

@@ -1,5 +1,6 @@
 package com.mixedwash.features.services.presentation.components
 
+import BrandTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -46,15 +47,15 @@ fun ServicePricing(
                                 fontWeight = FontWeight.Medium
                             )
                         ) {
-                            append("₹${pricing.pricePerUnit.div(100)}/")
+                            append("₹${pricing.pricePerUnit.div(100)}")
                         }
                         withStyle(
                             style = SpanStyle(
-                                fontSize = 12.sp,
+                                fontSize = 10.sp,
                                 fontWeight = FontWeight.Medium
                             )
                         ) {
-                            append(pricing.unit)
+                            append(" /${pricing.unit}")
                         }
 
                     }
@@ -103,8 +104,29 @@ fun ServicePricing(
                     )
                 }
 
+                val minCartText = buildAnnotatedString {
+                    "${pricing.pricePerUnit}/${pricing.unit}"
+                    withStyle(
+                        style = SpanStyle(
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                    ) {
+                        append("₹${pricing.minimumPrice.div(100)}")
+                    }
+                    withStyle(
+                        style = SpanStyle(
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                    ) {
+                        append(" (${pricing.minimumUnits}${pricing.unit})")
+                    }
+                }
+
+
                 Text(
-                    text = "₹${pricing.minimumPrice.div(100)} (${pricing.minimumUnits}${pricing.unit})",
+                    text = minCartText,
                     color = Gray800,
                     fontWeight = FontWeight.Medium,
                     fontSize = 14.sp,

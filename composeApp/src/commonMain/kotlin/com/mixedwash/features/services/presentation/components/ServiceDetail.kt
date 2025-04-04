@@ -34,8 +34,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -111,9 +109,9 @@ fun ServiceDetail(
                         text = service.title,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 24.sp,
-                        lineHeight = 32.sp,
-                        letterSpacing = (-.48).sp,
-                        color = BrandTheme.colors.gray.dark
+                        lineHeight = 24.sp,
+                        letterSpacing = (-1).sp,
+                        color = BrandTheme.colors.gray.darker
                     )
                     val deliveryTime by remember(service) {
                         derivedStateOf {
@@ -138,10 +136,11 @@ fun ServiceDetail(
 
                             Text(
                                 text = text,
-                                fontSize = 14.sp,
+                                fontSize = 12.sp,
                                 letterSpacing = (-0.14).sp,
                                 lineHeight = 16.8.sp,
-                                fontWeight = FontWeight.Medium
+                                fontWeight = FontWeight.Medium,
+                                color = BrandTheme.colors.gray.darker
                             )
                         }
                     }
@@ -151,6 +150,7 @@ fun ServiceDetail(
                     color = Gray600,
                     fontSize = 12.sp,
                     lineHeight = 16.8.sp,
+                    minLines = 3
                 )
 
                 service.pricingMetadata?.let { pricingMetadata ->
@@ -191,21 +191,21 @@ fun ServiceDetail(
             Spacer(Modifier.height(32.dp))
         }
 
-        Box(
-            modifier = Modifier
-                .height(32.dp)
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .background(
-                    brush = Brush.verticalGradient(
-                        colorStops = arrayOf(
-                            Pair(0f, Color.Transparent),
-                            Pair(1f, BrandTheme.colors.gray.light),
-                        ),
-                        startY = 0f,
-                    )
-                )
-        )
+//        Box(
+//            modifier = Modifier
+//                .height(32.dp)
+//                .align(Alignment.BottomCenter)
+//                .fillMaxWidth()
+//                .background(
+//                    brush = Brush.verticalGradient(
+//                        colorStops = arrayOf(
+//                            Pair(0f, Color.Transparent),
+//                            Pair(1f, BrandTheme.colors.gray.light),
+//                        ),
+//                        startY = 0f,
+//                    )
+//                )
+//        )
 
 //        Box(
 //            modifier = Modifier
@@ -250,6 +250,7 @@ fun ServiceInfoTab(
                 text = title,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Medium,
+                lineHeight = 14.sp,
                 color = contentColor
             )
             Text(
@@ -263,7 +264,7 @@ fun ServiceInfoTab(
         Icon(
             imageVector = vectorResource(resource = Res.drawable.ic_arrow_right),
             modifier = Modifier.size(22.dp),
-            tint = BrandTheme.colors.gray.normal,
+            tint = BrandTheme.colors.gray.c400,
             contentDescription = null
         )
     }

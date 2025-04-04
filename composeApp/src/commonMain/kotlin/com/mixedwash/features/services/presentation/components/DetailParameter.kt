@@ -16,7 +16,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mixedwash.ui.theme.Gray700
-import com.mixedwash.ui.theme.Gray800
 
 @Composable
 fun DetailParameter(key: String, value: String, modifier: Modifier = Modifier) {
@@ -28,7 +27,7 @@ fun DetailParameter(key: String, value: String, modifier: Modifier = Modifier) {
         Text(
             modifier = Modifier.weight(1f),
             text = key,
-            color = Gray800,
+            color = Gray700,
             fontSize = 12.sp,
             lineHeight = 16.sp,
             maxLines = 2,
@@ -40,7 +39,6 @@ fun DetailParameter(key: String, value: String, modifier: Modifier = Modifier) {
             Text(
                 text = value,
                 color = Gray700,
-                style = BrandTheme.typography.subtitle1,
                 fontSize = 12.sp,
                 lineHeight = 16.sp,
                 fontWeight = FontWeight.Medium, overflow = TextOverflow.Ellipsis,

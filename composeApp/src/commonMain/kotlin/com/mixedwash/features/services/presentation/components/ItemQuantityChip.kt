@@ -37,9 +37,9 @@ fun ItemQuantityChip(
 ) {
     val containerColor by animateColorAsState(if (quantity > 0) Green else BrandTheme.colors.gray.darker)
     val width by animateDpAsState(if (quantity > 0) 64.dp else 34.dp)
-    Column(horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.spacedBy(4.dp)) {
+    Column(modifier = modifier, horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.spacedBy(4.dp)) {
         Row(
-            modifier = modifier
+            modifier = Modifier
                 .width(width)
                 .height(24.dp)
                 .clip(RoundedCornerShape(8.dp))
