@@ -1,7 +1,6 @@
 package com.mixedwash.features.home.presentation
 
 import BrandTheme
-import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
@@ -15,7 +14,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -49,7 +47,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.zIndex
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -61,7 +58,6 @@ import com.mixedwash.core.presentation.components.DialogPopupData
 import com.mixedwash.core.presentation.components.DropShadowConfig
 import com.mixedwash.core.presentation.components.ElevatedBox
 import com.mixedwash.core.presentation.components.ShadowDirection
-import com.mixedwash.core.presentation.components.noRippleClickable
 import com.mixedwash.core.presentation.models.SnackbarHandler
 import com.mixedwash.core.presentation.navigation.AppCloser
 import com.mixedwash.core.presentation.util.Logger
@@ -72,11 +68,11 @@ import com.mixedwash.features.home.presentation.components.HomeBanner
 import com.mixedwash.features.home.presentation.components.HomeTopBar
 import com.mixedwash.features.home.presentation.components.IntroSection
 import com.mixedwash.features.home.presentation.components.OfferCard
+import com.mixedwash.features.home.presentation.components.OrderStatusWidget
 import com.mixedwash.features.home.presentation.components.ServiceUnavailable
 import com.mixedwash.features.home.presentation.components.ServicesSection
 import com.mixedwash.ui.theme.Gray50
 import com.mixedwash.ui.theme.Gray800
-import com.mixedwash.ui.theme.components.DefaultCircularProgressIndicator
 import com.mixedwash.ui.theme.components.IconButton
 import com.mixedwash.ui.theme.screenHorizontalPadding
 import kotlinx.coroutines.flow.Flow
@@ -152,7 +148,7 @@ fun HomeScreen(
 
             HomeScreenUiEvent.DismissAvailabilityBottomSheet -> {
                 scope.launch {
-                    if(serviceBottomSheetState.isVisible) {
+                    if (serviceBottomSheetState.isVisible) {
                         serviceBottomSheetState.hide()
                     }
                 }.invokeOnCompletion {
@@ -197,7 +193,8 @@ fun HomeScreen(
     }
 
     state.addressBottomSheetState?.let { state ->
-        ModalBottomSheet(sheetState = addressSheetState,
+        ModalBottomSheet(
+            sheetState = addressSheetState,
             shape = BrandTheme.shapes.rectangle,
             dragHandle = {},
             containerColor = BrandTheme.colors.background,
@@ -284,9 +281,19 @@ fun HomeScreen(
             }
 
             Column(
-                modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 32.dp, bottom=24.dp),
+                modifier = Modifier.padding(
+                    start = 16.dp,
+                    end = 16.dp,
+                    top = 32.dp,
+                    bottom = 24.dp
+                ),
                 verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
+
+                state.activeOrders?.let {
+                    OrderStatusWidget()
+                }
+
                 state.services?.let {
                     ServicesSection(
                         modifier = Modifier,
