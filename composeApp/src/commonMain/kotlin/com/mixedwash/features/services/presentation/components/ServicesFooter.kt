@@ -11,16 +11,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.mixedwash.ui.theme.Gray100
 import com.mixedwash.ui.theme.Gray300
-import com.mixedwash.ui.theme.Gray900
 
 @Composable
 fun ServicesFooter(
@@ -34,7 +29,7 @@ fun ServicesFooter(
         ) {
             HorizontalDivider(thickness = 0.5.dp, color = BrandTheme.colors.gray.c200)
             Row(
-                modifier = Modifier.fillMaxWidth().background(Gray100)
+                modifier = Modifier.fillMaxWidth().background(BrandTheme.colors.gray.lighter)
                     .padding(horizontal = 16.dp, vertical = 24.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween

@@ -2,6 +2,7 @@ package com.mixedwash.features.support.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mixedwash.features.common.util.OpenDialer
 import com.mixedwash.features.support.data.FaqService
 import com.mixedwash.features.support.domain.model.FaqData
 import com.mixedwash.features.support.domain.model.FaqItemCategoryDto
@@ -13,7 +14,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class FaqScreenViewModel(
-    private val faqService: FaqService
+    private val faqService: FaqService,
+    private val openDialer: OpenDialer
 ) : ViewModel() {
 
     private val initialState = FaqScreenState(
@@ -49,7 +51,7 @@ class FaqScreenViewModel(
                 filterByTag(event.tag)
             }
 
-            is FaqScreenEvent.OnCallButtonClicked -> raiseCallIntent()
+            is FaqScreenEvent.OnCallButtonClicked -> raiseCallIntent(event.phoneNumber)
         }
     }
 
@@ -112,7 +114,7 @@ class FaqScreenViewModel(
         }
     }
 
-    private fun raiseCallIntent() {
-        // TODO: implement
+    private fun raiseCallIntent(phoneNo: String) {
+        openDialer.open(phoneNo)
     }
 }

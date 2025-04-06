@@ -6,10 +6,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -20,10 +18,12 @@ import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -47,7 +47,6 @@ import com.mixedwash.features.services.presentation.components.ServiceTab
 import com.mixedwash.features.services.presentation.components.ServicesFooter
 import com.mixedwash.features.services.presentation.components.SubItemsList
 import com.mixedwash.ui.theme.components.HeaderIconButton
-import com.mixedwash.ui.theme.headerContentSpacing
 import com.mixedwash.windowInsetsContainer
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
@@ -235,114 +234,123 @@ fun ServicesScreen(
         }
     }
 
-        ObserveAsEvents(uiEventsFlow) { event ->
-            when (event) {
-                ServicesScreenUiEvent.OpenProcessingDetailsBottomSheet -> {
-                    scope.launch {
-                        if (!processingDetailsSheetState.isVisible) {
-                            processingDetailsSheetState.show()
-                        }
-                    }
-                }
-
-                is ServicesScreenUiEvent.ShowSnackbar -> {
-                    snackbarHandler(event.payload)
-                }
-
-                ServicesScreenUiEvent.CloseSubItemsSheet -> {
-                    scope.launch {
-                        if (sheetState.isVisible) {
-                            sheetState.hide()
-                        }
-                    }.invokeOnCompletion {
-                        onEvent(ServicesScreenEvent.OnClosedSubItemsSheet)
-                    }
-                }
-
-                is ServicesScreenUiEvent.NavigateToRoute -> {
-                    navController.navigate(event.route)
-                }
-
-                ServicesScreenUiEvent.OpenLoadEstimatorBottomSheet -> {
-                    scope.launch {
-                        if (!loadEstimatorSheetState.isVisible) {
-                            loadEstimatorSheetState.show()
-                        }
+    ObserveAsEvents(uiEventsFlow) { event ->
+        when (event) {
+            ServicesScreenUiEvent.OpenProcessingDetailsBottomSheet -> {
+                scope.launch {
+                    if (!processingDetailsSheetState.isVisible) {
+                        processingDetailsSheetState.show()
                     }
                 }
             }
-        }
 
-        Column(modifier = modifier.fillMaxSize().windowInsetsContainer()) {
+            is ServicesScreenUiEvent.ShowSnackbar -> {
+                snackbarHandler(event.payload)
+            }
 
-            DefaultHeader(
-                title = "",
-                headingSize = HeadingSize.Subtitle1,
-                headingAlign = HeadingAlign.Start,
-                navigationButton = {
-                    HeaderIconButton(
-                        imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowLeft,
-                        onClick = { navController.navigateUp() }
-                    )
-                },
-                actionButtons = {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(end = 16.dp)
-                            .noRippleClickable { onEvent(ServicesScreenEvent.OnFaqClick) }
-                    ) {
-                        Icon(
-                            imageVector = vectorResource(Res.drawable.ic_faq),
-                            contentDescription = null,
-                            modifier = Modifier.size(12.dp)
-                        )
-                        Text(
-                            text = "faqs",
-                            lineHeight = 18.sp,
-                            fontSize = 14.sp,
-                            letterSpacing = (-0.5).sp
-                        )
+            ServicesScreenUiEvent.CloseSubItemsSheet -> {
+                scope.launch {
+                    if (sheetState.isVisible) {
+                        sheetState.hide()
                     }
+                }.invokeOnCompletion {
+                    onEvent(ServicesScreenEvent.OnClosedSubItemsSheet)
                 }
-            )
-            Spacer(modifier = Modifier.height(headerContentSpacing))
-            Column(
-                modifier = modifier
-                    .fillMaxSize(),
-            ) {
+            }
 
-                Row(modifier = Modifier.weight(1f)) {
-                    LazyColumn(verticalArrangement = Arrangement.spacedBy(32.dp)) {
-                        itemsIndexed(state.services) { _, service ->
-                            ServiceTab(
-                                service = service,
-                                addedToCart = state.cartItems.any { it.serviceId == service.serviceId },
-                                isSelected = service.serviceId == state.selectedServiceId,
-                                onClick = { onEvent(ServicesScreenEvent.OnServiceClick(service.serviceId)) },
-                                modifier = Modifier.padding(horizontal = 16.dp),
-                            )
-                        }
+            is ServicesScreenUiEvent.NavigateToRoute -> {
+                navController.navigate(event.route)
+            }
+
+            ServicesScreenUiEvent.OpenLoadEstimatorBottomSheet -> {
+                scope.launch {
+                    if (!loadEstimatorSheetState.isVisible) {
+                        loadEstimatorSheetState.show()
                     }
-
-                    state.selectedServiceId?.let { serviceId ->
-                        val service =
-                            state.services.first { service -> service.serviceId == serviceId }
-                        ServiceDetail(
-                            service = service,
-                            onEvent = onEvent,
-                            modifier = Modifier.weight(1f).fillMaxHeight(),
-                            serviceCartItems = state.cartItems.filter { it.serviceId == serviceId }
-                        )
-                    }
-                }
-
-                if (state.cartItems.isNotEmpty()) {
-                    ServicesFooter(
-                        selectedItemsSize = state.cartItems.fold(initial = 0) { acc, cartItem -> acc + cartItem.quantity },
-                        onProceed = { onEvent(ServicesScreenEvent.OnSubmit) },
-                    )
                 }
             }
         }
     }
+
+    Column(modifier = modifier.fillMaxSize().windowInsetsContainer()) {
+
+        DefaultHeader(
+            title = "",
+            headingSize = HeadingSize.Subtitle1,
+            headingAlign = HeadingAlign.Start,
+            navigationButton = {
+                HeaderIconButton(
+                    imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowLeft,
+                    onClick = { navController.navigateUp() }
+                )
+            },
+            actionButtons = {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(end = 16.dp)
+                        .noRippleClickable { onEvent(ServicesScreenEvent.OnFaqClick) }
+                ) {
+                    Icon(
+                        imageVector = vectorResource(Res.drawable.ic_faq),
+                        contentDescription = null,
+                        modifier = Modifier.size(12.dp)
+                    )
+                    Text(
+                        text = "faqs",
+                        lineHeight = 18.sp,
+                        fontSize = 14.sp,
+                        letterSpacing = (-0.5).sp
+                    )
+                }
+            }
+        )
+        HorizontalDivider(
+            thickness = 1.dp,
+            color = BrandTheme.colors.gray.c200,
+        )
+        Column(
+            modifier = modifier
+                .fillMaxSize(),
+        ) {
+
+            Row(modifier = Modifier.weight(1f)) {
+                LazyColumn(verticalArrangement = Arrangement.spacedBy(32.dp)) {
+                    itemsIndexed(state.services) { _, service ->
+                        ServiceTab(
+                            service = service,
+                            addedToCart = state.cartItems.any { it.serviceId == service.serviceId },
+                            isSelected = service.serviceId == state.selectedServiceId,
+                            onClick = { onEvent(ServicesScreenEvent.OnServiceClick(service.serviceId)) },
+                            modifier = Modifier.padding(horizontal = 16.dp).padding(top = 16.dp),
+                        )
+                    }
+                }
+
+                VerticalDivider(
+                    thickness = 1.dp,
+                    color = BrandTheme.colors.gray.c200,
+                    modifier = Modifier.padding(horizontal = 8.dp)
+                )
+
+                state.selectedServiceId?.let { serviceId ->
+                    val service =
+                        state.services.first { service -> service.serviceId == serviceId }
+                    ServiceDetail(
+                        service = service,
+                        onEvent = onEvent,
+                        modifier = Modifier.weight(1f).fillMaxHeight().padding(top = 16.dp),
+                        serviceCartItems = state.cartItems.filter { it.serviceId == serviceId }
+                    )
+                }
+            }
+
+            if (state.cartItems.isNotEmpty()) {
+                ServicesFooter(
+                    selectedItemsSize = state.cartItems.fold(initial = 0) { acc, cartItem -> acc + cartItem.quantity },
+                    onProceed = { onEvent(ServicesScreenEvent.OnSubmit) },
+                )
+            }
+        }
+    }
+}
