@@ -1,6 +1,14 @@
 package com.mixedwash.features.services.presentation.components
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,6 +33,7 @@ fun ServiceCartItemsList(
     onEvent: (ServicesScreenEvent) -> Unit,
     service: ServicePresentation
 ) {
+
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -54,36 +63,53 @@ fun ServiceCartItemsList(
                     minPrice = if (item.itemPricing is ItemPricing.ServiceItemPricingPresentation) item.itemPricing.minimumPrice else null
                 )
             }
-
         }
-        if (serviceCartItems.isEmpty() ||
-            service.pricingMetadata is PricingMetadataPresentation.SubItemsPricingPresentation
-        ) {
-            service.pricingMetadata?.let { pricingMetadata ->
-                AddItemButton(
-                    onClick = {
-                        when (pricingMetadata) {
-                            is PricingMetadataPresentation.ServicePricingPresentation -> {
-                                onEvent(
-                                    ServicesScreenEvent.OnItemAdd(
-                                        itemId = service.items?.first()?.itemId ?: ""
+
+// Use AnimatedContent for smooth transitions
+        AnimatedContent(
+            targetState = serviceCartItems.isEmpty() || service.pricingMetadata is PricingMetadataPresentation.SubItemsPricingPresentation,
+            transitionSpec = {
+                if (targetState) {
+
+                    // When Add button should appear
+                    (slideInVertically(animationSpec = tween(durationMillis = 300)) { height -> height } +
+                            fadeIn(animationSpec = tween(durationMillis = 300))) togetherWith
+                            (slideOutVertically(animationSpec = tween(durationMillis = 300)) { height -> -height } +
+                                    fadeOut(animationSpec = tween(durationMillis = 300)))
+                } else {
+                    // When Add button should disappear
+                    (slideInVertically(animationSpec = tween(durationMillis = 300)) { height -> -height } +
+                            fadeIn(animationSpec = tween(durationMillis = 300))) togetherWith
+                            (slideOutVertically(animationSpec = tween(durationMillis = 300)) { height -> height } +
+                                    fadeOut(animationSpec = tween(durationMillis = 300)))
+                } using SizeTransform(clip = false)
+            },
+        ) { showAddButton ->
+            if (showAddButton) {
+                service.pricingMetadata?.let { pricingMetadata ->
+                    AddItemButton(
+                        onClick = {
+                            when (pricingMetadata) {
+                                is PricingMetadataPresentation.ServicePricingPresentation -> {
+                                    onEvent(
+                                        ServicesScreenEvent.OnItemAdd(
+                                            itemId = service.items?.first()?.itemId ?: ""
+                                        )
                                     )
-                                )
-                            }
+                                }
 
-                            is PricingMetadataPresentation.SubItemsPricingPresentation -> {
-                                onEvent(
-                                    ServicesScreenEvent.OnOpenSubItemsSheet(
-                                        serviceId = service.serviceId
+                                is PricingMetadataPresentation.SubItemsPricingPresentation -> {
+                                    onEvent(
+                                        ServicesScreenEvent.OnOpenSubItemsSheet(
+                                            serviceId = service.serviceId
+                                        )
                                     )
-                                )
+                                }
                             }
-                        }
-                    },
-
-                    subItems = service.pricingMetadata is PricingMetadataPresentation.SubItemsPricingPresentation
-                )
-
+                        },
+                        subItems = service.pricingMetadata is PricingMetadataPresentation.SubItemsPricingPresentation
+                    )
+                }
             }
         }
 
