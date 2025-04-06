@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.mixedwash.core.orders.domain.model.BookingItemPricing
 import com.mixedwash.core.orders.domain.repository.OrdersRepository
 import com.mixedwash.core.presentation.navigation.Route
+import com.mixedwash.core.presentation.util.Logger
 import com.mixedwash.features.history.domain.model.insightMetrics
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
@@ -31,7 +32,6 @@ class OrderHistoryScreenViewModel(private val ordersRepository: OrdersRepository
 
     init {
         loadInitialData()
-        calculateMetrics()
     }
 
     fun onEvent(event: OrderHistoryScreenEvent) {
@@ -57,18 +57,20 @@ class OrderHistoryScreenViewModel(private val ordersRepository: OrdersRepository
                 orders = ordersRepository.getOrders().getOrNull() ?: emptyList()
             )
         }
+
+        calculateMetrics()
     }
 
     private fun calculateMetrics() {
-        val quantityInKg = _state.value.orders.fold(0) { _, order ->
-            order.bookings.sumOf {
-                it.bookingItems.sumOf { bookingItem ->
-                    if (bookingItem.itemPricing is BookingItemPricing.ServiceItemPricing) {
-                        bookingItem.quantity
-                    } else 0
+        val quantityInKg =
+            _state.value.orders.sumOf { item ->
+                item.bookings.sumOf { booking ->
+                    booking.bookingItems.sumOf {
+                        it.quantity
+                    }
                 }
             }
-        }
+
 
         _state.update {
             it.copy(
