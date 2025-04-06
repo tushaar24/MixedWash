@@ -7,6 +7,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -32,7 +33,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.mixedwash.core.presentation.models.SnackBarType
-import com.mixedwash.ui.theme.Green
 import com.mixedwash.ui.theme.mediumPadding
 import com.mixedwash.ui.theme.screenHorizontalPadding
 import org.jetbrains.compose.resources.vectorResource
@@ -62,7 +62,16 @@ fun BrandSnackbar(
         Box(
             modifier = modifier.fillMaxWidth()
                 .clip(RoundedCornerShape(12.dp))
+                .dropShadow(
+                    shape = RoundedCornerShape(12.dp),
+                    color = Color.Black.copy(alpha = 0.1f),
+                    blur = 4.dp,
+                    spread = 0.dp,
+                    offsetY = 4.dp,
+                    offsetX = 0.dp
+                )
                 .background(Color.Black)
+                .border(0.5.dp, BrandTheme.colors.gray.c500, RoundedCornerShape(12.dp))
                 .padding(horizontal = 24.dp, vertical = 16.dp)
         ) {
             Row(
