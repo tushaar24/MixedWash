@@ -130,9 +130,17 @@ fun ServiceDetail(
                             contentDescription = null
                         )
                         AnimatedContent(
-                            targetState = deliveryTime, transitionSpec = {
-                                (slideInVertically { height -> height } + fadeIn()) togetherWith (slideOutVertically { height -> -height } + fadeOut())
-                            }, label = "ServiceTransition"
+                            targetState = deliveryTime,
+                            transitionSpec = {
+                                if (targetState > initialState) {
+                                    (slideInVertically { fullHeight -> fullHeight } + fadeIn()) togetherWith
+                                            (slideOutVertically { fullHeight -> -fullHeight } + fadeOut())
+                                } else {
+                                    (slideInVertically { fullHeight -> -fullHeight } + fadeIn()) togetherWith
+                                            (slideOutVertically { fullHeight -> fullHeight } + fadeOut())
+                                }
+                            },
+                            label = "ServiceTransition"
                         ) { text ->
 
                             Text(

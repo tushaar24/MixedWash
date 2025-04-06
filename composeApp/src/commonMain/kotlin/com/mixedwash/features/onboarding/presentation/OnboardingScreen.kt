@@ -93,15 +93,21 @@ fun OnboardingScreen(
     ) {
         // current page number (hidden on the last page)
         AnimatedContent(
-            targetState = "${pagerState.currentPage + 1}",
+            targetState = pagerState.currentPage + 1,
             transitionSpec = {
-                (slideInVertically { height -> height } + fadeIn()) togetherWith (slideOutVertically { height -> -height } + fadeOut())
+                if (targetState > initialState) {
+                    (slideInVertically { fullHeight -> fullHeight } + fadeIn()) togetherWith
+                            (slideOutVertically { fullHeight -> -fullHeight } + fadeOut())
+                } else {
+                    (slideInVertically { fullHeight -> -fullHeight } + fadeIn()) togetherWith
+                            (slideOutVertically { fullHeight -> fullHeight } + fadeOut())
+                }
             },
             modifier = Modifier.align(Alignment.Start).padding(horizontal = 32.dp)
         ) { text ->
 
             Text(
-                text = text,
+                text = text.toString(),
                 fontWeight = FontWeight.Bold,
                 letterSpacing = (-1).sp,
                 lineHeight = 48.sp,
