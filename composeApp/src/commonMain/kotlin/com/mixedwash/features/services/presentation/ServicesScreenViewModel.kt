@@ -262,6 +262,10 @@ class ServicesScreenViewModel(
             ServicesScreenEvent.OnFaqClick -> {
                 sendUiEvent(ServicesScreenUiEvent.NavigateToRoute(Route.FaqRoute))
             }
+
+            ServicesScreenEvent.OnLoadEstimatorClicked -> {
+                sendUiEvent(ServicesScreenUiEvent.OpenLoadEstimatorBottomSheet)
+            }
         }
     }
 

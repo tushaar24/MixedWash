@@ -34,6 +34,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -45,7 +47,6 @@ import com.mixedwash.features.local_cart.domain.model.CartItem
 import com.mixedwash.features.services.presentation.ServicesScreenEvent
 import com.mixedwash.features.services.presentation.model.ServicePresentation
 import com.mixedwash.ui.theme.Gray50
-import com.mixedwash.ui.theme.Gray600
 import mixedwash.composeapp.generated.resources.Res
 import mixedwash.composeapp.generated.resources.ic_arrow_right
 import mixedwash.composeapp.generated.resources.ic_history
@@ -173,27 +174,27 @@ fun ServiceDetail(
             ServiceInfoTab(
                 title = "Unsure about your load?",
                 description = "Use our load estimator to get a rough weight approximate",
-                onClick = {  }  // todo
+                onClick = { onEvent(ServicesScreenEvent.OnLoadEstimatorClicked) }
             )
 
             Spacer(Modifier.height(32.dp))
         }
 
-//        Box(
-//            modifier = Modifier
-//                .height(32.dp)
-//                .align(Alignment.BottomCenter)
-//                .fillMaxWidth()
-//                .background(
-//                    brush = Brush.verticalGradient(
-//                        colorStops = arrayOf(
-//                            Pair(0f, Color.Transparent),
-//                            Pair(1f, BrandTheme.colors.gray.light),
-//                        ),
-//                        startY = 0f,
-//                    )
-//                )
-//        )
+        Box(
+            modifier = Modifier
+                .height(32.dp)
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .background(
+                    brush = Brush.verticalGradient(
+                        colorStops = arrayOf(
+                            Pair(0f, Color.Transparent),
+                            Pair(1f, BrandTheme.colors.gray.light),
+                        ),
+                        startY = 0f,
+                    )
+                )
+        )
 
 //        Box(
 //            modifier = Modifier

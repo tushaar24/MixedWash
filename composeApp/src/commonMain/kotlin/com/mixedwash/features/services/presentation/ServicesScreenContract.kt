@@ -12,9 +12,8 @@ data class ServiceSubItemsListState(
     val placeHolder: String,
     val query: String,
     val items: List<CartItem>,
-    val genderFilter : Gender?=null,
+    val genderFilter: Gender? = null,
 )
-
 
 
 data class ServicesScreenState(
@@ -33,13 +32,14 @@ sealed class ServicesScreenEvent {
     data class OnItemDecrement(val itemId: String) : ServicesScreenEvent()
     data class OnItemDelete(val itemId: String) : ServicesScreenEvent()
     data class OnOpenSubItemsSheet(val serviceId: String) : ServicesScreenEvent()
-    data class OnFilterClicked(val gender: Gender?): ServicesScreenEvent()
-    data class OnSubItemsQuery(val query: String): ServicesScreenEvent()
+    data class OnFilterClicked(val gender: Gender?) : ServicesScreenEvent()
+    data class OnSubItemsQuery(val query: String) : ServicesScreenEvent()
     data object OnCloseSubItemsSheet : ServicesScreenEvent()
     data object OnClosedSubItemsSheet : ServicesScreenEvent()
     data object OnProcessingDetailsClicked : ServicesScreenEvent()
     data object OnSubmit : ServicesScreenEvent()
     data object OnFaqClick : ServicesScreenEvent()
+    data object OnLoadEstimatorClicked : ServicesScreenEvent()
 }
 
 sealed class ServicesScreenUiEvent {
@@ -47,4 +47,5 @@ sealed class ServicesScreenUiEvent {
     data object OpenProcessingDetailsBottomSheet : ServicesScreenUiEvent()
     data object CloseSubItemsSheet : ServicesScreenUiEvent()
     data class NavigateToRoute(val route: Route) : ServicesScreenUiEvent()
+    data object OpenLoadEstimatorBottomSheet : ServicesScreenUiEvent()
 }
