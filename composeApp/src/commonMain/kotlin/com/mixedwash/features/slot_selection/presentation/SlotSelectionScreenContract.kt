@@ -17,7 +17,7 @@ data class SlotSelectionScreenState(
     val deliveryNotes: String = "",
 ) {
     fun canSubmit(): Boolean {
-        return pickupSlotState.timeSlotSelectedId != null && bookingsSlotStates.any{it.timeSlotSelectedId != null}
+        return pickupSlotState.timeSlotSelectedId != null && bookingsSlotStates.all{it.timeSlotSelectedId != null}
     }
 }
 

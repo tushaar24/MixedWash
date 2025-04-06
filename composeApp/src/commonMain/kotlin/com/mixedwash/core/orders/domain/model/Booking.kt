@@ -13,10 +13,6 @@ data class Booking(
     val dropSlotSelected: BookingTimeSlot,
     @SerialName("booking_items")
     val bookingItems: List<BookingItem>,
-    @SerialName("state")
-    val state: BookingState = BookingState.Draft,
-    @SerialName("state_history")
-    val stateHistory: List<StateEvent> = emptyList()
 )
 
 

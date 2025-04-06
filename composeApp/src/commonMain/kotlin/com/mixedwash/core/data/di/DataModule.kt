@@ -10,5 +10,5 @@ expect fun platformDataModule(): Module
 
 val DataModule = module {
     includes(platformDataModule())
-    single { FirebaseUserService( get() ) } bind UserService::class
+    single { FirebaseUserService(get()) } bind UserService::class
 }

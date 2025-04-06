@@ -188,6 +188,7 @@ fun HomeScreen(
             }
         ) {
             ServiceUnavailable(
+                modifier = Modifier.fillMaxHeight(0.7f),
                 unavailable = unavailable,
                 onDismiss = { onEvent(HomeScreenEvent.OnCloseAppRequest) },
                 onChangeLocation = { onEvent(HomeScreenEvent.OnChangeLocation) }

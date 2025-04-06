@@ -455,10 +455,11 @@ class HomeScreenViewModel(
                                 cartAddress = cartAddress.copy(
                                     availability = ServiceAvailability.Unavailable(
                                         title = error,
-                                        description = "Sorry, service is currently unavailable at your current location: \n${address.addressLine1 + " " + address.pinCode}",
+                                        description = "Sorry, service is currently unavailable at your current location",
                                         imageUrl = "https://assets-aac.pages.dev/assets/error_kitty.png",
                                         buttonText = "Promise You'll Be Back",
-                                        error = error
+                                        error = error,
+                                        currentLocationString = "${address.title} ${address.addressLine1}, ${address.addressLine2} ${address.pinCode}"
                                     )
                                 )
                             )

@@ -1,8 +1,11 @@
 package com.mixedwash
 
 import BrandTheme
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.layout.Box
@@ -128,7 +131,11 @@ fun App() {
 
                         NavHost(
                             navController = navController,
-                            startDestination = startDestination
+                            startDestination = startDestination,
+                            enterTransition = { fadeIn() },
+                            exitTransition = { fadeOut() },
+                            popEnterTransition = { fadeIn() },
+                            popExitTransition = { fadeOut() },
                         ) {
 
                             AuthNav(

@@ -60,6 +60,7 @@ sealed class ServiceAvailability {
     data class Unavailable(
         val title: String,
         val description: String,
+        val currentLocationString: String,
         val imageUrl: String,
         val buttonText: String,
         val error: String? = null

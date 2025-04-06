@@ -56,21 +56,12 @@ class MockOrdersRepositoryImpl(
                 val draftOrder = orderDraftService.getCurrentDraft()
                     ?: throw OrderException.OrderNotFound
 
-                val updatedBookings = draftOrder.bookings.map { booking ->
-                    booking.copy(
-                        state = BookingState.Initiated(
-                            placedAtMillis = Clock.System.now().toEpochMilliseconds()
-                        )
-                    )
-                }
-
-                val finalOrder = draftOrder.copy(bookings = updatedBookings)
-                userOrders.add(finalOrder)
+                userOrders.add(draftOrder)
 
                 // Clear the draft after successful placement
                 orderDraftService.clearOrderDraft()
 
-                finalOrder
+                draftOrder
             }
         }
     }

@@ -236,7 +236,7 @@ private fun GenericSlotContainer(
                     modifier = Modifier.alpha(alpha),
                     text = dateTimeText,
                     fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium,
+                    fontWeight = FontWeight.SemiBold,
                     lineHeight = 18.sp,
                     color = dateTimeTextColor
                 )

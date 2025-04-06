@@ -291,8 +291,8 @@ class SlotSelectionScreenViewModel(
                 return false
             }
 
-            if (bookingsSlotStates.none { it.timeSlotSelectedId != null }) {
-                snackbarEvent("No delivery slots selected", type = SnackBarType.WARNING)
+            if (bookingsSlotStates.any { it.timeSlotSelectedId == null }) {
+                snackbarEvent("All bookings require a delivery slot", type = SnackBarType.WARNING)
                 return false
             }
 
@@ -385,7 +385,7 @@ class SlotSelectionScreenViewModel(
                             slots = slotsResponse.pickupSlots,
                             dateSlotSelectedId = slotsResponse.pickupSlots.firstOrNull()?.id,
                             timeSlotSelectedId = slotsResponse.pickupSlots.firstOrNull()?.timeSlots?.firstOrNull()?.id,
-                            isExpanded = bookingSlots.size <= 1
+                            isExpanded = true
                         ),
                         bookingsSlotStates = bookingSlots,
                     )

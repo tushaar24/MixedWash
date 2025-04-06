@@ -14,9 +14,7 @@ data class Order(
     @SerialName("customer_id")
     val customerId: String,
     @SerialName("created_at_millis")
-    val createdAtMillis: Long = Clock.System.now().toEpochMilliseconds(),
-    @SerialName("notes")
-    val notes: String? = null,
+    val createdAtSeconds: Long = Clock.System.now().epochSeconds,
     @SerialName("offers")
     val offers: List<BookingOffer>? = null,
     @SerialName("delivery_notes")

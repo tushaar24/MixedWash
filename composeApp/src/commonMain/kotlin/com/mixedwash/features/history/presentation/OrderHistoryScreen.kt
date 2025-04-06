@@ -120,14 +120,8 @@ fun OrderHistoryScreen(
                                 titles = order.bookings.flatMap { it.bookingItems.map { item -> item.serviceName } },
                                 ordered = formatTimestamp(firstBooking.pickupSlotSelected.startTimeStamp),
                                 delivery = formatTimestamp(firstBooking.dropSlotSelected.startTimeStamp),
-                                status = when (firstBooking.state) {
-                                    is BookingState.Cancelled -> OrderDeliveryStatus.CANCELLED
-                                    is BookingState.Delivered -> OrderDeliveryStatus.DELIVERED
-                                    else -> OrderDeliveryStatus.PROCESSING
-                                },
-                                cost = if (firstBooking.state is BookingState.Delivered)
-                                    formatIndianCurrency(firstBooking.calculateTotalPrice())
-                                else null,
+                                status = OrderDeliveryStatus.PROCESSING,
+                                cost = null,
                                 onDetails = {
                                     onEvent(OrderHistoryScreenEvent.OnOrderDetailsScreen(order.id))
                                 },

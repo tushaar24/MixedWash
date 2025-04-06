@@ -33,8 +33,6 @@ class OrderDraftServiceImpl : OrderDraftService {
                         pickupSlotSelected = it.pickupSlotSelected,
                         dropSlotSelected = it.dropSlotSelected,
                         bookingItems = it.bookingItems,
-                        state = BookingState.Draft,
-                        stateHistory = emptyList()
                     )
                 }
                 orderDraft = Order(
@@ -43,8 +41,8 @@ class OrderDraftServiceImpl : OrderDraftService {
                     customerId = userId,
                     deliveryNotes = deliveryNotes,
                     address = address,
-                    notes = null,
                     offers = emptyList(),
+
                 )
                 orderDraft!!
             }

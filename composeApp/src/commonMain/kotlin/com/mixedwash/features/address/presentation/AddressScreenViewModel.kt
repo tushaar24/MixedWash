@@ -273,7 +273,7 @@ class AddressScreenViewModel(
                                 address = address,
                                 baseFormFields = emptyCreateFormState.fields,
                                 excludeFields = emptyList(),
-                                inputState = _root_ide_package_.com.mixedwash.core.presentation.models.InputState.Enabled,
+                                inputState = InputState.Enabled,
                                 excludeEmptyFields = false
                             ), mode = FormMode.Edit(address = address, onSave = {
 
