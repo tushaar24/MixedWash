@@ -1,36 +1,25 @@
 package com.mixedwash.core.presentation.models
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.rounded.CheckCircle
-import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material.icons.rounded.Warning
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
-import com.mixedwash.ui.theme.Gray900
-import com.mixedwash.ui.theme.GreenDark
-import com.mixedwash.ui.theme.RedDark
-import com.mixedwash.ui.theme.Yellow
+import mixedwash.composeapp.generated.resources.Res
+import mixedwash.composeapp.generated.resources.ic_snackbar_error
+import mixedwash.composeapp.generated.resources.ic_snackbar_success
+import mixedwash.composeapp.generated.resources.ic_snackbar_warning
+import org.jetbrains.compose.resources.DrawableResource
 
 enum class SnackBarType(
-    val contentColor: Color,
-    val icon: ImageVector,
+    val icon: DrawableResource,
 ) {
     SUCCESS(
-        contentColor = GreenDark,
-        icon = Icons.Rounded.CheckCircle,
+        icon = Res.drawable.ic_snackbar_success,
     ),
     WARNING(
-        contentColor = Yellow,
-        icon = Icons.Rounded.Warning,
+        icon = Res.drawable.ic_snackbar_warning,
     ),
     ERROR(
-        contentColor = RedDark,
-        icon = Icons.Rounded.Close,
+        icon = Res.drawable.ic_snackbar_error,
     ),
     DEFAULT(
-        contentColor = Gray900,
-        icon = Icons.Default.Info,
+        icon = Res.drawable.ic_snackbar_warning,
     )
     ;
 

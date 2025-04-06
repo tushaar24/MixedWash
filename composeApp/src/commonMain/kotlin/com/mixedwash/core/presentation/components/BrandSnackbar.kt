@@ -7,7 +7,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,6 +14,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,13 +27,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
-import com.mixedwash.ui.theme.largePadding
-import com.mixedwash.ui.theme.mediumPadding
+import androidx.compose.ui.unit.sp
 import com.mixedwash.core.presentation.models.SnackBarType
+import com.mixedwash.ui.theme.Green
+import com.mixedwash.ui.theme.mediumPadding
 import com.mixedwash.ui.theme.screenHorizontalPadding
-
+import org.jetbrains.compose.resources.vectorResource
 
 @Composable
 fun BrandSnackbar(
@@ -57,59 +59,50 @@ fun BrandSnackbar(
         enter = fadeIn() + slideInVertically { it },
         exit = fadeOut() + slideOutVertically { it }
     ) {
-
-        Column(
-            modifier.padding(
-                start = screenHorizontalPadding,
-                end = screenHorizontalPadding,
-                bottom = largePadding
-            )
+        Box(
+            modifier = modifier.fillMaxWidth()
+                .clip(RoundedCornerShape(12.dp))
+                .background(Color.Black)
+                .padding(horizontal = 24.dp, vertical = 16.dp)
         ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = vectorResource(type.icon),
+                    contentDescription = null,
+                    tint = when (type) {
+                        SnackBarType.SUCCESS -> Color(0xFFD56363)
+                        SnackBarType.WARNING -> Color.Yellow
+                        SnackBarType.ERROR -> Color.Red
+                        else -> Color.White
+                    }
+                )
 
-            Box(modifier = Modifier.dropShadow(shape = BrandTheme.shapes.card, color = type.contentColor.copy(alpha = 0.1f), blur = 3.dp,  spread = 4.dp, offsetY = 0.dp, offsetX = 0.dp)){
-                Row(
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .border(color = BrandTheme.colors.gray.dark, width = 1.dp, shape = BrandTheme.shapes.card)
-                        .clip(BrandTheme.shapes.card)
-                        .fillMaxWidth()
-                        .background(Color.White)
-                        .padding(vertical = mediumPadding, horizontal = 16.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                Text(
+                    text = message,
+                    color = BrandTheme.colors.gray.lighter,
+                    fontSize = 14.sp,
+                    lineHeight = 18.sp,
+                    style = BrandTheme.typography.subtitle3.copy(lineHeight = 1.5.em),
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f).padding(start = 16.dp)
+                )
 
-                    ) {
-                    Row(
-                        modifier = Modifier.weight(1f),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = type.icon,
-                            tint = type.contentColor,
-                            contentDescription = null,
-                        )
+                Box(modifier = Modifier.padding(2.dp).clickable(onClick = action)) {
+                    actionText?.let {
                         Text(
-                            text = message,
-                            color = type.contentColor,
-                            style = BrandTheme.typography.subtitle3.copy(lineHeight = 1.5.em),
-                            maxLines = 2
+                            text = it,
+                            style = BrandTheme.typography.subtitle3,
+                            color = BrandTheme.colors.gray.lighter
                         )
                     }
-
-                    Box(modifier = Modifier.padding(2.dp).clickable(onClick = action)) {
-                        actionText?.let {
-                            Text(
-                                text = it,
-                                style = BrandTheme.typography.subtitle3,
-                                color = type.contentColor
-                            )
-                        }
                 }
             }
         }
     }
-
 }
 
 @Composable
@@ -144,8 +137,5 @@ fun DefaultSnackbarPreview() {
             action = {},
             actionText = "Open Settings"
         )
-
     }
-
-}
 }
