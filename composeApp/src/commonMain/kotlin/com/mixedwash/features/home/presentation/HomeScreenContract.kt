@@ -83,6 +83,7 @@ sealed class HomeScreenEvent {
     data object OnSeeAllServicesClicked : HomeScreenEvent()
     data object OnNavigateToProfile : HomeScreenEvent()
     data object OnNavigateToFaqs : HomeScreenEvent()
+    data class OnPreviousOrderClicked(val orderId: String) : HomeScreenEvent()
     data object OnDismissedAddressBottomSheet : HomeScreenEvent()
     data object OnAvailabilityBottomSheetDismissed : HomeScreenEvent()
     sealed class AddressListEvent : HomeScreenEvent() {

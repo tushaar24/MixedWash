@@ -8,6 +8,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mixedwash.core.domain.models.Result
+import com.mixedwash.core.orders.domain.repository.OrdersRepository
 import com.mixedwash.core.presentation.components.ButtonData
 import com.mixedwash.core.presentation.components.DialogPopupData
 import com.mixedwash.core.presentation.models.SnackBarType
@@ -44,7 +45,8 @@ class HomeScreenViewModel(
     private val locationService: LocationService,
     private val locationAvailabilityRepository: LocationAvailabilityRepository,
     private val homeScreenDataRepository: HomeScreenDataRepository,
-    private val addressRepository: AddressRepository
+    private val addressRepository: AddressRepository,
+    private val ordersRepository: OrdersRepository
 ) : ViewModel() {
 
     private val serviceableAddressUidCache = mutableListOf<String>()
@@ -104,13 +106,13 @@ class HomeScreenViewModel(
                 }
             }
 
-            HomeScreenEvent.OnNavigateToFaqs ->  {
+            HomeScreenEvent.OnNavigateToFaqs -> {
                 viewModelScope.launch {
                     sendUiEvent(HomeScreenUiEvent.Navigate(Route.FaqRoute))
                 }
             }
 
-            HomeScreenEvent.OnNavigateToProfile ->  {
+            HomeScreenEvent.OnNavigateToProfile -> {
                 viewModelScope.launch {
                     sendUiEvent(HomeScreenUiEvent.Navigate(Route.ProfileRoute))
                 }
@@ -251,6 +253,17 @@ class HomeScreenViewModel(
                 * The relevant state changes must be handled by the caller themselves
                 * */
             }
+
+            is HomeScreenEvent.OnPreviousOrderClicked -> {
+                sendUiEvent(
+                    HomeScreenUiEvent.Navigate(
+                        Route.OrderDetailsRoute(
+                            event.orderId,
+                            destinationType = Route.OrderDetailsRoute.DestinationType.VIEW_ORDER_BY_ID
+                        )
+                    )
+                )
+            }
         }
     }
 
@@ -291,6 +304,12 @@ class HomeScreenViewModel(
                     _state.value = data.data.toPresentation().toUiState().copy(
                         cartAddress = _state.value.cartAddress
                     )
+
+                    _state.update {
+                        it.copy(
+                            activeOrders = ordersRepository.getOrderStatus().getOrNull()
+                        )
+                    }
                 }
 
                 is Result.Error -> {

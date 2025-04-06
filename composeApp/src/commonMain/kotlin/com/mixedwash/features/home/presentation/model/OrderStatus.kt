@@ -1,5 +1,6 @@
 package com.mixedwash.features.home.presentation.model
 
+import com.mixedwash.core.orders.domain.model.Booking
 import com.mixedwash.features.home.data.models.OrderStatusDto
 
 // OrderStatus.kt
@@ -16,4 +17,11 @@ fun OrderStatusDto.toPresentation(): OrderStatus = OrderStatus(
     title = title,
     subtitle = subtitle,
     description = description
+)
+
+fun Booking.toOrderStatus(): OrderStatus = OrderStatus(
+    orderId = this.id,
+    title = this.bookingItems.first().name,
+    subtitle = "",
+    description = "",
 )

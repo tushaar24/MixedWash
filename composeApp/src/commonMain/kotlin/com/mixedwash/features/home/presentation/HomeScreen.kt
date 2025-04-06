@@ -282,51 +282,60 @@ fun HomeScreen(
 
             Column(
                 modifier = Modifier.padding(
-                    start = 16.dp,
-                    end = 16.dp,
                     top = 32.dp,
                     bottom = 24.dp
                 ),
                 verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
-
                 state.activeOrders?.let {
-                    OrderStatusWidget()
-                }
-
-                state.services?.let {
-                    ServicesSection(
-                        modifier = Modifier,
-                        serviceItems = it,
-                        onServiceClicked = { serviceId ->
-                            onEvent(HomeScreenEvent.OnServiceClicked(serviceId))
-                        }
+                    OrderStatusWidget(
+                        orders = state.activeOrders,
+                        onClick = { onEvent(HomeScreenEvent.OnPreviousOrderClicked(it)) }
                     )
                 }
 
-                state.offerCards?.get(0)?.let { offerCard ->
-                    OfferCard(
-                        text = offerCard.text,
-                        description = offerCard.description,
-                        imageUrl = offerCard.imageUrl,
-                        gradient = offerCard.gradient,
-                        contentColor = Color.parse(offerCard.contentTextColor),
-                        onClick = { onEvent(HomeScreenEvent.OnOfferClick(offerCard.offerId)) }
-                    )
-                }
+                Column(
+                    modifier = Modifier.padding(
+                        start = 16.dp,
+                        end = 16.dp,
+                    ),
+                    verticalArrangement = Arrangement.spacedBy(24.dp)
+                ) {
 
-                state.introSection?.let {
-                    IntroSection(
-                        title = it.heading,
-                        description = it.description,
-                        imageUrl = it.imageUrl,
-                        buttonLabel = it.buttonText,
-                        gradient = it.gradient,
-                        contentColor = Color.parse(it.contentTextColor),
-                        buttonTextColor = Color.parse(it.buttonTextColor),
-                        onClick = { onEvent(HomeScreenEvent.OnIntroClick) },
-                        modifier = Modifier,
-                    )
+                    state.services?.let {
+                        ServicesSection(
+                            modifier = Modifier,
+                            serviceItems = it,
+                            onServiceClicked = { serviceId ->
+                                onEvent(HomeScreenEvent.OnServiceClicked(serviceId))
+                            }
+                        )
+                    }
+
+                    state.offerCards?.get(0)?.let { offerCard ->
+                        OfferCard(
+                            text = offerCard.text,
+                            description = offerCard.description,
+                            imageUrl = offerCard.imageUrl,
+                            gradient = offerCard.gradient,
+                            contentColor = Color.parse(offerCard.contentTextColor),
+                            onClick = { onEvent(HomeScreenEvent.OnOfferClick(offerCard.offerId)) }
+                        )
+                    }
+
+                    state.introSection?.let {
+                        IntroSection(
+                            title = it.heading,
+                            description = it.description,
+                            imageUrl = it.imageUrl,
+                            buttonLabel = it.buttonText,
+                            gradient = it.gradient,
+                            contentColor = Color.parse(it.contentTextColor),
+                            buttonTextColor = Color.parse(it.buttonTextColor),
+                            onClick = { onEvent(HomeScreenEvent.OnIntroClick) },
+                            modifier = Modifier,
+                        )
+                    }
                 }
             }
         }

@@ -1,16 +1,14 @@
 package com.mixedwash.core.orders.data.repository
 
-import com.mixedwash.core.orders.domain.model.Booking
 import com.mixedwash.core.orders.domain.model.BookingData
-import com.mixedwash.core.orders.domain.model.BookingState
 import com.mixedwash.core.orders.domain.model.Order
 import com.mixedwash.core.orders.domain.model.error.OrderException
 import com.mixedwash.core.orders.domain.repository.OrdersRepository
 import com.mixedwash.core.orders.domain.service.OrderDraftService
 import com.mixedwash.features.address.domain.model.Address
+import com.mixedwash.features.home.presentation.model.OrderStatus
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlinx.datetime.Clock
 
 class MockOrdersRepositoryImpl(
     private val orderDraftService: OrderDraftService
@@ -64,5 +62,9 @@ class MockOrdersRepositoryImpl(
                 draftOrder
             }
         }
+    }
+
+    override suspend fun getOrderStatus(): Result<List<OrderStatus>> {
+        TODO("Not yet implemented")
     }
 }

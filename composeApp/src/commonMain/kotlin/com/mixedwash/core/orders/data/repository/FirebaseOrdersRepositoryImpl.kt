@@ -7,9 +7,10 @@ import com.mixedwash.core.orders.domain.model.error.OrderException
 import com.mixedwash.core.orders.domain.repository.OrdersRepository
 import com.mixedwash.core.orders.domain.service.OrderDraftService
 import com.mixedwash.features.address.domain.model.Address
+import com.mixedwash.features.home.presentation.model.OrderStatus
+import com.mixedwash.features.home.presentation.model.toOrderStatus
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.datetime.Clock
-import kotlin.Result
 
 class FirebaseOrdersRepositoryImpl(
     private val orderDraftService: OrderDraftService,
@@ -53,12 +54,24 @@ class FirebaseOrdersRepositoryImpl(
 
 
             // Save the order to Firebase
-            orderService.saveOrder(draftOrder.copy(createdAtSeconds = Clock.System.now().epochSeconds)).getOrThrow()
+            orderService.saveOrder(draftOrder.copy(createdAtSeconds = Clock.System.now().epochSeconds))
+                .getOrThrow()
 
             // Clear the draft after successful placement
             orderDraftService.clearOrderDraft()
 
             draftOrder
         }
+    }
+
+    override suspend fun getOrderStatus(): Result<List<OrderStatus>> {
+        val orders = orderService.getOrders().getOrNull()
+            ?: return Result.failure(Exception("failed to fetch"))
+
+        return Result.success(orders.flatMap { order ->
+            order.bookings.map {
+                it.toOrderStatus()
+            }
+        })
     }
 }
