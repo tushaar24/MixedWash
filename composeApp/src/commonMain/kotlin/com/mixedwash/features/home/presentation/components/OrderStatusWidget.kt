@@ -61,11 +61,12 @@ fun OrderStatusWidget(
         )
     }
 
-    Column(modifier = modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
+    Column(modifier = modifier.fillMaxWidth()) {
         HorizontalPager(pagerState) { page ->
             val order = orders[page]
             Box(
                 modifier = Modifier.fillMaxWidth()
+                    .padding(horizontal = 16.dp)
                     .clip(RoundedCornerShape(12.dp))
                     .background(
                         Brush.linearGradient(colors = gradientColors)
@@ -167,7 +168,7 @@ fun OrderStatusWidget(
         }
 
         if (orders.size > 1) {
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(8.dp))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),

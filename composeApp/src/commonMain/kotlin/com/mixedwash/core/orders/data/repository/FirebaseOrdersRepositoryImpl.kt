@@ -8,7 +8,6 @@ import com.mixedwash.core.orders.domain.repository.OrdersRepository
 import com.mixedwash.core.orders.domain.service.OrderDraftService
 import com.mixedwash.features.address.domain.model.Address
 import com.mixedwash.features.home.presentation.model.OrderStatus
-import com.mixedwash.features.home.presentation.model.toOrderStatus
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.datetime.Clock
 
@@ -70,7 +69,13 @@ class FirebaseOrdersRepositoryImpl(
 
         return Result.success(orders.flatMap { order ->
             order.bookings.map {
-                it.toOrderStatus()
+                OrderStatus(
+                    orderId = order.id,
+                    bookingId = it.id,
+                    title = it.bookingItems.first().name,
+                    subtitle = "",
+                    description = ""
+                )
             }
         })
     }

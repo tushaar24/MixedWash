@@ -50,6 +50,7 @@ data class HomeServicesDto(
 @Serializable
 data class OrderStatusDto(
     @SerialName("order_id") val orderId: String,
+    @SerialName("booking_id") val bookingId: String,
     @SerialName("title") val title: String,
     @SerialName("subtitle") val subtitle: String,
     @SerialName("description") val description: String

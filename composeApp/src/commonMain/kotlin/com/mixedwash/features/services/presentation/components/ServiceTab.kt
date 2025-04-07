@@ -6,9 +6,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Done
@@ -41,21 +42,21 @@ fun ServiceTab(
 ) {
 
     Box(
-        modifier = modifier.size(80.dp).clip(BrandTheme.shapes.card)
+        modifier = modifier.clip(BrandTheme.shapes.card)
             .background(if (isSelected) BrandTheme.colors.gray.c200 else BrandTheme.colors.background)
             .noRippleClickable(onClick = onClick)
     ) {
         Box(
-            modifier = Modifier
-                .fillMaxSize(),
+            modifier = Modifier.height(104.dp).width(90.dp),
             contentAlignment = Alignment.Center
         ) {
             Column(
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
                 verticalArrangement = Arrangement.spacedBy(4.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Box(modifier = Modifier.size(58.dp), contentAlignment = Alignment.Center) {
-                    val imageSize by animateFloatAsState(targetValue = if (isSelected) 48f else 44f)
+                Box(modifier = Modifier.size(54.dp), contentAlignment = Alignment.Center) {
+                    val imageSize by animateFloatAsState(targetValue = if (isSelected) 41f else 37f)
                     AsyncImage(
                         model = ImageRequest.Builder(LocalPlatformContext.current)
                             .data(service.imageUrl)
@@ -91,6 +92,7 @@ fun ServiceTab(
                     text = service.title,
                     fontSize = 10.sp,
                     lineHeight = 12.sp,
+                    maxLines = 1,
                     color = BrandTheme.colors.gray.c700
                 )
             }

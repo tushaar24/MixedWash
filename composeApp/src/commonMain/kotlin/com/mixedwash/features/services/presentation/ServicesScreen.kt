@@ -100,7 +100,8 @@ fun ServicesScreen(
             sheetState = processingDetailsSheetState
         ) {
             Column(
-                modifier = Modifier.padding(vertical = 48.dp, horizontal = 24.dp),
+                modifier = Modifier.background(BrandTheme.colors.background)
+                    .padding(vertical = 48.dp, horizontal = 24.dp),
                 verticalArrangement = Arrangement.spacedBy(24.dp),
             ) {
                 Row(
@@ -184,7 +185,8 @@ fun ServicesScreen(
             sheetState = loadEstimatorSheetState
         ) {
             Column(
-                modifier = Modifier.padding(vertical = 48.dp, horizontal = 24.dp),
+                modifier = Modifier.background(BrandTheme.colors.background)
+                    .padding(vertical = 48.dp, horizontal = 24.dp),
                 verticalArrangement = Arrangement.spacedBy(36.dp),
             ) {
                 Row(
@@ -315,14 +317,17 @@ fun ServicesScreen(
         ) {
 
             Row(modifier = Modifier.weight(1f)) {
-                LazyColumn(verticalArrangement = Arrangement.spacedBy(32.dp)) {
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(32.dp),
+                    modifier = Modifier.padding(top = 16.dp)
+                ) {
                     itemsIndexed(state.services) { _, service ->
                         ServiceTab(
                             service = service,
                             addedToCart = state.cartItems.any { it.serviceId == service.serviceId },
                             isSelected = service.serviceId == state.selectedServiceId,
                             onClick = { onEvent(ServicesScreenEvent.OnServiceClick(service.serviceId)) },
-                            modifier = Modifier.padding(horizontal = 16.dp).padding(top = 16.dp),
+                            modifier = Modifier.padding(start = 8.dp),
                         )
                     }
                 }
