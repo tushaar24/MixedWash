@@ -13,8 +13,6 @@ import com.mixedwash.core.presentation.navigation.NavArgs
 import com.mixedwash.core.presentation.navigation.PopUpOption
 import com.mixedwash.core.presentation.navigation.Route
 import com.mixedwash.core.presentation.util.Logger
-import com.mixedwash.features.address.domain.error.AddressNotFoundException
-import com.mixedwash.features.address.domain.repository.AddressRepository
 import com.mixedwash.features.local_cart.data.model.CartItemEntity
 import com.mixedwash.features.local_cart.domain.LocalCartRepository
 import com.mixedwash.features.local_cart.domain.error.onCartException
@@ -44,7 +42,6 @@ private const val TAG = "ServicesScreenViewModel"
 class ServicesScreenViewModel(
     private val servicesDataRepository: ServicesDataRepository,
     private val cartRepository: LocalCartRepository,
-    private val addressRepository: AddressRepository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -225,7 +222,7 @@ class ServicesScreenViewModel(
                     return
                 }
                 viewModelScope.launch {
-                    addressRepository.getCurrentAddress().onSuccess {
+                    /*addressRepository.getCurrentAddress().onSuccess {
                         sendUiEvent(ServicesScreenUiEvent.NavigateToRoute(Route.SlotSelectionRoute))
                     }.onFailure { e ->
                         when (e) {
@@ -255,7 +252,25 @@ class ServicesScreenViewModel(
                                 )
                             }
                         }
-                    }
+                    }*/
+                    sendUiEvent(
+                        ServicesScreenUiEvent.NavigateToRoute(
+                            Route.AddressRoute(
+                                title = "Confirm Address",
+                                screenType = Route.AddressRoute.ScreenType.SelectAddress,
+                                submitText = "Confirm Address",
+                                onSubmitNavArgsSerialized = Json.encodeToString(
+                                    NavArgs(
+                                        navType = NavArgType.Navigate(
+                                            route = Route.SlotSelectionRoute,
+                                            popUpOption = PopUpOption.PopCurrentRoute,
+                                            launchSingleTop = true
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
                 }
             }
 
@@ -304,12 +319,6 @@ class ServicesScreenViewModel(
             Logger.e(TAG, e.message ?: "Sub Items Filtering Failed")
         }
         return result
-    }
-
-    private fun getCartItemById(itemId: String): CartItem? {
-        return state.value.cartItems.firstOrNull { item ->
-            item.itemId == itemId
-        }
     }
 
     private fun createCartItemById(itemId: String): CartItemEntity? {

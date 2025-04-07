@@ -36,7 +36,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mixedwash.core.presentation.components.noRippleClickable
-import com.mixedwash.core.presentation.util.Logger
 import com.mixedwash.features.address.domain.model.Address
 import com.mixedwash.features.address.presentation.AddressSearchEvent
 import com.mixedwash.features.address.presentation.AddressSearchState
@@ -118,7 +117,7 @@ fun AddressList(
                     contentAlignment = Alignment.TopCenter
                 ) {
                     Text(
-                        text = "No Saved Addresses!",
+                        text = "No Saved Addresses",
                         fontSize = 12.sp,
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center
