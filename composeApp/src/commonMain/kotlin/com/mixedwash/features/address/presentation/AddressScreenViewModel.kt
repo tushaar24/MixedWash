@@ -71,10 +71,16 @@ class AddressScreenViewModel(
     val uiEventsFlow = _uiEventsChannel.receiveAsFlow()
 
     private var autocompleteJob: Job? = null
+    /**
+     * Address selected from autocomplete results or location services that contains lat, long, placeId
+     * data. Details that will be needed when creating the address using the form.
+     * */
+    private var selectedAddress : Address? = null
 
     private fun onScreenEvent(event: AddressScreenEvent) {
         when (event) {
             is AddressScreenEvent.OnAddAddress -> {
+                selectedAddress = event.address
                 updateState {
                     copy(formState = emptyCreateFormState.run {
                         event.address?.let {
@@ -198,7 +204,12 @@ class AddressScreenViewModel(
             }
 
             is AddressFormEvent.OnFormCreate, is AddressFormEvent.OnFormEditSave -> {
-                val address = state.value.formState!!.toAddress()
+                val address = state.value.formState!!.toAddress().copy(
+                    lat = selectedAddress?.lat,
+                    long =selectedAddress?.long,
+                    placeId = selectedAddress?.placeId,
+
+                )
                 if (!formSubmitValidation(newAddress = address)) return
                 viewModelScope.launch {
                     updateState { copy(formState = formState?.copy(isLoading = true)) }
@@ -387,9 +398,7 @@ class AddressScreenViewModel(
                 autocompleteJob = viewModelScope.launch {
                     delay(200)
                     val result = locationService.searchAutoComplete(event.value)
-                    if (result !is AutocompleteResult.Success) {
-
-                    } else {
+                    if (result is AutocompleteResult.Success) {
                         updateSearchState {
                             copy(
                                 autocompleteResult = result.data.map { it }
@@ -479,7 +488,7 @@ class AddressScreenViewModel(
                 address = this,
                 baseFormFields = emptyCreateFormState.fields,
                 excludeFields = listOf(ADDRESS_TITLE),
-                inputState = _root_ide_package_.com.mixedwash.core.presentation.models.InputState.ReadOnly,
+                inputState = InputState.ReadOnly,
                 excludeEmptyFields = true
             ),
         )
@@ -526,11 +535,11 @@ class AddressScreenViewModel(
      * */
     private fun formFieldsFrom(
         address: Address,
-        baseFormFields: List<_root_ide_package_.com.mixedwash.core.presentation.models.FormField>,
-        excludeFields: List<_root_ide_package_.com.mixedwash.core.presentation.models.FieldID> = emptyList(),
+        baseFormFields: List<FormField>,
+        excludeFields: List<FieldID> = emptyList(),
         excludeEmptyFields: Boolean,
-        inputState: _root_ide_package_.com.mixedwash.core.presentation.models.InputState = _root_ide_package_.com.mixedwash.core.presentation.models.InputState.Enabled,
-    ): List<_root_ide_package_.com.mixedwash.core.presentation.models.FormField> {
+        inputState: InputState = InputState.Enabled,
+    ): List<FormField> {
         val fieldIdValueMap = address.toFieldIDValueMap()
         return baseFormFields.mapNotNull { field ->
             if (excludeFields.contains(field.id) && field.id == ADDRESS_TITLE) return@mapNotNull null
@@ -587,7 +596,7 @@ class AddressScreenViewModel(
             Route.AddressRoute.ScreenType.Edit -> AddressScreenState.TypeParams.Edit
             Route.AddressRoute.ScreenType.SelectAddress -> AddressScreenState.TypeParams.Select(
                 onSubmit = { onScreenEvent(AddressScreenEvent.OnScreenSubmit) },
-                submitText = addressRoute.submitText ?: "Submit",
+                submitText = addressRoute.submitText,
                 selectedId = null,
                 onAddressSelected = { onScreenEvent(AddressScreenEvent.OnAddressSelect(it)) }
             )

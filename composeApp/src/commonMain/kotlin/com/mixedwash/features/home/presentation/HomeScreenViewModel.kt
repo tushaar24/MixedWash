@@ -185,18 +185,7 @@ class HomeScreenViewModel(
 
                         is HomeScreenEvent.AddressListEvent.OnAddressSearchBoxClicked -> {
                             Logger.d("TAG", "OnAddressSearchBoxClicked")
-                            sendUiEvent(
-                                HomeScreenUiEvent.Navigate(
-                                    Route.AddressRoute(
-                                        title = "Select an Address",
-                                        screenType = Route.AddressRoute.ScreenType.SelectAddress,
-                                        submitText = "Select Address",
-                                        onSubmitNavArgsSerialized = Json.encodeToString(
-                                            NavArgs(NavArgType.NavigateUp)
-                                        )
-                                    )
-                                )
-                            )
+                            navigateToAddressSelectionEvent()
                         }
                     }
                 }
@@ -223,20 +212,7 @@ class HomeScreenViewModel(
                         cartAddress = CartAddressState.Unassigned
                     )
                 }
-
-                sendUiEvent(
-                    HomeScreenUiEvent.Navigate(
-                        route = Route.AddressRoute(
-                            title = "Select an Address",
-                            screenType = Route.AddressRoute.ScreenType.SelectAddress,
-                            submitText = "Select Address",
-                            onSubmitNavArgsSerialized = Json.encodeToString(
-                                NavArgs(NavArgType.NavigateUp)
-                            )
-                        )   // TODO: Single Top
-                    )
-                )
-
+                navigateToAddressSelectionEvent()
 
             }
 
@@ -267,6 +243,15 @@ class HomeScreenViewModel(
         }
     }
 
+    private fun selectCartAddressFromTheAddressScreen() {
+        updateState {
+            copy(
+                cartAddress = CartAddressState.Unassigned
+            )
+        }
+        navigateToAddressSelectionEvent()
+    }
+
     private fun onScreenStart() {
         viewModelScope.launch {
             updateState { copy(isLoading = true) }
@@ -274,19 +259,7 @@ class HomeScreenViewModel(
             val addressList = addressRepository.getAddresses().getOrDefault(emptyList())
             if (currentAddress == null && addressList.isNotEmpty()) {
                 updateState { copy(isLoading = false) }
-                sendUiEvent(
-                    HomeScreenUiEvent.Navigate(
-                        route = Route.AddressRoute(
-                            title = "Select an Address",
-                            screenType = Route.AddressRoute.ScreenType.SelectAddress,
-                            submitText = "Select Address",
-                            onSubmitNavArgsSerialized = Json.encodeToString(
-                                NavArgs(NavArgType.NavigateUp)
-                            )
-                        )
-                    )
-                )
-
+                navigateToAddressSelectionEvent()
             } else {
                 updateCartAddress(currentAddress)
                 updateState { copy(isLoading = false) }
@@ -403,6 +376,8 @@ class HomeScreenViewModel(
                                 icon = Icons.Rounded.LocationOn,
                                 primaryText = "Retry",
                                 onPrimaryClick = { onEvent(HomeScreenEvent.UpdateLocation()) },
+                                secondaryText = "Select Manually",
+                                onSecondaryClick = { selectCartAddressFromTheAddressScreen() }
                             ),
                             issue = LocationIssue.LocationFetchError
                         )
@@ -422,7 +397,7 @@ class HomeScreenViewModel(
                                     title = "Fetching Address Failed",
                                     icon = Icons.Rounded.LocationOn,
                                     primaryText = "Set Manually",
-                                    onPrimaryClick = { onEvent(HomeScreenEvent.UpdateLocation()) },
+                                    onPrimaryClick = { selectCartAddressFromTheAddressScreen() },
                                     secondaryText = "Retry",
                                     onSecondaryClick = { onEvent(HomeScreenEvent.UpdateLocation()) }
                                 ),
@@ -512,6 +487,21 @@ class HomeScreenViewModel(
 
     }
 
+    private fun navigateToAddressSelectionEvent(){
+        sendUiEvent(
+            HomeScreenUiEvent.Navigate(
+                route = Route.AddressRoute(
+                    title = "Select an Address",
+                    screenType = Route.AddressRoute.ScreenType.SelectAddress,
+                    submitText = "Select Address",
+                    onSubmitNavArgsSerialized = Json.encodeToString(
+                        NavArgs(NavArgType.NavigateUp)
+                    )
+                )
+            )
+        )
+    }
+
     private fun getDialog(
         title: String,
         subtitle: String? = null,
@@ -578,7 +568,6 @@ class HomeScreenViewModel(
     private fun updateState(action: HomeScreenState.() -> HomeScreenState) {
         _state.update(action)
     }
-
 
 }
 

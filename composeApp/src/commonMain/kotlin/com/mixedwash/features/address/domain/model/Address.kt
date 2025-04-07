@@ -1,8 +1,6 @@
 package com.mixedwash.features.address.domain.model
 
-import androidx.compose.runtime.Immutable
 import com.mixedwash.core.presentation.util.Logger
-import com.mixedwash.core.presentation.models.FieldID
 import com.mixedwash.libs.loki.core.Place
 import kotlinx.serialization.Serializable
 import kotlin.uuid.ExperimentalUuidApi
@@ -18,7 +16,7 @@ data class Address @OptIn(ExperimentalUuidApi::class) constructor(
     val pinCode: String,
     val lat: Double? = null,
     val long: Double? = null,
-    val fetchedPlacedId: String? = null
+    val placeId: String? = null
 ) {
     override fun toString(): String {
         return "$addressLine1, $addressLine2\n$addressLine3\n$pinCode"
@@ -74,7 +72,7 @@ fun Place.toAddress(): Address {
         pinCode = this.postalCode ?: "",
         lat = this.coordinates.latitude,
         long = this.coordinates.longitude,
-        fetchedPlacedId = this.googlePlaceId
+        placeId = this.googlePlaceId
     )
 }
 
