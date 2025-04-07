@@ -275,14 +275,9 @@ class HomeScreenViewModel(
             when (data) {
                 is Result.Success -> {
                     _state.value = data.data.toPresentation().toUiState().copy(
-                        cartAddress = _state.value.cartAddress
+                        cartAddress = _state.value.cartAddress,
+                        activeOrders = ordersRepository.getOrderStatus().getOrNull()
                     )
-
-                    _state.update {
-                        it.copy(
-                            activeOrders = ordersRepository.getOrderStatus().getOrNull()
-                        )
-                    }
                 }
 
                 is Result.Error -> {
@@ -487,7 +482,7 @@ class HomeScreenViewModel(
 
     }
 
-    private fun navigateToAddressSelectionEvent(){
+    private fun navigateToAddressSelectionEvent() {
         sendUiEvent(
             HomeScreenUiEvent.Navigate(
                 route = Route.AddressRoute(

@@ -22,6 +22,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -30,6 +31,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -96,62 +98,53 @@ fun ServicesScreen(
     if (processingDetailsSheetState.isVisible && state.selectedServiceId != null) {
         val service = state.services.first { it.serviceId == state.selectedServiceId }
         ModalBottomSheet(
+            shape = RectangleShape,
             onDismissRequest = {},
+            dragHandle = {},
             sheetState = processingDetailsSheetState
         ) {
-            Column(
-                modifier = Modifier.background(BrandTheme.colors.background)
-                    .padding(vertical = 48.dp, horizontal = 24.dp),
-                verticalArrangement = Arrangement.spacedBy(24.dp),
-            ) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(24.dp),
+            Surface(color = BrandTheme.colors.background) {
+                Column(
+                    modifier = Modifier.background(BrandTheme.colors.background)
+                        .padding(vertical = 48.dp, horizontal = 24.dp),
+                    verticalArrangement = Arrangement.spacedBy(24.dp),
                 ) {
-                    Box(
-                        modifier = Modifier.clip(CircleShape)
-                            .background(BrandTheme.colors.gray.dark).padding(1.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Done,
-                            contentDescription = null,
-                            tint = BrandTheme.colors.gray.light,
-                            modifier = Modifier.size(14.dp)
-                        )
-                    }
-
                     Column(
                         modifier = Modifier.padding(end = 24.dp),
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        Text(
-                            text = "Inclusions",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            lineHeight = 18.sp,
-                            color = BrandTheme.colors.gray.dark
-                        )
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(24.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Box(
+                                modifier = Modifier.clip(CircleShape)
+                                    .background(BrandTheme.colors.gray.dark).padding(1.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Done,
+                                    contentDescription = null,
+                                    tint = BrandTheme.colors.gray.light,
+                                    modifier = Modifier.size(14.dp)
+                                )
+                            }
+
+
+                            Text(
+                                text = "Inclusions",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                lineHeight = 18.sp,
+                                color = BrandTheme.colors.gray.dark
+                            )
+                        }
 
                         Text(
                             text = service.inclusions ?: "none",
                             fontSize = 12.sp,
                             lineHeight = 18.sp,
-                            color = BrandTheme.colors.gray.dark
-                        )
-                    }
-                }
-
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(24.dp),
-                ) {
-                    Box(
-                        modifier = Modifier.clip(CircleShape)
-                            .background(BrandTheme.colors.gray.dark).padding(1.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Clear,
-                            contentDescription = null,
-                            tint = BrandTheme.colors.gray.light,
-                            modifier = Modifier.size(14.dp)
+                            color = BrandTheme.colors.gray.dark,
+                            modifier = Modifier.padding(start = 44.dp)
                         )
                     }
 
@@ -159,79 +152,96 @@ fun ServicesScreen(
                         modifier = Modifier.padding(end = 24.dp),
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        Text(
-                            text = "Exclusions",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            lineHeight = 18.sp,
-                            color = BrandTheme.colors.gray.dark
-                        )
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(24.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Box(
+                                modifier = Modifier.clip(CircleShape)
+                                    .background(BrandTheme.colors.gray.dark).padding(1.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Clear,
+                                    contentDescription = null,
+                                    tint = BrandTheme.colors.gray.light,
+                                    modifier = Modifier.size(14.dp)
+                                )
+                            }
+
+
+                            Text(
+                                text = "Exclusions",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                lineHeight = 18.sp,
+                                color = BrandTheme.colors.gray.dark
+                            )
+                        }
 
                         Text(
                             text = service.exclusions, fontSize = 12.sp,
                             lineHeight = 18.sp,
-                            color = BrandTheme.colors.gray.dark
+                            color = BrandTheme.colors.gray.dark,
+                            modifier = Modifier.padding(start = 44.dp)
                         )
                     }
                 }
             }
-
         }
     }
 
     if (loadEstimatorSheetState.isVisible) {
         ModalBottomSheet(
+            shape = RectangleShape,
             onDismissRequest = {},
+            dragHandle = {},
             sheetState = loadEstimatorSheetState
         ) {
-            Column(
-                modifier = Modifier.background(BrandTheme.colors.background)
-                    .padding(vertical = 48.dp, horizontal = 24.dp),
-                verticalArrangement = Arrangement.spacedBy(36.dp),
-            ) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(24.dp),
-                    verticalAlignment = Alignment.Top
+            Surface(color = BrandTheme.colors.background) {
+                Column(
+                    modifier = Modifier.background(BrandTheme.colors.background)
+                        .padding(vertical = 48.dp, horizontal = 24.dp),
+                    verticalArrangement = Arrangement.spacedBy(36.dp),
                 ) {
-                    Box(
-                        modifier = Modifier.clip(CircleShape)
-                            .background(BrandTheme.colors.gray.dark).padding(1.dp)
-                    ) {
-                        Icon(
-                            imageVector = vectorResource(Res.drawable.ic_question_mark),
-                            contentDescription = null,
-                            tint = BrandTheme.colors.gray.light,
-                            modifier = Modifier.size(14.dp)
-                        )
-                    }
-
                     Column(
                         modifier = Modifier.padding(end = 24.dp),
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        Text(
-                            text = "Not sure how many clothes you have?",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            lineHeight = 18.sp,
-                            color = BrandTheme.colors.gray.dark
-                        )
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(24.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                imageVector = vectorResource(Res.drawable.ic_question_mark),
+                                contentDescription = null,
+                                modifier = Modifier.size(14.dp)
+                            )
+
+                            Text(
+                                text = "Not sure how many clothes you have?",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                lineHeight = 18.sp,
+                                color = BrandTheme.colors.gray.dark
+                            )
+                        }
 
                         Text(
                             text = "One load of 6kg is roughly:\n12 Shirts\n3 Trousers\n7 Undergarments\n7 Pair of socks",
                             fontSize = 12.sp,
                             lineHeight = 18.sp,
-                            color = BrandTheme.colors.gray.dark
+                            color = BrandTheme.colors.gray.dark,
+                            modifier = Modifier.padding(start = 44.dp)
                         )
                     }
-                }
 
-                AsyncImage(
-                    model = "https://assets-aac.pages.dev/assets/white_washbaskt_overflow.png",
-                    modifier = Modifier.size(100.dp).align(Alignment.CenterHorizontally),
-                    contentScale = ContentScale.Fit,
-                    contentDescription = null
-                )
+                    AsyncImage(
+                        model = "https://assets-aac.pages.dev/assets/basket_overflow_black.png",
+                        modifier = Modifier.size(100.dp).align(Alignment.CenterHorizontally),
+                        contentScale = ContentScale.Fit,
+                        contentDescription = null
+                    )
+                }
             }
         }
     }

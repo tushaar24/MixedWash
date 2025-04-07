@@ -389,7 +389,7 @@
     },
     {
       "service_id": "service_shoe_clean",
-      "title": "Shoe Cleaning",
+      "title": "Shoe Clean",
       "description": "Best for sneakers, sports & casual shoes",
       "note": "final cost is calculated as per order weight before delivery",
       "image_url" : "https://assets-aac.pages.dev/assets/sku_shoe_clean_new.png",

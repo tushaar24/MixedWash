@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -20,6 +21,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
@@ -42,16 +44,16 @@ fun ServiceTab(
 ) {
 
     Box(
-        modifier = modifier.clip(BrandTheme.shapes.card)
+        modifier = modifier.clip(BrandTheme.shapes.card).height(104.dp).width(90.dp)
             .background(if (isSelected) BrandTheme.colors.gray.c200 else BrandTheme.colors.background)
             .noRippleClickable(onClick = onClick)
     ) {
         Box(
-            modifier = Modifier.height(104.dp).width(90.dp),
+            modifier = Modifier,
             contentAlignment = Alignment.Center
         ) {
             Column(
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 12.dp),
                 verticalArrangement = Arrangement.spacedBy(4.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -92,6 +94,7 @@ fun ServiceTab(
                     text = service.title,
                     fontSize = 10.sp,
                     lineHeight = 12.sp,
+                    textAlign = TextAlign.Center,
                     maxLines = 1,
                     color = BrandTheme.colors.gray.c700
                 )
