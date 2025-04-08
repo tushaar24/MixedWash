@@ -2,7 +2,6 @@ package com.mixedwash.features.home.presentation
 
 import BrandTheme
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -42,6 +41,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
@@ -264,15 +264,15 @@ fun HomeScreen(
         WindowInsets.statusBars.getTop(this).toDp()
     }
     val scrollState = rememberScrollState()
+    val approxTopBarHeight = 54.dp  // TODO : hacky way of getting the height. find proper way
     val bannerHeight = 310.dp
-    val bannerHeightPx = with(LocalDensity.current) { bannerHeight.toPx() }
-    val startThreshold = 50.dp.value
-    val endThreshold = if(scrollState.maxValue < bannerHeightPx) scrollState.maxValue.toFloat() else bannerHeightPx
+    val endThreshold = with(LocalDensity.current) { (bannerHeight - statusBarHeight - approxTopBarHeight).toPx() }
+    val startThreshold = with(LocalDensity.current) { endThreshold  - 36.dp.toPx() }
     val scrollValue = scrollState.value.toFloat()
 
     Box {
         Column(
-            modifier = modifier.navigationBarsPadding().verticalScroll(scrollState),
+            modifier = modifier.navigationBarsPadding().verticalScroll(scrollState).padding(bottom = 200.dp),
         ) {
             state.banner?.let { banner ->
                 HomeBanner(
@@ -344,31 +344,32 @@ fun HomeScreen(
         }
 
         state.banner?.let { banner ->
+
+
+
+            // Compute progress based on the current scroll value.
+            val progress = ((scrollValue - startThreshold) / (endThreshold - startThreshold)).coerceIn(0f, 1f)
+            // Interpolate between colorStart and colorEnd
+            val targetColor = lerp(BrandTheme.colors.gray.darker, BrandTheme.colors.gray.lighter, progress)
+
+            val alpha by animateFloatAsState( if(scrollValue == 0f) 0f else 1f)
+
+            val isBarBackgroundDark by derivedStateOf { targetColor.luminance() < 0.5f }
+
             val topBarContentColor by animateColorAsState(
-                targetValue = if (scrollValue <= startThreshold)
+                targetValue = if (isBarBackgroundDark)
                     Color.parse(banner.uiTextColor)
                 else
                     Gray800,
                 animationSpec = tween(durationMillis = 300)
             )
 
-            // lets the status bar content color be the same as top bar content color
-            SetStatusBarColor(isLight = topBarContentColor.luminance() < 0.5f)
+            SetStatusBarColor(isLight = !isBarBackgroundDark)
 
-            // Calculate interpolated alpha based on scroll position between thresholds
-            val interpolatedAlpha = when {
-                scrollValue <= startThreshold -> 0f
-                scrollValue >= endThreshold -> 1f
-                else -> (scrollValue - startThreshold) / (endThreshold - startThreshold)
-            }
 
-            val alpha = animateFloatAsState(
-                targetValue = interpolatedAlpha,
-                animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
-            )
             Column(
                 modifier = Modifier.align(Alignment.TopCenter).background(
-                    color = Gray50.copy(alpha = alpha.value)
+                    color = targetColor.copy(alpha = alpha)
                 )
             ) {
                 Box(
