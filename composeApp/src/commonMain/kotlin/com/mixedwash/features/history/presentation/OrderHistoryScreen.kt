@@ -22,8 +22,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.mixedwash.WindowInsetsContainer
-import com.mixedwash.core.orders.domain.model.BookingState
-import com.mixedwash.core.orders.domain.model.calculateTotalPrice
 import com.mixedwash.core.presentation.components.DefaultHeader
 import com.mixedwash.core.presentation.components.dump.TitleWithIcon
 import com.mixedwash.core.presentation.util.ObserveAsEvents
@@ -71,32 +69,34 @@ fun OrderHistoryScreen(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
 
-                item {
-                    LazyRow(
-                        contentPadding = PaddingValues(horizontal = 16.dp),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        items(state.insights) {
-                            StatisticCard(
-                                value = it.value,
-                                metric = it.metric,
-                                unit = it.unit,
-                                icon = it.icon,
-                            )
+                state.insights?.let { insights ->
+                    item {
+                        LazyRow(
+                            contentPadding = PaddingValues(horizontal = 16.dp),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            items(insights) {
+                                StatisticCard(
+                                    value = it.value,
+                                    metric = it.metric,
+                                    unit = it.unit,
+                                    icon = it.icon,
+                                )
 
+                            }
                         }
+                        Spacer(Modifier.height(16.dp))
+                    }
+                    item {
+                        TitleWithIcon(
+                            title = "Orders",
+                            icon = Res.drawable.ic_clothes_hanger,
+                            modifier = Modifier.padding(horizontal = 16.dp)
+                        )
                     }
                 }
 
-                item { Spacer(Modifier.height(16.dp)) }
 
-                item {
-                    TitleWithIcon(
-                        title = "Orders",
-                        icon = Res.drawable.ic_clothes_hanger,
-                        modifier = Modifier.padding(horizontal = 16.dp)
-                    )
-                }
 
                 if (state.orders.isEmpty()) {
                     item {
@@ -108,22 +108,21 @@ fun OrderHistoryScreen(
                         )
                     }
                 } else {
-                    items(items = state.orders) { order ->
+                    val bookings = state.orders.flatMap { it.bookings }
+                    items(items = bookings) { booking ->
                         Column(
                             modifier = Modifier.padding(horizontal = 16.dp),
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            val firstBooking = order.bookings.first()
-                            // TODO : NEED FIX
                             OrderSummaryCard(
-                                orderId = order.id,
-                                titles = order.bookings.flatMap { it.bookingItems.map { item -> item.serviceName } },
-                                ordered = formatTimestamp(firstBooking.pickupSlotSelected.startTimeStamp),
-                                delivery = formatTimestamp(firstBooking.dropSlotSelected.startTimeStamp),
+                                orderId = booking.id,
+                                titles = booking.bookingItems.map { item -> item.serviceName } ,
+                                ordered = formatTimestamp(booking.pickupSlotSelected.startTimeStamp),
+                                delivery = formatTimestamp(booking.dropSlotSelected.startTimeStamp),
                                 status = OrderDeliveryStatus.PROCESSING,
                                 cost = null,
                                 onDetails = {
-                                    onEvent(OrderHistoryScreenEvent.OnOrderDetailsScreen(order.id))
+                                    onEvent(OrderHistoryScreenEvent.OnOrderDetailsScreen(booking.id))
                                 },
                             )
 

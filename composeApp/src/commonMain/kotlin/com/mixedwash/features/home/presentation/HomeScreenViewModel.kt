@@ -145,7 +145,7 @@ class HomeScreenViewModel(
                             onClose = { onEvent(HomeScreenEvent.OnCloseAddressBottomSheet) },
                             addressSearchState = AddressSearchState(
                                 query = "",
-                                placeHolder = "Add New Address",
+                                placeHolder = "Search for area, street",
                                 enabled = true,
                                 autocompleteResult = emptyList(),
                                 fetchingLocation = false,
@@ -255,7 +255,13 @@ class HomeScreenViewModel(
     private fun onScreenStart() {
         viewModelScope.launch {
             updateState { copy(isLoading = true) }
-            val currentAddress = addressRepository.getCurrentAddress().getOrNull()
+            // current address is the first source of truth.
+            // otherwise check if a prev address had been assigned (probably location fetched)
+            val currentAddress = addressRepository.getCurrentAddress().getOrNull() ?: state.value.cartAddress.let { state ->
+                if(state is CartAddressState.LocationFetched){
+                  state.address
+                } else null
+            }
             val addressList = addressRepository.getAddresses().getOrDefault(emptyList())
             if (currentAddress == null && addressList.isNotEmpty()) {
                 updateState { copy(isLoading = false) }
@@ -296,12 +302,12 @@ class HomeScreenViewModel(
             updateState {
                 copy(cartAddress = CartAddressState.LocationFetched(address))
             }
-            updateAvailability()
-            return
+            return updateAvailability()
         }
         updateState {
             copy(
-                cartAddress = CartAddressState.Unassigned
+                cartAddress = CartAddressState.Unassigned,
+                isLoading = true
             )
         }
         if (!locationService.isLocationEnabled()) {
@@ -318,7 +324,8 @@ class HomeScreenViewModel(
                             },
                         ),
                         issue = LocationIssue.LocationDisabled
-                    )
+                    ),
+                    isLoading = false
                 )
             }
             return
@@ -342,8 +349,8 @@ class HomeScreenViewModel(
                                     onSecondaryClick = { onEvent(HomeScreenEvent.UpdateLocation()) },
                                 ),
                                 issue = LocationIssue.LocationPermissionDeniedForever
-
-                            )
+                            ),
+                            isLoading = false
                         )
                     }
                 } else {
@@ -358,7 +365,8 @@ class HomeScreenViewModel(
                                     onPrimaryClick = { onEvent(HomeScreenEvent.UpdateLocation()) },
                                 ),
                                 issue = LocationIssue.LocationPermissionDenied
-                            )
+                            ),
+                            isLoading = false
                         )
                     }
                 }
@@ -375,7 +383,8 @@ class HomeScreenViewModel(
                                 onSecondaryClick = { selectCartAddressFromTheAddressScreen() }
                             ),
                             issue = LocationIssue.LocationFetchError
-                        )
+                        ),
+                        isLoading = false
                     )
                 }
             }
@@ -397,7 +406,7 @@ class HomeScreenViewModel(
                                     onSecondaryClick = { onEvent(HomeScreenEvent.UpdateLocation()) }
                                 ),
                                 issue = LocationIssue.LocationFetchError
-                            )
+                            ), isLoading = false
                         )
                     }
                     return
@@ -429,14 +438,14 @@ class HomeScreenViewModel(
                     }
                     val address = cartAddress.address
                     val result = locationAvailabilityRepository.isLocationServiceable(
-                        currentLat = address.lat,
-                        currentLon = address.long,
-                        currentPincode = cartAddress.address.pinCode
+                        lat = address.lat,
+                        long = address.long,
+                        pincode = cartAddress.address.pinCode
                     )
                     var error: String? = null
-                    if (result !is Result.Success) {
+                    if (result.isFailure) {
                         error = "Error Fetching Availability"
-                    } else if (!result.data) error = "Service Unavailable"
+                    } else if (!result.getOrNull()!!) error = "Service Unavailable  :("
                     if (error != null) {
                         serviceableAddressUidCache.removeAll { it == address.uid }
                         updateState {
@@ -448,7 +457,7 @@ class HomeScreenViewModel(
                                         imageUrl = "https://assets-aac.pages.dev/assets/error_kitty.png",
                                         buttonText = "Promise You'll Be Back",
                                         error = error,
-                                        currentLocationString = "${address.title} ${address.addressLine1}, ${address.addressLine2} ${address.pinCode}"
+                                        currentLocationString = "${address.title} - ${address.pinCode}"
                                     )
                                 )
                             )

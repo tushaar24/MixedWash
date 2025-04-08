@@ -2,6 +2,7 @@ package com.mixedwash.features.address.presentation.components
 
 import BrandTheme
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -14,7 +15,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -31,20 +31,25 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mixedwash.core.presentation.components.noRippleClickable
+import com.mixedwash.core.presentation.util.Logger
 import com.mixedwash.features.address.domain.model.Address
 import com.mixedwash.features.address.presentation.AddressSearchEvent
 import com.mixedwash.features.address.presentation.AddressSearchState
 import com.mixedwash.ui.theme.MixedWashTheme
-import com.mixedwash.ui.theme.cardSpacing
-import com.mixedwash.ui.theme.components.DefaultCircularProgressIndicator
 import com.mixedwash.ui.theme.components.IconButton
 import com.mixedwash.ui.theme.screenHorizontalPadding
 import com.mixedwash.ui.theme.screenVerticalPadding
+import mixedwash.composeapp.generated.resources.Res
+import mixedwash.composeapp.generated.resources.new_address_drawing
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun AddressList(
@@ -58,19 +63,13 @@ fun AddressList(
     onAddressEdit: ((Address) -> Unit)? = null,
     addressSearchState: AddressSearchState
 ) {
-    if (isLoading) {
-        Box(modifier.fillMaxSize()) {
-            DefaultCircularProgressIndicator(
-                modifier = Modifier.align(Alignment.Center)
-            )
-        }
-        return
-    }
+    val searchBoxFocusRequester = remember { FocusRequester() }
 
     LazyColumn(
         modifier = modifier.animateContentSize(),
         state = listState,
-        verticalArrangement = Arrangement.spacedBy(cardSpacing)
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         item {
             Box(
@@ -82,10 +81,10 @@ fun AddressList(
                 } else Modifier)
             ) {
                 AddressSearch(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().focusRequester(searchBoxFocusRequester),
                     query = addressSearchState.query,
                     placeHolder = addressSearchState.placeHolder,
-                    enabled = addressSearchState.enabled,
+                    enabled = addressSearchState.enabled && onSearchBoxClick == null && !isLoading,
                     places = addressSearchState.autocompleteResult,
                     onValueChange = {
                         addressSearchState.onEvent(
@@ -104,11 +103,24 @@ fun AddressList(
                     },
                     onClearRequest = { addressSearchState.onEvent(AddressSearchEvent.OnClear) },
                     fetchingCurrentLocation = addressSearchState.fetchingLocation,
+                    searchBoxFocusRequester = searchBoxFocusRequester
                 )
             }
-            Spacer(modifier = Modifier.height(16.dp))
         }
 
+        item {
+            Image(
+                modifier = Modifier.noRippleClickable(enabled = addressSearchState.enabled && !isLoading) {
+                    try {
+                        searchBoxFocusRequester.requestFocus()
+                    } catch (e: Exception) {
+                        Logger.e("TAG", "Failed to request focus: ${e.message}")
+                    }
+                }.padding(vertical = 8.dp),
+                painter = painterResource(Res.drawable.new_address_drawing),
+                contentDescription = "Add Address Icon"
+            )
+        }
 
         if (addresses.isEmpty()) {
             item {
@@ -150,12 +162,14 @@ fun AddressList(
                         imageVector = Icons.Rounded.LocationOn,
                         contentDescription = "Location Icon",
                         tint = BrandTheme.colors.gray.dark,
-                        modifier = Modifier.padding(top = 4.dp, end = 18.dp).size(14.dp)
+                        modifier = Modifier.padding(top = 4.dp, end = 18.dp).height(16.dp)
                     )
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
                             text = address.title,
-                            style = BrandTheme.typography.subtitle2,
+                            fontSize = 14.sp,
+                            lineHeight = 18.sp,
+                            fontWeight = FontWeight.SemiBold,
                             color = BrandTheme.colors.gray.dark
                         )
 

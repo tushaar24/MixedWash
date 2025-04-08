@@ -57,7 +57,7 @@ fun HomeTopBar(
                 modifier = Modifier
                     .padding(horizontal = 0.dp, vertical = 6.dp)
                     .noRippleClickable { onFAQsClick() },
-                text = "faqs",
+                text = "Faqs",
                 color = contentColor,
                 fontWeight = FontWeight.Medium,
                 fontSize = 14.sp

@@ -61,19 +61,19 @@ fun OrderStatusWidget(
         )
     }
 
-    Column(modifier = modifier.fillMaxWidth()) {
-        HorizontalPager(pagerState) { page ->
+    Column(modifier = modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
+        HorizontalPager(state = pagerState, pageSpacing = 24.dp) { page ->
             val order = orders[page]
             Box(
                 modifier = Modifier.fillMaxWidth()
-                    .padding(horizontal = 16.dp)
                     .clip(RoundedCornerShape(12.dp))
+                    .clickable { onClick(order.orderId) }
                     .background(
                         Brush.linearGradient(colors = gradientColors)
                     )
             ) {
                 Column(
-                    modifier = Modifier.padding(vertical = 16.dp, horizontal = 24.dp),
+                    modifier = Modifier.padding(vertical = 24.dp, horizontal = 24.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
                     Row(
@@ -84,7 +84,7 @@ fun OrderStatusWidget(
                             verticalArrangement = Arrangement.spacedBy(2.dp)
                         ) {
                             Text(
-                                text = "#${order.orderId.takeLast(8).uppercase()}",
+                                text = "#${order.orderId.takeLast(6).uppercase()}",
                                 fontSize = 10.sp,
                                 lineHeight = 14.4.sp,
                                 color = textColorSecondary
@@ -102,13 +102,14 @@ fun OrderStatusWidget(
                                     color = textColorPrimary
                                 )
 
-                                Box(
-                                    modifier = Modifier.size(12.dp)
+                                Box(contentAlignment = Alignment.Center) {
+                                    Box(
+                                        modifier = Modifier.size(10.dp)
                                         .clip(CircleShape)
                                         .background(textColorPrimary).padding(2.dp)
-                                        .clickable { onClick(order.orderId) }
-                                ) {
+                                    )
                                     Icon(
+                                        modifier = Modifier.size(10.dp),
                                         imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
                                         contentDescription = null,
                                         tint = colors.gray.c100
@@ -119,8 +120,8 @@ fun OrderStatusWidget(
                             Text(
                                 text = stage.catchPhrase,
                                 minLines = 2,
-                                lineHeight = 14.sp,
-                                fontSize = 10.sp,
+                                lineHeight = 16.sp,
+                                fontSize = 12.sp,
                                 color = textColorSecondary
                             )
                         }
@@ -168,7 +169,7 @@ fun OrderStatusWidget(
         }
 
         if (orders.size > 1) {
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(16.dp))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),

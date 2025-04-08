@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.mixedwash.WindowInsetsContainer
+import com.mixedwash.core.presentation.components.ClickableLoadingOverlay
 import com.mixedwash.core.presentation.components.DefaultHeader
 import com.mixedwash.core.presentation.components.DialogPopup
 import com.mixedwash.core.presentation.components.DialogPopupData
@@ -194,6 +195,7 @@ fun AddressScreen(
             )
         }
     }
+    ClickableLoadingOverlay(isLoading = state.isLoading)
 }
 
 

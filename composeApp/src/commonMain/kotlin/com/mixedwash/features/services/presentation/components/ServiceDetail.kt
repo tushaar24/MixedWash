@@ -63,7 +63,7 @@ fun ServiceDetail(
 
         val scrollState = rememberScrollState()
         val startThreshold = 140.dp.value
-        val endThreshold = 240.dp.value
+        val endThreshold = 200.dp.value
         val scrollValue = scrollState.value.toFloat()
 
         LaunchedEffect(service) {
@@ -96,7 +96,7 @@ fun ServiceDetail(
 
         Column(
             modifier = Modifier.fillMaxWidth()
-                .padding(end = 16.dp)
+                .padding(start = 8.dp, end = 16.dp)
                 .verticalScroll(scrollState),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
@@ -198,7 +198,7 @@ fun ServiceDetail(
                     brush = Brush.verticalGradient(
                         colorStops = arrayOf(
                             Pair(0f, Color.Transparent),
-                            Pair(1f, BrandTheme.colors.gray.light),
+                            Pair(1f, BrandTheme.colors.gray.lighter),
                         ),
                         startY = 0f,
                     )

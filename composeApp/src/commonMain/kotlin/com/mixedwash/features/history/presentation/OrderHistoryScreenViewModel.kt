@@ -2,10 +2,8 @@ package com.mixedwash.features.history.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mixedwash.core.orders.domain.model.BookingItemPricing
 import com.mixedwash.core.orders.domain.repository.OrdersRepository
 import com.mixedwash.core.presentation.navigation.Route
-import com.mixedwash.core.presentation.util.Logger
 import com.mixedwash.features.history.domain.model.insightMetrics
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
@@ -21,7 +19,7 @@ class OrderHistoryScreenViewModel(private val ordersRepository: OrdersRepository
 
     private val initialState = OrderHistoryScreenState(
         orders = emptyList(),
-        insights = insightMetrics
+        insights = null
     )
 
     private var _state = MutableStateFlow(initialState)
@@ -58,7 +56,7 @@ class OrderHistoryScreenViewModel(private val ordersRepository: OrdersRepository
             )
         }
 
-        calculateMetrics()
+//        calculateMetrics()
     }
 
     private fun calculateMetrics() {

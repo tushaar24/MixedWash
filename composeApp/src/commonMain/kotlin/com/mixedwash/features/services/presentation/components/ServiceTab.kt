@@ -6,7 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -21,7 +21,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
@@ -30,7 +29,6 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.mixedwash.core.presentation.components.noRippleClickable
 import com.mixedwash.features.services.presentation.model.ServicePresentation
-import com.mixedwash.ui.theme.Gray100
 import com.mixedwash.ui.theme.Gray50
 import com.mixedwash.ui.theme.Green
 
@@ -44,21 +42,22 @@ fun ServiceTab(
 ) {
 
     Box(
-        modifier = modifier.clip(BrandTheme.shapes.card).height(104.dp).width(90.dp)
+        modifier = modifier.width(86.dp).height(90.dp).clip(BrandTheme.shapes.card)
             .background(if (isSelected) BrandTheme.colors.gray.c200 else BrandTheme.colors.background)
             .noRippleClickable(onClick = onClick)
     ) {
         Box(
-            modifier = Modifier,
+            modifier = Modifier
+                .fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
             Column(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 12.dp),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
+                modifier = Modifier.padding(bottom = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(2.dp, Alignment.CenterVertically),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Box(modifier = Modifier.size(54.dp), contentAlignment = Alignment.Center) {
-                    val imageSize by animateFloatAsState(targetValue = if (isSelected) 41f else 37f)
+                Box(modifier = Modifier.size(58.dp), contentAlignment = Alignment.Center) {
+                    val imageSize by animateFloatAsState(targetValue = if (isSelected) 40f else 37f)
                     AsyncImage(
                         model = ImageRequest.Builder(LocalPlatformContext.current)
                             .data(service.imageUrl)
@@ -71,8 +70,8 @@ fun ServiceTab(
                     if (addedToCart) {
                         Box(
                             modifier = Modifier.clip(CircleShape)
-                                .background(if (isSelected) Gray100 else Gray50)
-                                .size(24.dp)
+                                .background(if (isSelected) BrandTheme.colors.gray.c200 else BrandTheme.colors.background)
+                                .size(22.dp)
                                 .align(Alignment.BottomEnd)
                         ) {
                             Box(
@@ -94,9 +93,7 @@ fun ServiceTab(
                     text = service.title,
                     fontSize = 10.sp,
                     lineHeight = 12.sp,
-                    textAlign = TextAlign.Center,
-                    maxLines = 1,
-                    color = BrandTheme.colors.gray.c700
+                    color = if(isSelected) BrandTheme.colors.gray.c700 else BrandTheme.colors.gray.c600
                 )
             }
         }

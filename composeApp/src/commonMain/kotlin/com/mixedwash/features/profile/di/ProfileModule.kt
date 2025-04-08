@@ -1,9 +1,9 @@
 package com.mixedwash.features.profile.di
 
+import com.mixedwash.features.profile.presentation.ProfileScreenViewModel
+import com.mixedwash.features.profile_edit.ProfileEditScreenViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
-import com.mixedwash.features.profile.profile_edit.ProfileEditScreenViewModel
-import com.mixedwash.features.profile.presentation.ProfileScreenViewModel
 
 val ProfileModule = module {
     viewModelOf(::ProfileEditScreenViewModel)

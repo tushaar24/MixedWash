@@ -2,8 +2,8 @@ package com.mixedwash.features.profile.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mixedwash.core.presentation.navigation.Route
 import com.mixedwash.core.data.UserService
+import com.mixedwash.core.presentation.navigation.Route
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,7 +14,6 @@ import mixedwash.composeapp.generated.resources.Res
 import mixedwash.composeapp.generated.resources.ic_chat
 import mixedwash.composeapp.generated.resources.ic_clothes_hanger
 import mixedwash.composeapp.generated.resources.ic_info
-import mixedwash.composeapp.generated.resources.ic_location
 import mixedwash.composeapp.generated.resources.ic_location_outlined
 import mixedwash.composeapp.generated.resources.ic_reward
 import mixedwash.composeapp.generated.resources.ic_share
@@ -99,7 +98,8 @@ class ProfileScreenViewModel(
                     ProfileSectionItem(
                         resource = Res.drawable.ic_thumbs,
                         text = "Share Feedback ",
-                        onClick = { }
+                        onClick = { },
+                        comingSoon = true
                     )
                 )
             ),
@@ -109,12 +109,14 @@ class ProfileScreenViewModel(
                     ProfileSectionItem(
                         resource = Res.drawable.ic_share,
                         text = "Share App",
-                        onClick = { }
+                        onClick = { },
+                        comingSoon = true
                     ),
                     ProfileSectionItem(
                         resource = Res.drawable.ic_info,
                         text = "About Us",
-                        onClick = { }
+                        onClick = { },
+                        comingSoon = true
                     )
                 )
             )

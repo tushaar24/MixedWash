@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -28,9 +29,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.mixedwash.core.presentation.models.SnackBarType
 import com.mixedwash.ui.theme.mediumPadding
@@ -62,6 +63,7 @@ fun BrandSnackbar(
         Box(
             modifier = modifier.fillMaxWidth()
                 .clip(RoundedCornerShape(12.dp))
+                .background(Color.Black)
                 .dropShadow(
                     shape = RoundedCornerShape(12.dp),
                     color = Color.Black.copy(alpha = 0.1f),
@@ -70,7 +72,6 @@ fun BrandSnackbar(
                     offsetY = 4.dp,
                     offsetX = 0.dp
                 )
-                .background(Color.Black)
                 .border(0.5.dp, BrandTheme.colors.gray.c500, RoundedCornerShape(12.dp))
                 .padding(horizontal = 24.dp, vertical = 16.dp)
         ) {
@@ -79,6 +80,7 @@ fun BrandSnackbar(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
+                    modifier = Modifier.size(20.dp),
                     imageVector = vectorResource(type.icon),
                     contentDescription = null,
                     tint = when (type) {
@@ -94,7 +96,7 @@ fun BrandSnackbar(
                     color = BrandTheme.colors.gray.lighter,
                     fontSize = 14.sp,
                     lineHeight = 18.sp,
-                    style = BrandTheme.typography.subtitle3.copy(lineHeight = 1.5.em),
+                    fontWeight = FontWeight.Normal,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.weight(1f).padding(start = 16.dp)

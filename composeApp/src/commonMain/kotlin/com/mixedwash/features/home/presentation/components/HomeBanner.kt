@@ -30,11 +30,12 @@ import com.mixedwash.features.home.presentation.model.HomeBanner
 fun HomeBanner(
     banner: HomeBanner,
     statusBarHeight: Dp,
+    bannerHeight: Dp,
     onBannerButtonClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
 
-    Box(modifier = Modifier.height( 310.dp)) {
+    Box(modifier = Modifier.height( bannerHeight)) {
         Box(modifier = modifier.matchParentSize().gradient( gradient = banner.gradient ))
         Column(
             modifier = Modifier.fillMaxWidth(),

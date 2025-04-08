@@ -1,4 +1,4 @@
-package com.mixedwash.features.profile.profile_edit
+package com.mixedwash.features.profile_edit
 
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -21,7 +21,6 @@ import com.mixedwash.core.presentation.models.FieldID.NAME
 import com.mixedwash.core.presentation.models.FieldID.PHONE
 import com.mixedwash.core.presentation.models.SnackBarType
 import com.mixedwash.core.presentation.models.SnackbarPayload
-import com.mixedwash.core.presentation.util.Logger
 import com.mixedwash.ui.theme.RedDark
 import com.mixedwash.ui.theme.Yellow400
 import kotlinx.coroutines.channels.Channel
@@ -63,12 +62,7 @@ class ProfileEditScreenViewModel(
                                     primaryButton = ButtonData(
                                         text = "Cancel",
                                         onClick = {
-                                            Logger.d("TAG", "CANCEL CLICKED")
                                             viewModelScope.launch {
-                                                Logger.d(
-                                                    "TAG",
-                                                    "CANCEL CLICKED IN VIEW-MODEL-SCOPE"
-                                                )
                                                 _uiEventsChannel.send(
                                                     ProfileEditScreenUiEvent.ClosePopup
                                                 )

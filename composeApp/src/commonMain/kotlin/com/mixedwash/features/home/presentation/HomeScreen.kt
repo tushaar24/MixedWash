@@ -264,8 +264,10 @@ fun HomeScreen(
         WindowInsets.statusBars.getTop(this).toDp()
     }
     val scrollState = rememberScrollState()
+    val bannerHeight = 310.dp
+    val bannerHeightPx = with(LocalDensity.current) { bannerHeight.toPx() }
     val startThreshold = 50.dp.value
-    val endThreshold = 100.dp.value
+    val endThreshold = if(scrollState.maxValue < bannerHeightPx) scrollState.maxValue.toFloat() else bannerHeightPx
     val scrollValue = scrollState.value.toFloat()
 
     Box {
@@ -275,6 +277,7 @@ fun HomeScreen(
             state.banner?.let { banner ->
                 HomeBanner(
                     banner = banner,
+                    bannerHeight = bannerHeight,
                     statusBarHeight = statusBarHeight,
                     onBannerButtonClicked = { onEvent(HomeScreenEvent.OnBannerClick) },
                 )
@@ -352,8 +355,15 @@ fun HomeScreen(
             // lets the status bar content color be the same as top bar content color
             SetStatusBarColor(isLight = topBarContentColor.luminance() < 0.5f)
 
+            // Calculate interpolated alpha based on scroll position between thresholds
+            val interpolatedAlpha = when {
+                scrollValue <= startThreshold -> 0f
+                scrollValue >= endThreshold -> 1f
+                else -> (scrollValue - startThreshold) / (endThreshold - startThreshold)
+            }
+
             val alpha = animateFloatAsState(
-                targetValue = if (scrollValue <= startThreshold) 0f else 1f,
+                targetValue = interpolatedAlpha,
                 animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
             )
             Column(
@@ -365,11 +375,11 @@ fun HomeScreen(
                     modifier = Modifier.height(statusBarHeight + 2.dp).fillMaxWidth()
                 )
 
-                val elevation by animateDpAsState(if (scrollValue >= endThreshold) 4.dp else 0.dp)
+                val elevation by animateDpAsState(if (scrollState.maxValue == 0) 0.dp else if(scrollValue >= endThreshold) 4.dp else 0.dp)
                 ElevatedBox(
                     dropShadowConfig = DropShadowConfig(
                         shadowColor = Gray50,
-                        alpha = if (scrollValue >= endThreshold) 0.05f else 0f,
+                        alpha = if (scrollValue >= endThreshold && scrollState.maxValue != 0) 0.05f else 0f,
                         verticalDirection = ShadowDirection.Vertical.Bottom
                     ),
                     elevation = elevation,

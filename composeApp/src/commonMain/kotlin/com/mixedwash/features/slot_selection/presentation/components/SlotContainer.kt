@@ -13,6 +13,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,6 +24,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -243,14 +245,31 @@ private fun GenericSlotContainer(
             }
 
             if (slotsAvailable) {
-                Icon(
-                    imageVector = Icons.Default.KeyboardArrowUp,
-                    contentDescription = if (isExpandedState) "Collapse" else "Expand",
-                    modifier = Modifier
-                        .size(16.dp)
-                        .rotate(arrowRotationState),
-                    tint = BrandTheme.colors.gray.normalDark
-                )
+                if (isExpanded) {
+                    Icon(
+                        imageVector = Icons.Default.KeyboardArrowUp,
+                        contentDescription = if (isExpandedState) "Collapse" else "Expand",
+                        modifier = Modifier
+                            .size(16.dp)
+                            .rotate(arrowRotationState),
+                        tint = BrandTheme.colors.gray.normalDark
+                    )
+                } else {
+                    Column(Modifier.width(IntrinsicSize.Min)) {
+                        Text(
+                            text = "edit slot",
+                            lineHeight = 16.sp,
+                            fontSize = 10.sp,
+                            maxLines = 1,
+                            softWrap = false,
+                            color = BrandTheme.colors.gray.normalDark,
+                        )
+                        HorizontalDivider(
+                            thickness = 0.5.dp,
+                            color = BrandTheme.colors.gray.normalDark
+                        )
+                    }
+                }
             }
 
         }

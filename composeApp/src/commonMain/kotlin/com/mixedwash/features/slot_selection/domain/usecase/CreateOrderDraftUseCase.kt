@@ -58,9 +58,9 @@ class CreateOrderDraftUseCase(
         
         // Check if address is serviceable
         val isServiceable = locationAvailabilityRepository.isLocationServiceable(
-            currentLat = address.lat,
-            currentLon = address.long,
-            currentPincode = address.pinCode
+            lat = address.lat,
+            long = address.long,
+            pincode = address.pinCode
         ).getOrNull() ?: false
         
         if (!isServiceable) {

@@ -31,6 +31,7 @@ import com.mixedwash.features.address.domain.model.Address
 import com.mixedwash.features.address.domain.model.toAddress
 import com.mixedwash.features.address.domain.repository.AddressRepository
 import com.mixedwash.features.common.data.service.LocationService
+import com.mixedwash.features.location_availability.domain.LocationAvailabilityRepository
 import com.mixedwash.libs.loki.autocomplete.AutocompleteResult
 import com.mixedwash.libs.loki.core.Place
 import com.mixedwash.libs.loki.geocoder.GeocoderResult
@@ -55,6 +56,7 @@ import kotlin.uuid.Uuid
 class AddressScreenViewModel(
     private val addressRepository: AddressRepository,
     private val locationService: LocationService,
+    private val locationAvailabilityRepository: LocationAvailabilityRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -117,30 +119,63 @@ class AddressScreenViewModel(
 
             AddressScreenEvent.OnScreenSubmit -> {
                 viewModelScope.launch {
-                    state.value.typeParams.asSelect()?.let { selectParams ->
-                        addressRepository.setCurrentAddress(selectParams.selectedId).onSuccess {
-                            addressRoute.onSubmitNavArgsSerialized?.let { string ->
-                                runCatching {
-                                    Logger.d("AddressScreenViewModel", "String: $string")
-                                    Json.decodeFromString<NavArgs>(string)
-                                }.onSuccess { routeArgument ->
-                                    _uiEventsChannel.send(
-                                        AddressScreenUiEvent.NavigateOnSubmit(routeArgument)
-                                    )
-                                }.onFailure { e ->
-                                    snackbarEvent(
-                                        "Navigation Failed: Invalid Submit Route",
-                                        SnackBarType.ERROR
-                                    )
-                                    Logger.e("AddressScreenViewModel", e.stackTraceToString())
-                                }
+                    updateState {
+                        copy(isLoading = true)
+                    }
+                    try {
+                        val selectParams = state.value.typeParams.asSelect()
+                            ?: throw IllegalStateException("Not in select mode")
 
+                        addressRepository.setCurrentAddress(selectParams.selectedId)
+                            .getOrThrow()
+
+                        val address = addressRepository.getCurrentAddress()
+                            .getOrThrow()
+
+                        val isServiceable = locationAvailabilityRepository.isLocationServiceable(
+                            lat = address.lat,
+                            long = address.long,
+                            pincode = address.pinCode
+                        ).getOrThrow()
+
+                        if (!isServiceable) {
+                            snackbarEvent("Location is not serviceable", SnackBarType.ERROR)
+                            updateState{
+                                copy(isLoading = false)
                             }
-                        }.onFailure { e ->
-                            snackbarEvent(
-                                e.message ?: "Error Setting Current Address", SnackBarType.ERROR
+                            return@launch
+                        }
+
+                        addressRoute.onSubmitNavArgsSerialized?.let { serializedArgs ->
+                            Logger.d("AddressScreenViewModel", "String: $serializedArgs")
+                            val navArgs = Json.decodeFromString<NavArgs>(serializedArgs)
+                            _uiEventsChannel.send(AddressScreenUiEvent.NavigateOnSubmit(navArgs))
+                        }
+                    } catch (e: Exception) {
+                        when (e) {
+                            is IllegalStateException -> snackbarEvent(
+                                e.message ?: "Failed to get current address", SnackBarType.ERROR
                             )
-                            e.printStackTrace()
+
+                            is kotlinx.serialization.SerializationException -> {
+                                snackbarEvent(
+                                    "Navigation Failed: Invalid Submit Route",
+                                    SnackBarType.ERROR
+                                )
+                                Logger.e("AddressScreenViewModel", e.stackTraceToString())
+                            }
+
+                            else -> {
+                                snackbarEvent(
+                                    e.message ?: "Error during address submission",
+                                    SnackBarType.ERROR
+                                )
+                                Logger.e("AddressScreenViewModel", e.stackTraceToString())
+                            }
+                        }
+                    } finally {
+                        updateState {
+                            copy(isLoading = false)
                         }
                     }
                 }
@@ -324,28 +359,33 @@ class AddressScreenViewModel(
                     return@launch
                 }
 
-                updateSearchState {
+                updateState {
                     copy(
-                        fetchingLocation = true,
-                        enabled = false
+                        isLoading = true,
+                        searchState = searchState.copy(
+                            fetchingLocation = true,
+                            enabled = false
+                        )
                     )
                 }
 
-                // Open Add Address Modal
-                getCurrentAddressOrNull()?.let {
+                getCurrentLocationAddress()?.let {
                     onScreenEvent(
                         AddressScreenEvent.OnAddAddress(it)
                     )
                 }
 
-                updateSearchState {
+                updateState {
                     copy(
-                        fetchingLocation = false,
-                        enabled = true
+                        isLoading = false,
+                        searchState = searchState.copy(
+                            fetchingLocation = false,
+                            enabled = true
+                        )
                     )
                 }
-            }
 
+            }
 
             is AddressSearchEvent.OnPlaceSelected -> {
 
@@ -410,7 +450,7 @@ class AddressScreenViewModel(
         }
     }
 
-    private suspend fun getCurrentAddressOrNull(): Address? {
+    private suspend fun getCurrentLocationAddress(): Address? {
 
         val result = locationService.getCurrentLocation()
         val address: Address? = if (result !is GeolocatorResult.Success) {
@@ -523,7 +563,6 @@ class AddressScreenViewModel(
         }
 
     }
-
 
     /**
      * Generates a list of [FormField] from [Address] using a base list of [FormField]

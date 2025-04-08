@@ -8,16 +8,15 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
-import com.mixedwash.core.presentation.navigation.Route
 import com.mixedwash.core.presentation.models.SnackbarHandler
 import com.mixedwash.features.address.presentation.AddressScreenViewModel
 import com.mixedwash.features.common.presentation.address.AddressScreen
 import com.mixedwash.features.history.presentation.OrderHistoryScreen
 import com.mixedwash.features.history.presentation.OrderHistoryScreenViewModel
-import com.mixedwash.features.profile.profile_edit.ProfileEditScreen
-import com.mixedwash.features.profile.profile_edit.ProfileEditScreenViewModel
 import com.mixedwash.features.profile.presentation.ProfileScreen
 import com.mixedwash.features.profile.presentation.ProfileScreenViewModel
+import com.mixedwash.features.profile_edit.ProfileEditScreen
+import com.mixedwash.features.profile_edit.ProfileEditScreenViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
 fun NavGraphBuilder.ProfileNav(

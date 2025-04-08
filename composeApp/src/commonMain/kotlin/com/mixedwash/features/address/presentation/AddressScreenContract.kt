@@ -4,11 +4,9 @@ import androidx.compose.runtime.Immutable
 import com.mixedwash.core.presentation.components.DialogPopupData
 import com.mixedwash.core.presentation.models.FormField
 import com.mixedwash.core.presentation.models.SnackbarPayload
-import com.mixedwash.core.presentation.navigation.NavArgType
 import com.mixedwash.core.presentation.navigation.NavArgs
 import com.mixedwash.features.address.domain.model.Address
 import com.mixedwash.libs.loki.autocomplete.AutocompletePlace
-
 
 @Immutable
 data class AddressScreenState(
@@ -53,7 +51,7 @@ data class AddressSearchState (
     companion object {
         fun initialState() = AddressSearchState(
             query = "",
-            placeHolder = "Add new address",
+            placeHolder = "Search for area, street",
             enabled = true,
             autocompleteResult = emptyList(),
             fetchingLocation = false,
@@ -69,9 +67,6 @@ sealed class FormMode {
     data class Edit(val address: Address, val onSave: () -> Unit, val onCancel: () -> Unit) :
         FormMode()
 }
-
-
-
 
 sealed class AddressScreenEvent {
     data class OnAddressSelect(val addressId: String) : AddressScreenEvent()
@@ -98,8 +93,6 @@ sealed class AddressSearchEvent {
     data object OnLocationClick : AddressSearchEvent()
     data class OnPlaceSelected(val place: AutocompletePlace) : AddressSearchEvent()
 }
-
-
 
 sealed class AddressScreenUiEvent {
     data class ShowSnackbar(val snackbarPayload: SnackbarPayload) : AddressScreenUiEvent()

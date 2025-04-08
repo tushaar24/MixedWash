@@ -6,7 +6,7 @@ import com.mixedwash.features.history.domain.model.InsightMetric
 
 data class OrderHistoryScreenState(
     val orders: List<Order>,
-    val insights: List<InsightMetric>,
+    val insights: List<InsightMetric>?=null,
 )
 
 sealed interface OrderHistoryScreenEvent {

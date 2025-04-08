@@ -44,7 +44,7 @@ fun AddItemButton(
         )
 
         Text(
-            text = if (subItems) "Add Items" else "Add",
+            text = if (subItems) "Add Item" else "Add",
             fontSize = 12.sp,
             fontWeight = FontWeight.Medium,
             color = BrandTheme.colors.gray.lighter

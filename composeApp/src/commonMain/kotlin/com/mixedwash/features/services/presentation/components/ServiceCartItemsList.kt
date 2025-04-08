@@ -1,17 +1,10 @@
 package com.mixedwash.features.services.presentation.components
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.SizeTransform
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -47,10 +40,10 @@ fun ServiceCartItemsList(
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
-                .heightIn(min = 0.dp, max = 2000.dp)
-                .animateContentSize(),
+                .heightIn(min = 0.dp, max = 2000.dp),
             verticalArrangement = Arrangement.spacedBy(18.dp)
         ) {
+
             items(serviceCartItems, key = { item -> item.itemId }) { item ->
                 CartItemEntry(
                     modifier = Modifier.animateItem(),
@@ -63,56 +56,40 @@ fun ServiceCartItemsList(
                     minPrice = if (item.itemPricing is ItemPricing.ServiceItemPricingPresentation) item.itemPricing.minimumPrice else null
                 )
             }
-        }
 
-// Use AnimatedContent for smooth transitions
-        AnimatedContent(
-            targetState = serviceCartItems.isEmpty() || service.pricingMetadata is PricingMetadataPresentation.SubItemsPricingPresentation,
-            transitionSpec = {
-                if (targetState) {
-
-                    // When Add button should appear
-                    (slideInVertically(animationSpec = tween(durationMillis = 300)) { height -> height } +
-                            fadeIn(animationSpec = tween(durationMillis = 300))) togetherWith
-                            (slideOutVertically(animationSpec = tween(durationMillis = 300)) { height -> -height } +
-                                    fadeOut(animationSpec = tween(durationMillis = 300)))
-                } else {
-                    // When Add button should disappear
-                    (slideInVertically(animationSpec = tween(durationMillis = 300)) { height -> -height } +
-                            fadeIn(animationSpec = tween(durationMillis = 300))) togetherWith
-                            (slideOutVertically(animationSpec = tween(durationMillis = 300)) { height -> height } +
-                                    fadeOut(animationSpec = tween(durationMillis = 300)))
-                } using SizeTransform(clip = false)
-            },
-        ) { showAddButton ->
-            if (showAddButton) {
-                service.pricingMetadata?.let { pricingMetadata ->
-                    AddItemButton(
-                        onClick = {
-                            when (pricingMetadata) {
-                                is PricingMetadataPresentation.ServicePricingPresentation -> {
-                                    onEvent(
-                                        ServicesScreenEvent.OnItemAdd(
-                                            itemId = service.items?.first()?.itemId ?: ""
+            if (serviceCartItems.isEmpty() || service.pricingMetadata is PricingMetadataPresentation.SubItemsPricingPresentation) {
+                item {
+                    service.pricingMetadata?.let { pricingMetadata ->
+                        if (serviceCartItems.isNotEmpty()) {
+                            Spacer(Modifier.height(16.dp))
+                        }
+                        AddItemButton(
+                            onClick = {
+                                when (pricingMetadata) {
+                                    is PricingMetadataPresentation.ServicePricingPresentation -> {
+                                        onEvent(
+                                            ServicesScreenEvent.OnItemAdd(
+                                                itemId = service.items?.first()?.itemId ?: ""
+                                            )
                                         )
-                                    )
-                                }
+                                    }
 
-                                is PricingMetadataPresentation.SubItemsPricingPresentation -> {
-                                    onEvent(
-                                        ServicesScreenEvent.OnOpenSubItemsSheet(
-                                            serviceId = service.serviceId
+                                    is PricingMetadataPresentation.SubItemsPricingPresentation -> {
+                                        onEvent(
+                                            ServicesScreenEvent.OnOpenSubItemsSheet(
+                                                serviceId = service.serviceId
+                                            )
                                         )
-                                    )
+                                    }
                                 }
-                            }
-                        },
-                        subItems = service.pricingMetadata is PricingMetadataPresentation.SubItemsPricingPresentation
-                    )
+                            },
+                            subItems = service.pricingMetadata is PricingMetadataPresentation.SubItemsPricingPresentation
+                        )
+                    }
                 }
             }
-        }
 
+        }
         HorizontalDivider(
             color = dividerBlack,
             thickness = 1.dp,

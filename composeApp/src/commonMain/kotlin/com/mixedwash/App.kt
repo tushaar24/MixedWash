@@ -1,8 +1,6 @@
 package com.mixedwash
 
 import BrandTheme
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
@@ -13,6 +11,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Scaffold
@@ -29,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -71,13 +71,14 @@ fun App() {
                             val imeOffset = WindowInsets.ime.getBottom(LocalDensity.current)
                             Popup(
                                 alignment = Alignment.BottomCenter,
-                                offset = IntOffset(x = 0, y = -imeOffset),
+                                offset = IntOffset(x = 0, y = -(imeOffset)),
                                 onDismissRequest = { snackbarData.dismiss() },
                                 properties = PopupProperties()
                             ) {
                                 Box(
                                     modifier = Modifier
                                         .fillMaxWidth()
+                                        .padding(start = 16.dp, end = 16.dp, bottom = 24.dp)
                                         .noRippleClickable {
                                             snackbarData.dismiss()
                                         },

@@ -10,9 +10,9 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Clear
@@ -309,7 +309,7 @@ fun ServicesScreen(
                         modifier = Modifier.size(12.dp)
                     )
                     Text(
-                        text = "faqs",
+                        text = "Faqs",
                         lineHeight = 18.sp,
                         fontSize = 14.sp,
                         letterSpacing = (-0.5).sp
@@ -327,17 +327,14 @@ fun ServicesScreen(
         ) {
 
             Row(modifier = Modifier.weight(1f)) {
-                LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(32.dp),
-                    modifier = Modifier.padding(top = 16.dp)
-                ) {
-                    itemsIndexed(state.services) { _, service ->
+                Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(24.dp)) {
+                    state.services.forEach { service ->
                         ServiceTab(
                             service = service,
                             addedToCart = state.cartItems.any { it.serviceId == service.serviceId },
                             isSelected = service.serviceId == state.selectedServiceId,
                             onClick = { onEvent(ServicesScreenEvent.OnServiceClick(service.serviceId)) },
-                            modifier = Modifier.padding(start = 8.dp),
+                            modifier = Modifier.padding(start = 8.dp).padding(top = 16.dp),
                         )
                     }
                 }

@@ -1,7 +1,6 @@
 package com.mixedwash.features.location_availability.data
 
 import com.mixedwash.core.domain.config.AppConfig
-import com.mixedwash.core.domain.models.Result
 import com.mixedwash.core.presentation.util.Logger
 import com.mixedwash.features.location_availability.domain.LocationAvailabilityRepository
 import com.mixedwash.features.location_availability.domain.LocationAvailabilityService
@@ -24,39 +23,56 @@ class LocationAvailabilityRepositoryImpl(
     override val bypassLocationCheck: Boolean = appConfig.bypassLocationCheck
 
     private suspend fun fetchLocationAvailability(): Result<LocationAvailabilityDTO> {
-        return locationService.fetchLocationData()
+        return try {
+            val response = locationService.fetchLocationData()
+            when (response) {
+                is com.mixedwash.core.domain.models.Result.Success -> Result.success(response.data)
+                is com.mixedwash.core.domain.models.Result.Error -> Result.failure(
+                    Exception(
+                        response.error.toString()
+                    )
+                )
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
     override suspend fun isLocationServiceable(
-        currentLat: Double?,
-        currentLon: Double?,
-        currentPincode: String
+        lat: Double?,
+        long: Double?,
+        pincode: String
     ): Result<Boolean> = withContext(dispatcher) {
         delay(1000)
         if (bypassLocationCheck) {
             Logger.d(TAG, "location check bypassed")
-            return@withContext Result.Success(true)
+            return@withContext Result.success(true)
         }
+
         val availabilityResponse = fetchLocationAvailability()
-        if (availabilityResponse is Result.Error) {
-            return@withContext availabilityResponse
+        if (availabilityResponse.isFailure) {
+            return@withContext Result.failure(
+                availabilityResponse.exceptionOrNull() ?: Exception("Unknown error")
+            )
         }
-        val data = (availabilityResponse as Result.Success).data.data
+
+        val data = availabilityResponse.getOrNull()?.data
+            ?: return@withContext Result.failure(Exception("No availability data found"))
 
         // Check if the current pincode is serviceable.
-        if (data.serviceablePincodes.contains(currentPincode)) {
-            return@withContext Result.Success(true)
+        if (data.serviceablePincodes.contains(pincode)) {
+            return@withContext Result.success(true)
         }
 
         // Check if the current coordinate falls within any service area.
-        if (currentLat != null && currentLon != null) {
+        if (lat != null && long != null) {
             for (area in data.serviceAreas) {
-                val distance = calculateDistance(currentLat, currentLon, area.latitude, area.longitude)
+                val distance = calculateDistance(lat, long, area.latitude, area.longitude)
                 if (distance <= area.radiusKm) {
-                    return@withContext Result.Success(true)
+                    return@withContext Result.success(true)
                 }
             }
         }
-        return@withContext Result.Success(false)
+        return@withContext Result.success(false)
     }
 }
