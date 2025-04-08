@@ -72,6 +72,10 @@ fun OnboardingScreen(
                 navController.popBackStack()    // going back shouldn't return to this screen after navigating away
                 navController.navigate(event.route)
             }
+
+            OnboardingScreenUiEvent.GoBack -> {
+                navController.navigateUp()
+            }
         }
     }
     val pagerState = rememberPagerState(pageCount = { state.items.size })
@@ -170,32 +174,34 @@ fun OnboardingScreen(
         }
 
         // Dots indicator
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            repeat(pagerState.pageCount) { idx ->
-                val color =
-                    if (pagerState.currentPage == idx) BrandTheme.colors.gray.c800
-                    else BrandTheme.colors.gray.c400
-                Box(
-                    modifier = Modifier
-                        .padding(horizontal = 8.dp, vertical = 2.dp)
-                        .clip(CircleShape)
-                        .background(color)
-                        .size(8.dp)
-                )
+        if(pagerState.currentPage != pagerState.pageCount - 1) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                repeat(pagerState.pageCount) { idx ->
+                    val color =
+                        if (pagerState.currentPage == idx) BrandTheme.colors.gray.c800
+                        else BrandTheme.colors.gray.c400
+                    Box(
+                        modifier = Modifier
+                            .padding(horizontal = 8.dp, vertical = 2.dp)
+                            .clip(CircleShape)
+                            .background(color)
+                            .size(8.dp)
+                    )
+                }
             }
         }
 
         // Action buttons (help center/explore or next arrow) based on the page state
         if (pagerState.currentPage + 1 == pagerState.pageCount) {
             Row(
-                modifier = Modifier.padding(horizontal = 32.dp).align(Alignment.End),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
+                modifier = Modifier.align(Alignment.CenterHorizontally).padding(bottom = 32.dp),
+                horizontalArrangement = Arrangement.spacedBy(32.dp)
             ) {
                 Text(
-                    text = "HELP CENTER",
+                    text = "Support",
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 14.sp,
                     color = BrandTheme.colors.gray.c900,
@@ -208,7 +214,7 @@ fun OnboardingScreen(
                 )
 
                 Text(
-                    text = "EXPLORE",
+                    text = "Services",
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 14.sp,
                     color = BrandTheme.colors.gray.c50,
@@ -231,9 +237,7 @@ fun OnboardingScreen(
                     fontSize = 14.sp,
                     lineHeight = 18.sp,
                     modifier = Modifier.noRippleClickable {
-                        coroutineScope.launch {
-                            pagerState.animateScrollToPage(pagerState.pageCount - 1)
-                        }
+                        onEvent(OnboardingScreenEvent.OnSkip)
                     }
                 )
 

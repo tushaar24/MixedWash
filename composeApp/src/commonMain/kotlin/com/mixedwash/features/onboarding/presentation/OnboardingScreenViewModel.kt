@@ -48,6 +48,13 @@ class OnboardingScreenViewModel(
             OnboardingScreenEvent.OnNavigateToHelpCenter -> {
                 sendNavigationEvent(Route.FaqRoute)
             }
+
+            OnboardingScreenEvent.OnSkip -> {
+                viewModelScope.launch {
+                    _uiEventsChannel.send(OnboardingScreenUiEvent.GoBack)
+                }
+
+            }
         }
     }
 

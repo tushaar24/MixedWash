@@ -11,8 +11,10 @@ data class OnboardingScreenState(
 sealed interface OnboardingScreenEvent {
     data object OnNavigateToHelpCenter : OnboardingScreenEvent
     data object OnExplore : OnboardingScreenEvent
+    data object OnSkip : OnboardingScreenEvent
 }
 
 sealed interface OnboardingScreenUiEvent {
     data class Navigate(val route: Route) : OnboardingScreenUiEvent
+    data object GoBack : OnboardingScreenUiEvent
 }
