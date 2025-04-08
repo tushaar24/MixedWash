@@ -272,7 +272,7 @@ fun HomeScreen(
 
     Box {
         Column(
-            modifier = modifier.navigationBarsPadding().verticalScroll(scrollState).padding(bottom = 200.dp),
+            modifier = modifier.navigationBarsPadding().verticalScroll(scrollState),
         ) {
             state.banner?.let { banner ->
                 HomeBanner(
