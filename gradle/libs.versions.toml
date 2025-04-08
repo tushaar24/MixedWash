@@ -40,6 +40,7 @@ firebaseAuthCommon = "9.8.0"
 firebaseAuthKtx = "23.2.0"
 firebaseGitlive = "1.13.0"
 kotlinx-coroutines = "1.10.0"
+compottie = "2.0.0-rc04"
 
 
 
@@ -116,6 +117,9 @@ firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx",
 
 #Firebase Kotlin SDK
 gitlive-firebase-firestore = { group = "dev.gitlive", name = "firebase-firestore", version.ref = "firebaseGitlive" }
+
+# Compottie
+compottie = { module = "io.github.alexzhirkevich:compottie", version.ref = "compottie" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

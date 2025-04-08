@@ -1,6 +1,6 @@
+import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.util.Properties
-import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -121,6 +121,9 @@ kotlin {
 
             // firebase firestore
             implementation(libs.gitlive.firebase.firestore)
+
+            // lottie
+            implementation (libs.compottie)
 
         }
 

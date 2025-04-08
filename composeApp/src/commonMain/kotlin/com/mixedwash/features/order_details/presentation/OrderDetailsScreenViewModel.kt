@@ -88,7 +88,7 @@ class OrderDetailsScreenViewModel(
                             Logger.e("SlotSelectionScreenViewModel", "Error clearing cart")
                             e.printStackTrace()
                         }
-                        sendEvent(OrderDetailsScreenUiEvent.NavigateToOrderConfirmation(it.id))
+                        sendEvent(OrderDetailsScreenUiEvent.NavigateToOrderConfirmation(it.bookings.first().id))
                     }.onFailure {
                         showSnackbar(SnackbarPayload("Error Placing Booking", SnackBarType.ERROR))
                         Logger.e(TAG, it.message ?: "Error Placing Booking")

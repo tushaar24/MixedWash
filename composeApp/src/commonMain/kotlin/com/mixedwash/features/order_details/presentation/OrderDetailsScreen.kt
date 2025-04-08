@@ -23,7 +23,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.SpanStyle
@@ -34,7 +33,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.mixedwash.WindowInsetsContainer
 import com.mixedwash.core.orders.domain.model.BookingItemPricing
-import com.mixedwash.core.orders.domain.model.BookingTimeSlot
 import com.mixedwash.core.presentation.components.DefaultHeader
 import com.mixedwash.core.presentation.components.ElevatedBox
 import com.mixedwash.core.presentation.components.HeadingAlign
@@ -42,7 +40,6 @@ import com.mixedwash.core.presentation.components.HeadingSize
 import com.mixedwash.core.presentation.models.SnackbarHandler
 import com.mixedwash.core.presentation.navigation.Route
 import com.mixedwash.core.presentation.util.ObserveAsEvents
-import com.mixedwash.features.address.domain.model.Address
 import com.mixedwash.features.order_details.presentation.components.BookingItem
 import com.mixedwash.features.order_details.presentation.components.OrderDetailsSummary
 import com.mixedwash.features.services.presentation.components.DefaultButtonLarge
@@ -52,7 +49,6 @@ import com.mixedwash.ui.theme.dividerBlack
 import com.mixedwash.ui.theme.headerContentSpacing
 import com.mixedwash.ui.theme.screenHorizontalPadding
 import kotlinx.coroutines.flow.Flow
-import kotlin.random.Random
 
 
 @Composable
@@ -68,7 +64,7 @@ fun OrderDetailsScreen(
     ObserveAsEvents(uiEventsFlow) { event ->
         when (event) {
             is OrderDetailsScreenUiEvent.NavigateToOrderConfirmation -> {
-                navController.navigate(Route.BookingConfirmationRoute(bookingId = event.orderId)) {
+                navController.navigate(Route.OrderConfirmationRoute(bookingId = event.orderId)) {
                     popUpTo(Route.HomeRoute)
                 }
             }

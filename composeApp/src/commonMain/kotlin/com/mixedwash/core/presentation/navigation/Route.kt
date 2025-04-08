@@ -71,8 +71,8 @@ sealed class Route {
     }
 
     @Serializable
-    @SerialName("booking_confirmation_route")
-    data class BookingConfirmationRoute(
+    @SerialName("order_confirmation_route")
+    data class OrderConfirmationRoute(
         @SerialName("booking_id") val bookingId: String
     ) : Route()
 

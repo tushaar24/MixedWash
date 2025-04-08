@@ -232,12 +232,7 @@ class HomeScreenViewModel(
 
             is HomeScreenEvent.OnOrderStatusWidgetClicked -> {
                 sendUiEvent(
-                    HomeScreenUiEvent.Navigate(
-                        Route.OrderDetailsRoute(
-                            event.orderId,
-                            destinationType = Route.OrderDetailsRoute.DestinationType.VIEW_ORDER_BY_BOOKING_ID
-                        )
-                    )
+                    HomeScreenUiEvent.Navigate(Route.HistoryRoute)
                 )
             }
         }
