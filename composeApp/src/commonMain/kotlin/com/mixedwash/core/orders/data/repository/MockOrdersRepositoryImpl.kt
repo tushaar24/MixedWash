@@ -48,6 +48,12 @@ class MockOrdersRepositoryImpl(
         } ?: Result.failure(OrderException.OrderNotFound)
     }
 
+    override suspend fun getOrderByBookingId(bookingId: String): Result<Order> {
+        return userOrders.find { it.bookings.any { booking -> booking.id == bookingId } }?.let {
+            Result.success(it)
+        } ?: Result.failure(OrderException.OrderNotFound)
+    }
+
     override suspend fun placeDraftOrder(): Result<Order> {
         return mutex.withLock {
             runCatching {

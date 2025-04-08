@@ -4,10 +4,10 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.mixedwash.core.presentation.navigation.Route
 import com.mixedwash.core.orders.domain.repository.OrdersRepository
 import com.mixedwash.core.presentation.models.SnackBarType
 import com.mixedwash.core.presentation.models.SnackbarPayload
+import com.mixedwash.core.presentation.navigation.Route
 import com.mixedwash.core.presentation.util.Logger
 import com.mixedwash.features.local_cart.domain.LocalCartRepository
 import kotlinx.coroutines.channels.Channel
@@ -46,12 +46,12 @@ class OrderDetailsScreenViewModel(
         viewModelScope.launch {
             when (route.destinationType) {
                 Route.OrderDetailsRoute.DestinationType.CONFIRM_DRAFT_ORDER -> ordersRepository.getOrderDraft()
-                Route.OrderDetailsRoute.DestinationType.VIEW_ORDER_BY_ID -> {
+                Route.OrderDetailsRoute.DestinationType.VIEW_ORDER_BY_BOOKING_ID -> {
                     if (route.bookingId == null) {
                         showSnackbar(SnackbarPayload("No Booking Id Provided", SnackBarType.ERROR))
                         return@launch
                     }
-                    ordersRepository.getOrderById(route.bookingId)
+                    ordersRepository.getOrderByBookingId(route.bookingId)
                 }
             }.onSuccess { order ->
                 _state.update {

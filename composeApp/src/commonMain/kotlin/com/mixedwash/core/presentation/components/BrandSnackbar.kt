@@ -34,6 +34,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mixedwash.core.presentation.models.SnackBarType
+import com.mixedwash.ui.theme.Green
 import com.mixedwash.ui.theme.mediumPadding
 import com.mixedwash.ui.theme.screenHorizontalPadding
 import org.jetbrains.compose.resources.vectorResource
@@ -84,7 +85,7 @@ fun BrandSnackbar(
                     imageVector = vectorResource(type.icon),
                     contentDescription = null,
                     tint = when (type) {
-                        SnackBarType.SUCCESS -> Color(0xFFD56363)
+                        SnackBarType.SUCCESS -> Green
                         SnackBarType.WARNING -> Color.Yellow
                         SnackBarType.ERROR -> Color.Red
                         else -> Color.White

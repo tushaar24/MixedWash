@@ -46,11 +46,18 @@ class FirebaseOrdersRepositoryImpl(
         return orderService.getOrderById(id)
     }
 
+    override suspend fun getOrderByBookingId(bookingId: String): Result<Order> {
+        val order = orderService
+            .getOrders().getOrThrow()
+            .firstOrNull { it.bookings.any { booking -> booking.id == bookingId } }
+            ?: return Result.failure(OrderException.OrderNotFound)
+        return Result.success(order)
+    }
+
     override suspend fun placeDraftOrder(): Result<Order> {
         return runCatching {
-            val draftOrder = orderDraftService.getCurrentDraft()
-                ?: throw OrderException.OrderNotFound
-
+            val draftOrder =
+                orderDraftService.getCurrentDraft() ?: throw OrderException.OrderNotFound
 
             // Save the order to Firebase
             orderService.saveOrder(draftOrder.copy(createdAtSeconds = Clock.System.now().epochSeconds))

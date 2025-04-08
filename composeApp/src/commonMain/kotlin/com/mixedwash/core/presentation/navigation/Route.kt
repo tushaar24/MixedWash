@@ -57,11 +57,11 @@ sealed class Route {
             CONFIRM_DRAFT_ORDER,
 
             @SerialName("view_booking_by_id")
-            VIEW_ORDER_BY_ID,
+            VIEW_ORDER_BY_BOOKING_ID,
         }
 
         init {
-            if (destinationType == DestinationType.VIEW_ORDER_BY_ID && bookingId.isNullOrEmpty()) {
+            if (destinationType == DestinationType.VIEW_ORDER_BY_BOOKING_ID && bookingId.isNullOrEmpty()) {
                 Logger.e(
                     TAG,
                     "ERROR: Booking ID cannot be null or empty for screen type ViewBookingById"

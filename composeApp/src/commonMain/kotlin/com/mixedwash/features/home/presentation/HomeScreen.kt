@@ -285,15 +285,15 @@ fun HomeScreen(
 
             Column(
                 modifier = Modifier.padding(
-                    top = 32.dp,
+                    top = 24.dp,
                     bottom = 24.dp
                 ),
-                verticalArrangement = Arrangement.spacedBy(24.dp)
+                verticalArrangement = Arrangement.spacedBy(24.dp, alignment = Alignment.Top)
             ) {
                 state.activeOrders?.let {
                     OrderStatusWidget(
                         orders = state.activeOrders,
-                        onClick = { onEvent(HomeScreenEvent.OnPreviousOrderClicked(it)) }
+                        onClick = { onEvent(HomeScreenEvent.OnOrderStatusWidgetClicked(it)) }
                     )
                 }
 

@@ -14,7 +14,9 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class OrderHistoryScreenViewModel(private val ordersRepository: OrdersRepository) :
+class OrderHistoryScreenViewModel
+    (private val ordersRepository: OrdersRepository
+            ) :
     ViewModel() {
 
     private val initialState = OrderHistoryScreenState(
@@ -40,7 +42,7 @@ class OrderHistoryScreenViewModel(private val ordersRepository: OrdersRepository
                         OrderHistoryScreenUiEvent.Navigate(
                             Route.OrderDetailsRoute(
                                 bookingId = event.orderId,
-                                destinationType = Route.OrderDetailsRoute.DestinationType.VIEW_ORDER_BY_ID
+                                destinationType = Route.OrderDetailsRoute.DestinationType.VIEW_ORDER_BY_BOOKING_ID
                             )
                         )
                     )
