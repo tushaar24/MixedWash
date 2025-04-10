@@ -142,8 +142,6 @@ fun AddressScreen(
                         addressSearchState = state.searchState,
                     )
 
-                    Spacer(modifier = Modifier.height(40.dp))
-
                 }
 
                 state.typeParams.asSelect()?.run {

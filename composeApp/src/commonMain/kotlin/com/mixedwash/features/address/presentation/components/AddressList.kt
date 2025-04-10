@@ -74,11 +74,12 @@ fun AddressList(
         item {
             Box(
                 modifier =
-                Modifier.fillMaxWidth().then(if (onSearchBoxClick != null) {
-                    Modifier.noRippleClickable {
-                        onSearchBoxClick()
-                    }
-                } else Modifier)
+                    Modifier.fillMaxWidth().then(
+                        if (onSearchBoxClick != null) {
+                        Modifier.noRippleClickable {
+                            onSearchBoxClick()
+                        }
+                    } else Modifier)
             ) {
                 AddressSearch(
                     modifier = Modifier.fillMaxWidth().focusRequester(searchBoxFocusRequester),
@@ -150,7 +151,7 @@ fun AddressList(
 
                 Row(
                     modifier = Modifier.fillMaxWidth().animateItem().border(
-                            1.dp, color = borderColor, shape = BrandTheme.shapes.card
+                        1.dp, color = borderColor, shape = BrandTheme.shapes.card
                     ).clip(BrandTheme.shapes.card).background(containerColor)
                         .clickable(enabled = onAddressClicked != null && !isSelected) {
                             onAddressClicked!!(
@@ -198,10 +199,14 @@ fun AddressList(
                                 .copy(containerColor = Color.Transparent)
                         )
                     }
-                    }
                 }
             }
+
+            item {
+                Spacer(Modifier.height(100.dp))
+            }
         }
+    }
 
 
 }
