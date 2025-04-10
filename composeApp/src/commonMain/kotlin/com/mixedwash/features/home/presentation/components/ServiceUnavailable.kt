@@ -31,7 +31,7 @@ fun ServiceUnavailable(
     onChangeLocation: () -> Unit,
 ) {
     Column(
-        modifier = modifier.fillMaxWidth().padding(horizontal = 48.dp, vertical = 64.dp),
+        modifier = modifier.fillMaxWidth().padding(horizontal = 48.dp, vertical = 48.dp),
         verticalArrangement = Arrangement.spacedBy(
             24.dp,
             alignment = Alignment.CenterVertically
