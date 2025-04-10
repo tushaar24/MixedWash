@@ -14,9 +14,9 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class OrderHistoryScreenViewModel
-    (private val ordersRepository: OrdersRepository
-            ) :
+class OrderHistoryScreenViewModel(
+    private val ordersRepository: OrdersRepository
+) :
     ViewModel() {
 
     private val initialState = OrderHistoryScreenState(
@@ -54,7 +54,7 @@ class OrderHistoryScreenViewModel
     private fun loadInitialData() = viewModelScope.launch {
         _state.update {
             it.copy(
-                orders = ordersRepository.getOrders().getOrNull() ?: emptyList()
+                orders = ordersRepository.getAllOrdersMostRecentFirst().getOrNull() ?: emptyList()
             )
         }
 

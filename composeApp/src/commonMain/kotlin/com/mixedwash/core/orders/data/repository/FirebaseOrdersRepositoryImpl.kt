@@ -36,9 +36,9 @@ class FirebaseOrdersRepositoryImpl(
 
     override suspend fun clearOrderDraft(): Result<Order?> = orderDraftService.clearOrderDraft()
 
-    override suspend fun getOrders(): Result<List<Order>> {
+    override suspend fun getAllOrdersMostRecentFirst(): Result<List<Order>> {
         return runCatching {
-            orderService.getOrders().getOrThrow()
+            orderService.getAllOrdersMostRecentFirst().getOrThrow()
         }
     }
 
@@ -48,7 +48,7 @@ class FirebaseOrdersRepositoryImpl(
 
     override suspend fun getOrderByBookingId(bookingId: String): Result<Order> {
         val order = orderService
-            .getOrders().getOrThrow()
+            .getAllOrdersMostRecentFirst().getOrThrow()
             .firstOrNull { it.bookings.any { booking -> booking.id == bookingId } }
             ?: return Result.failure(OrderException.OrderNotFound)
         return Result.success(order)
@@ -71,7 +71,7 @@ class FirebaseOrdersRepositoryImpl(
     }
 
     override suspend fun getOrderStatus(): Result<List<OrderStatus>> {
-        val orders = orderService.getOrders().getOrNull()
+        val orders = orderService.getAllOrdersMostRecentFirst().getOrNull()
             ?: return Result.failure(Exception("failed to fetch"))
 
         return Result.success(orders.flatMap { order ->

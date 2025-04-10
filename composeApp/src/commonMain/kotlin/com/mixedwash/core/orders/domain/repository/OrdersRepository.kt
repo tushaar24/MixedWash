@@ -16,7 +16,7 @@ interface OrdersRepository {
     suspend fun getOrderDraft() : Result<Order>
     suspend fun clearOrderDraft() :Result<Order?>
     suspend fun placeDraftOrder(): Result<Order>
-    suspend fun getOrders(): Result<List<Order>>
+    suspend fun getAllOrdersMostRecentFirst(): Result<List<Order>>
     suspend fun getOrderById(id: String): Result<Order>
     suspend fun getOrderByBookingId(bookingId: String): Result<Order>
     suspend fun getOrderStatus(): Result<List<OrderStatus>>

@@ -13,7 +13,7 @@ const val ORDERS_COLLECTION = "ORDERS"
 interface OrderService {
     suspend fun saveOrder(order: Order): Result<Order>
     suspend fun getOrderById(orderId: String): Result<Order>
-    suspend fun getOrders(): Result<List<Order>>
+    suspend fun getAllOrdersMostRecentFirst(): Result<List<Order>>
     suspend fun updateOrder(order: Order): Result<Order>
     suspend fun deleteOrder(orderId: String): Result<Unit>
 }
@@ -53,16 +53,16 @@ class FirebaseOrderService(
         }
     }
 
-    override suspend fun getOrders(): Result<List<Order>> {
+    override suspend fun getAllOrdersMostRecentFirst(): Result<List<Order>> {
         return runCatching {
             val userId = userService.currentUser?.uid ?: throw IllegalStateException("Current user hsa no id")
             val snapshot = db.collection(ORDERS_COLLECTION)
                 .where { "customer_id" equalTo userId }
                 .get()
 
-            snapshot.documents.mapNotNull { doc ->
+            snapshot.documents.map { doc ->
                 doc.data<Order>()
-            }
+            }.sortedByDescending { it.createdAtSeconds }
         }
     }
 

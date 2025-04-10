@@ -38,7 +38,7 @@ class MockOrdersRepositoryImpl(
     override suspend fun clearOrderDraft(): Result<Order?> =  orderDraftService.clearOrderDraft()
 
 
-    override suspend fun getOrders(): Result<List<Order>> {
+    override suspend fun getAllOrdersMostRecentFirst(): Result<List<Order>> {
         return Result.success(userOrders)
     }
 
