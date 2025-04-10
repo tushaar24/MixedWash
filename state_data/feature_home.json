@@ -1,0 +1,158 @@
+{
+  "path": "composeApp/src/commonMain/kotlin/com/mixedwash/features/home",
+  "name": "Home",
+  "type": "feature",
+  "purpose": "Serves as the main dashboard for the Mixed Wash application, providing users with a centralized entry point to access key functionality, view service recommendations, and manage their laundry services.",
+  "lastUpdated": {
+    "date": "2025-04-01",
+    "commit": "caf2977cfc4d11e9a1d77509d722f370dca9d86e"
+  },
+  "change_log": [
+    {
+      "commit_range": "caf2977cfc4d11e9a1d77509d722f370dca9d86e",
+      "date": "2025-04-01",
+      "summary": "Updated state file with current commit hash"
+    },
+    {
+      "commit_range": "209101caec9ef7e157d1392ba29076d61a4c2a79 to caf2977cfc4d11e9a1d77509d722f370dca9d86e",
+      "date": "2025-04-01",
+      "summary": "Updated state file with current commit hash"
+    },
+    {
+      "commit_range": "abc123def456",
+      "date": "2023-04-27",
+      "summary": "Initial state capture of home feature structure and components"
+    }
+  ],
+  "architecture": {
+    "pattern": "Clean Architecture with MVVM",
+    "layers": [
+      {
+        "name": "Data",
+        "description": "Repository implementation and data sources for home screen data including promotions and service recommendations API"
+      },
+      {
+        "name": "Domain",
+        "description": "Use cases and domain models for home screen functionality"
+      },
+      {
+        "name": "Presentation",
+        "description": "HomeViewModel and Composable UI components including the main dashboard screen"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "HomeRepository",
+      "type": "Repository",
+      "purpose": "Provides data for the home screen including promotions and service recommendations",
+      "details": "Implements caching mechanism for promotions with time-based invalidation"
+    },
+    {
+      "name": "HomeViewModel",
+      "type": "ViewModel",
+      "purpose": "Manages the state of the home screen and handles user interactions",
+      "details": "Uses StateFlow for UI state management and handles side effects with channels"
+    },
+    {
+      "name": "HomeScreen",
+      "type": "Screen",
+      "purpose": "Main dashboard UI that displays service categories, promotions, and user-specific content"
+    },
+    {
+      "name": "Carousel",
+      "type": "UIComponent",
+      "purpose": "Auto-scrolling component for promotional banners",
+      "details": "Implements custom animation and gesture handling for smooth scrolling experience"
+    },
+    {
+      "name": "ServiceCards",
+      "type": "UIComponent",
+      "purpose": "Grid display of service categories with icons"
+    },
+    {
+      "name": "GetPromotions",
+      "type": "UseCase",
+      "purpose": "Retrieves current promotional offers from the API"
+    },
+    {
+      "name": "GetRecommendedServices",
+      "type": "UseCase",
+      "purpose": "Retrieves personalized service recommendations based on user history"
+    }
+  ],
+  "dependencies": [
+    {
+      "name": "Koin",
+      "type": "external",
+      "purpose": "Dependency injection for the home feature components"
+    },
+    {
+      "name": "Compose",
+      "type": "external",
+      "purpose": "UI implementation for the home screen and components"
+    },
+    {
+      "name": "Navigation Compose",
+      "type": "external",
+      "purpose": "Navigation from home screen to other app sections"
+    },
+    {
+      "name": "Coil",
+      "type": "external",
+      "purpose": "Loading promotional images and service category icons"
+    },
+    {
+      "name": "Ktor",
+      "type": "external",
+      "purpose": "API calls for fetching promotions and recommendations"
+    },
+    {
+      "name": "UserService",
+      "type": "internal",
+      "purpose": "Accessing user-specific data for personalized content"
+    }
+  ],
+  "integrationPoints": [
+    {
+      "name": "Authentication",
+      "description": "Integrates with auth system to display user-specific content and handle unauthenticated states"
+    },
+    {
+      "name": "Order Service",
+      "description": "Integrates with order service to display status of active orders"
+    },
+    {
+      "name": "Recommendation Engine",
+      "description": "Integrates with recommendation service for personalized service suggestions"
+    },
+    {
+      "name": "Notification System",
+      "description": "Integrates with notification system to display alerts and updates"
+    }
+  ],
+  "userFlows": [
+    {
+      "name": "Main Navigation",
+      "steps": [
+        "User lands on home screen after authentication",
+        "User can navigate to different sections using category buttons",
+        "User can see active orders and their status"
+      ]
+    },
+    {
+      "name": "Order Initiation",
+      "steps": [
+        "User can start a new order from quick action buttons",
+        "User can select from recommended services"
+      ]
+    },
+    {
+      "name": "Promotion Access",
+      "steps": [
+        "User can view and activate promotional offers",
+        "User can navigate to special deals"
+      ]
+    }
+  ]
+}

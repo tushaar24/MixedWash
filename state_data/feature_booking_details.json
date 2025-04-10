@@ -1,0 +1,145 @@
+{
+  "path": "composeApp/src/commonMain/kotlin/com/mixedwash/features/booking_details",
+  "name": "BookingDetails",
+  "type": "feature",
+  "purpose": "Provides a detailed view of a laundry service booking, displaying order information, selected services, pricing, and booking status.",
+  "lastUpdated": {
+    "date": "2025-04-01",
+    "commit": "caf2977cfc4d11e9a1d77509d722f370dca9d86e"
+  },
+  "change_log": [
+    {
+      "commit_range": "caf2977cfc4d11e9a1d77509d722f370dca9d86e",
+      "date": "2025-04-01",
+      "summary": "Updated state file with current commit hash"
+    },
+    {
+      "commit_range": "209101caec9ef7e157d1392ba29076d61a4c2a79..caf2977cfc4d11e9a1d77509d722f370dca9d86e",
+      "date": "2025-04-01",
+      "summary": "Updated state file with force flag, enhanced component descriptions and added data flow information"
+    },
+    {
+      "commit_range": "209101caec9ef7e157d1392ba29076d61a4c2a79",
+      "date": "2025-04-01",
+      "summary": "Updated state file with current commit hash"
+    },
+    {
+      "commit_range": "current_commit",
+      "date": "2025-04-01",
+      "summary": "Initial state capture of booking_details feature structure and components"
+    }
+  ],
+  "components": [
+    {
+      "name": "BookingDetailsScreen",
+      "type": "Screen",
+      "purpose": "Main UI for displaying booking details including summary, items, and actions",
+      "path": "presentation/BookingDetailsScreen.kt",
+      "implementation_description": "Composable screen that renders booking information based on the screen state. Handles two modes: booking details and confirmation"
+    },
+    {
+      "name": "BookingDetailsScreenViewModel",
+      "type": "ViewModel",
+      "purpose": "Manages the state and business logic for the booking details screen",
+      "path": "presentation/BookingDetailsScreenViewModel.kt",
+      "implementation_description": "Loads booking data from repositories based on route parameters. Handles draft bookings or specific bookings by ID. Manages confirm booking action and navigation events"
+    },
+    {
+      "name": "BookingDetailsScreenContract",
+      "type": "Contract",
+      "purpose": "Defines the state, events and UI events for booking details screen",
+      "path": "presentation/BookingDetailsScreenContract.kt",
+      "implementation_description": "Contains BookingDetailsScreenState data class, BookingDetailsScreenType enum, BookingDetailsScreenEvent sealed class, and BookingDetailsScreenUiEvent sealed class"
+    },
+    {
+      "name": "BookingDetailsSummary",
+      "type": "UI Component",
+      "purpose": "Displays summary information about the booking including price, date, and status",
+      "path": "presentation/components/BookingDetailsSummary.kt"
+    },
+    {
+      "name": "BookingItem",
+      "type": "UI Component",
+      "purpose": "Displays individual service items included in the booking with details",
+      "path": "presentation/components/BookingItem.kt"
+    },
+    {
+      "name": "ActionText",
+      "type": "UI Component",
+      "purpose": "Interactive text component for booking-related actions",
+      "path": "presentation/components/ActionText.kt"
+    },
+    {
+      "name": "BookingDetailsModule",
+      "type": "DI Module",
+      "purpose": "Provides dependency injection for booking details components",
+      "path": "di/BookingDetailsModule.kt"
+    }
+  ],
+  "dependencies": [
+    {
+      "name": "Koin",
+      "type": "external",
+      "purpose": "Dependency injection for booking details components"
+    },
+    {
+      "name": "Compose",
+      "type": "external",
+      "purpose": "UI implementation for booking details screen and components"
+    },
+    {
+      "name": "Navigation",
+      "type": "internal",
+      "purpose": "Navigation to and from booking details screen"
+    }
+  ],
+  "integrationPoints": [
+    {
+      "name": "Order History",
+      "description": "Integrates with order history to display booking details when selected"
+    },
+    {
+      "name": "Order Confirmation",
+      "description": "Connects with order confirmation flow to show details after booking completion"
+    },
+    {
+      "name": "Booking Cancellation",
+      "description": "Provides interface for cancelling or modifying bookings"
+    }
+  ],
+  "userFlows": [
+    {
+      "name": "View Booking Details",
+      "steps": [
+        "User selects a booking from history or notifications",
+        "System loads and displays detailed booking information",
+        "User can view service items, pricing, and delivery details",
+        "User can take actions like cancellation or rescheduling if eligible"
+      ]
+    },
+    {
+      "name": "Confirm Draft Booking",
+      "steps": [
+        "User reviews draft booking details on the confirmation screen",
+        "User confirms the booking by pressing confirm button",
+        "System places the booking and clears the cart",
+        "User is navigated to booking confirmation screen"
+      ]
+    }
+  ],
+  "dataFlow": {
+    "description": "The booking details feature handles two main data flows: viewing existing bookings and confirming draft bookings",
+    "sources": [
+      "BookingsRepository for retrieving booking data",
+      "Route parameters for determining booking ID or booking type"
+    ],
+    "transformations": [
+      "Converting booking data from repository to screen state",
+      "Processing booking confirmation actions"
+    ],
+    "destinations": [
+      "UI components displaying booking information",
+      "Navigation events directing user to next screens"
+    ]
+  }
+}

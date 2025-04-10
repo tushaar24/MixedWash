@@ -1,0 +1,99 @@
+{
+  "data": {
+    "service_areas": [
+      {
+        "latitude": 12.843028,
+        "longitude": 77.655549,
+        "radius_km": 1.3
+      },
+      {
+        "latitude": 12.851028,
+        "longitude": 77.666277,
+        "radius_km": 1.2
+      },
+      {
+        "latitude": 12.86589,
+        "longitude": 77.662757,
+        "radius_km": 1.6
+      },
+      {
+        "latitude": 12.889753,
+        "longitude": 77.654859,
+        "radius_km": 2.2
+      },
+      {
+        "latitude": 12.904578,
+        "longitude": 77.640267,
+        "radius_km": 2.0
+      },
+      {
+        "latitude": 12.909966,
+        "longitude": 77.682493,
+        "radius_km": 2.0
+      },
+      {
+        "latitude": 12.914557,
+        "longitude": 77.612145,
+        "radius_km": 1.5
+      },
+      {
+        "latitude": 12.925901,
+        "longitude": 77.609655,
+        "radius_km": 1.5
+      },
+      {
+        "latitude": 12.942766,
+        "longitude": 77.625276,
+        "radius_km": 1.0
+      },
+      {
+        "latitude": 12.949106,
+        "longitude": 77.706964,
+        "radius_km": 1.0
+      },
+      {
+        "latitude": 12.964824,
+        "longitude": 77.642549,
+        "radius_km": 1.5
+      },
+      {
+        "latitude": 12.974883,
+        "longitude": 77.698097,
+        "radius_km": 1.0
+      },
+      {
+        "latitude": 12.976918,
+        "longitude": 77.642034,
+        "radius_km": 1.0
+      },
+      {
+        "latitude": 12.986741,
+        "longitude": 77.693719,
+        "radius_km": 1.0
+      },
+      {
+        "latitude": 12.989635,
+        "longitude": 77.6805,
+        "radius_km": 1.3
+      },
+      {
+        "latitude": 12.990333,
+        "longitude": 77.668314,
+        "radius_km": 1.0
+      }
+    ],
+    "serviceable_pincodes": [
+      "560017",
+      "560034",
+      "560037",
+      "560102",
+      "560071",
+      "560075",
+      "560093",
+      "560095",
+      "560103"
+    ]
+  },
+  "schema_version": "1",
+  "updated_at": "1740731315"
+}

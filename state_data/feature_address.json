@@ -1,0 +1,238 @@
+{
+  "path": "composeApp/src/commonMain/kotlin/com/mixedwash/features/address",
+  "name": "Address",
+  "type": "feature",
+  "purpose": "Allows users to manage their delivery addresses, including adding, editing, and selecting addresses for laundry service orders.",
+  "lastUpdated": {
+    "date": "2025-04-01",
+    "commit": "caf2977cfc4d11e9a1d77509d722f370dca9d86e"
+  },
+  "change_log": [
+    {
+      "commit_range": "caf2977cfc4d11e9a1d77509d722f370dca9d86e",
+      "date": "2025-04-01",
+      "summary": "Updated state file with current commit hash"
+    },
+    {
+      "commit_range": "209101caec9ef7e157d1392ba29076d61a4c2a79",
+      "date": "2025-04-01",
+      "summary": "Updated address feature state with detailed component structure and file organization"
+    },
+    {
+      "commit_range": "current_commit",
+      "date": "2025-04-01",
+      "summary": "Initial state capture of address feature structure and components"
+    },
+    {
+      "commit_range": "caf2977cfc4d11e9a1d77509d722f370dca9d86e",
+      "date": "2025-04-01",
+      "summary": "Updated address feature state with current commit hash"
+    },
+    {
+      "commit_range": "caf2977cfc4d11e9a1d77509d722f370dca9d86e",
+      "date": "2025-04-01",
+      "summary": "Executed forced update of address feature state with detailed component analysis"
+    },
+    {
+      "commit_range": "caf2977cfc4d11e9a1d77509d722f370dca9d86e",
+      "date": "2025-04-01",
+      "summary": "Enhanced state file schema with contracts, utilities, and cross-feature components information"
+    },
+    {
+      "commit_range": "caf2977cfc4d11e9a1d77509d722f370dca9d86e",
+      "date": "2025-04-01",
+      "summary": "Enhanced state file schema with contracts, utilities, and component implementation descriptions"
+    }
+  ],
+  "architecture": {
+    "pattern": "Clean Architecture with MVVM",
+    "layers": [
+      {
+        "name": "Data",
+        "description": "Repository implementation and Firebase service for address data management, organized into repository and service packages"
+      },
+      {
+        "name": "Domain",
+        "description": "Address model, repository interface, and error handling, organized into model, repository, and error packages"
+      },
+      {
+        "name": "Presentation",
+        "description": "AddressScreen, ViewModel, and UI components for address management, with a separate components subfolder"
+      },
+      {
+        "name": "DI",
+        "description": "Dependency injection module for the address feature using Koin"
+      }
+    ]
+  },
+  "contracts": [
+    {
+      "name": "AddressScreenContract",
+      "path": "presentation/AddressScreenContract.kt",
+      "states": [
+        "AddressScreenState",
+        "AddressFormState",
+        "AddressSearchState"
+      ],
+      "events": [
+        "AddressScreenEvent", 
+        "AddressFormEvent", 
+        "AddressSearchEvent"
+      ],
+      "effects": [
+        "AddressScreenUiEvent"
+      ]
+    }
+  ],
+  "utilities": [
+    {
+      "name": "Place.toAddress()",
+      "path": "domain/model/Address.kt",
+      "purpose": "Converts location data from Loki library to the Address domain model",
+      "usage": "Used when selecting addresses from map or search results"
+    },
+    {
+      "name": "ErrorExtensions",
+      "path": "domain/error/Extensions.kt",
+      "purpose": "Extension functions for error handling",
+      "usage": "Used throughout the address feature for consistent error handling"
+    }
+  ],
+  "components": [
+    {
+      "name": "Address",
+      "type": "Domain Model",
+      "purpose": "Represents the structure of an address with validation logic",
+      "path": "domain/model/Address.kt",
+      "implementation_description": "Data class with fields for title, address lines, pin code, and coordinates. Includes custom toString() method for displaying address. Features an extension function Place.toAddress() to convert location data from Loki library."
+    },
+    {
+      "name": "AddressRepository",
+      "type": "Repository Interface",
+      "purpose": "Defines operations for address management including CRUD operations",
+      "path": "domain/repository/AddressRepository.kt",
+      "implementation_description": "Interface with methods for getAddresses(), getAddressByUid(), upsertAddress(), deleteAddress(), setCurrentAddress(), and getCurrentAddress(). All methods return Result<T> to handle success/failure states safely."
+    },
+    {
+      "name": "FirebaseAddressRepositoryImpl",
+      "type": "Repository Implementation",
+      "purpose": "Implements the AddressRepository interface using Firebase services",
+      "path": "data/repository/FirebaseAddressRepositoryImpl.kt",
+      "implementation_description": "Implementation that delegates to FirebaseAddressService for data operations. Handles error cases and wraps responses in Result class. Manages address list in user metadata through UserService."
+    },
+    {
+      "name": "FirebaseAddressService",
+      "type": "Service",
+      "purpose": "Provides direct interaction with Firebase for address data operations",
+      "path": "data/service/FirebaseAddressService.kt"
+    },
+    {
+      "name": "AddressScreen",
+      "type": "Screen",
+      "purpose": "Main UI for address management including address list and form",
+      "path": "presentation/AddressScreen.kt"
+    },
+    {
+      "name": "AddressScreenViewModel",
+      "type": "ViewModel",
+      "purpose": "Manages the state and business logic for the address screen",
+      "pattern": "MVVM",
+      "path": "presentation/AddressScreenViewModel.kt"
+    },
+    {
+      "name": "Address",
+      "type": "Domain Model",
+      "purpose": "Represents the structure of an address with validation logic",
+      "path": "domain/model/Address.kt"
+    },
+    {
+      "name": "AddressException",
+      "type": "Error Handling",
+      "purpose": "Custom exceptions for address-related errors",
+      "path": "domain/error/AddressException.kt"
+    },
+    {
+      "name": "AddressModule",
+      "type": "DI Module",
+      "purpose": "Koin module for dependency injection of address feature components",
+      "path": "di/AddressModule.kt"
+    },
+    {
+      "name": "AddressList",
+      "type": "UI Component",
+      "purpose": "Displays the list of saved addresses with options to edit or delete",
+      "path": "presentation/components/AddressList.kt",
+      "implementation_description": "Composable component that displays a list of Address objects with selection capabilities. Accepts parameters for addresses list, selected address ID, click handlers, and search state. Can be used both in standalone screens and within bottom sheets."
+    },
+    {
+      "name": "AddressForm",
+      "type": "UI Component",
+      "purpose": "Form for adding and editing address details",
+      "path": "presentation/components/AddressForm.kt",
+      "implementation_description": "Form component with input fields for address title, address lines, and pin code. Supports create, view, and edit modes defined by FormMode sealed class. Validates input and provides callbacks for save, cancel, and delete actions."
+    },
+    {
+      "name": "AddressSearch",
+      "type": "UI Component",
+      "purpose": "Allows users to search for addresses",
+      "path": "presentation/components/AddressSearch.kt",
+      "implementation_description": "Search component with autocomplete functionality that integrates with Loki library. Displays search results as dropdown list and provides callbacks for place selection and current location detection."
+    }
+  ],
+  "dependencies": [
+    {
+      "name": "Koin",
+      "type": "external",
+      "purpose": "Dependency injection for address feature components"
+    },
+    {
+      "name": "Compose",
+      "type": "external",
+      "purpose": "UI implementation for address screen and components"
+    },
+    {
+      "name": "Firebase Firestore",
+      "type": "external",
+      "purpose": "Storage and retrieval of user addresses"
+    },
+    {
+      "name": "UserService",
+      "type": "internal",
+      "purpose": "Accessing user-specific data for address management"
+    },
+    {
+      "name": "Loki",
+      "type": "external",
+      "purpose": "Location and place search services for address autocomplete",
+      "version": "1.0"
+    }
+  ],
+  "integrationPoints": [
+    {
+      "name": "Booking Flow",
+      "description": "Integrates with the booking flow to select delivery address"
+    },
+    {
+      "name": "User Profile",
+      "description": "Integrates with user profile for managing saved addresses"
+    }
+  ],
+  "userFlows": [
+    {
+      "name": "Address Management",
+      "steps": [
+        "User navigates to address management screen",
+        "User can view list of saved addresses",
+        "User can add new addresses with form validation",
+        "User can edit or delete existing addresses"
+      ]
+    },
+    {
+      "name": "Address Selection",
+      "steps": [
+        "User selects an address during checkout process",
+        "User can choose to use a saved address or add a new one"
+      ]
+    }
+  ]
+}
