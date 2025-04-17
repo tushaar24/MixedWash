@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,6 +34,7 @@ import com.mixedwash.core.orders.domain.model.Order
 import com.mixedwash.core.presentation.components.noRippleClickable
 import com.mixedwash.core.presentation.util.convertToDate
 import com.mixedwash.ui.theme.GreenDark
+import com.mixedwash.ui.theme.dividerBlack
 import mixedwash.composeapp.generated.resources.Res
 import mixedwash.composeapp.generated.resources.ic_drop
 import mixedwash.composeapp.generated.resources.ic_processing
@@ -85,7 +87,7 @@ fun OrderSummaryCard(
                     )
 
                     Text(
-                        text = "${order.bookings.size} booking • ${if (delivered) "Completed" else "Pending"}",
+                        text = "${order.bookings.size} ${if (order.bookings.size > 1) "bookings" else "booking"} • ${if (delivered) "Completed" else "Pending"}",
                         fontSize = 12.sp,
                         color = colors.gray.dark
                     )
@@ -98,73 +100,77 @@ fun OrderSummaryCard(
             )
         }
 
-        order.bookings.forEach { booking ->
-            val bookingDelivered = true
-            val dateAndStatusText = buildAnnotatedString {
-                "${order.createdAtSeconds.convertToDate()} • ${if (bookingDelivered) "Delivered" else "Processing"}"
-                withStyle(
-                    style = SpanStyle(
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = colors.gray.dark
-                    )
-                ) {
-                    append("${order.createdAtSeconds.convertToDate()} • ")
-                }
-                withStyle(
-                    style = SpanStyle(
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = if (bookingDelivered) GreenDark else colors.gray.c500
-                    )
-                ) {
-                    append(if (bookingDelivered) "Delivered" else "Processing")
-                }
-            }
-            Text(
-                modifier = Modifier.padding(start = 60.dp),
-                text = dateAndStatusText,
-            )
-
-            booking.bookingItems.forEach { item ->
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(start = 60.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                ) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        AsyncImage(
-                            model = ImageRequest.Builder(LocalPlatformContext.current)
-                                .data(item.imageUrl).crossfade(true)
-                                .build(),
-                            contentDescription = null,
-                            error = painterResource(Res.drawable.ic_drop),
-                            modifier = Modifier.size(20.dp)
-                        )
-
-                        Text(
-                            text = item.serviceName,
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            order.bookings.forEach { booking ->
+                val bookingDelivered = booking.deliveredSeconds != null
+                val dateAndStatusText = buildAnnotatedString {
+                    "${order.createdAtSeconds.convertToDate()} • ${if (bookingDelivered) "Delivered" else "Processing"}"
+                    withStyle(
+                        style = SpanStyle(
                             fontSize = 12.sp,
-                            fontWeight = FontWeight.Medium,
+                            fontWeight = FontWeight.SemiBold,
                             color = colors.gray.dark
                         )
+                    ) {
+                        append("${order.createdAtSeconds.convertToDate()} • ")
+                    }
+                    withStyle(
+                        style = SpanStyle(
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = if (bookingDelivered) GreenDark else colors.gray.c500
+                        )
+                    ) {
+                        append(if (bookingDelivered) "Delivered" else "Processing")
+                    }
+                }
+                Text(
+                    modifier = Modifier.padding(start = 60.dp),
+                    text = dateAndStatusText,
+                )
+
+                booking.bookingItems.forEach { item ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(start = 60.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                    ) {
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            AsyncImage(
+                                model = ImageRequest.Builder(LocalPlatformContext.current)
+                                    .data(item.imageUrl).crossfade(true)
+                                    .build(),
+                                contentDescription = null,
+                                error = painterResource(Res.drawable.ic_drop),
+                                modifier = Modifier.size(20.dp)
+                            )
+
+                            Text(
+                                text = item.serviceName,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = colors.gray.dark
+                            )
+                        }
+
+                        val unit = when (item.itemPricing) {
+                            is BookingItemPricing.ServiceItemPricing -> item.itemPricing.unit
+                            is BookingItemPricing.SubItemFixedPricing -> "pc"
+                            is BookingItemPricing.SubItemRangedPricing -> "pc"
+                        }
+
+                        Text(
+                            text = if (bookingDelivered) "${item.quantity} $unit" else "TBD",
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = if (delivered) colors.gray.dark else colors.gray.c500
+                        )
                     }
 
-                    val unit = when (item.itemPricing) {
-                        is BookingItemPricing.ServiceItemPricing -> item.itemPricing.unit
-                        is BookingItemPricing.SubItemFixedPricing -> "pc"
-                        is BookingItemPricing.SubItemRangedPricing -> "pc"
-                    }
-
-                    Text(
-                        text = if (bookingDelivered) "${item.quantity} $unit" else "TBD",
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = if (delivered) colors.gray.dark else colors.gray.c500
-                    )
+                    HorizontalDivider(thickness = 0.5.dp, color = dividerBlack, modifier = Modifier.padding(start = 60.dp))
                 }
             }
         }

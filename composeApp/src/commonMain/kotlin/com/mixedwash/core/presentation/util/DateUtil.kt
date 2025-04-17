@@ -33,6 +33,24 @@ fun Long.getMonth(): String {
     return localDate.month.name.take(3)
 }
 
+/**
+ * Converts a Unix timestamp (seconds since epoch) to a formatted date and time string
+ * in the format "MMM DD, HH:MM" (e.g., "Aug 27, 10:15")
+ *
+ */
+fun Long.convertToDateAndTime(): String {
+    val instant = Instant.fromEpochSeconds(this)
+    val localDateTime = instant.toLocalDateTime(TimeZone.currentSystemDefault())
+
+    val month = localDateTime.month.name.take(3).lowercase().replaceFirstChar { it.uppercase() }
+    val day = localDateTime.dayOfMonth
+
+    val hour = localDateTime.hour
+    val minute = localDateTime.minute.toString().padStart(2, '0')
+
+    return "$month $day, $hour:$minute"
+}
+
 fun Long.convertToDate(): String {
     val instant = Instant.fromEpochSeconds(this)
     val localDate = instant.toLocalDateTime(TimeZone.currentSystemDefault()).date
@@ -68,10 +86,12 @@ fun formatTimestamp(timestamp: Long): String {
  * Returns string like "9 am - 11 am"
  * */
 inline fun formattedHourTime(startEpochSeconds: Long, endEpochSeconds: Long): String {
-    val startDateTime = Instant.fromEpochSeconds(startEpochSeconds).toLocalDateTime(TimeZone.currentSystemDefault())
-    val endDateTime = Instant.fromEpochSeconds(endEpochSeconds).toLocalDateTime(TimeZone.currentSystemDefault())
+    val startDateTime =
+        Instant.fromEpochSeconds(startEpochSeconds).toLocalDateTime(TimeZone.currentSystemDefault())
+    val endDateTime =
+        Instant.fromEpochSeconds(endEpochSeconds).toLocalDateTime(TimeZone.currentSystemDefault())
 
-   val startDateTimeString = startDateTime.run {
+    val startDateTimeString = startDateTime.run {
         val hour = if (hour % 12 == 0) 12 else hour % 12
         val amPm = if (hour < 12) "am" else "pm"
         "$hour $amPm"
