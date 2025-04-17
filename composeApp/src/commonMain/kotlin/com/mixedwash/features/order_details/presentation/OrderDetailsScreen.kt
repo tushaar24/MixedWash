@@ -36,7 +36,6 @@ import com.mixedwash.core.orders.domain.model.calculateItemPrice
 import com.mixedwash.core.orders.domain.model.calculateTotalPrice
 import com.mixedwash.core.presentation.components.DefaultHeader
 import com.mixedwash.core.presentation.components.noRippleClickable
-import com.mixedwash.core.presentation.util.Logger
 import com.mixedwash.core.presentation.util.formatTimestamp
 import com.mixedwash.ui.theme.GreenDark
 import com.mixedwash.ui.theme.components.HeaderIconButton
@@ -158,7 +157,8 @@ fun MyComp(
     ) {
         Box(
             modifier = Modifier.size(48.dp)
-                .padding(8.dp)
+                .padding(8.dp),
+            contentAlignment = Alignment.Center
         ) {
             Icon(
                 imageVector = vectorResource(icon),
@@ -273,7 +273,6 @@ fun BookingSummary(
                                         .build(),
                                     contentDescription = null,
                                     error = painterResource(Res.drawable.ic_drop),
-                                    onError = { Logger.d("fcuk", it.result.throwable.message ?: "null")},
                                     modifier = Modifier.size(20.dp)
                                 )
 

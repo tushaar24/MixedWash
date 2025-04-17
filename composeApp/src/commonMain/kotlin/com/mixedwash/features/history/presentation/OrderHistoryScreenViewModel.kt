@@ -55,7 +55,7 @@ class OrderHistoryScreenViewModel(
             )
         }
 
-//        calculateMetrics()
+        calculateMetrics()
     }
 
     private fun calculateMetrics() {

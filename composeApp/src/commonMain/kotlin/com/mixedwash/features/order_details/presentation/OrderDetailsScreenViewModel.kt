@@ -6,8 +6,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.mixedwash.core.orders.domain.repository.OrdersRepository
 import com.mixedwash.core.presentation.navigation.Route
-import com.mixedwash.core.presentation.util.Logger
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -32,10 +30,8 @@ class OrderDetailsScreenViewModel(
 
     private fun loadOrderDetails() {
         viewModelScope.launch {
-            val x = async { ordersRepository.getOrderByBookingId(orderId) }
-            Logger.d("fcuk", x.await().getOrNull().toString())
             _state.update {
-                it.copy(order = ordersRepository.getOrderByBookingId(orderId).getOrNull())
+                it.copy(order = ordersRepository.getOrderById(orderId).getOrNull())
             }
         }
     }

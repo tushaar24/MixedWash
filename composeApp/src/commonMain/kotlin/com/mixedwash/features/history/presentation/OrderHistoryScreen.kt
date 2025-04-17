@@ -23,17 +23,12 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.mixedwash.WindowInsetsContainer
 import com.mixedwash.core.presentation.components.DefaultHeader
-import com.mixedwash.core.presentation.components.dump.TitleWithIcon
 import com.mixedwash.core.presentation.util.ObserveAsEvents
-import com.mixedwash.core.presentation.util.formatTimestamp
-import com.mixedwash.features.history.domain.model.OrderDeliveryStatus
 import com.mixedwash.features.history.presentation.components.OrderSummaryCard
 import com.mixedwash.features.history.presentation.components.StatisticCard
 import com.mixedwash.ui.theme.components.HeaderIconButton
 import com.mixedwash.ui.theme.dividerBlack
 import kotlinx.coroutines.flow.Flow
-import mixedwash.composeapp.generated.resources.Res
-import mixedwash.composeapp.generated.resources.ic_clothes_hanger
 
 @Composable
 fun OrderHistoryScreen(
@@ -66,7 +61,7 @@ fun OrderHistoryScreen(
 
             LazyColumn(
                 modifier = modifier.fillMaxSize().padding(vertical = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(48.dp)
             ) {
 
                 state.insights?.let { insights ->
@@ -87,16 +82,7 @@ fun OrderHistoryScreen(
                         }
                         Spacer(Modifier.height(16.dp))
                     }
-                    item {
-                        TitleWithIcon(
-                            title = "Orders",
-                            icon = Res.drawable.ic_clothes_hanger,
-                            modifier = Modifier.padding(horizontal = 16.dp)
-                        )
-                    }
                 }
-
-
 
                 if (state.orders.isEmpty()) {
                     item {
@@ -108,25 +94,15 @@ fun OrderHistoryScreen(
                         )
                     }
                 } else {
-                    val bookings = state.orders.flatMap { it.bookings }
-                    items(items = bookings) { booking ->
-                        Column(
-                            modifier = Modifier.padding(horizontal = 16.dp),
-                            verticalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
+                    items(state.orders) { order ->
+                        Column(modifier = Modifier.padding(horizontal = 16.dp)) {
                             OrderSummaryCard(
-                                orderId = booking.id,
-                                titles = booking.bookingItems.map { item -> item.serviceName } ,
-                                ordered = formatTimestamp(booking.pickupSlotSelected.startTimeStamp),
-                                delivery = formatTimestamp(booking.dropSlotSelected.startTimeStamp),
-                                status = OrderDeliveryStatus.PROCESSING,
-                                cost = null,
-                                onDetails = {
-                                    onEvent(OrderHistoryScreenEvent.OnOrderDetailsScreen(booking.id))
-                                },
+                                order = order,
+                                onDetails = { onEvent(OrderHistoryScreenEvent.OnOrderDetailsScreen(order.id)) }
                             )
-
+                            Spacer(Modifier.height(24.dp))
                             HorizontalDivider(color = dividerBlack)
+                            Spacer(Modifier.height(24.dp))
                         }
                     }
                 }
