@@ -159,12 +159,20 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    buildFeatures {
+        compose = true
+        buildConfig = true
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
 
-    /**
+
+    /*
      * The signing keys used to create the debug and the developer-release builds of the application.
      * Keystore is stored in the project and the signing information is hardcoded as seen below
      * */
-
     signingConfigs {
         create("debug_signing") {
             storeFile = rootProject.file("debug_keystore.jks")
@@ -181,6 +189,7 @@ android {
 
     }
 
+    // Build Variant Configuration
     buildTypes {
         create("prod") {
             isMinifyEnabled = true
@@ -202,30 +211,19 @@ android {
         }
 
     }
-    buildFeatures {
-        compose = true
-        buildConfig = true
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-
+    // Build File Naming
     applicationVariants.all {
         val variant = this
         outputs.forEach { output ->
             val outputFileName =
                 "${rootProject.name}_${variant.name}_${variant.versionName}_${variant.versionCode}"
-
-            when (output) {
-                is com.android.build.gradle.internal.api.BaseVariantOutputImpl -> {
-                    output.outputFileName = if (output.outputFileName.endsWith(".apk")) {
-                        "$outputFileName.apk"
-                    } else if (output.outputFileName.endsWith(".aab")) {
-                        "$outputFileName.aab"
-                    } else {
-                        output.outputFileName
-                    }
+            if (output is com.android.build.gradle.internal.api.BaseVariantOutputImpl) {
+                output.outputFileName = if (output.outputFileName.endsWith(".apk")) {
+                    "$outputFileName.apk"
+                } else if (output.outputFileName.endsWith(".aab")) {
+                    "$outputFileName.aab"
+                } else {
+                    output.outputFileName
                 }
             }
         }
@@ -244,16 +242,8 @@ dependencies {
 
 }
 
-val apiKeys = Properties()
-val testApiKeysFile = rootProject.file("test_api_keys.properties")
-apiKeys.load(testApiKeysFile.inputStream())
-
-val googleApiKey = apiKeys.getProperty("loki_test_google_api_key") ?: ""
-val rzrpayTestKeyId = apiKeys.getProperty("rzrpay_test_key_id") ?: ""
-val rzrpayTestKeySecret = apiKeys.getProperty("rzrpay_test_key_secret") ?: ""
-
 /**
- * Gets the version name in semantic versioning format (MAJOR.MINOR.PATCH)
+ * Helper Function that gets the version name in semantic versioning format (MAJOR.MINOR.PATCH)
  * where PATCH is the git commit count
  */
 private fun getSemanticVersionName(major: Int, minor: Int): String {
@@ -261,7 +251,7 @@ private fun getSemanticVersionName(major: Int, minor: Int): String {
 }
 
 /**
- * Gets the total count of commits in the git repository
+ * Helper Function that gets the total count of commits in the git repository
  */
 private fun getGitCommitCount(): Int {
     val stdout = ByteArrayOutputStream()
@@ -272,12 +262,24 @@ private fun getGitCommitCount(): Int {
     return stdout.toString().trim().toInt()
 }
 
+/**
+ * Multiplatform Config File Generation
+ * */
+
+val apiKeys = Properties()
+val testApiKeysFile = rootProject.file("test_api_keys.properties")
+apiKeys.load(testApiKeysFile.inputStream())
+
+val googleTestApiKey = apiKeys.getProperty("loki_test_google_api_key") ?: ""
+val rzrpayTestKeyId = apiKeys.getProperty("rzrpay_test_key_id") ?: ""
+val rzrpayTestKeySecret = apiKeys.getProperty("rzrpay_test_key_secret") ?: ""
+
 buildkonfig {
     packageName = "com.mixedwash"
     objectName = "TestApiKeyConfig"
 
     defaultConfigs {
-        buildConfigField(STRING, "googleApiKey", googleApiKey)
+        buildConfigField(STRING, "googleApiKey", googleTestApiKey)
         buildConfigField(STRING, "rzrpayTestKeyId", rzrpayTestKeyId)
         buildConfigField(STRING, "rzrpayTestKeySecret", rzrpayTestKeySecret)
     }
