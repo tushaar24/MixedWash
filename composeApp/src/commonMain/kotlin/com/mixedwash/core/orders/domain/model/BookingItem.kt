@@ -27,16 +27,16 @@ fun Booking.calculateTotalPrice(): Int {
     return bookingItems.sumOf { it.calculateItemPrice() }
 }
 
-private fun BookingItem.calculateItemPrice(): Int {
+fun BookingItem.calculateItemPrice(): Int {
     return when (itemPricing) {
-        is BookingItemPricing.SubItemRangedPricing -> itemPricing.maxPrice * quantity
-        is BookingItemPricing.SubItemFixedPricing -> itemPricing.fixedPrice * quantity
+        is BookingItemPricing.SubItemRangedPricing -> itemPricing.maxPrice.div(100) * quantity
+        is BookingItemPricing.SubItemFixedPricing -> itemPricing.fixedPrice.div(100) * quantity
         is BookingItemPricing.ServiceItemPricing -> {
-            val basePrice = itemPricing.pricePerUnit * itemPricing.minimumUnits
+            val basePrice = itemPricing.pricePerUnit.div(100) * itemPricing.minimumUnits
             if (basePrice > itemPricing.minimumPrice) {
                 basePrice
             } else {
-                itemPricing.minimumPrice
+                itemPricing.minimumPrice.div(100)
             }
         }
     }

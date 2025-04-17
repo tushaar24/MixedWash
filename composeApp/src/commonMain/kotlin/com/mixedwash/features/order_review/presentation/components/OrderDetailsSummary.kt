@@ -1,4 +1,4 @@
-package com.mixedwash.features.order_details.presentation.components
+package com.mixedwash.features.order_review.presentation.components
 
 import BrandTheme
 import androidx.compose.foundation.background
@@ -26,7 +26,6 @@ import com.mixedwash.core.presentation.util.getDayAndDate
 import com.mixedwash.features.address.domain.model.Address
 import com.mixedwash.ui.theme.dividerBlack
 import mixedwash.composeapp.generated.resources.Res
-import mixedwash.composeapp.generated.resources.ic_location
 import mixedwash.composeapp.generated.resources.ic_location_outlined
 import org.jetbrains.compose.resources.vectorResource
 

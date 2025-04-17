@@ -51,9 +51,9 @@ class OrderConfirmationScreenViewModel(
                     OrderConfirmationScreenUiEvent.Navigate(
                         NavArgs(
                             navType = NavArgType.Navigate(
-                                Route.OrderDetailsRoute(
+                                Route.OrderReviewRoute(
                                     bookingId = route.bookingId,
-                                    destinationType = Route.OrderDetailsRoute.DestinationType.VIEW_ORDER_BY_BOOKING_ID
+                                    destinationType = Route.OrderReviewRoute.DestinationType.VIEW_ORDER_BY_BOOKING_ID
                                 ),
                                 popUpOption = PopUpOption.PopToRoute(Route.HomeRoute, false),
                                 launchSingleTop = true

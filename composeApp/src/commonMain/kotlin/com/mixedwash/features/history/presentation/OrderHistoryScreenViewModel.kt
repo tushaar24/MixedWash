@@ -40,10 +40,7 @@ class OrderHistoryScreenViewModel(
                 viewModelScope.launch {
                     _uiEventsChannel.send(
                         OrderHistoryScreenUiEvent.Navigate(
-                            Route.OrderDetailsRoute(
-                                bookingId = event.orderId,
-                                destinationType = Route.OrderDetailsRoute.DestinationType.VIEW_ORDER_BY_BOOKING_ID
-                            )
+                            Route.OrderDetailsRoute(event.orderId)
                         )
                     )
                 }

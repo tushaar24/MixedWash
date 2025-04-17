@@ -21,8 +21,8 @@ import com.mixedwash.features.onboarding.presentation.OnboardingScreen
 import com.mixedwash.features.onboarding.presentation.OnboardingScreenViewModel
 import com.mixedwash.features.order_confirmation.presentation.OrderConfirmationScreen
 import com.mixedwash.features.order_confirmation.presentation.OrderConfirmationScreenViewModel
-import com.mixedwash.features.order_details.presentation.OrderDetailsScreen
-import com.mixedwash.features.order_details.presentation.OrderDetailsScreenViewModel
+import com.mixedwash.features.order_review.presentation.OrderReviewScreen
+import com.mixedwash.features.order_review.presentation.OrderReviewScreenViewModel
 import com.mixedwash.features.services.presentation.ServicesScreen
 import com.mixedwash.features.services.presentation.ServicesScreenViewModel
 import com.mixedwash.features.slot_selection.presentation.SlotSelectionScreen
@@ -124,11 +124,11 @@ fun NavGraphBuilder.HomeNav(
 
         }
 
-        composable<Route.OrderDetailsRoute> {
+        composable<Route.OrderReviewRoute> {
 
-            val viewModel = koinViewModel<OrderDetailsScreenViewModel>()
+            val viewModel = koinViewModel<OrderReviewScreenViewModel>()
             val state by viewModel.state.collectAsStateWithLifecycle()
-            OrderDetailsScreen(
+            OrderReviewScreen(
                 state = state,
                 onEvent = viewModel::onEvent,
                 snackbarHandler = snackbarHandler,

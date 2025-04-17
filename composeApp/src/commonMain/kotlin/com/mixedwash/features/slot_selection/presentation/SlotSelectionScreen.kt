@@ -65,9 +65,9 @@ fun SlotSelectionScreen(
             is SlotSelectionScreenUiEvent.NavigateToReview -> {
                 Logger.d("SlotSelectionScreen", "NavigateToReview")
                 navController.navigate(
-                    Route.OrderDetailsRoute(
+                    Route.OrderReviewRoute(
                         bookingId = null,
-                        destinationType = Route.OrderDetailsRoute.DestinationType.CONFIRM_DRAFT_ORDER
+                        destinationType = Route.OrderReviewRoute.DestinationType.CONFIRM_DRAFT_ORDER
                     ),
                 )
 

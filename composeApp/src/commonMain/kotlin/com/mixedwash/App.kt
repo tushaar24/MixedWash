@@ -47,6 +47,8 @@ import com.mixedwash.core.presentation.navigation.HomeNav
 import com.mixedwash.core.presentation.navigation.ProfileNav
 import com.mixedwash.core.presentation.navigation.Route
 import com.mixedwash.core.presentation.util.Logger
+import com.mixedwash.features.order_details.presentation.OrderDetailsScreen
+import com.mixedwash.features.order_details.presentation.OrderDetailsScreenViewModel
 import com.mixedwash.features.support.presentation.FaqScreen
 import com.mixedwash.features.support.presentation.FaqScreenViewModel
 import com.mixedwash.ui.theme.MixedWashTheme
@@ -178,6 +180,16 @@ fun App() {
                                 val viewModel = koinViewModel<FaqScreenViewModel>()
                                 val state by viewModel.state.collectAsStateWithLifecycle()
                                 FaqScreen(
+                                    state = state,
+                                    onEvent = viewModel::onEvent,
+                                    navController = navController
+                                )
+                            }
+
+                            composable<Route.OrderDetailsRoute> {
+                                val viewModel = koinViewModel<OrderDetailsScreenViewModel>()
+                                val state by viewModel.state.collectAsStateWithLifecycle()
+                                OrderDetailsScreen(
                                     state = state,
                                     onEvent = viewModel::onEvent,
                                     navController = navController

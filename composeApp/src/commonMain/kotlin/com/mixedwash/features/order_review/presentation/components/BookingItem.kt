@@ -1,4 +1,4 @@
-package com.mixedwash.features.order_details.presentation.components
+package com.mixedwash.features.order_review.presentation.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

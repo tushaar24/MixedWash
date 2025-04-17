@@ -14,6 +14,7 @@ import com.mixedwash.features.onboarding.data.OnboardingRepositoryImpl
 import com.mixedwash.features.onboarding.domain.OnboardingRepository
 import com.mixedwash.features.onboarding.presentation.OnboardingScreenViewModel
 import com.mixedwash.features.order_details.di.OrderDetailsModule
+import com.mixedwash.features.order_review.di.OrderReviewModule
 import com.mixedwash.features.services.di.ServicesModule
 import com.mixedwash.features.slot_selection.di.SlotSelectionModule
 import com.mixedwash.libs.loki.autocomplete.Autocomplete
@@ -38,8 +39,9 @@ val CommonModule = module {
         LocalCartModule,
         OrdersModule,
         SlotSelectionModule,
-        OrderDetailsModule,
-        DialerModule
+        OrderReviewModule,
+        DialerModule,
+        OrderDetailsModule
     )
 
     single<OnboardingRepository> { OnboardingRepositoryImpl() }

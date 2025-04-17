@@ -47,7 +47,7 @@ sealed class Route {
 
     @SerialName("booking_details_route")
     @Serializable
-    data class OrderDetailsRoute(
+    data class OrderReviewRoute(
         val bookingId: String? = null,
         val destinationType: DestinationType
     ) : Route() {
@@ -128,4 +128,9 @@ sealed class Route {
     @Serializable
     @SerialName("onboarding_route")
     data object OnboardingRoute : Route()
+
+    @Serializable
+    @SerialName("order_details_route")
+    data class OrderDetailsRoute(val orderId: String) : Route()
+
 }
