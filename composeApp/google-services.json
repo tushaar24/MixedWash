@@ -168,6 +168,43 @@
           ]
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:241995325784:android:10abbd42a221ce7fbdc52d",
+        "android_client_info": {
+          "package_name": "com.mixedwash.release_dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "241995325784-sh529hjlensni5icoqojv806gacaoho6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mixedwash.release_dev",
+            "certificate_hash": "59ccc346a6535bdd094a4615f406e28e89178e2b"
+          }
+        },
+        {
+          "client_id": "241995325784-opejcpg0g2bu25oj04e14skpmhabf2nd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPtvyl19m2Y3FKrfZPkHGB8q1AMNgNPYA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "241995325784-opejcpg0g2bu25oj04e14skpmhabf2nd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
     }
   ],
   "configuration_version": "1"

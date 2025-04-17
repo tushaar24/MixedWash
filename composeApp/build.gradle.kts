@@ -1,5 +1,6 @@
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.io.ByteArrayOutputStream
 import java.util.Properties
 
 plugins {
@@ -148,21 +149,30 @@ android {
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
-        versionName = "1.0"
+        versionName = getSemanticVersionName(
+            major = 1,
+            minor = 1
+        )
     }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
+    /**
+     * The signing keys used to create the debug and the developer-release builds of the application.
+     * Keystore is stored in the project and the signing information is hardcoded as seen below
+     * */
+
     signingConfigs {
-        create("sharedDebug") {
+        create("debug_signing") {
             storeFile = rootProject.file("debug_keystore.jks")
             storePassword = "emmawatson"
             keyAlias = "key0"
             keyPassword = "emmawatson"
         }
-        create("release") {
+        create("release_dev_signing") {
             storeFile = rootProject.file("release_keystore.jks")
             storePassword = "emmastone"
             keyAlias = "key0"
@@ -173,23 +183,22 @@ android {
 
     buildTypes {
         create("prod") {
-            applicationIdSuffix = ".prod"
             isMinifyEnabled = true
             buildConfigField(type= "boolean", name = "BYPASS_LOCATION_CHECK", value = "false" )
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            signingConfig = signingConfigs.getByName("release")
+            signingConfig = signingConfigs.getByName("release_dev_signing")
         }
-        release {
-            applicationIdSuffix = ".release"
+        create("release_dev") {
+            applicationIdSuffix = ".release_dev"
             isMinifyEnabled = false
             buildConfigField(type= "boolean", name = "BYPASS_LOCATION_CHECK", value = "false" )
-            signingConfig = signingConfigs.getByName("release")
+            signingConfig = signingConfigs.getByName("release_dev_signing")
         }
         debug {
             applicationIdSuffix = ".debug"
             isMinifyEnabled = false
             buildConfigField(type= "boolean", name = "BYPASS_LOCATION_CHECK", value = "false" )
-            signingConfig = signingConfigs.getByName("sharedDebug")
+            signingConfig = signingConfigs.getByName("debug_signing")
         }
 
     }
@@ -200,6 +209,26 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+    }
+
+    applicationVariants.all {
+        val variant = this
+        outputs.forEach { output ->
+            val outputFileName =
+                "${rootProject.name}_${variant.name}_${variant.versionName}_${variant.versionCode}"
+
+            when (output) {
+                is com.android.build.gradle.internal.api.BaseVariantOutputImpl -> {
+                    output.outputFileName = if (output.outputFileName.endsWith(".apk")) {
+                        "$outputFileName.apk"
+                    } else if (output.outputFileName.endsWith(".aab")) {
+                        "$outputFileName.aab"
+                    } else {
+                        output.outputFileName
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -222,6 +251,26 @@ apiKeys.load(testApiKeysFile.inputStream())
 val googleApiKey = apiKeys.getProperty("loki_test_google_api_key") ?: ""
 val rzrpayTestKeyId = apiKeys.getProperty("rzrpay_test_key_id") ?: ""
 val rzrpayTestKeySecret = apiKeys.getProperty("rzrpay_test_key_secret") ?: ""
+
+/**
+ * Gets the version name in semantic versioning format (MAJOR.MINOR.PATCH)
+ * where PATCH is the git commit count
+ */
+private fun getSemanticVersionName(major: Int, minor: Int): String {
+    return "$major.$minor.${getGitCommitCount()}"
+}
+
+/**
+ * Gets the total count of commits in the git repository
+ */
+private fun getGitCommitCount(): Int {
+    val stdout = ByteArrayOutputStream()
+    exec {
+        commandLine("cmd", "/c", "git", "rev-list", "--count", "HEAD")
+        standardOutput = stdout
+    }
+    return stdout.toString().trim().toInt()
+}
 
 buildkonfig {
     packageName = "com.mixedwash"

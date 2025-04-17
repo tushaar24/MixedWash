@@ -327,7 +327,7 @@ fun ServicesScreen(
         ) {
 
             Row(modifier = Modifier.weight(1f)) {
-                Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(24.dp)) {
+                Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(20.dp)) {
                     state.services.forEach { service ->
                         ServiceTab(
                             service = service,

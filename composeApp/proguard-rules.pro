@@ -1,2 +1,2 @@
--keep class com.mixedwash.Route$AddressRoute$ScreenType { *; }
--keep class com.mixedwash.Route$BookingDetailsRoute$DestinationType { *; }
+-keep class com.mixedwash.core.presentation.navigation.Route$AddressRoute$ScreenType { *; }
+-keep class com.mixedwash.core.presentation.navigation.Route$OrderDetailsRoute$DestinationType { *; }
