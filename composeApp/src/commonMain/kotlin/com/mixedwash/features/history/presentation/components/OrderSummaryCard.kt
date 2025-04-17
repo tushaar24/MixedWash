@@ -1,6 +1,6 @@
 package com.mixedwash.features.history.presentation.components
 
-import BrandTheme
+import BrandTheme.colors
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,30 +18,32 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import com.mixedwash.core.orders.domain.model.BookingItemPricing
 import com.mixedwash.core.orders.domain.model.Order
 import com.mixedwash.core.presentation.components.noRippleClickable
-import com.mixedwash.core.presentation.util.formatTimestamp
+import com.mixedwash.core.presentation.util.convertToDate
+import com.mixedwash.ui.theme.GreenDark
 import mixedwash.composeapp.generated.resources.Res
 import mixedwash.composeapp.generated.resources.ic_drop
 import mixedwash.composeapp.generated.resources.ic_processing
+import mixedwash.composeapp.generated.resources.ic_progress_completed
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.vectorResource
 
 @Composable
 fun OrderSummaryCard(
     order: Order,
+    delivered: Boolean,
     onDetails: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -64,14 +66,14 @@ fun OrderSummaryCard(
                     modifier = Modifier
                         .clip(RoundedCornerShape(12.dp))
                         .size(44.dp)
-                        .background(BrandTheme.colors.gray.c200)
+                        .background(colors.gray.c200)
                         .padding(5.5.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        imageVector = vectorResource(Res.drawable.ic_processing),
+                        imageVector = vectorResource(if (delivered) Res.drawable.ic_progress_completed else Res.drawable.ic_processing),
                         contentDescription = null,
-                        tint = BrandTheme.colors.gray.c600
+                        tint = if (delivered) GreenDark else colors.gray.c600
                     )
                 }
 
@@ -83,9 +85,9 @@ fun OrderSummaryCard(
                     )
 
                     Text(
-                        text = "${order.bookings.size} • Pending",   // todo
+                        text = "${order.bookings.size} booking • ${if (delivered) "Completed" else "Pending"}",
                         fontSize = 12.sp,
-                        color = BrandTheme.colors.gray.dark
+                        color = colors.gray.dark
                     )
                 }
             }
@@ -97,25 +99,26 @@ fun OrderSummaryCard(
         }
 
         order.bookings.forEach { booking ->
+            val bookingDelivered = true
             val dateAndStatusText = buildAnnotatedString {
-                "${formatTimestamp(order.createdAtSeconds)} • Processing"
+                "${order.createdAtSeconds.convertToDate()} • ${if (bookingDelivered) "Delivered" else "Processing"}"
                 withStyle(
                     style = SpanStyle(
                         fontSize = 12.sp,
                         fontWeight = FontWeight.SemiBold,
-                        color = BrandTheme.colors.gray.dark
+                        color = colors.gray.dark
                     )
                 ) {
-                    append("${formatTimestamp(order.createdAtSeconds)} • ")
+                    append("${order.createdAtSeconds.convertToDate()} • ")
                 }
                 withStyle(
                     style = SpanStyle(
                         fontSize = 12.sp,
                         fontWeight = FontWeight.SemiBold,
-                        color = BrandTheme.colors.gray.c500
+                        color = if (bookingDelivered) GreenDark else colors.gray.c500
                     )
                 ) {
-                    append("Processing")    //todo
+                    append(if (bookingDelivered) "Delivered" else "Processing")
                 }
             }
             Text(
@@ -146,15 +149,21 @@ fun OrderSummaryCard(
                             text = item.serviceName,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Medium,
-                            color = BrandTheme.colors.gray.dark
+                            color = colors.gray.dark
                         )
                     }
 
+                    val unit = when (item.itemPricing) {
+                        is BookingItemPricing.ServiceItemPricing -> item.itemPricing.unit
+                        is BookingItemPricing.SubItemFixedPricing -> "pc"
+                        is BookingItemPricing.SubItemRangedPricing -> "pc"
+                    }
+
                     Text(
-                        text = "TBD",
+                        text = if (bookingDelivered) "${item.quantity} $unit" else "TBD",
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Medium,
-                        color = BrandTheme.colors.gray.c500
+                        color = if (delivered) colors.gray.dark else colors.gray.c500
                     )
                 }
             }
@@ -162,27 +171,27 @@ fun OrderSummaryCard(
     }
 }
 
-@Composable
-fun TimeTracker(
-    action: String,
-    datetime: String,
-    textColor: Color,
-    fontSize: TextUnit = 12.sp,
-) {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(2.dp)
-    ) {
-        Text(
-            text = action,
-            color = textColor,
-            fontSize = fontSize,
-        )
-
-        Text(
-            text = datetime,
-            color = textColor,
-            fontSize = fontSize,
-            fontWeight = FontWeight.Medium
-        )
-    }
-}
+//@Composable
+//fun TimeTracker(
+//    action: String,
+//    datetime: String,
+//    textColor: Color,
+//    fontSize: TextUnit = 12.sp,
+//) {
+//    Column(
+//        verticalArrangement = Arrangement.spacedBy(2.dp)
+//    ) {
+//        Text(
+//            text = action,
+//            color = textColor,
+//            fontSize = fontSize,
+//        )
+//
+//        Text(
+//            text = datetime,
+//            color = textColor,
+//            fontSize = fontSize,
+//            fontWeight = FontWeight.Medium
+//        )
+//    }
+//}

@@ -33,6 +33,14 @@ fun Long.getMonth(): String {
     return localDate.month.name.take(3)
 }
 
+fun Long.convertToDate(): String {
+    val instant = Instant.fromEpochSeconds(this)
+    val localDate = instant.toLocalDateTime(TimeZone.currentSystemDefault()).date
+    val month = localDate.month.name.take(3)
+    val day = localDate.dayOfMonth
+    return "$month $day"
+}
+
 /*
     accepts a Long timestamp(seconds since epoch), and return the date-time
      like so: 27 Mar • 12:00 pm

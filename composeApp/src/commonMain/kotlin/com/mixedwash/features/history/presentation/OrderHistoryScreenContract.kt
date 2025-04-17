@@ -7,7 +7,11 @@ import com.mixedwash.features.history.domain.model.InsightMetric
 data class OrderHistoryScreenState(
     val orders: List<Order>,
     val insights: List<InsightMetric>?,
-)
+) {
+    val delivered = orders.map {  order ->
+        order.bookings.all { it.deliveredSeconds != null }
+    }
+}
 
 sealed interface OrderHistoryScreenEvent {
     data class OnOrderDetailsScreen(val orderId: String) : OrderHistoryScreenEvent

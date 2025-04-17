@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material3.HorizontalDivider
@@ -94,10 +95,11 @@ fun OrderHistoryScreen(
                         )
                     }
                 } else {
-                    items(state.orders) { order ->
+                    itemsIndexed(state.orders) { index, order ->
                         Column(modifier = Modifier.padding(horizontal = 16.dp)) {
                             OrderSummaryCard(
                                 order = order,
+                                delivered = state.delivered[index],
                                 onDetails = { onEvent(OrderHistoryScreenEvent.OnOrderDetailsScreen(order.id)) }
                             )
                             Spacer(Modifier.height(24.dp))
