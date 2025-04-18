@@ -7,6 +7,7 @@ import com.mixedwash.features.history.domain.model.InsightMetric
 data class OrderHistoryScreenState(
     val orders: List<OrderHistoryPresentation>,
     val insights: List<InsightMetric>?,
+    val stagingEnabled: Boolean
 )
 
 data class OrderHistoryPresentation(
@@ -17,6 +18,8 @@ data class OrderHistoryPresentation(
 
 sealed interface OrderHistoryScreenEvent {
     data class OnOrderDetailsScreen(val orderId: String) : OrderHistoryScreenEvent
+    data class OnDeleteOrder(val orderId: String) : OrderHistoryScreenEvent
+    data object OnClearAllOrders : OrderHistoryScreenEvent
 }
 
 sealed interface OrderHistoryScreenUiEvent {

@@ -33,7 +33,6 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.mixedwash.core.orders.domain.model.BookingItemPricing
 import com.mixedwash.core.orders.domain.model.Order
-import com.mixedwash.core.presentation.components.noRippleClickable
 import com.mixedwash.core.presentation.util.convertToDate
 import com.mixedwash.ui.theme.GreenDark
 import com.mixedwash.ui.theme.dividerBlack
@@ -49,13 +48,10 @@ fun OrderSummaryCard(
     order: Order,
     serviceImageUrls: Map<String, String>,
     delivered: Boolean,
-    onDetails: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier.noRippleClickable {
-            onDetails()
-        },
+        modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(24.dp),
     ) {
         Row(

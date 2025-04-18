@@ -22,7 +22,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -64,6 +66,23 @@ fun OrderDetailsScreen(
                         .padding(start = 16.dp, top = 0.dp, end = 16.dp),
                     verticalArrangement = Arrangement.spacedBy(32.dp)
                 ) {
+                    if (state.stagingEnabled) {
+                        item {
+                            Box(
+                                modifier = Modifier.fillMaxWidth()
+                                    .background(Color(0xFFFFE8BF))
+                            ) {
+                                Text(
+                                    text = "staging mode enabled",
+                                    fontSize = 12.sp,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    textAlign = TextAlign.Center,
+                                    color = BrandTheme.colors.gray.dark
+                                )
+                            }
+                        }
+                    }
+
                     item {
                         Column(
                             verticalArrangement = Arrangement.spacedBy(16.dp)

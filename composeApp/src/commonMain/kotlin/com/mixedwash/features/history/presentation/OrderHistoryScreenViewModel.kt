@@ -2,6 +2,7 @@ package com.mixedwash.features.history.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mixedwash.core.domain.config.AppConfig
 import com.mixedwash.core.orders.domain.repository.OrdersRepository
 import com.mixedwash.core.presentation.navigation.Route
 import com.mixedwash.features.history.domain.model.insightMetrics
@@ -18,12 +19,14 @@ import kotlinx.coroutines.launch
 class OrderHistoryScreenViewModel(
     private val ordersRepository: OrdersRepository,
     private val servicesDataRepository: ServicesDataRepository,
+    appConfig: AppConfig
 ) :
     ViewModel() {
 
     private val initialState = OrderHistoryScreenState(
         orders = emptyList(),
-        insights = null
+        insights = null,
+        stagingEnabled = appConfig.useStagingOrdersService
     )
 
     private var _state = MutableStateFlow(initialState)
@@ -33,7 +36,7 @@ class OrderHistoryScreenViewModel(
     val uiEventsFlow = _uiEventsChannel.receiveAsFlow()
 
     init {
-        loadInitialData()
+        loadScreenData()
     }
 
     fun onEvent(event: OrderHistoryScreenEvent) {
@@ -47,17 +50,32 @@ class OrderHistoryScreenViewModel(
                     )
                 }
             }
+
+            is OrderHistoryScreenEvent.OnDeleteOrder -> {
+                viewModelScope.launch {
+                    ordersRepository.deleteOrder(event.orderId)
+                    loadScreenData()
+                }
+            }
+
+            OrderHistoryScreenEvent.OnClearAllOrders -> {
+                viewModelScope.launch {
+                    ordersRepository.clearAllOrders()
+                    loadScreenData()
+                }
+            }
         }
     }
 
-    private fun loadInitialData() = viewModelScope.launch {
+    private fun loadScreenData() = viewModelScope.launch {
         val orderPresentations =
             (ordersRepository.getAllOrdersMostRecentFirst().getOrNull()
                 ?: emptyList()).map { order ->
                 OrderHistoryPresentation(
                     order = order,
                     delivered = order.bookings.all { it.deliveredSeconds != null },
-                    serviceImageUrls = servicesDataRepository.mapAllServicesToImageUrls().getOrNull() ?: emptyMap()
+                    serviceImageUrls = servicesDataRepository.mapAllServicesToImageUrls()
+                        .getOrNull() ?: emptyMap()
                 )
             }
         _state.update {
