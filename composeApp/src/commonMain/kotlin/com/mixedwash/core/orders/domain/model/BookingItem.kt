@@ -20,7 +20,11 @@ data class BookingItem(
     @SerialName("image_url")
     val imageUrl: String? = null,
     @SerialName("created_millis")
-    val createdMillis: Long
+    val createdMillis: Long,
+    @SerialName("final_price")
+    val finalPrice: Int? = null,
+    @SerialName("final_quantity")
+    val finalQuantity: Int? = null
 )
 
 fun Booking.calculateTotalPrice(): Int {
@@ -41,4 +45,3 @@ fun BookingItem.calculateItemPrice(): Int {
         }
     }
 }
-

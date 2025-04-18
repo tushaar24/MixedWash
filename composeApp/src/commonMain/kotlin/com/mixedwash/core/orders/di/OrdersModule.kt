@@ -1,5 +1,6 @@
 package com.mixedwash.core.orders.di
 
+import com.mixedwash.core.domain.config.AppConfig
 import com.mixedwash.core.orders.data.repository.FirebaseOrdersRepositoryImpl
 import com.mixedwash.core.orders.data.service.FirebaseOrderService
 import com.mixedwash.core.orders.data.service.OrderDraftServiceImpl
@@ -11,7 +12,12 @@ import org.koin.dsl.module
 
 val OrdersModule = module {
     single<OrderDraftService> { OrderDraftServiceImpl() } bind OrderDraftService::class
-    single<OrderService> { FirebaseOrderService(appCoroutineScope = get(), userService = get()) }
+    single<OrderService> {
+        FirebaseOrderService(
+            userService = get(),
+            useStagingCollection = AppConfig.useStagingOrdersService
+        )
+    }
     single<OrdersRepository> {
         FirebaseOrdersRepositoryImpl(orderDraftService = get(), orderService = get())
     } bind OrdersRepository::class

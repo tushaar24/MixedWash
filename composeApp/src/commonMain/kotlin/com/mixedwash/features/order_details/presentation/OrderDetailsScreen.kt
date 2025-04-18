@@ -114,7 +114,7 @@ fun OrderDetailsScreen(
 
                                 DetailsScreenHeaderContent(
                                     icon = Res.drawable.ic_pickup_scooter,
-                                    title = (order.bookings[0].pickedUpSeconds ?: 0L).convertToDateAndTime(),
+                                    title = (order.pickedUpSeconds ?: 0L).convertToDateAndTime(),
                                     text = "Picked Up"
                                 )
                             }

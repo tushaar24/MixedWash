@@ -3,7 +3,7 @@ package com.mixedwash.features.home.presentation.model
 import com.mixedwash.features.home.data.models.OrderStatusDto
 
 // OrderStatus.kt
-data class OrderStatus(
+data class OrderStatusWidgetData(
     val orderId: String,
     val bookingId: String,
     val title: String,
@@ -12,7 +12,7 @@ data class OrderStatus(
 )
 
 // Converter from OrderStatusDto to OrderStatus
-fun OrderStatusDto.toPresentation(): OrderStatus = OrderStatus(
+fun OrderStatusDto.toPresentation(): OrderStatusWidgetData = OrderStatusWidgetData(
     orderId = orderId,
     bookingId = bookingId,
     title = title,

@@ -31,7 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
-import com.mixedwash.features.home.presentation.model.OrderStatus
+import com.mixedwash.features.home.presentation.model.OrderStatusWidgetData
 import mixedwash.composeapp.generated.resources.Res
 import mixedwash.composeapp.generated.resources.ic_progress_completed
 import mixedwash.composeapp.generated.resources.ic_progress_pending
@@ -40,7 +40,7 @@ import org.jetbrains.compose.resources.vectorResource
 
 @Composable
 fun OrderStatusWidget(
-    orders: List<OrderStatus>,
+    orders: List<OrderStatusWidgetData>,
     onClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {

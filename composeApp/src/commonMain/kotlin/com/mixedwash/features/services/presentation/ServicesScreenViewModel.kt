@@ -364,7 +364,7 @@ class ServicesScreenViewModel(
 
     private fun reload(selectedServiceId: String? = null) {
         viewModelScope.launch {
-            val services = servicesDataRepository.getServices()
+            val services = servicesDataRepository.getAllServices()
             val preselectedService = services.getOrNull()?.services?.firstOrNull { it.serviceId == selectedServiceId }?.serviceId
             if (services.isFailure) {
                 snackbarEvent(

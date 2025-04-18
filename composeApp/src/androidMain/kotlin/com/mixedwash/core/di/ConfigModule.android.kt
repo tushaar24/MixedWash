@@ -5,5 +5,5 @@ import org.koin.core.module.Module
 import org.koin.dsl.module
 
 actual fun TargetConfigModule(): Module = module {
-    single<AppConfig> { AppConfig() }
+    single<AppConfig> { AppConfig }
 }

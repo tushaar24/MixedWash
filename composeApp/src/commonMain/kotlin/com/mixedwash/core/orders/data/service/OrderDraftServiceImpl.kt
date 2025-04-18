@@ -2,7 +2,6 @@ package com.mixedwash.core.orders.data.service
 
 import com.mixedwash.core.orders.domain.model.Booking
 import com.mixedwash.core.orders.domain.model.BookingData
-import com.mixedwash.core.orders.domain.model.BookingState
 import com.mixedwash.core.orders.domain.model.Order
 import com.mixedwash.core.orders.domain.model.error.OrderException
 import com.mixedwash.core.orders.domain.service.OrderDraftService

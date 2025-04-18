@@ -10,13 +10,13 @@ import com.mixedwash.features.home.presentation.model.HomeOfferCard
 import com.mixedwash.features.home.presentation.model.HomeScreenData
 import com.mixedwash.features.home.presentation.model.HomeService
 import com.mixedwash.features.home.presentation.model.IntroSection
-import com.mixedwash.features.home.presentation.model.OrderStatus
+import com.mixedwash.features.home.presentation.model.OrderStatusWidgetData
 
 data class HomeScreenState(
     val banner: HomeBanner? = null,
     val offerCards: List<HomeOfferCard>? = null,
     val services: List<HomeService>? = null,
-    val activeOrders: List<OrderStatus>? = null,
+    val activeOrders: List<OrderStatusWidgetData>? = null,
     val introSection: IntroSection? = null,
     val isLoading: Boolean,
     val cartAddress: CartAddressState = CartAddressState.Unassigned,

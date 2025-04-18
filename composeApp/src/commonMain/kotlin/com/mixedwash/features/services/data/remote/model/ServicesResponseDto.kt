@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ServiceResponseDto (
+data class ServicesResponseDto (
     @SerialName("services") val services: List<ServiceDto>,
     @SerialName("schema_version") val schemaVersion: String
 )

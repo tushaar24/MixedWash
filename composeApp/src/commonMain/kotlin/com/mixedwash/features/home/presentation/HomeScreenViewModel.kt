@@ -277,7 +277,7 @@ class HomeScreenViewModel(
                 is Result.Success -> {
                     _state.value = data.data.toPresentation().toUiState().copy(
                         cartAddress = _state.value.cartAddress,
-                        activeOrders = ordersRepository.getOrderStatus().getOrNull()
+                        activeOrders = emptyList()
                     )
                 }
 

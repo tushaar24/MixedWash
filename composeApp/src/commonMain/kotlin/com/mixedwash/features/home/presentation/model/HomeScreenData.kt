@@ -6,7 +6,7 @@ data class HomeScreenData(
     val banners: List<HomeBanner>,
     val offerCards: List<HomeOfferCard>?,
     val services: List<HomeService>,
-    val activeOrders: List<OrderStatus>?,
+    val activeOrders: List<OrderStatusWidgetData>?,
     val preferredBannerId: String,
     val introSection: IntroSection?,
     val schemaVersion: String
