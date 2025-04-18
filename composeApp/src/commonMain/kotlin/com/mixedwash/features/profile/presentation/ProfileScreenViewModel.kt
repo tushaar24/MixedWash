@@ -3,6 +3,7 @@ package com.mixedwash.features.profile.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mixedwash.core.data.UserService
+import com.mixedwash.core.domain.config.VersionString
 import com.mixedwash.core.presentation.navigation.Route
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +22,8 @@ import mixedwash.composeapp.generated.resources.ic_thumbs
 import mixedwash.composeapp.generated.resources.ic_upi
 
 class ProfileScreenViewModel(
-    private val userService: UserService
+    private val userService: UserService,
+    private val versionString: VersionString
 ) : ViewModel() {
 
     val metadata =
@@ -33,7 +35,7 @@ class ProfileScreenViewModel(
         email = metadata?.email,
         phone = metadata?.phoneNumber,
         appName = "MixedWash",
-        appVersion = "V.0.1-beta",
+        appVersion = versionString.version,
         sections = listOf(
             ProfileSection(
                 title = "Manage",

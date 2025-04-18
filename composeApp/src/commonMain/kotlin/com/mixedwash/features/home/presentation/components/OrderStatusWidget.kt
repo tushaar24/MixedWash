@@ -31,12 +31,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import com.mixedwash.core.presentation.components.OrderProgressRow
 import com.mixedwash.features.home.presentation.model.OrderStatusWidgetData
-import mixedwash.composeapp.generated.resources.Res
-import mixedwash.composeapp.generated.resources.ic_progress_completed
-import mixedwash.composeapp.generated.resources.ic_progress_pending
-import mixedwash.composeapp.generated.resources.ic_progress_processing
-import org.jetbrains.compose.resources.vectorResource
 
 @Composable
 fun OrderStatusWidget(
@@ -134,36 +130,7 @@ fun OrderStatusWidget(
                         )
                     }
 
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        OrderProgressStage.entries.forEach { entry ->
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(4.dp)
-                            ) {
-                                Icon(
-                                    imageVector = vectorResource(
-                                        if (entry.ordinal < stage.ordinal) Res.drawable.ic_progress_completed
-                                        else if (entry.ordinal > stage.ordinal) Res.drawable.ic_progress_pending
-                                        else Res.drawable.ic_progress_processing
-                                    ),
-                                    contentDescription = null,
-                                    tint = if (stage.completed) textColorPrimary else matteGreen,
-                                    modifier = Modifier.size(18.dp)
-                                )
-
-                                Text(
-                                    text = entry.displayName,
-                                    lineHeight = 14.4.sp,
-                                    fontSize = 12.sp,
-                                    color = textColorPrimary
-                                )
-                            }
-                        }
-                    }
+                    OrderProgressRow(stage)
                 }
             }
         }

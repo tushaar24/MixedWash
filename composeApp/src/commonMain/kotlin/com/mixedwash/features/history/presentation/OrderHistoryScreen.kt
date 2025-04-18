@@ -14,7 +14,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -28,7 +27,6 @@ import com.mixedwash.core.presentation.util.ObserveAsEvents
 import com.mixedwash.features.history.presentation.components.OrderSummaryCard
 import com.mixedwash.features.history.presentation.components.StatisticCard
 import com.mixedwash.ui.theme.components.HeaderIconButton
-import com.mixedwash.ui.theme.dividerBlack
 import kotlinx.coroutines.flow.Flow
 
 @Composable
@@ -62,7 +60,6 @@ fun OrderHistoryScreen(
 
             LazyColumn(
                 modifier = modifier.fillMaxSize().padding(vertical = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(48.dp)
             ) {
 
                 state.insights?.let { insights ->
@@ -85,6 +82,10 @@ fun OrderHistoryScreen(
                     }
                 }
 
+                item {
+                    Spacer(Modifier.height(48.dp))
+                }
+
                 if (state.orders.isEmpty()) {
                     item {
                         Text(
@@ -95,15 +96,21 @@ fun OrderHistoryScreen(
                         )
                     }
                 } else {
-                    itemsIndexed(state.orders) { index, order ->
+                    itemsIndexed(state.orders) { index, orderPresentation ->
                         Column(modifier = Modifier.padding(horizontal = 16.dp)) {
                             OrderSummaryCard(
-                                order = order,
-                                delivered = state.delivered[index],
-                                onDetails = { onEvent(OrderHistoryScreenEvent.OnOrderDetailsScreen(order.id)) }
+                                order = orderPresentation.order,
+                                delivered = orderPresentation.delivered,
+                                serviceImageUrls = orderPresentation.serviceImageUrls,
+                                onDetails = {
+                                    onEvent(
+                                        OrderHistoryScreenEvent.OnOrderDetailsScreen(
+                                            orderPresentation.order.id
+                                        )
+                                    )
+                                }
                             )
-                            Spacer(Modifier.height(24.dp))
-                            HorizontalDivider(color = dividerBlack)
+
                             Spacer(Modifier.height(24.dp))
                         }
                     }

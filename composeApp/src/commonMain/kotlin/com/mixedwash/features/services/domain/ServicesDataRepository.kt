@@ -1,5 +1,6 @@
 package com.mixedwash.features.services.domain
 
+import com.mixedwash.core.orders.domain.model.Booking
 import com.mixedwash.features.services.data.remote.model.ServiceDto
 import com.mixedwash.features.services.data.remote.model.ServiceItemDto
 import com.mixedwash.features.services.data.remote.model.ServicesResponseDto
@@ -31,4 +32,18 @@ interface ServicesDataRepository {
      * @return Result containing the parent service if found or an error
      */
     suspend fun getServiceByServiceItemId(itemId: String): Result<ServiceDto>
+
+    /**
+     * A single booking contains multiple booking items. Each booking item is associated with a service id.
+     * This function fetches the service associated with the first booking item in the booking.
+     * @param booking the booking containing the booking items
+     * @return Result containing the service if found or an error
+     */
+    suspend fun getServiceForBooking(booking: Booking): Result<ServiceDto>
+
+    /**
+     * Maps all services to their image URLs.
+     * @return Result containing a map of service IDs to their image URLs or an error
+     */
+    suspend fun mapAllServicesToImageUrls(): Result<Map<String, String>>
 }

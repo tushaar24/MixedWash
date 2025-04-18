@@ -6,7 +6,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -45,6 +47,7 @@ import org.jetbrains.compose.resources.vectorResource
 @Composable
 fun OrderSummaryCard(
     order: Order,
+    serviceImageUrls: Map<String, String>,
     delivered: Boolean,
     onDetails: () -> Unit,
     modifier: Modifier = Modifier
@@ -129,51 +132,67 @@ fun OrderSummaryCard(
                     text = dateAndStatusText,
                 )
 
-                booking.bookingItems.forEach { item ->
-                    Row(
-                        modifier = Modifier.fillMaxWidth().padding(start = 60.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                    ) {
+                booking.bookingItems.forEachIndexed { index, item ->
+
+                    Column {
                         Row(
-                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                            modifier = Modifier.fillMaxWidth().padding(start = 60.dp),
                             verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween,
                         ) {
-                            AsyncImage(
-                                model = ImageRequest.Builder(LocalPlatformContext.current)
-                                    .data(item.imageUrl).crossfade(true)
-                                    .build(),
-                                contentDescription = null,
-                                error = painterResource(Res.drawable.ic_drop),
-                                modifier = Modifier.size(20.dp)
-                            )
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                AsyncImage(
+                                    model = ImageRequest.Builder(LocalPlatformContext.current)
+                                        .data(serviceImageUrls[item.serviceId]).crossfade(true)
+                                        .build(),
+                                    contentDescription = null,
+                                    error = painterResource(Res.drawable.ic_drop),
+                                    modifier = Modifier.size(20.dp)
+                                )
+
+                                Text(
+                                    text = item.serviceName,
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    color = colors.gray.dark
+                                )
+                            }
+
+                            val unit = when (item.itemPricing) {
+                                is BookingItemPricing.ServiceItemPricing -> item.itemPricing.unit
+                                is BookingItemPricing.SubItemFixedPricing -> "pc"
+                                is BookingItemPricing.SubItemRangedPricing -> "pc"
+                            }
 
                             Text(
-                                text = item.serviceName,
+                                text = if (bookingDelivered) "${item.quantity} $unit" else "TBD",
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.Medium,
-                                color = colors.gray.dark
+                                color = if (delivered) colors.gray.dark else colors.gray.c500
                             )
                         }
 
-                        val unit = when (item.itemPricing) {
-                            is BookingItemPricing.ServiceItemPricing -> item.itemPricing.unit
-                            is BookingItemPricing.SubItemFixedPricing -> "pc"
-                            is BookingItemPricing.SubItemRangedPricing -> "pc"
+                        if (index != booking.bookingItems.lastIndex) {
+                            Spacer(Modifier.height(7.dp))
+                            HorizontalDivider(
+                                color = dividerBlack,
+                                thickness = 0.5.dp,
+                                modifier = Modifier.padding(start = 60.dp)
+                            )
+                            Spacer(Modifier.height(7.dp))
                         }
-
-                        Text(
-                            text = if (bookingDelivered) "${item.quantity} $unit" else "TBD",
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Medium,
-                            color = if (delivered) colors.gray.dark else colors.gray.c500
-                        )
                     }
 
-                    HorizontalDivider(thickness = 0.5.dp, color = dividerBlack, modifier = Modifier.padding(start = 60.dp))
                 }
             }
         }
+        HorizontalDivider(
+            thickness = 1.dp,
+            color = dividerBlack,
+        )
     }
 }
 

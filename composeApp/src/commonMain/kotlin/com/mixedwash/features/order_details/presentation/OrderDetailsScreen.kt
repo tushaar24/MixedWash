@@ -36,6 +36,7 @@ import mixedwash.composeapp.generated.resources.Res
 import mixedwash.composeapp.generated.resources.ic_location_pin
 import mixedwash.composeapp.generated.resources.ic_pickup_scooter
 import mixedwash.composeapp.generated.resources.ic_processing
+import mixedwash.composeapp.generated.resources.ic_progress_completed
 import org.jetbrains.compose.resources.vectorResource
 
 @Composable
@@ -60,7 +61,7 @@ fun OrderDetailsScreen(
             state.order?.let { order ->
                 LazyColumn(
                     modifier = Modifier.fillMaxWidth()
-                        .padding(start = 16.dp, top = 0.dp, end = 16.dp, bottom = 36.dp),
+                        .padding(start = 16.dp, top = 0.dp, end = 16.dp),
                     verticalArrangement = Arrangement.spacedBy(32.dp)
                 ) {
                     item {
@@ -80,7 +81,7 @@ fun OrderDetailsScreen(
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Icon(
-                                        imageVector = vectorResource(Res.drawable.ic_processing),
+                                        imageVector = vectorResource(if (order.bookings.all { it.deliveredSeconds != null }) Res.drawable.ic_progress_completed else Res.drawable.ic_processing),
                                         contentDescription = null,
                                         tint = BrandTheme.colors.gray.c200
                                     )
@@ -114,8 +115,9 @@ fun OrderDetailsScreen(
 
                                 DetailsScreenHeaderContent(
                                     icon = Res.drawable.ic_pickup_scooter,
-                                    title = (order.pickedUpSeconds ?: 0L).convertToDateAndTime(),
-                                    text = "Picked Up"
+                                    title = (order.pickedUpSeconds
+                                        ?: order.bookings.first().pickupSlotSelected.startTimeStamp).convertToDateAndTime(),
+                                    text = if (order.pickedUpSeconds != null) "Picked Up" else "Pick Up"
                                 )
                             }
                         }
@@ -124,7 +126,12 @@ fun OrderDetailsScreen(
                     items(order.bookings) { booking ->
                         BookingSummary(
                             booking = booking,
+                            serviceImageUrls = state.serviceImageUrls,
                         )
+                    }
+
+                    item {
+                        Spacer(Modifier.height(36.dp))
                     }
                 }
             }

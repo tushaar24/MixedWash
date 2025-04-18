@@ -1,5 +1,6 @@
 package com.mixedwash.features.order_details.presentation.components
 
+import BrandTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -17,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,20 +29,24 @@ import coil3.request.crossfade
 import com.mixedwash.core.orders.domain.model.Booking
 import com.mixedwash.core.orders.domain.model.calculateItemPrice
 import com.mixedwash.core.orders.domain.model.calculateTotalPrice
+import com.mixedwash.core.presentation.components.OrderProgressRow
 import com.mixedwash.core.presentation.components.noRippleClickable
 import com.mixedwash.core.presentation.util.convertToDate
 import com.mixedwash.core.presentation.util.formattedHourTime
+import com.mixedwash.features.home.presentation.components.OrderProgressStage
 import com.mixedwash.ui.theme.GreenDark
 import com.mixedwash.ui.theme.dividerBlack
 import mixedwash.composeapp.generated.resources.Res
 import mixedwash.composeapp.generated.resources.ic_drop
 import mixedwash.composeapp.generated.resources.ic_redirect_arrow
+import mixedwash.composeapp.generated.resources.ic_verified
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.vectorResource
 
 @Composable
 fun BookingSummary(
     booking: Booking,
+    serviceImageUrls: Map<String, String>,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -50,7 +56,7 @@ fun BookingSummary(
     ) {
         Column(
             modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(32.dp)
+            verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -65,49 +71,44 @@ fun BookingSummary(
                     )
 
                     Text(
-                        text = "${booking.dropSlotSelected.startTimeStamp.convertToDate()}, ${formattedHourTime(booking.dropSlotSelected.startTimeStamp, booking.dropSlotSelected.endTimeStamp)}", // todo
+                        text = "${booking.dropSlotSelected.startTimeStamp.convertToDate()}, ${
+                            formattedHourTime(
+                                booking.dropSlotSelected.startTimeStamp,
+                                booking.dropSlotSelected.endTimeStamp
+                            )
+                        }",
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Medium,
                         color = BrandTheme.colors.gray.c500
                     )
                 }
 
-                // TODO
-                if (booking.isPaid) {
-                    Box(
-                        modifier = Modifier.clip(RoundedCornerShape(8.dp))
-                            .border(1.dp, GreenDark, RoundedCornerShape(8.dp))
-                            .padding(horizontal = 12.dp, vertical = 8.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = "Paid",
-                            color = GreenDark,
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Medium,
-                            lineHeight = 14.4.sp
-                        )
-                    }
+                if (booking.deliveredSeconds != null) {
+                    StatusChip(
+                        text = "Delivered",
+                        textColor = GreenDark,
+                        backgroundColor = Color.Unspecified,
+                        borderColor = GreenDark,
+                    )
+                } else if (booking.outForDeliverySeconds != null) {
+                    StatusChip(
+                        text = "Out for delivery",
+                        textColor = BrandTheme.colors.gray.c200,
+                        backgroundColor = GreenDark,
+                        borderColor = GreenDark,
+                    )
                 } else {
-                    Box(
-                        modifier = Modifier.clip(RoundedCornerShape(8.dp))
-                            .background(GreenDark)
-                            .padding(horizontal = 12.dp, vertical = 8.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = "Out for delivery",
-                            color = BrandTheme.colors.gray.c200,
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Medium,
-                            lineHeight = 14.4.sp
-                        )
-                    }
+                    StatusChip(
+                        text = "Processing",
+                        textColor = BrandTheme.colors.gray.dark,
+                        backgroundColor = BrandTheme.colors.gray.c300,
+                        borderColor = Color.Transparent,
+                    )
                 }
             }
 
             Column(
-                verticalArrangement = Arrangement.spacedBy(24.dp)
+                verticalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 Column {
                     booking.bookingItems.forEach { item ->
@@ -124,7 +125,7 @@ fun BookingSummary(
                             ) {
                                 AsyncImage(
                                     model = ImageRequest.Builder(LocalPlatformContext.current)
-                                        .data(item.imageUrl)
+                                        .data(item.imageUrl ?: serviceImageUrls[item.serviceId])
                                         .crossfade(true)
                                         .build(),
                                     contentDescription = null,
@@ -147,47 +148,51 @@ fun BookingSummary(
                     }
                 }
 
-                HorizontalDivider(color = dividerBlack)
+                if (booking.outForDeliverySeconds != null) {
+                    HorizontalDivider(color = dividerBlack)
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "Subtotal",
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Medium,
-                    )
-
-                    Text(
-                        text = "₹ ${booking.calculateTotalPrice()}",
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 12.sp
-                    )
-                }
-
-                if (!booking.isPaid) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Column {
-                            Text(
-                                text = "Booking Total",
-                                fontSize = 12.sp,
-                                color = BrandTheme.colors.gray.dark,
-                            )
+                        Text(
+                            text = "Subtotal",
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Medium,
+                        )
 
-                            Text(
-                                text = "₹ ${booking.calculateTotalPrice()}/-",
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                color = BrandTheme.colors.gray.c800
-                            )
-                        }
+                        Text(
+                            text = "₹ ${booking.calculateTotalPrice()}",
+                            fontWeight = FontWeight.Medium,
+                            fontSize = 12.sp
+                        )
+                    }
+                }
+            }
 
+            if (booking.outForDeliverySeconds != null) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column {
+                        Text(
+                            text = "Booking Total",
+                            fontSize = 12.sp,
+                            color = BrandTheme.colors.gray.dark,
+                        )
+
+                        Text(
+                            text = "₹ ${booking.calculateTotalPrice()}/-",
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = BrandTheme.colors.gray.c800
+                        )
+                    }
+
+                    if (!booking.isPaid) {
                         Box(
                             modifier = Modifier.clip(RoundedCornerShape(6.dp))
                                 .background(BrandTheme.colors.gray.darker)
@@ -213,9 +218,56 @@ fun BookingSummary(
                                 )
                             }
                         }
+                    } else {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            Text(
+                                text = "Paid",
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Medium,
+                                lineHeight = 14.4.sp,
+                                color = GreenDark
+                            )
+
+                            Icon(
+                                imageVector = vectorResource(Res.drawable.ic_verified),
+                                contentDescription = null,
+                                tint = GreenDark,
+                                modifier = Modifier.size(18.dp)
+                            )
+                        }
                     }
                 }
+            } else {
+                OrderProgressRow(stage = OrderProgressStage.WASH)
             }
         }
+    }
+}
+
+@Composable
+fun StatusChip(
+    text: String,
+    textColor: Color,
+    backgroundColor: Color,
+    borderColor: Color,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier.clip(RoundedCornerShape(8.dp))
+            .background(backgroundColor)
+            .border(1.dp, borderColor, RoundedCornerShape(8.dp))
+            .padding(horizontal = 12.dp, vertical = 8.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = text,
+            color = textColor,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Medium,
+            lineHeight = 14.4.sp
+        )
     }
 }

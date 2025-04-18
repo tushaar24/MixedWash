@@ -5,13 +5,15 @@ import com.mixedwash.core.presentation.navigation.Route
 import com.mixedwash.features.history.domain.model.InsightMetric
 
 data class OrderHistoryScreenState(
-    val orders: List<Order>,
+    val orders: List<OrderHistoryPresentation>,
     val insights: List<InsightMetric>?,
-) {
-    val delivered = orders.map {  order ->
-        order.bookings.all { it.deliveredSeconds != null }
-    }
-}
+)
+
+data class OrderHistoryPresentation(
+    val order: Order,
+    val serviceImageUrls: Map<String, String>,
+    val delivered: Boolean,
+)
 
 sealed interface OrderHistoryScreenEvent {
     data class OnOrderDetailsScreen(val orderId: String) : OrderHistoryScreenEvent

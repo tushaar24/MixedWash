@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.mixedwash.core.orders.domain.repository.OrdersRepository
 import com.mixedwash.core.presentation.navigation.Route
+import com.mixedwash.features.services.domain.ServicesDataRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,6 +15,7 @@ import kotlinx.coroutines.launch
 
 class OrderDetailsScreenViewModel(
     private val ordersRepository: OrdersRepository,
+    private val servicesDataRepository: ServicesDataRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     val orderId = savedStateHandle.toRoute<Route.OrderDetailsRoute>().orderId
@@ -31,7 +33,10 @@ class OrderDetailsScreenViewModel(
     private fun loadOrderDetails() {
         viewModelScope.launch {
             _state.update {
-                it.copy(order = ordersRepository.getOrderById(orderId).getOrNull())
+                it.copy(
+                    order = ordersRepository.getOrderById(orderId).getOrNull(),
+                    serviceImageUrls = servicesDataRepository.mapAllServicesToImageUrls().getOrNull() ?: emptyMap()
+                )
             }
         }
     }

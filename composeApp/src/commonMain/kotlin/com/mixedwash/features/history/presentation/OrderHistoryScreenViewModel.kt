@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.mixedwash.core.orders.domain.repository.OrdersRepository
 import com.mixedwash.core.presentation.navigation.Route
 import com.mixedwash.features.history.domain.model.insightMetrics
+import com.mixedwash.features.services.domain.ServicesDataRepository
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +16,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class OrderHistoryScreenViewModel(
-    private val ordersRepository: OrdersRepository
+    private val ordersRepository: OrdersRepository,
+    private val servicesDataRepository: ServicesDataRepository,
 ) :
     ViewModel() {
 
@@ -49,9 +51,18 @@ class OrderHistoryScreenViewModel(
     }
 
     private fun loadInitialData() = viewModelScope.launch {
+        val orderPresentations =
+            (ordersRepository.getAllOrdersMostRecentFirst().getOrNull()
+                ?: emptyList()).map { order ->
+                OrderHistoryPresentation(
+                    order = order,
+                    delivered = order.bookings.all { it.deliveredSeconds != null },
+                    serviceImageUrls = servicesDataRepository.mapAllServicesToImageUrls().getOrNull() ?: emptyMap()
+                )
+            }
         _state.update {
             it.copy(
-                orders = ordersRepository.getAllOrdersMostRecentFirst().getOrNull() ?: emptyList()
+                orders = orderPresentations
             )
         }
 
@@ -61,7 +72,7 @@ class OrderHistoryScreenViewModel(
     private fun calculateMetrics() {
         val quantityInKg =
             _state.value.orders.sumOf { item ->
-                item.bookings.sumOf { booking ->
+                item.order.bookings.sumOf { booking ->
                     booking.bookingItems.sumOf {
                         it.quantity
                     }

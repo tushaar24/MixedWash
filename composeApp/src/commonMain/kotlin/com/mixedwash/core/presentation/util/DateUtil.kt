@@ -42,7 +42,7 @@ fun Long.convertToDateAndTime(): String {
     val instant = Instant.fromEpochSeconds(this)
     val localDateTime = instant.toLocalDateTime(TimeZone.currentSystemDefault())
 
-    val month = localDateTime.month.name.take(3).lowercase().replaceFirstChar { it.uppercase() }
+    val month = localDateTime.month.name.lowercase().replaceFirstChar { it.uppercase() }.take(3)
     val day = localDateTime.dayOfMonth
 
     val hour = localDateTime.hour
@@ -54,7 +54,7 @@ fun Long.convertToDateAndTime(): String {
 fun Long.convertToDate(): String {
     val instant = Instant.fromEpochSeconds(this)
     val localDate = instant.toLocalDateTime(TimeZone.currentSystemDefault()).date
-    val month = localDate.month.name.take(3)
+    val month = localDate.month.name.lowercase().replaceFirstChar { it.uppercase() }.take(3)
     val day = localDate.dayOfMonth
     return "$month $day"
 }
