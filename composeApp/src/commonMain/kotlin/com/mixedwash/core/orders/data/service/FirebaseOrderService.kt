@@ -3,6 +3,7 @@ package com.mixedwash.core.orders.data.service
 import com.mixedwash.core.data.UserService
 import com.mixedwash.core.orders.domain.model.Order
 import com.mixedwash.core.orders.domain.model.error.OrderException
+import com.mixedwash.features.home.presentation.model.OrderStatusWidgetData
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.firestore.firestore
 import kotlinx.coroutines.async
@@ -27,6 +28,7 @@ interface OrderService {
         bookingId: String,
         update: (com.mixedwash.core.orders.domain.model.Booking) -> com.mixedwash.core.orders.domain.model.Booking
     ): Result<Order>
+    suspend fun fetchActiveOrders(): Result<List<OrderStatusWidgetData>>
 }
 
 class FirebaseOrderService(
@@ -236,5 +238,24 @@ class FirebaseOrderService(
                 order.copy(bookings = updatedBookings)
             }
         }
+    }
+
+    override suspend fun fetchActiveOrders(): Result<List<OrderStatusWidgetData>> {
+        val orders = getAllOrdersMostRecentFirst().getOrNull() ?: return Result.failure(Exception("Failed to fetch orders"))
+        return Result.success(
+            orders.flatMap { order ->
+                order.bookings.filter { booking ->
+                    booking.deliveredSeconds == null
+                }.map { booking ->
+                    OrderStatusWidgetData(
+                        orderId = order.id,
+                        bookingId = booking.id,
+                        title = booking.bookingItems.first().serviceName,
+                        subtitle = "",
+                        description = ""
+                    )
+                }
+            }
+        )
     }
 }

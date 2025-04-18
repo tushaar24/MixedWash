@@ -7,6 +7,7 @@ import com.mixedwash.core.orders.domain.model.error.OrderException
 import com.mixedwash.core.orders.domain.repository.OrdersRepository
 import com.mixedwash.core.orders.domain.service.OrderDraftService
 import com.mixedwash.features.address.domain.model.Address
+import com.mixedwash.features.home.presentation.model.OrderStatusWidgetData
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.datetime.Clock
@@ -172,5 +173,9 @@ class FirebaseOrdersRepositoryImpl(
         return ifStaging {
             orderService.clearAllOrders()
         }
+    }
+
+    override suspend fun fetchActiveBookings(): Result<List<OrderStatusWidgetData>> {
+        return orderService.fetchActiveOrders()
     }
 }

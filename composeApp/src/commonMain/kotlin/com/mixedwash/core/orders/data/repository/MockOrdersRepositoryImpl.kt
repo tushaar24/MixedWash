@@ -6,6 +6,7 @@ import com.mixedwash.core.orders.domain.model.error.OrderException
 import com.mixedwash.core.orders.domain.repository.OrdersRepository
 import com.mixedwash.core.orders.domain.service.OrderDraftService
 import com.mixedwash.features.address.domain.model.Address
+import com.mixedwash.features.home.presentation.model.OrderStatusWidgetData
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.datetime.Clock
@@ -147,7 +148,10 @@ class MockOrdersRepositoryImpl(
         }
     }
 
-    override suspend fun setBookingOutForDelivery(orderId: String, bookingId: String): Result<Order> {
+    override suspend fun setBookingOutForDelivery(
+        orderId: String,
+        bookingId: String
+    ): Result<Order> {
         return withStagingMode {
             runCatching {
                 val index = userOrders.indexOfFirst { it.id == orderId }
@@ -241,5 +245,23 @@ class MockOrdersRepositoryImpl(
                 userOrders.clear()
             }
         }
+    }
+
+    override suspend fun fetchActiveBookings(): Result<List<OrderStatusWidgetData>> {
+        return Result.success(
+            userOrders.flatMap { order ->
+                order.bookings.filter { booking ->
+                    booking.deliveredSeconds == null
+                }.map { booking ->
+                    OrderStatusWidgetData(
+                        orderId = order.id,
+                        bookingId = booking.id,
+                        title = booking.bookingItems.first().serviceName,
+                        subtitle = "",
+                        description = ""
+                    )
+                }
+            }
+        )
     }
 }

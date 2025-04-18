@@ -4,6 +4,7 @@ import com.mixedwash.core.orders.domain.model.BookingData
 import com.mixedwash.core.orders.domain.model.Order
 import com.mixedwash.core.orders.domain.model.error.OrderException
 import com.mixedwash.features.address.domain.model.Address
+import com.mixedwash.features.home.presentation.model.OrderStatusWidgetData
 
 interface OrdersRepository {
     /**
@@ -136,4 +137,6 @@ interface OrdersRepository {
      * @throws OrderException.IllegalStagingOperationException if not using the staging collection
      */
     suspend fun clearAllOrders(): Result<Unit>
+
+    suspend fun fetchActiveBookings(): Result<List<OrderStatusWidgetData>>
 }
