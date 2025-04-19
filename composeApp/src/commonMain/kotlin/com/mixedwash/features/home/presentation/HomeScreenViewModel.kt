@@ -24,6 +24,7 @@ import com.mixedwash.features.address.presentation.AddressSearchState
 import com.mixedwash.features.common.data.service.LocationService
 import com.mixedwash.features.home.domain.HomeScreenDataRepository
 import com.mixedwash.features.home.presentation.model.AddressBottomSheetState
+import com.mixedwash.features.home.presentation.model.OrderStatusWidgetData
 import com.mixedwash.features.home.presentation.model.toPresentation
 import com.mixedwash.features.location_availability.domain.LocationAvailabilityRepository
 import com.mixedwash.libs.loki.core.Place
@@ -252,11 +253,12 @@ class HomeScreenViewModel(
             updateState { copy(isLoading = true) }
             // current address is the first source of truth.
             // otherwise check if a prev address had been assigned (probably location fetched)
-            val currentAddress = addressRepository.getCurrentAddress().getOrNull() ?: state.value.cartAddress.let { state ->
-                if(state is CartAddressState.LocationFetched){
-                  state.address
-                } else null
-            }
+            val currentAddress = addressRepository.getCurrentAddress().getOrNull()
+                ?: state.value.cartAddress.let { state ->
+                    if (state is CartAddressState.LocationFetched) {
+                        state.address
+                    } else null
+                }
             val addressList = addressRepository.getAddresses().getOrDefault(emptyList())
             if (currentAddress == null && addressList.isNotEmpty()) {
                 updateState { copy(isLoading = false) }
@@ -277,7 +279,16 @@ class HomeScreenViewModel(
                 is Result.Success -> {
                     _state.value = data.data.toPresentation().toUiState().copy(
                         cartAddress = _state.value.cartAddress,
-                        activeOrders = ordersRepository.fetchActiveBookings().getOrNull() ?: emptyList()
+                        activeOrders = ordersRepository.fetchActiveBookings().getOrNull()
+                            ?.map { pair ->     // pair.first -> orderId, pair.second -> booking
+                                OrderStatusWidgetData(
+                                    orderId = pair.first,
+                                    bookingId = pair.second.id,
+                                    title = pair.second.bookingItems.first().serviceName,
+                                    subtitle = "",
+                                    description = ""
+                                )
+                            } ?: emptyList()
                     )
                 }
 

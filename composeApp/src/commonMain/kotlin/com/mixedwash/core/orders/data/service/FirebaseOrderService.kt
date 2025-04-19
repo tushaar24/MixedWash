@@ -1,9 +1,9 @@
 package com.mixedwash.core.orders.data.service
 
 import com.mixedwash.core.data.UserService
+import com.mixedwash.core.orders.domain.model.Booking
 import com.mixedwash.core.orders.domain.model.Order
 import com.mixedwash.core.orders.domain.model.error.OrderException
-import com.mixedwash.features.home.presentation.model.OrderStatusWidgetData
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.firestore.firestore
 import kotlinx.coroutines.async
@@ -26,9 +26,13 @@ interface OrderService {
     suspend fun updateBooking(
         orderId: String,
         bookingId: String,
-        update: (com.mixedwash.core.orders.domain.model.Booking) -> com.mixedwash.core.orders.domain.model.Booking
+        update: (Booking) -> Booking
     ): Result<Order>
-    suspend fun fetchActiveOrders(): Result<List<OrderStatusWidgetData>>
+
+    /**
+     * Returns a list of active bookings along with their order ids.
+     */
+    suspend fun fetchActiveOrders(): Result<List<Pair<String, Booking>>>
 }
 
 class FirebaseOrderService(
@@ -86,7 +90,7 @@ class FirebaseOrderService(
                         .get()
 
                     bookingsSnapshot.documents.map { doc ->
-                        doc.data<com.mixedwash.core.orders.domain.model.Booking>()
+                        doc.data<Booking>()
                     }
                 }
 
@@ -120,7 +124,7 @@ class FirebaseOrderService(
                             .get()
 
                         bookingsSnapshot.documents.map { bookingDoc ->
-                            bookingDoc.data<com.mixedwash.core.orders.domain.model.Booking>()
+                            bookingDoc.data<Booking>()
                         }
                     }
 
@@ -209,7 +213,7 @@ class FirebaseOrderService(
     override suspend fun updateBooking(
         orderId: String,
         bookingId: String,
-        update: (com.mixedwash.core.orders.domain.model.Booking) -> com.mixedwash.core.orders.domain.model.Booking
+        update: (Booking) -> Booking
     ): Result<Order> {
         return orderMutex.withLock {
             runCatching {
@@ -240,20 +244,15 @@ class FirebaseOrderService(
         }
     }
 
-    override suspend fun fetchActiveOrders(): Result<List<OrderStatusWidgetData>> {
+
+    override suspend fun fetchActiveOrders(): Result<List<Pair<String, Booking>>> {
         val orders = getAllOrdersMostRecentFirst().getOrNull() ?: return Result.failure(Exception("Failed to fetch orders"))
         return Result.success(
             orders.flatMap { order ->
                 order.bookings.filter { booking ->
                     booking.deliveredSeconds == null
                 }.map { booking ->
-                    OrderStatusWidgetData(
-                        orderId = order.id,
-                        bookingId = booking.id,
-                        title = booking.bookingItems.first().serviceName,
-                        subtitle = "",
-                        description = ""
-                    )
+                    Pair(order.id, booking)
                 }
             }
         )

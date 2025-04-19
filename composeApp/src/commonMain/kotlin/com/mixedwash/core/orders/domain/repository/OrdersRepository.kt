@@ -1,10 +1,10 @@
 package com.mixedwash.core.orders.domain.repository
 
+import com.mixedwash.core.orders.domain.model.Booking
 import com.mixedwash.core.orders.domain.model.BookingData
 import com.mixedwash.core.orders.domain.model.Order
 import com.mixedwash.core.orders.domain.model.error.OrderException
 import com.mixedwash.features.address.domain.model.Address
-import com.mixedwash.features.home.presentation.model.OrderStatusWidgetData
 
 interface OrdersRepository {
     /**
@@ -138,5 +138,5 @@ interface OrdersRepository {
      */
     suspend fun clearAllOrders(): Result<Unit>
 
-    suspend fun fetchActiveBookings(): Result<List<OrderStatusWidgetData>>
+    suspend fun fetchActiveBookings(): Result<List<Pair<String, Booking>>>
 }
