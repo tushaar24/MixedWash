@@ -1,6 +1,5 @@
 package com.mixedwash.features.services.data.remote
 
-import com.mixedwash.core.orders.domain.model.Booking
 import com.mixedwash.features.services.data.remote.model.ServiceDto
 import com.mixedwash.features.services.data.remote.model.ServiceItemDto
 import com.mixedwash.features.services.data.remote.model.ServicesResponseDto
@@ -62,19 +61,5 @@ class MockServicesDataRepository : ServicesDataRepository {
         }
             ?: return Result.failure(ServiceNotFoundException("Service not found for item ID: $itemId"))
         return Result.success(service)
-    }
-
-    override suspend fun getServiceForBooking(booking: Booking): Result<ServiceDto> {
-        return getServiceById(booking.bookingItems.first().serviceId)
-    }
-
-    override suspend fun mapAllServicesToImageUrls(): Result<Map<String, String>> {
-        val mapping = getAllServices().getOrNull()?.services?.associate {
-            it.serviceId to it.imageUrl
-        }
-
-        return mapping?.let {
-            Result.success(it)
-        } ?: Result.failure(Exception())
     }
 }

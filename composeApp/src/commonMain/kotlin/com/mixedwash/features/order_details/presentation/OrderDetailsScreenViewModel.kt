@@ -37,7 +37,9 @@ class OrderDetailsScreenViewModel(
             _state.update {
                 it.copy(
                     order = ordersRepository.getOrderById(orderId).getOrNull(),
-                    serviceImageUrls = servicesDataRepository.mapAllServicesToImageUrls().getOrNull() ?: emptyMap(),
+                    serviceImageUrls = servicesDataRepository.getAllServices().getOrNull()?.services?.associate { o ->
+                        o.serviceId to o.imageUrl
+                    } ?: emptyMap(),
                     stagingEnabled = appConfig.useStagingOrdersService
                 )
             }

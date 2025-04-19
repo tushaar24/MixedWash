@@ -250,7 +250,7 @@ fun HomeScreen(
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             Logger.d("TAG", "Event: ${event.name}")
-            if (event == Lifecycle.Event.ON_RESUME) {
+            if (event == Lifecycle.Event.ON_START) {
                 onEvent(HomeScreenEvent.OnScreenStart)
             }
         }

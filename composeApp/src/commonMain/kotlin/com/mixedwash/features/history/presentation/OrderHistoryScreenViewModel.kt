@@ -74,8 +74,9 @@ class OrderHistoryScreenViewModel(
                 OrderHistoryPresentation(
                     order = order,
                     delivered = order.bookings.all { it.deliveredSeconds != null },
-                    serviceImageUrls = servicesDataRepository.mapAllServicesToImageUrls()
-                        .getOrNull() ?: emptyMap()
+                    serviceImageUrls = servicesDataRepository.getAllServices().getOrNull()?.services?.associate {
+                        it.serviceId to it.imageUrl
+                    } ?: emptyMap()
                 )
             }
         _state.update {
