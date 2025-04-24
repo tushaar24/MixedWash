@@ -79,7 +79,7 @@ class OrderHistoryScreenViewModel(
                 },
                 other = { error ->
                     snackbarEvent("Failed to load orders: ${error.message}", SnackBarType.ERROR)
-                    throw error
+                    // throw error
                 }
             )
             .onSuccess { orders ->
