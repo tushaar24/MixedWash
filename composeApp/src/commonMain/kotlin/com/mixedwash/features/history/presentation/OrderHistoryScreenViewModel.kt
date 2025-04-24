@@ -1,9 +1,13 @@
 package com.mixedwash.features.history.presentation
 
+import androidx.compose.material3.SnackbarDuration
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mixedwash.core.domain.config.AppConfig
+import com.mixedwash.core.orders.domain.model.error.onOrderError
 import com.mixedwash.core.orders.domain.repository.OrdersRepository
+import com.mixedwash.core.presentation.models.SnackBarType
+import com.mixedwash.core.presentation.models.SnackbarPayload
 import com.mixedwash.core.presentation.navigation.Route
 import com.mixedwash.features.history.domain.model.insightMetrics
 import com.mixedwash.features.services.domain.ServicesDataRepository
@@ -68,24 +72,62 @@ class OrderHistoryScreenViewModel(
     }
 
     private fun loadScreenData() = viewModelScope.launch {
-        val orderPresentations =
-            (ordersRepository.getAllOrdersMostRecentFirst().getOrNull()
-                ?: emptyList()).map { order ->
-                OrderHistoryPresentation(
-                    order = order,
-                    delivered = order.bookings.all { it.deliveredSeconds != null },
-                    serviceImageUrls = servicesDataRepository.getAllServices().getOrNull()?.services?.associate {
-                        it.serviceId to it.imageUrl
-                    } ?: emptyMap()
-                )
+        ordersRepository.getAllOrdersMostRecentFirst()
+            .onOrderError(
+                orderNotFound = {
+                    snackbarEvent("Orders not found", SnackBarType.ERROR)
+                },
+                other = { error ->
+                    snackbarEvent("Failed to load orders: ${error.message}", SnackBarType.ERROR)
+                    throw error
+                }
+            )
+            .onSuccess { orders ->
+                val orderPresentations = orders.map { order ->
+                    OrderHistoryPresentation(
+                        order = order,
+                        delivered = order.bookings.all { it.deliveredSeconds != null },
+                        serviceImageUrls = servicesDataRepository.getAllServices()
+                            .onFailure { error ->
+                                snackbarEvent(
+                                    "Failed to load service images: ${error.message}",
+                                    SnackBarType.WARNING
+                                )
+                            }
+                            .getOrNull()?.services?.associate {
+                                it.serviceId to it.imageUrl
+                            } ?: emptyMap()
+                    )
+                }
+
+                _state.update {
+                    it.copy(orders = orderPresentations)
+                }
+
+                calculateMetrics()
             }
-        _state.update {
-            it.copy(
-                orders = orderPresentations
+    }
+
+    private fun snackbarEvent(
+        message: String,
+        type: SnackBarType,
+        duration: SnackbarDuration = SnackbarDuration.Short,
+        action: (() -> Unit)? = null,
+        actionText: String? = null
+    ) {
+        viewModelScope.launch {
+            _uiEventsChannel.send(
+                OrderHistoryScreenUiEvent.ShowSnackbar(
+                    payload = SnackbarPayload(
+                        message = message,
+                        type = type,
+                        duration = duration,
+                        action = action,
+                        actionText = actionText
+                    )
+                )
             )
         }
-
-        calculateMetrics()
     }
 
     private fun calculateMetrics() {

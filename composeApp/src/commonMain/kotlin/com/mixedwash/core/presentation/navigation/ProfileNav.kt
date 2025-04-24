@@ -68,7 +68,8 @@ fun NavGraphBuilder.ProfileNav(
                 state = state,
                 onEvent = viewModel::onEvent,
                 uiEventsFlow = viewModel.uiEventsFlow,
-                navController = navController
+                navController = navController,
+                snackbarHandler = snackbarHandler
             )
         }
     }

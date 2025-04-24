@@ -16,16 +16,14 @@ interface OrdersRepository {
     /**
      * Sets an order draft with the provided details.
      *
-     * @param userId The ID of the user creating the draft
-     * @param bookingsData The list of booking data for the order
+     * @param bookingDataList The list of booking data for the order
      * @param offer Optional offer to apply to the order
      * @param deliveryNotes Notes for delivery
      * @param address The delivery address
      * @return Result containing the created order draft or an error
      */
     suspend fun setOrderDraft(
-        userId: String,
-        bookingsData: List<BookingData>,
+        bookingDataList: List<BookingData>,
         offer: String? = null,
         deliveryNotes: String,
         address: Address
@@ -41,14 +39,14 @@ interface OrdersRepository {
     /**
      * Clears the current order draft.
      *
-     * @return Result containing the cleared order draft or null
+     * @return Result containing Unit on success or an error
      */
-    suspend fun clearOrderDraft() :Result<Order?>
+    suspend fun clearOrderDraft(): Result<Unit>
 
     /**
      * Places the current draft order.
      *
-     * @return Result containing the placed order or an error
+     * @return Result containing Unit on success or an error
      */
     suspend fun placeDraftOrder(): Result<Order>
 
@@ -89,45 +87,42 @@ interface OrdersRepository {
      * Sets an order as out for pickup.
      *
      * @param orderId The ID of the order to update
-     * @return Result containing the updated order or an error
+     * @return Result containing Unit on success or an error
      */
-    suspend fun setOrderOutForPickup(orderId: String): Result<Order>
+    suspend fun setOrderOutForPickup(orderId: String): Result<Unit>
 
     /**
      * Sets an order as picked up.
      *
      * @param orderId The ID of the order to update
-     * @return Result containing the updated order or an error
+     * @return Result containing Unit on success or an error
      */
-    suspend fun setOrderPickedUp(orderId: String): Result<Order>
+    suspend fun setOrderPickedUp(orderId: String): Result<Unit>
 
     /**
      * Sets an order as out for delivery.
      *
-     * @param orderId The ID of the order to update
      * @param bookingId The ID of the booking
-     * @return Result containing the updated order or an error
+     * @return Result containing Unit on success or an error
      */
-    suspend fun setBookingOutForDelivery(orderId: String, bookingId: String): Result<Order>
+    suspend fun setBookingOutForDelivery(bookingId: String): Result<Unit>
 
     /**
      * Sets an order as delivered.
      *
-     * @param orderId The ID of the order to update
      * @param bookingId The ID of the booking
-     * @return Result containing the updated order or an error
+     * @return Result containing Unit on success or an error
      */
-    suspend fun setBookingDelivered(orderId: String, bookingId: String): Result<Order>
+    suspend fun setBookingDelivered(bookingId: String): Result<Unit>
 
     /**
      * Sets a booking as paid.
      *
-     * @param orderId The ID of the order to update
      * @param bookingId The ID of the booking
      * @param isPaid Whether the booking is paid
-     * @return Result containing the updated order or an error
+     * @return Result containing Unit on success or an error
      */
-    suspend fun setBookingPaid(orderId: String, bookingId: String, isPaid: Boolean): Result<Order>
+    suspend fun setBookingPaid(bookingId: String, isPaid: Boolean): Result<Unit>
 
     /**
      * Clears all staging orders.

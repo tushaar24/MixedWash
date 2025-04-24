@@ -18,15 +18,13 @@ class MockOrdersRepositoryImpl(
 
     private val userOrders: MutableList<Order> = mutableListOf()
     private val mutex = Mutex()
-
+    
     override suspend fun setOrderDraft(
-        userId: String,
         bookingsData: List<BookingData>,
         offer: String?,
         deliveryNotes: String,
         address: Address
     ): Result<Order> = orderDraftService.setOrderDraft(
-        userId = userId,
         bookingsData = bookingsData,
         offer = offer,
         deliveryNotes = deliveryNotes,
@@ -35,7 +33,10 @@ class MockOrdersRepositoryImpl(
 
     override suspend fun getOrderDraft(): Result<Order> = orderDraftService.getOrderDraft()
 
-    override suspend fun clearOrderDraft(): Result<Order?> = orderDraftService.clearOrderDraft()
+    override suspend fun clearOrderDraft(): Result<Unit> {
+        val result = orderDraftService.clearOrderDraft()
+        return if(result.isSuccess) Result.success(Unit) else Result.failure(result.exceptionOrNull()!!) 
+    }
 
     override suspend fun getAllOrdersMostRecentFirst(): Result<List<Order>> {
         return Result.success(userOrders)
@@ -72,7 +73,6 @@ class MockOrdersRepositoryImpl(
 
                 // Clear the draft after successful placement
                 orderDraftService.clearOrderDraft()
-
                 draftOrder
             }
         }
@@ -116,126 +116,37 @@ class MockOrdersRepositoryImpl(
         }
     }
 
-    override suspend fun setOrderOutForPickup(orderId: String): Result<Order> {
-        return withStagingMode {
-            runCatching {
-                val index = userOrders.indexOfFirst { it.id == orderId }
-                if (index == -1) {
-                    throw OrderException.OrderNotFound
-                }
-
-                val order = userOrders[index]
-                val updatedOrder = order.copy(outForPickupSeconds = Clock.System.now().epochSeconds)
-                userOrders[index] = updatedOrder
-                updatedOrder
-            }
+    override suspend fun setOrderOutForPickup(orderId: String): Result<Unit> {
+        return updateOrder(orderId) { order ->
+            order.copy(outForPickupSeconds = Clock.System.now().epochSeconds)
         }
     }
 
-    override suspend fun setOrderPickedUp(orderId: String): Result<Order> {
-        return withStagingMode {
-            runCatching {
-                val index = userOrders.indexOfFirst { it.id == orderId }
-                if (index == -1) {
-                    throw OrderException.OrderNotFound
-                }
-
-                val order = userOrders[index]
-                val updatedOrder = order.copy(pickedUpSeconds = Clock.System.now().epochSeconds)
-                userOrders[index] = updatedOrder
-                updatedOrder
-            }
+    override suspend fun setOrderPickedUp(orderId: String): Result<Unit> {
+        return updateOrder(orderId) { order ->
+            order.copy(pickedUpSeconds = Clock.System.now().epochSeconds)
         }
     }
 
-    override suspend fun setBookingOutForDelivery(
-        orderId: String,
-        bookingId: String
-    ): Result<Order> {
-        return withStagingMode {
-            runCatching {
-                val index = userOrders.indexOfFirst { it.id == orderId }
-                if (index == -1) {
-                    throw OrderException.OrderNotFound
-                }
-
-                val order = userOrders[index]
-                val updatedBookings = order.bookings.map { b ->
-                    if (b.id == bookingId) {
-                        b.copy(outForDeliverySeconds = Clock.System.now().epochSeconds)
-                    } else {
-                        b
-                    }
-                }
-
-                if (updatedBookings.all { it.id != bookingId }) {
-                    throw OrderException.BookingNotFound
-                }
-
-                val updatedOrder = order.copy(bookings = updatedBookings)
-                userOrders[index] = updatedOrder
-                updatedOrder
-            }
+    override suspend fun setBookingOutForDelivery(bookingId: String): Result<Unit> {
+        return findOrderWithBookingAndUpdate(bookingId) { order, booking ->
+            val updatedBooking =
+                booking.copy(outForDeliverySeconds = Clock.System.now().epochSeconds)
+            updateBookingInOrder(order, updatedBooking)
         }
     }
 
-    override suspend fun setBookingDelivered(orderId: String, bookingId: String): Result<Order> {
-        return withStagingMode {
-            runCatching {
-                val index = userOrders.indexOfFirst { it.id == orderId }
-                if (index == -1) {
-                    throw OrderException.OrderNotFound
-                }
-
-                val order = userOrders[index]
-                val updatedBookings = order.bookings.map { b ->
-                    if (b.id == bookingId) {
-                        b.copy(deliveredSeconds = Clock.System.now().epochSeconds)
-                    } else {
-                        b
-                    }
-                }
-
-                if (updatedBookings.all { it.id != bookingId }) {
-                    throw OrderException.BookingNotFound
-                }
-
-                val updatedOrder = order.copy(bookings = updatedBookings)
-                userOrders[index] = updatedOrder
-                updatedOrder
-            }
+    override suspend fun setBookingDelivered(bookingId: String): Result<Unit> {
+        return findOrderWithBookingAndUpdate(bookingId) { order, booking ->
+            val updatedBooking = booking.copy(deliveredSeconds = Clock.System.now().epochSeconds)
+            updateBookingInOrder(order, updatedBooking)
         }
     }
 
-    override suspend fun setBookingPaid(
-        orderId: String,
-        bookingId: String,
-        isPaid: Boolean
-    ): Result<Order> {
-        return withStagingMode {
-            runCatching {
-                val index = userOrders.indexOfFirst { it.id == orderId }
-                if (index == -1) {
-                    throw OrderException.OrderNotFound
-                }
-
-                val order = userOrders[index]
-                val updatedBookings = order.bookings.map { b ->
-                    if (b.id == bookingId) {
-                        b.copy(isPaid = isPaid)
-                    } else {
-                        b
-                    }
-                }
-
-                if (updatedBookings.all { it.id != bookingId }) {
-                    throw OrderException.BookingNotFound
-                }
-
-                val updatedOrder = order.copy(bookings = updatedBookings)
-                userOrders[index] = updatedOrder
-                updatedOrder
-            }
+    override suspend fun setBookingPaid(bookingId: String, isPaid: Boolean): Result<Unit> {
+        return findOrderWithBookingAndUpdate(bookingId) { order, booking ->
+            val updatedBooking = booking.copy(isPaid = isPaid)
+            updateBookingInOrder(order, updatedBooking)
         }
     }
 
@@ -257,5 +168,60 @@ class MockOrdersRepositoryImpl(
                 }
             }
         )
+    }
+
+    /**
+     * Helper function to update an order with the given update function
+     */
+    private suspend fun updateOrder(orderId: String, update: (Order) -> Order): Result<Unit> {
+        return withStagingMode {
+            runCatching {
+                val index = userOrders.indexOfFirst { it.id == orderId }
+                if (index == -1) {
+                    throw OrderException.OrderNotFound
+                }
+
+                val order = userOrders[index]
+                val updatedOrder = update(order)
+                userOrders[index] = updatedOrder
+            }
+        }
+    }
+
+    /**
+     * Helper function to find an order containing a booking and update it
+     */
+    private suspend fun findOrderWithBookingAndUpdate(
+        bookingId: String,
+        update: (Order, Booking) -> Order
+    ): Result<Unit> {
+        return withStagingMode {
+            runCatching {
+                val orderIndex = userOrders.indexOfFirst { order ->
+                    order.bookings.any { it.id == bookingId }
+                }
+
+                if (orderIndex == -1) {
+                    throw OrderException.BookingNotFound
+                }
+
+                val order = userOrders[orderIndex]
+                val booking = order.bookings.find { it.id == bookingId }
+                    ?: throw OrderException.BookingNotFound
+
+                val updatedOrder = update(order, booking)
+                userOrders[orderIndex] = updatedOrder
+            }
+        }
+    }
+
+    /**
+     * Helper function to update a booking in an order
+     */
+    private fun updateBookingInOrder(order: Order, updatedBooking: Booking): Order {
+        val updatedBookings = order.bookings.map { booking ->
+            if (booking.id == updatedBooking.id) updatedBooking else booking
+        }
+        return order.copy(bookings = updatedBookings)
     }
 }

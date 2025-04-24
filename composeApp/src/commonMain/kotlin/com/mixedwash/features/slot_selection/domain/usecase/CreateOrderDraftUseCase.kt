@@ -1,6 +1,5 @@
 package com.mixedwash.features.slot_selection.domain.usecase
 
-import com.mixedwash.core.data.UserService
 import com.mixedwash.core.orders.domain.model.BookingData
 import com.mixedwash.core.orders.domain.model.BookingTimeSlot
 import com.mixedwash.core.orders.domain.model.Order
@@ -22,7 +21,6 @@ class CreateOrderDraftUseCase(
     private val addressRepository: AddressRepository,
     private val ordersRepository: OrdersRepository,
     private val locationAvailabilityRepository: LocationAvailabilityRepository,
-    private val userService: UserService
 ) {
     /**
      * Creates an order draft using the provided slot selections, cart items and delivery notes
@@ -39,8 +37,6 @@ class CreateOrderDraftUseCase(
         dropTimeSlotsByServiceId: Map<String, TimeSlot>,
         deliveryNotes: String
     ): Result<Order> = withContext(Dispatchers.IO) {
-        // Get the current user ID
-        val userId = userService.currentUser?.uid ?: ""
 
         if (cartItemsByServiceId.isEmpty()) {
             return@withContext Result.failure(OrderDraftCreationException.EmptyCartException)
@@ -68,7 +64,7 @@ class CreateOrderDraftUseCase(
         }
         
         // Create booking data for each service
-        val bookingsData = cartItemsByServiceId.map { (serviceId, items) ->
+        val bookingDataList = cartItemsByServiceId.map { (serviceId, items) ->
             val dropTimeSlot = dropTimeSlotsByServiceId[serviceId]
                 ?: return@withContext Result.failure(OrderDraftCreationException.InvalidSlotsException)
                 
@@ -94,8 +90,7 @@ class CreateOrderDraftUseCase(
         
         // Create order draft
         return@withContext ordersRepository.setOrderDraft(
-            userId = userId,
-            bookingsData = bookingsData,
+            bookingDataList = bookingDataList,
             deliveryNotes = deliveryNotes,
             address = address
         )

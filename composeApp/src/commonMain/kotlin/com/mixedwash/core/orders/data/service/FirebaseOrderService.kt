@@ -1,10 +1,20 @@
 package com.mixedwash.core.orders.data.service
 
+import com.mixedwash.core.data.User
 import com.mixedwash.core.data.UserService
+import com.mixedwash.core.domain.error.UnauthorizedRequestException
+import com.mixedwash.core.orders.data.model.BookingDto
+import com.mixedwash.core.orders.data.model.OrderDto
+import com.mixedwash.core.orders.data.model.toBooking
+import com.mixedwash.core.orders.data.model.toBookingDto
+import com.mixedwash.core.orders.data.model.toOrder
+import com.mixedwash.core.orders.data.model.toOrderDto
 import com.mixedwash.core.orders.domain.model.Booking
 import com.mixedwash.core.orders.domain.model.Order
 import com.mixedwash.core.orders.domain.model.error.OrderException
 import dev.gitlive.firebase.Firebase
+import dev.gitlive.firebase.firestore.Direction
+import dev.gitlive.firebase.firestore.Transaction
 import dev.gitlive.firebase.firestore.firestore
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -13,21 +23,21 @@ import kotlinx.coroutines.sync.withLock
 
 const val ORDERS_COLLECTION = "ORDERS"
 const val STAGING_ORDERS_COLLECTION = "STAGING_ORDERS"
-const val BOOKINGS_SUBCOLLECTION = "BOOKINGS"
+const val BOOKINGS_SUB_COLLECTION = "BOOKINGS"
+const val STAGING_BOOKINGS_SUB_COLLECTION = "STAGING_BOOKINGS"
 
 interface OrderService {
     val useStagingCollection: Boolean
-    suspend fun placeOrder(order: Order): Result<Order>
+    suspend fun placeOrder(order: Order): Result<Unit>
     suspend fun getOrderById(orderId: String): Result<Order>
     suspend fun getAllOrdersMostRecentFirst(): Result<List<Order>>
-    suspend fun updateOrder(orderId: String, update: (Order) -> Order): Result<Order>
+    suspend fun updateOrder(orderId: String, update: (Order) -> Order): Result<Unit>
     suspend fun deleteOrder(orderId: String): Result<Unit>
     suspend fun clearAllOrders(): Result<Unit>
     suspend fun updateBooking(
-        orderId: String,
         bookingId: String,
         update: (Booking) -> Booking
-    ): Result<Order>
+    ): Result<Unit>
 
     /**
      * Returns a list of active bookings along with their order ids.
@@ -42,28 +52,16 @@ class FirebaseOrderService(
 
     private val db = Firebase.firestore
     private val orderMutex = Mutex()
-    private val orderCollection =
+    private val CURRENT_ORDER_COLLECTION =
         if (useStagingCollection) STAGING_ORDERS_COLLECTION else ORDERS_COLLECTION
+    private val CURRENT_BOOKINGS_SUB_COLLECTION =
+        if (useStagingCollection) STAGING_BOOKINGS_SUB_COLLECTION else BOOKINGS_SUB_COLLECTION
+    private val user: User
+        get() = userService.currentUser ?: throw IllegalStateException("No current user")
 
-    override suspend fun placeOrder(order: Order): Result<Order> {
+    override suspend fun placeOrder(order: Order): Result<Unit> {
         return orderMutex.withLock {
-            runCatching {
-                // Create order document without bookings
-                val orderWithoutBookings = order.copy(bookings = emptyList())
-                val orderRef = db.collection(orderCollection).document(order.id)
-
-                // Save the order document
-                orderRef.set(orderWithoutBookings)
-
-                // Save each booking as a document in the bookings subcollection
-                order.bookings.forEach { booking ->
-                    orderRef.collection(BOOKINGS_SUBCOLLECTION)
-                        .document(booking.id)
-                        .set(booking)
-                }
-
-                order // Return the original order object with bookings
-            }
+            runCatching<Unit> { db.runTransaction { setOrder(order) } }
         }
     }
 
@@ -71,8 +69,8 @@ class FirebaseOrderService(
         return runCatching {
             coroutineScope {
                 // Get the order document and bookings in parallel
-                val orderDeferred = async {
-                    val orderSnapshot = db.collection(orderCollection)
+                val order = async {
+                    val orderSnapshot = db.collection(CURRENT_ORDER_COLLECTION)
                         .document(orderId)
                         .get()
 
@@ -80,72 +78,67 @@ class FirebaseOrderService(
                         throw OrderException.OrderNotFound
                     }
 
-                    orderSnapshot.data<Order>()
+                    val orderDocument = orderSnapshot.data<OrderDto>()
+                    if (orderDocument.userId != user.uid) throw UnauthorizedRequestException()
+                    orderDocument
                 }
 
-                val bookingsDeferred = async {
-                    val bookingsSnapshot = db.collection(orderCollection)
+                val bookingsDto = async {
+                    val bookingsSnapshot = db.collection(CURRENT_ORDER_COLLECTION)
                         .document(orderId)
-                        .collection(BOOKINGS_SUBCOLLECTION)
+                        .collection(CURRENT_BOOKINGS_SUB_COLLECTION)
                         .get()
 
                     bookingsSnapshot.documents.map { doc ->
-                        doc.data<Booking>()
+                        doc.data<BookingDto>()
                     }
                 }
 
-                // Wait for both operations to complete
-                val orderWithoutBookings = orderDeferred.await()
-                val bookings = bookingsDeferred.await()
 
                 // Return the order with bookings
-                orderWithoutBookings.copy(bookings = bookings)
+                order.await().toOrder(bookingsDto.await().map { it.toBooking() })
             }
         }
     }
 
     override suspend fun getAllOrdersMostRecentFirst(): Result<List<Order>> {
         return runCatching {
-            val userId = userService.currentUser?.uid
-                ?: throw IllegalStateException("Current user has no id")
+            val userId = user.uid
 
             coroutineScope {
-                val ordersSnapshot = db.collection(orderCollection)
-                    .where { "customer_id" equalTo userId }
-                    .get()
-
-                val orderDeferreds = ordersSnapshot.documents.map { doc ->
-                    val order = doc.data<Order>()
-
-                    val bookingsDeferred = async {
-                        val bookingsSnapshot = db.collection(orderCollection)
-                            .document(order.id)
-                            .collection(BOOKINGS_SUBCOLLECTION)
-                            .get()
-
-                        bookingsSnapshot.documents.map { bookingDoc ->
-                            bookingDoc.data<Booking>()
+                val orderDtoList = async {
+                    db.collection(CURRENT_ORDER_COLLECTION)
+                        .where { "user_id" equalTo userId }
+                        .orderBy("created_at_seconds", Direction.DESCENDING)
+                        .get()
+                        .documents.map { doc ->
+                            doc.data<OrderDto>()
                         }
-                    }
-
-                    async {
-                        val bookings = bookingsDeferred.await()
-                        order.copy(bookings = bookings)
-                    }
                 }
 
-                // Wait for all orders to be processed
-                val ordersWithBookings = orderDeferreds.map { it.await() }
-                ordersWithBookings.sortedByDescending { it.createdAtSeconds }
+                val bookingsMap = async {
+                    db.collectionGroup(CURRENT_BOOKINGS_SUB_COLLECTION)
+                        .where { "user_id" equalTo userId }
+                        .get()
+                        .documents.map { document -> document.data<BookingDto>() }
+                        .groupBy { it.orderId }
+                }
+
+
+                orderDtoList.await().map { orderDto ->
+                    val orderBookings =
+                        bookingsMap.await()[orderDto.id]?.map { it.toBooking() } ?: emptyList()
+                    orderDto.toOrder(orderBookings)
+                }
             }
         }
     }
 
-    override suspend fun updateOrder(orderId: String, update: (Order) -> Order): Result<Order> {
+
+    override suspend fun updateOrder(orderId: String, update: (Order) -> Order): Result<Unit> {
         return orderMutex.withLock {
-            runCatching {
+            runCatching<Unit> {
                 val order = getOrderById(orderId).getOrElse {
-                    // Rethrow OrderNotFound exceptions
                     if (it is OrderException.OrderNotFound) {
                         throw it
                     }
@@ -153,48 +146,30 @@ class FirebaseOrderService(
                 }
 
                 val updatedOrder = update(order)
-                val orderRef = db.collection(orderCollection).document(orderId)
 
-                // Update the order document without bookings
-                val orderWithoutBookings = updatedOrder.copy(bookings = emptyList())
-                orderRef.set(orderWithoutBookings)
+                // clear existing bookings for order
+                db.runTransaction {
+                    db.collectionGroup(CURRENT_BOOKINGS_SUB_COLLECTION)
+                        .where { "order_id" equalTo orderId }
+                        .get()
+                        .documents
+                        .forEach { delete(it.reference) }
 
-                // Get existing bookings IDs to identify which ones were removed
-                val existingBookingsSnapshot = orderRef.collection(BOOKINGS_SUBCOLLECTION).get()
-                val existingBookingIds = existingBookingsSnapshot.documents.map { it.id }.toSet()
-                val updatedBookingIds = updatedOrder.bookings.map { it.id }.toSet()
-
-                // Delete bookings that were removed
-                val bookingsToDelete = existingBookingIds - updatedBookingIds
-                bookingsToDelete.forEach { bookingId ->
-                    orderRef.collection(BOOKINGS_SUBCOLLECTION).document(bookingId).delete()
+                    setOrder(updatedOrder)
                 }
-
-                // Update or add bookings
-                updatedOrder.bookings.forEach { booking ->
-                    orderRef.collection(BOOKINGS_SUBCOLLECTION)
-                        .document(booking.id)
-                        .set(booking)
-                }
-
-                updatedOrder
             }
         }
     }
 
     override suspend fun deleteOrder(orderId: String): Result<Unit> {
         return orderMutex.withLock {
-            runCatching {
-                val orderRef = db.collection(orderCollection).document(orderId)
-
-                // Delete all booking documents in the subcollection
-                val bookingsSnapshot = orderRef.collection(BOOKINGS_SUBCOLLECTION).get()
-                bookingsSnapshot.documents.forEach { doc ->
-                    orderRef.collection(BOOKINGS_SUBCOLLECTION).document(doc.id).delete()
+            runCatching<Unit> {
+                val orderRef = db.collection(CURRENT_ORDER_COLLECTION).document(orderId)
+                val bookingDocs = orderRef.collection(CURRENT_BOOKINGS_SUB_COLLECTION).get().documents
+                db.runTransaction {
+                    bookingDocs.forEach { delete(it.reference) }
+                    delete(orderRef)
                 }
-
-                // Delete the order document
-                orderRef.delete()
             }
         }
     }
@@ -202,44 +177,44 @@ class FirebaseOrderService(
     override suspend fun clearAllOrders(): Result<Unit> {
         return orderMutex.withLock {
             runCatching {
-                val orders = getAllOrdersMostRecentFirst().getOrThrow()
-                orders.forEach { order ->
-                    deleteOrder(order.id).getOrThrow()
+                val orders =
+                    db.collection(CURRENT_ORDER_COLLECTION).where { "user_id" equalTo user.uid }
+                        .get().documents
+                val bookings =
+                    db.collectionGroup(CURRENT_BOOKINGS_SUB_COLLECTION).where { "user_id" equalTo user.uid }
+                        .get().documents
+                db.runTransaction {
+                    bookings.forEach { delete(it.reference) }
+                    orders.forEach { delete(it.reference) }
                 }
             }
         }
     }
 
     override suspend fun updateBooking(
-        orderId: String,
         bookingId: String,
         update: (Booking) -> Booking
-    ): Result<Order> {
+    ): Result<Unit> {
         return orderMutex.withLock {
-            runCatching {
-                // Get the order with all bookings
-                val order = getOrderById(orderId).getOrThrow()
+            runCatching<Unit> {
+                // Find the booking document using collectionGroup query
+                val bookingDocSnapShot = db.collectionGroup(CURRENT_BOOKINGS_SUB_COLLECTION)
+                    .where { "id" equalTo bookingId }
+                    .get()
+                    .documents
+                    .firstOrNull().let { it ?: throw OrderException.BookingNotFound }
 
-                // Find the booking to update
-                val bookingToUpdate = order.bookings.find { it.id == bookingId }
-                    ?: throw OrderException.BookingNotFound
+                val bookingDto = bookingDocSnapShot.data<BookingDto>()
 
-                // Apply the update
-                val updatedBooking = update(bookingToUpdate)
+                val updatedBooking = update(bookingDto.toBooking())
 
-                // Update the booking document in the subcollection
-                db.collection(orderCollection)
-                    .document(orderId)
-                    .collection(BOOKINGS_SUBCOLLECTION)
-                    .document(bookingId)
-                    .set(updatedBooking)
-
-                // Return the updated order
-                val updatedBookings = order.bookings.map {
-                    if (it.id == bookingId) updatedBooking else it
-                }
-
-                order.copy(bookings = updatedBookings)
+                bookingDocSnapShot.reference.set(
+                    updatedBooking.toBookingDto(
+                        orderId = bookingDto.orderId,
+                        userId = user.uid,
+                        createdAtSeconds = bookingDto.createdAtSeconds
+                    )
+                )
             }
         }
     }
@@ -256,5 +231,28 @@ class FirebaseOrderService(
                 }
             }
         )
+    }
+
+
+    private fun Transaction.setOrder(order: Order): Result<Unit> {
+        return runCatching<Unit> {
+            // Create order document without bookings
+            val orderDto = order.toOrderDto(user.uid)
+            val orderRef = db.collection(CURRENT_ORDER_COLLECTION).document(order.id)
+
+            set(documentRef = orderRef, data = orderDto)
+            // Save each booking as a document in the bookings sub-collection
+            order.bookings.forEach { booking ->
+                set(
+                    documentRef = orderRef.collection(CURRENT_BOOKINGS_SUB_COLLECTION)
+                        .document(booking.id),
+                    data = booking.toBookingDto(
+                        orderId = order.id,
+                        userId = user.uid,
+                        createdAtSeconds = order.createdAtSeconds
+                    )
+                )
+            }
+        }.onFailure { throw OrderException.FailedToCreateOrder }
     }
 }

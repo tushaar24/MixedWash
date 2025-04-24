@@ -6,7 +6,6 @@ import com.mixedwash.features.address.domain.model.Address
 
 interface OrderDraftService {
     suspend fun setOrderDraft(
-        userId: String,
         bookingsData: List<BookingData>,
         offer: String? = null,
         deliveryNotes: String,

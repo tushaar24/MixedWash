@@ -11,8 +11,6 @@ data class Order(
     val id: String,
     @SerialName("bookings")
     val bookings: List<Booking> = emptyList(),
-    @SerialName("customer_id")
-    val customerId: String,
     @SerialName("created_at_seconds")
     val createdAtSeconds: Long = Clock.System.now().epochSeconds,
     @SerialName("out_for_pickup_seconds")

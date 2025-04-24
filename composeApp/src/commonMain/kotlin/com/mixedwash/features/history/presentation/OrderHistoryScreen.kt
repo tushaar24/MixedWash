@@ -46,6 +46,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.mixedwash.WindowInsetsContainer
 import com.mixedwash.core.presentation.components.DefaultHeader
+import com.mixedwash.core.presentation.models.SnackbarHandler
 import com.mixedwash.core.presentation.util.ObserveAsEvents
 import com.mixedwash.features.history.presentation.components.OrderSummaryCard
 import com.mixedwash.features.history.presentation.components.StatisticCard
@@ -59,13 +60,16 @@ fun OrderHistoryScreen(
     onEvent: (OrderHistoryScreenEvent) -> Unit,
     uiEventsFlow: Flow<OrderHistoryScreenUiEvent>,
     navController: NavController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    snackbarHandler: SnackbarHandler
 ) {
-
     ObserveAsEvents(uiEventsFlow) { event ->
         when (event) {
             is OrderHistoryScreenUiEvent.Navigate -> {
                 navController.navigate(event.route)
+            }
+            is OrderHistoryScreenUiEvent.ShowSnackbar -> {
+                snackbarHandler(event.payload)
             }
         }
     }

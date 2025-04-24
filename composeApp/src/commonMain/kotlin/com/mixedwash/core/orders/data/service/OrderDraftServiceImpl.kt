@@ -18,7 +18,6 @@ class OrderDraftServiceImpl : OrderDraftService {
 
     @OptIn(ExperimentalUuidApi::class)
     override suspend fun setOrderDraft(
-        userId: String,
         bookingsData: List<BookingData>,
         offer: String?,
         deliveryNotes: String,
@@ -37,7 +36,6 @@ class OrderDraftServiceImpl : OrderDraftService {
                 orderDraft = Order(
                     id = Uuid.random().toHexString(),
                     bookings = bookings,
-                    customerId = userId,
                     deliveryNotes = deliveryNotes,
                     address = address,
                     offers = emptyList(),

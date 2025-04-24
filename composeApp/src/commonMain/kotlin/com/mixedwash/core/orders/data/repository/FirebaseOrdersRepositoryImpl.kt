@@ -23,14 +23,12 @@ class FirebaseOrdersRepositoryImpl(
         get() = orderService.useStagingCollection
 
     override suspend fun setOrderDraft(
-        userId: String,
-        bookingsData: List<BookingData>,
+        bookingDataList: List<BookingData>,
         offer: String?,
         deliveryNotes: String,
         address: Address
     ): Result<Order> = orderDraftService.setOrderDraft(
-        userId = userId,
-        bookingsData = bookingsData,
+        bookingsData = bookingDataList,
         offer = offer,
         deliveryNotes = deliveryNotes,
         address = address
@@ -38,7 +36,8 @@ class FirebaseOrdersRepositoryImpl(
 
     override suspend fun getOrderDraft(): Result<Order> = orderDraftService.getOrderDraft()
 
-    override suspend fun clearOrderDraft(): Result<Order?> = orderDraftService.clearOrderDraft()
+    override suspend fun clearOrderDraft(): Result<Unit> =
+        orderDraftService.clearOrderDraft().map { }
 
     override suspend fun getAllOrdersMostRecentFirst(): Result<List<Order>> {
         return runCatching {
@@ -78,7 +77,6 @@ class FirebaseOrdersRepositoryImpl(
 
             // Clear the draft after successful placement
             orderDraftService.clearOrderDraft()
-
             draftOrder
         }
     }
@@ -113,59 +111,53 @@ class FirebaseOrdersRepositoryImpl(
         }
     }
 
-    override suspend fun setOrderOutForPickup(orderId: String): Result<Order> {
+    override suspend fun setOrderOutForPickup(orderId: String): Result<Unit> {
         return ifStaging {
             orderService.updateOrder(orderId) { order ->
                 order.copy(outForPickupSeconds = Clock.System.now().epochSeconds)
-            }
+            }.map { }
         }
     }
 
-    override suspend fun setOrderPickedUp(orderId: String): Result<Order> {
+    override suspend fun setOrderPickedUp(orderId: String): Result<Unit> {
         return ifStaging {
             orderService.updateOrder(orderId) { order ->
                 order.copy(pickedUpSeconds = Clock.System.now().epochSeconds)
-            }
+            }.map { }
         }
     }
 
-    override suspend fun setBookingOutForDelivery(orderId: String, bookingId: String): Result<Order> {
-        return updateBooking(orderId, bookingId) { booking ->
+    override suspend fun setBookingOutForDelivery(bookingId: String): Result<Unit> {
+        return updateBooking(bookingId) { booking ->
             booking.copy(outForDeliverySeconds = Clock.System.now().epochSeconds)
         }
     }
 
-    override suspend fun setBookingDelivered(orderId: String, bookingId: String): Result<Order> {
-        return updateBooking(orderId, bookingId) { booking ->
+    override suspend fun setBookingDelivered(bookingId: String): Result<Unit> {
+        return updateBooking(bookingId) { booking ->
             booking.copy(deliveredSeconds = Clock.System.now().epochSeconds)
         }
     }
 
-    override suspend fun setBookingPaid(
-        orderId: String,
-        bookingId: String,
-        isPaid: Boolean
-    ): Result<Order> {
-        return updateBooking(orderId, bookingId) { booking ->
+    override suspend fun setBookingPaid(bookingId: String, isPaid: Boolean): Result<Unit> {
+        return updateBooking(bookingId) { booking ->
             booking.copy(isPaid = isPaid)
         }
     }
 
     /**
-     * Helper function to update a specific booking within an order.
+     * Helper function to update a specific booking within an order and return Unit.
      *
-     * @param orderId ID of the order containing the booking
      * @param bookingId ID of the booking to update
      * @param update Function that receives a booking and returns an updated version
-     * @return Result with the updated Order or failure
+     * @return Result with Unit on success or failure
      */
     private suspend fun updateBooking(
-        orderId: String,
         bookingId: String,
-        update: (booking: com.mixedwash.core.orders.domain.model.Booking) -> com.mixedwash.core.orders.domain.model.Booking
-    ): Result<Order> {
+        update: (booking: Booking) -> Booking
+    ): Result<Unit> {
         return ifStaging {
-            orderService.updateBooking(orderId, bookingId, update)
+            orderService.updateBooking(bookingId, update).map { }
         }
     }
 
