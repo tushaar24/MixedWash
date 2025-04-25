@@ -9,7 +9,7 @@ plugins {
     alias(libs.plugins.googleServices) apply false
     alias(libs.plugins.buildKonfig) apply false
     alias(libs.plugins.kotlinx.serialization) apply false
-//    kotlin("plugin.serialization") version libs.versions.kotlin
     id("com.google.devtools.ksp") version "2.1.0-1.0.29" apply false
+    alias(libs.plugins.firebase.crashlytics) apply false
 
 }

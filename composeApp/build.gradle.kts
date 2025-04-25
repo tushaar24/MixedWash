@@ -13,6 +13,7 @@ plugins {
     alias(libs.plugins.buildKonfig)
     alias(libs.plugins.roomGradlePlugin)
     id("com.google.devtools.ksp")
+    alias(libs.plugins.firebase.crashlytics)
 }
 
 room {
@@ -56,7 +57,7 @@ kotlin {
 
             // firebase (notifications)
             implementation(project.dependencies.platform(libs.android.firebase.bom))
-            implementation(libs.google.firebase.analytics)
+            implementation(libs.firebase.analytics)
 
             // firebase auth
             // implementation(libs.firebase.auth)
@@ -120,11 +121,13 @@ kotlin {
             implementation(libs.kmpauth.uihelper)   //UiHelper SignIn buttons (AppleSignIn, GoogleSignInButton)
 
 
-            // firebase firestore
+            // firebase gitlive
             implementation(libs.gitlive.firebase.firestore)
+            implementation (libs.gitlive.firebase.crashlytics)
 
             // lottie
             implementation (libs.compottie)
+
 
         }
 
