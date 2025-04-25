@@ -29,7 +29,9 @@ class OrderDetailsScreenViewModel(
     }
 
     fun onEvent(event: OrderDetailsScreenEvent) {
-
+        when (event) {
+            OrderDetailsScreenEvent.Refresh -> loadOrderDetails()
+        }
     }
 
     private fun loadOrderDetails() {
@@ -37,12 +39,86 @@ class OrderDetailsScreenViewModel(
             _state.update {
                 it.copy(
                     order = ordersRepository.getOrderById(orderId).getOrNull(),
-                    serviceImageUrls = servicesDataRepository.getAllServices().getOrNull()?.services?.associate { o ->
-                        o.serviceId to o.imageUrl
-                    } ?: emptyMap(),
-                    stagingEnabled = appConfig.useStagingOrdersService
+                    serviceImageUrls = servicesDataRepository.getAllServices()
+                        .getOrNull()?.services?.associate { o ->
+                            o.serviceId to o.imageUrl
+                        } ?: emptyMap(),
+                    stagingEnabled = appConfig.useStagingOrdersService,
+                    stagingOperations = getStagingOperations()
                 )
             }
+
         }
+    }
+
+    private fun getStagingOperations(): List<StagingOperation> {
+        return listOf(
+            StagingOperation(
+                operationName = "Delete Order",
+                callback = { bookingId, orderId ->
+                    viewModelScope.launch {
+                        ordersRepository.deleteOrder(orderId)
+                        loadOrderDetails()
+                    }
+                }
+            ),
+
+            StagingOperation(
+                operationName = "Cancel Order",
+                callback = { bookingId, orderId ->
+                    // todo
+                }
+            ),
+
+            StagingOperation(
+                operationName = "Set Out For Pickup",
+                callback = { bookingId, orderId ->
+                    viewModelScope.launch {
+                        ordersRepository.setOrderOutForPickup(orderId)
+                        loadOrderDetails()
+                    }
+                }
+            ),
+
+            StagingOperation(
+                operationName = "Set Picked Up",
+                callback = { bookingId, orderId ->
+                    viewModelScope.launch {
+                        ordersRepository.setOrderPickedUp(orderId)
+                        loadOrderDetails()
+                    }
+                }
+            ),
+
+            StagingOperation(
+                operationName = "Set Out For Delivery",
+                callback = { bookingId, orderId ->
+                    viewModelScope.launch {
+                        ordersRepository.setBookingOutForDelivery(bookingId)
+                        loadOrderDetails()
+                    }
+                }
+            ),
+
+            StagingOperation(
+                operationName = "Set Delivered",
+                callback = { bookingId, orderId ->
+                    viewModelScope.launch {
+                        ordersRepository.setBookingDelivered(bookingId)
+                        loadOrderDetails()
+                    }
+                }
+            ),
+
+            StagingOperation(
+                operationName = "Set Paid",
+                callback = { bookingId, orderId ->
+                    viewModelScope.launch {
+                        ordersRepository.setBookingPaid(bookingId, true)
+                        loadOrderDetails()
+                    }
+                }
+            )
+        )
     }
 }

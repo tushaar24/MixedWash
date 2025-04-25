@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,23 +20,17 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpOffset
@@ -46,6 +39,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.mixedwash.WindowInsetsContainer
 import com.mixedwash.core.presentation.components.DefaultHeader
+import com.mixedwash.core.presentation.components.noRippleClickable
 import com.mixedwash.core.presentation.models.SnackbarHandler
 import com.mixedwash.core.presentation.util.ObserveAsEvents
 import com.mixedwash.features.history.presentation.components.OrderSummaryCard
@@ -68,6 +62,7 @@ fun OrderHistoryScreen(
             is OrderHistoryScreenUiEvent.Navigate -> {
                 navController.navigate(event.route)
             }
+
             is OrderHistoryScreenUiEvent.ShowSnackbar -> {
                 snackbarHandler(event.payload)
             }
@@ -90,6 +85,24 @@ fun OrderHistoryScreen(
                 modifier = modifier.fillMaxSize().padding(vertical = 16.dp),
             ) {
 
+                if (state.stagingEnabled) {
+                    item {
+                        Box(
+                            modifier = Modifier.fillMaxWidth()
+                                .padding(bottom = 8.dp)
+                                .background(Color(0xFFFFE8BF))
+                        ) {
+                            Text(
+                                text = "staging mode enabled",
+                                fontSize = 12.sp,
+                                modifier = Modifier.fillMaxWidth(),
+                                textAlign = TextAlign.Center,
+                                color = BrandTheme.colors.gray.dark
+                            )
+                        }
+                    }
+                }
+
                 state.insights?.let { insights ->
                     item {
                         LazyRow(
@@ -106,59 +119,35 @@ fun OrderHistoryScreen(
 
                             }
                         }
-                        Spacer(Modifier.height(16.dp))
                     }
+                }
+
+                item {
+                    Spacer(Modifier.height(48.dp))
                 }
 
                 if (state.stagingEnabled) {
                     item {
                         Box(
                             modifier = Modifier.fillMaxWidth()
-                                .padding(horizontal = 16.dp)
+                                .padding(16.dp)
+                                .noRippleClickable { onEvent(OrderHistoryScreenEvent.OnClearAllOrders) }
                                 .background(Color(0xFFFFE8BF))
+                                .padding(vertical = 8.dp)
                         ) {
                             Text(
-                                text = "staging mode enabled",
-                                fontSize = 12.sp,
+                                text = "Clear All Orders",
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.SemiBold,
                                 modifier = Modifier.fillMaxWidth(),
                                 textAlign = TextAlign.Center,
-                                color = BrandTheme.colors.gray.dark
                             )
                         }
                     }
 
                     item {
-                        Button(
-                            onClick = { onEvent(OrderHistoryScreenEvent.OnClearAllOrders) },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color.Red,
-                                contentColor = BrandTheme.colors.gray.light,
-                            ),
-                            modifier = Modifier.fillMaxWidth()
-                                .padding(start = 16.dp, top = 12.dp, end = 16.dp),
-                            shape = RectangleShape,
-                        ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Clear,
-                                    contentDescription = null,
-                                )
-
-                                Text(
-                                    text = "Clear All Orders",
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.Medium,
-                                )
-                            }
-                        }
+                        Spacer(Modifier.height(24.dp))
                     }
-                }
-
-                item {
-                    Spacer(Modifier.height(48.dp))
                 }
 
                 if (state.orders.isEmpty()) {

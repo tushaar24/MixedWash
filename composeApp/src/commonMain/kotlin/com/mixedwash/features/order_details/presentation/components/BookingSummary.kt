@@ -11,10 +11,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,21 +38,81 @@ import com.mixedwash.core.presentation.components.noRippleClickable
 import com.mixedwash.core.presentation.util.convertToDate
 import com.mixedwash.core.presentation.util.formattedHourTime
 import com.mixedwash.features.home.presentation.components.OrderProgressStage
+import com.mixedwash.features.order_details.presentation.StagingOperation
 import com.mixedwash.ui.theme.GreenDark
 import com.mixedwash.ui.theme.dividerBlack
+import kotlinx.coroutines.launch
 import mixedwash.composeapp.generated.resources.Res
 import mixedwash.composeapp.generated.resources.ic_drop
+import mixedwash.composeapp.generated.resources.ic_pencil
 import mixedwash.composeapp.generated.resources.ic_redirect_arrow
 import mixedwash.composeapp.generated.resources.ic_verified
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.vectorResource
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BookingSummary(
     booking: Booking,
+    orderId: String,
     serviceImageUrls: Map<String, String>,
+    stagingOperations: List<StagingOperation>,
     modifier: Modifier = Modifier
 ) {
+    val stagingOperationSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val scope = rememberCoroutineScope()
+
+
+    if (stagingOperationSheetState.isVisible) {
+        ModalBottomSheet(
+            onDismissRequest = {},
+            dragHandle = {},
+            containerColor = BrandTheme.colors.gray.c100,
+            shape = RoundedCornerShape(12.dp)
+        ) {
+            Column(
+                modifier = Modifier.padding(bottom = 48.dp),
+                verticalArrangement = Arrangement.spacedBy(32.dp)
+            ) {
+                Box(
+                    modifier = Modifier.fillMaxWidth().background(Color(0xFFFFE8BF))
+                        .padding(start = 16.dp, top = 48.dp, end = 16.dp, bottom = 32.dp)
+                ) {
+                    Text(
+                        text = "Staging Operations",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+
+                Column(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    stagingOperations.forEach { op ->
+                        Column(
+                            modifier = Modifier.fillMaxWidth().noRippleClickable {
+                                scope.launch {
+                                    op.callback(booking.id, orderId)
+                                    stagingOperationSheetState.hide()
+                                }
+                            },
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            Text(
+                                text = op.operationName,
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Medium,
+                            )
+
+                            HorizontalDivider(color = dividerBlack, thickness = 1.dp)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     Box(
         modifier = modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp))
             .background(BrandTheme.colors.gray.light)
@@ -63,23 +127,41 @@ fun BookingSummary(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Column {
-                    Text(
-                        text = "Booking #${booking.id.takeLast(6)}",
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Medium
-                    )
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    Column {
+                        Text(
+                            text = "Booking #${booking.id.takeLast(6)}",
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Medium
+                        )
 
-                    Text(
-                        text = "${booking.dropSlotSelected.startTimeStamp.convertToDate()}, ${
-                            formattedHourTime(
-                                booking.dropSlotSelected.startTimeStamp,
-                                booking.dropSlotSelected.endTimeStamp
-                            )
-                        }",
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = BrandTheme.colors.gray.c500
+                        Text(
+                            text = "${booking.dropSlotSelected.startTimeStamp.convertToDate()}, ${
+                                formattedHourTime(
+                                    booking.dropSlotSelected.startTimeStamp,
+                                    booking.dropSlotSelected.endTimeStamp
+                                )
+                            }",
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = BrandTheme.colors.gray.c500
+                        )
+                    }
+
+                    Icon(
+                        imageVector = vectorResource(Res.drawable.ic_pencil),
+                        contentDescription = null,
+                        modifier = Modifier.size(20.dp)
+                            .clip(RoundedCornerShape(4.dp))
+                            .background(BrandTheme.colors.gray.c200)
+                            .padding(4.17.dp)
+                            .noRippleClickable {
+                                scope.launch {
+                                    stagingOperationSheetState.show()
+                                }
+                            }
                     )
                 }
 
