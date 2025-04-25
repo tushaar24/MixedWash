@@ -1,12 +1,12 @@
 package com.mixedwash.core.presentation.components
 
 import BrandTheme
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
@@ -38,11 +38,11 @@ enum class BottomBarItem(
     val navigationRoute: Route,
 ) {
     HOME(0, Res.drawable.ic_home_outlined, Res.drawable.ic_home_filled, Route.HomeRoute),
-    SERVICES(
+    HISTORY(
         1,
         Res.drawable.ic_cloth_hangar_outlined,
         Res.drawable.ic_cloth_hangar_filled,
-        Route.ServicesRoute(serviceId = null)
+        Route.HistoryRoute,
     ),
     SUPPORT(2, Res.drawable.ic_chat_outlined, Res.drawable.ic_chat_filled, Route.FaqRoute),
     PROFILE(
@@ -60,32 +60,35 @@ fun AppBottomBar(
     modifier: Modifier = Modifier
 ) {
     var selectedItem by remember { mutableStateOf(initialSelectedItem) }
-    BottomAppBar(
-        modifier = modifier,
-        containerColor = BrandTheme.colors.gray.lighter,
+    Box(
+        modifier = modifier.fillMaxWidth().background(BrandTheme.colors.gray.lighter),
     ) {
-        Box {
-            Row(
-                modifier = Modifier.fillMaxWidth()
-                    .padding(start = 48.dp, top = 12.dp, end = 64.dp, bottom = 16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                BottomBarItem.entries.forEach { item ->
-                    Box(modifier = Modifier.padding(12.dp).noRippleClickable {
+        Row(
+            modifier = Modifier.fillMaxWidth()
+                .padding(start = 48.dp, top = 12.dp, end = 64.dp, bottom = 16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            BottomBarItem.entries.forEach { item ->
+                Box(modifier = Modifier.padding(12.dp).noRippleClickable {
+                    if (selectedItem != item) {
                         selectedItem = item
                         onNavigate(item.navigationRoute)
-                    }) {
-                        Icon(
-                            imageVector = vectorResource(if (item == selectedItem) item.iconFilled else item.iconOutlined),
-                            contentDescription = null,
-                            tint = if (item == selectedItem) BrandTheme.colors.gray.darker else BrandTheme.colors.gray.c400
-                        )
                     }
+                }) {
+                    Icon(
+                        imageVector = vectorResource(if (item == selectedItem) item.iconFilled else item.iconOutlined),
+                        contentDescription = null,
+                        tint = if (item == selectedItem) BrandTheme.colors.gray.darker else BrandTheme.colors.gray.c400
+                    )
                 }
             }
-
-            HorizontalDivider(thickness = 0.5.dp, color = dividerBlack, modifier = Modifier.align(Alignment.TopCenter))
         }
+
+        HorizontalDivider(
+            thickness = 0.5.dp,
+            color = dividerBlack,
+            modifier = Modifier.align(Alignment.TopCenter)
+        )
     }
 }

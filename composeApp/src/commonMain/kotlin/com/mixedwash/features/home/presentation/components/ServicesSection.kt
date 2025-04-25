@@ -31,11 +31,11 @@ import com.mixedwash.core.presentation.components.noRippleClickable
 import com.mixedwash.core.presentation.util.processBoldText
 import com.mixedwash.features.home.presentation.model.HomeService
 import com.mixedwash.ui.theme.Gray100
-import com.mixedwash.ui.theme.Gray600
 
 @Composable
 fun ServicesSection(
     serviceItems: List<HomeService>,
+    showExpanded: Boolean,
     modifier: Modifier = Modifier,
     onServiceClicked: (String) -> Unit,
 ) {
@@ -58,37 +58,41 @@ fun ServicesSection(
                     )
                 } else { Spacer(Modifier.weight(1f)) }
             }
-            if (i + 1 == 3) break
+            if (!showExpanded && i + 1 == 3) break
         }
 
-        // View All Divider
-        Box(
-            modifier = Modifier.fillMaxWidth().noRippleClickable(onClick = { onServiceClicked("") }).padding(8.dp), contentAlignment = Alignment.Center
-        ) {
+        if (!showExpanded) {
+            // View All Divider
             Box(
-                modifier = Modifier.height(1.dp).fillMaxWidth().background(
-                    brush = linearGradient(
-                        colors = listOf(
-                            BrandTheme.colors.gray.lighter,
-                            BrandTheme.colors.gray.c300,
-                            BrandTheme.colors.gray.lighter
-                        )
-                    )
-                ),
-            )
-            Box(
-                Modifier
-                    .padding(horizontal = 8.dp)
-                    .background(BrandTheme.colors.gray.lighter),
+                modifier = Modifier.fillMaxWidth()
+                    .noRippleClickable(onClick = { onServiceClicked("") }).padding(8.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = "view all",
-                    fontSize = 10.sp,
-                    lineHeight = 10.sp,
-                    color = BrandTheme.colors.gray.c500,
-                    fontWeight = FontWeight.SemiBold
+                Box(
+                    modifier = Modifier.height(1.dp).fillMaxWidth().background(
+                        brush = linearGradient(
+                            colors = listOf(
+                                BrandTheme.colors.gray.lighter,
+                                BrandTheme.colors.gray.c300,
+                                BrandTheme.colors.gray.lighter
+                            )
+                        )
+                    ),
                 )
+                Box(
+                    Modifier
+                        .padding(horizontal = 8.dp)
+                        .background(BrandTheme.colors.gray.lighter),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "view all",
+                        fontSize = 10.sp,
+                        lineHeight = 10.sp,
+                        color = BrandTheme.colors.gray.c500,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
             }
         }
     }

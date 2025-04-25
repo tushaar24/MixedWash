@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -267,7 +268,7 @@ fun HomeScreen(
     }
     val scrollState = rememberScrollState()
     val approxTopBarHeight = 54.dp  // TODO : hacky way of getting the height. find proper way
-    val bannerHeight = 310.dp
+    val bannerHeight = 280.dp
     val endThreshold = with(LocalDensity.current) { (bannerHeight - statusBarHeight - approxTopBarHeight).toPx() }
     val startThreshold = with(LocalDensity.current) { endThreshold  - 36.dp.toPx() }
     val scrollValue = scrollState.value.toFloat()
@@ -292,7 +293,7 @@ fun HomeScreen(
                 ),
                 verticalArrangement = Arrangement.spacedBy(24.dp, alignment = Alignment.Top)
             ) {
-                state.activeOrders?.let {
+                if (!state.activeOrders.isNullOrEmpty()) {
                     OrderStatusWidget(
                         orders = state.activeOrders,
                         onClick = { onEvent(HomeScreenEvent.OnOrderStatusWidgetClicked(it)) }
@@ -310,6 +311,7 @@ fun HomeScreen(
                     state.services?.let {
                         ServicesSection(
                             modifier = Modifier,
+                            showExpanded = state.orderedBefore && state.activeOrders.isNullOrEmpty(),
                             serviceItems = it,
                             onServiceClicked = { serviceId ->
                                 onEvent(HomeScreenEvent.OnServiceClicked(serviceId))
@@ -317,15 +319,17 @@ fun HomeScreen(
                         )
                     }
 
-                    state.offerCards?.get(0)?.let { offerCard ->
-                        OfferCard(
-                            text = offerCard.text,
-                            description = offerCard.description,
-                            imageUrl = offerCard.imageUrl,
-                            gradient = offerCard.gradient,
-                            contentColor = Color.parse(offerCard.contentTextColor),
-                            onClick = { onEvent(HomeScreenEvent.OnOfferClick(offerCard.offerId)) }
-                        )
+                    if (!state.orderedBefore) {
+                        state.offerCards?.get(0)?.let { offerCard ->
+                            OfferCard(
+                                text = offerCard.text,
+                                description = offerCard.description,
+                                imageUrl = offerCard.imageUrl,
+                                gradient = offerCard.gradient,
+                                contentColor = Color.parse(offerCard.contentTextColor),
+                                onClick = { onEvent(HomeScreenEvent.OnOfferClick(offerCard.offerId)) }
+                            )
+                        }
                     }
 
                     state.introSection?.let {
@@ -341,12 +345,13 @@ fun HomeScreen(
                             modifier = Modifier,
                         )
                     }
+
+                    Spacer(Modifier.height(40.dp))
                 }
             }
         }
 
         state.banner?.let { banner ->
-
 
 
             // Compute progress based on the current scroll value.
@@ -402,14 +407,16 @@ fun HomeScreen(
             }
         }
 
-        Box(
-            modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter)
-        ) {
-            AppBottomBar(
-                initialSelectedItem = BottomBarItem.HOME,
-                onNavigate = { navController.navigate(it) },
-                modifier = Modifier
-            )
+        state.banner?.let {
+            Box(
+                modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter)
+            ) {
+                AppBottomBar(
+                    initialSelectedItem = BottomBarItem.HOME,
+                    onNavigate = { navController.navigate(it) },
+                    modifier = Modifier
+                )
+            }
         }
     }
 

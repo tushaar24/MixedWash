@@ -288,7 +288,8 @@ class HomeScreenViewModel(
                                     subtitle = "",
                                     description = ""
                                 )
-                            } ?: emptyList()
+                            } ?: emptyList(),
+                        orderedBefore = ordersRepository.getAllOrdersMostRecentFirst().getOrNull()?.isNotEmpty() ?: true
                     )
                 }
 

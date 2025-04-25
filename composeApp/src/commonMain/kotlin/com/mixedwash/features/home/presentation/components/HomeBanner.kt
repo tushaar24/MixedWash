@@ -35,7 +35,7 @@ fun HomeBanner(
     modifier: Modifier = Modifier
 ) {
 
-    Box(modifier = Modifier.height( bannerHeight)) {
+    Box(modifier = Modifier.height(bannerHeight)) {
         Box(modifier = modifier.matchParentSize().gradient( gradient = banner.gradient ))
         Column(
             modifier = Modifier.fillMaxWidth(),
@@ -53,7 +53,7 @@ fun HomeBanner(
                     AsyncImage(
                         model = banner.imageUrl,
                         modifier = Modifier.height(160.dp).width(200.dp)
-                            .align(Alignment.BottomStart).offset(y = 6.dp),
+                            .align(Alignment.BottomStart).offset(y = 4.dp),
                         contentDescription = null,
                     )
                 }
@@ -65,7 +65,6 @@ fun HomeBanner(
                     ),
                     modifier = Modifier.padding(end = 16.dp)
                 ) {
-
                     Text(
                         text = banner.heading,
                         color = contentColor,
