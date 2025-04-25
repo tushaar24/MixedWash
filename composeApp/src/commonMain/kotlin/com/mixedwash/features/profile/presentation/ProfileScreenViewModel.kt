@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import mixedwash.composeapp.generated.resources.Res
 import mixedwash.composeapp.generated.resources.ic_chat
-import mixedwash.composeapp.generated.resources.ic_clothes_hanger
+import mixedwash.composeapp.generated.resources.ic_cloth_hangar_outlined
 import mixedwash.composeapp.generated.resources.ic_info
 import mixedwash.composeapp.generated.resources.ic_location_outlined
 import mixedwash.composeapp.generated.resources.ic_reward
@@ -41,7 +41,7 @@ class ProfileScreenViewModel(
                 title = "Manage",
                 items = listOf(
                     ProfileSectionItem(
-                        resource = Res.drawable.ic_clothes_hanger,
+                        resource = Res.drawable.ic_cloth_hangar_outlined,
                         text = "Order History",
                         onClick = {
                             viewModelScope.launch {

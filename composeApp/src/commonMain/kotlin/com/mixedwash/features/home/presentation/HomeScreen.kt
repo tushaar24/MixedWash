@@ -52,6 +52,8 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
 import com.mixedwash.SetStatusBarColor
+import com.mixedwash.core.presentation.components.AppBottomBar
+import com.mixedwash.core.presentation.components.BottomBarItem
 import com.mixedwash.core.presentation.components.ClickableLoadingOverlay
 import com.mixedwash.core.presentation.components.DialogPopup
 import com.mixedwash.core.presentation.components.DialogPopupData
@@ -398,6 +400,16 @@ fun HomeScreen(
                     )
                 }
             }
+        }
+
+        Box(
+            modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter)
+        ) {
+            AppBottomBar(
+                initialSelectedItem = BottomBarItem.HOME,
+                onNavigate = { navController.navigate(it) },
+                modifier = Modifier
+            )
         }
     }
 
