@@ -60,7 +60,7 @@ class OrderReviewScreenViewModel(
                         deliveryAddress = order.address,
                         title = if (route.destinationType == Route.OrderReviewRoute.DestinationType.CONFIRM_DRAFT_ORDER) "Review Your Booking" else "Order  #" + route.bookingId!!.takeLast(6),
                         screenType = if (route.destinationType == Route.OrderReviewRoute.DestinationType.CONFIRM_DRAFT_ORDER) OrderReviewScreenType.CONFIRMATION else OrderReviewScreenType.ORDER_DETAILS,
-                        note = if (route.destinationType == Route.OrderReviewRoute.DestinationType.CONFIRM_DRAFT_ORDER) "*final order cost will be calculated based on the exact contents of your order confirmed after processing." else null
+                        note = if (route.destinationType == Route.OrderReviewRoute.DestinationType.CONFIRM_DRAFT_ORDER) "Order cost is finalized after processing based on order contents and verified before delivery" else null
                     )
                 }
             }.onFailure {
