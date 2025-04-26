@@ -1,9 +1,9 @@
 package com.mixedwash.core.orders.data.repository
 
+import com.mixedwash.core.orders.domain.error.OrderException
 import com.mixedwash.core.orders.domain.model.Booking
 import com.mixedwash.core.orders.domain.model.BookingData
 import com.mixedwash.core.orders.domain.model.Order
-import com.mixedwash.core.orders.domain.model.error.OrderException
 import com.mixedwash.core.orders.domain.repository.OrdersRepository
 import com.mixedwash.core.orders.domain.service.OrderDraftService
 import com.mixedwash.features.address.domain.model.Address
@@ -20,12 +20,12 @@ class MockOrdersRepositoryImpl(
     private val mutex = Mutex()
     
     override suspend fun setOrderDraft(
-        bookingsData: List<BookingData>,
+        bookingDataList: List<BookingData>,
         offer: String?,
         deliveryNotes: String,
         address: Address
     ): Result<Order> = orderDraftService.setOrderDraft(
-        bookingsData = bookingsData,
+        bookingsData = bookingDataList,
         offer = offer,
         deliveryNotes = deliveryNotes,
         address = address

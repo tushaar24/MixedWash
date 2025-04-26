@@ -9,9 +9,9 @@ import com.mixedwash.core.orders.data.model.toBooking
 import com.mixedwash.core.orders.data.model.toBookingDto
 import com.mixedwash.core.orders.data.model.toOrder
 import com.mixedwash.core.orders.data.model.toOrderDto
+import com.mixedwash.core.orders.domain.error.OrderException
 import com.mixedwash.core.orders.domain.model.Booking
 import com.mixedwash.core.orders.domain.model.Order
-import com.mixedwash.core.orders.domain.model.error.OrderException
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.firestore.Direction
 import dev.gitlive.firebase.firestore.Transaction

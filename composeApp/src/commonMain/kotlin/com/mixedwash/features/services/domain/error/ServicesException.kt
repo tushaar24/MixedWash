@@ -1,5 +1,7 @@
 package com.mixedwash.features.services.domain.error
 
+import com.mixedwash.core.crash.data.CrashReporterHolder
+
 sealed class ServicesException : Exception() {
     data class ServiceItemNotFoundException(val id: String) : ServicesException()
     data class ServiceNotFoundException(val id: String) : ServicesException()
@@ -19,5 +21,6 @@ inline fun <T> Result<T>.onServiceException(
             is ServicesException.ServicesCannotBeFetchedException -> onServicesCannotBeFetchedException(it)
             else -> onOtherException(it)
         }
+        CrashReporterHolder.instance.recordException(it)
     }
 }

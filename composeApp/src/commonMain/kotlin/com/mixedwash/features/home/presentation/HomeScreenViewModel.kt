@@ -7,7 +7,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mixedwash.core.domain.models.Result
+import com.mixedwash.core.crash.domain.CrashReporter
 import com.mixedwash.core.orders.domain.repository.OrdersRepository
 import com.mixedwash.core.presentation.components.ButtonData
 import com.mixedwash.core.presentation.components.DialogPopupData
@@ -47,7 +47,8 @@ class HomeScreenViewModel(
     private val locationAvailabilityRepository: LocationAvailabilityRepository,
     private val homeScreenDataRepository: HomeScreenDataRepository,
     private val addressRepository: AddressRepository,
-    private val ordersRepository: OrdersRepository
+    private val ordersRepository: OrdersRepository,
+    private val crashlyticsReporter: CrashReporter,
 ) : ViewModel() {
 
     private val serviceableAddressUidCache = mutableListOf<String>()
@@ -273,31 +274,30 @@ class HomeScreenViewModel(
     private fun reload() {
         viewModelScope.launch {
             _state.value = HomeScreenState(isLoading = true)
-            val data = homeScreenDataRepository.fetchData()
-            Logger.d("TAG", data.toString())
-            when (data) {
-                is Result.Success -> {
-                    _state.value = data.data.toPresentation().toUiState().copy(
-                        cartAddress = _state.value.cartAddress,
-                        activeOrders = ordersRepository.fetchActiveBookings().getOrNull()
-                            ?.map { pair ->     // pair.first -> orderId, pair.second -> booking
-                                OrderStatusWidgetData(
-                                    orderId = pair.first,
-                                    bookingId = pair.second.id,
-                                    title = pair.second.bookingItems.first().serviceName,
-                                    subtitle = "",
-                                    description = ""
-                                )
-                            } ?: emptyList()
-                    )
-                }
+            val result = homeScreenDataRepository.fetchData()
+            Logger.d("TAG", result.toString())
 
-                is Result.Error -> {
-                    snackbarEvent(
-                        message = data.error.toString(),
-                        type = SnackBarType.ERROR
-                    )
-                }
+            result.onSuccess {
+                _state.value = it.toPresentation().toUiState().copy(
+                    cartAddress = _state.value.cartAddress,
+                    activeOrders = ordersRepository.fetchActiveBookings().getOrNull()
+                        ?.map { pair ->     // pair.first -> orderId, pair.second -> booking
+                            OrderStatusWidgetData(
+                                orderId = pair.first,
+                                bookingId = pair.second.id,
+                                title = pair.second.bookingItems.first().serviceName,
+                                subtitle = "",
+                                description = ""
+                            )
+                        } ?: emptyList()
+                )
+
+            }.onFailure {
+                snackbarEvent(
+                    message = it.message ?: "Error Fetching Home Screen Content",
+                    type = SnackBarType.ERROR
+                )
+                reportException(it)
             }
         }
 
@@ -393,6 +393,7 @@ class HomeScreenViewModel(
                         isLoading = false
                     )
                 }
+                crashlyticsReporter.log("Geolocator Error: Could not fetch user's current location")
             }
             return
         } else {
@@ -415,6 +416,7 @@ class HomeScreenViewModel(
                             ), isLoading = false
                         )
                     }
+                    crashlyticsReporter.log("Geocoder Error: Could not fetch address from coordinates")
                     return
                 } else {
                     placeResult.data.first().toAddress()
@@ -577,6 +579,12 @@ class HomeScreenViewModel(
 
     private fun updateState(action: HomeScreenState.() -> HomeScreenState) {
         _state.update(action)
+    }
+
+    private fun reportException(e: Throwable, keys: Map<String, Any?>? = null) {
+        viewModelScope.launch {
+            crashlyticsReporter.recordException(e)
+        }
     }
 
 }

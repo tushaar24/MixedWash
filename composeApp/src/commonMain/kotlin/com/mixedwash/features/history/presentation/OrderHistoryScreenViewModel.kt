@@ -4,7 +4,7 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mixedwash.core.domain.config.AppConfig
-import com.mixedwash.core.orders.domain.model.error.onOrderError
+import com.mixedwash.core.orders.domain.error.onOrderError
 import com.mixedwash.core.orders.domain.repository.OrdersRepository
 import com.mixedwash.core.presentation.models.SnackBarType
 import com.mixedwash.core.presentation.models.SnackbarPayload

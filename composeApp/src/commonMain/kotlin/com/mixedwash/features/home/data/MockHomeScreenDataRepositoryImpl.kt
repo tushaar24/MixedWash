@@ -1,7 +1,5 @@
 package com.mixedwash.features.home.data
 
-import com.mixedwash.core.domain.models.ErrorType
-import com.mixedwash.core.domain.models.Result
 import com.mixedwash.features.home.data.models.HomeScreenDataDto
 import com.mixedwash.features.home.domain.HomeScreenDataRepository
 import kotlinx.serialization.json.Json
@@ -12,15 +10,9 @@ private const val filePath = "files/mock/home_screen_data.json"
 
 class MockHomeScreenDataRepositoryImpl : HomeScreenDataRepository {
     @OptIn(ExperimentalResourceApi::class)
-    override suspend fun fetchData(): Result<HomeScreenDataDto> {
+    override suspend fun fetchData(): Result<HomeScreenDataDto> = runCatching {
         val bytes = Res.readBytes(filePath)
         val string = bytes.decodeToString()
-        return try {
-
-            Result.Success(Json.decodeFromString<HomeScreenDataDto>(string))
-        } catch (e: Exception) {
-            Result.Error(ErrorType.Unknown(e.message?:"Error Fetching Mock Data"))
-        }
+        Json.decodeFromString<HomeScreenDataDto>(string)
     }
-
 }

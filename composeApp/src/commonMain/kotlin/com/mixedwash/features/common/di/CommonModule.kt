@@ -53,6 +53,7 @@ val CommonModule = module {
         apiKey = TestApiKeyConfig.googleApiKey,
         enableLogging = true
     ) }
+
     single<Autocomplete<AutocompletePlace>> {
         Autocomplete.googleMaps(
             apiKey = TestApiKeyConfig.googleApiKey,
@@ -60,11 +61,12 @@ val CommonModule = module {
             enableLogging = true,
         )
     }
+
     single<LocationService> {
         LocationService(
             geolocator = get(),
             geocoder = get(),
-            autocomplete = get()
+            autocomplete = get<Autocomplete<AutocompletePlace>>()
         )
     }
     viewModelOf(::PhoneScreenViewModel)
