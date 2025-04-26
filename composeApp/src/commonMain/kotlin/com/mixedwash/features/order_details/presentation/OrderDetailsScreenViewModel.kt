@@ -8,6 +8,8 @@ import com.mixedwash.core.domain.config.AppConfig
 import com.mixedwash.core.orders.domain.repository.OrdersRepository
 import com.mixedwash.core.presentation.navigation.Route
 import com.mixedwash.features.services.domain.ServicesDataRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -25,17 +27,25 @@ class OrderDetailsScreenViewModel(
     val state: StateFlow<OrderDetailsScreenState> = _state.asStateFlow()
 
     init {
-        loadOrderDetails()
+        viewModelScope.launch {
+            loadOrderDetails()
+        }
     }
 
     fun onEvent(event: OrderDetailsScreenEvent) {
         when (event) {
-            OrderDetailsScreenEvent.Refresh -> loadOrderDetails()
+            OrderDetailsScreenEvent.Refresh -> {
+                viewModelScope.launch {
+                    _state.update { it.copy(isRefreshing = true) }
+                    loadOrderDetails()
+                    _state.update { it.copy(isRefreshing = false) }
+                }
+            }
         }
     }
 
-    private fun loadOrderDetails() {
-        viewModelScope.launch {
+    private suspend fun loadOrderDetails() {
+        val loadJob = viewModelScope.launch(Dispatchers.IO) {
             _state.update {
                 it.copy(
                     order = ordersRepository.getOrderById(orderId).getOrNull(),
@@ -49,6 +59,8 @@ class OrderDetailsScreenViewModel(
             }
 
         }
+
+        loadJob.join();
     }
 
     private fun getStagingOperations(): List<StagingOperation> {
