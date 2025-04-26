@@ -1,6 +1,6 @@
-package com.mixedwash.core.orders.domain.model.error
+package com.mixedwash.core.orders.domain.error
 
-import com.mixedwash.core.presentation.util.Logger
+import com.mixedwash.core.crash.data.CrashReporterHolder
 
 sealed class OrderException(message: String, cause: Throwable? = null) : Exception(message, cause) {
     data object OrderNotFound : OrderException(message = "Order Not Found")
@@ -11,11 +11,11 @@ sealed class OrderException(message: String, cause: Throwable? = null) : Excepti
 }
 
 inline fun <T> Result<T>.onOrderError(
-    crossinline orderNotFound: () -> Unit = { defaultLogger("Order Not Found") },
-    crossinline bookingNotFound: () -> Unit = { defaultLogger("Booking Not Found")},
-    crossinline failedToCreateOrder: () -> Unit = { defaultLogger("Failed to create order")},
-    crossinline illegalStagingOperation: (Throwable) -> Unit = { defaultLogger("Illegal Staging Operation")},
-    crossinline other: (Throwable) -> Unit = { defaultLogger("Unknown Error has occurred while placing order")}
+    crossinline orderNotFound: () -> Unit = {  },
+    crossinline bookingNotFound: () -> Unit = {  },
+    crossinline failedToCreateOrder: () -> Unit = { },
+    crossinline illegalStagingOperation: (Throwable) -> Unit = {  },
+    crossinline other: (Throwable) -> Unit = { }
 ): Result<T> {
     onFailure { error ->
         when (error) {
@@ -25,10 +25,8 @@ inline fun <T> Result<T>.onOrderError(
             is OrderException.IllegalStagingOperationException -> illegalStagingOperation(error)
             else -> other(error)
         }
+        CrashReporterHolder.instance.recordException(error)
     }
     return this
 }
 
-fun defaultLogger(message : String = "Unknown Error has occurred" ) {
-    Logger.e("OrderException", message)
-}

@@ -6,6 +6,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.mixedwash.core.crash.domain.CrashReporter
 import com.mixedwash.core.presentation.models.SnackBarType
 import com.mixedwash.core.presentation.models.SnackbarPayload
 import com.mixedwash.core.presentation.navigation.NavArgType
@@ -42,7 +43,8 @@ private const val TAG = "ServicesScreenViewModel"
 class ServicesScreenViewModel(
     private val servicesDataRepository: ServicesDataRepository,
     private val cartRepository: LocalCartRepository,
-    private val savedStateHandle: SavedStateHandle
+    private val savedStateHandle: SavedStateHandle,
+    private val crashlyticsReporter: CrashReporter
 ) : ViewModel() {
 
 
@@ -158,7 +160,7 @@ class ServicesScreenViewModel(
                         Logger.d("TAG", "Created $cartItem")
                         cartRepository.upsertCartItem(cartItem).onFailure { e ->
                             snackbarEvent(message = "Error adding item", type = SnackBarType.ERROR)
-                            e.printStackTrace()
+                            reportException(e, mapOf("itemId" to event.itemId))
                         }
                     }
                 }
@@ -222,37 +224,6 @@ class ServicesScreenViewModel(
                     return
                 }
                 viewModelScope.launch {
-                    /*addressRepository.getCurrentAddress().onSuccess {
-                        sendUiEvent(ServicesScreenUiEvent.NavigateToRoute(Route.SlotSelectionRoute))
-                    }.onFailure { e ->
-                        when (e) {
-                            is AddressNotFoundException -> {
-                                sendUiEvent(
-                                    ServicesScreenUiEvent.NavigateToRoute(
-                                        Route.AddressRoute(
-                                            title = "Select Your Address",
-                                            screenType = Route.AddressRoute.ScreenType.SelectAddress,
-                                            submitText = "Select Address",
-                                            onSubmitNavArgsSerialized = Json.encodeToString(
-                                                NavArgs(
-                                                    navType = NavArgType.Navigate(
-                                                        route = Route.SlotSelectionRoute,
-                                                        popUpOption = PopUpOption.PopCurrentRoute
-                                                    )
-                                                )
-                                            )
-                                        )
-                                    )
-                                )
-                            }
-
-                            else -> {
-                                snackbarEvent(
-                                    message = "Error fetching address", type = SnackBarType.ERROR
-                                )
-                            }
-                        }
-                    }*/
                     sendUiEvent(
                         ServicesScreenUiEvent.NavigateToRoute(
                             Route.AddressRoute(
@@ -371,6 +342,9 @@ class ServicesScreenViewModel(
                     message = "Error fetching services",
                     type = SnackBarType.ERROR
                 )
+                reportException(
+                    services.exceptionOrNull() ?: Exception("Error Fetching Services Data")
+                )
             } else {
                 services.getOrNull()?.let { res ->
                     updateState {
@@ -390,5 +364,11 @@ class ServicesScreenViewModel(
         _state.update (action)
     }
 
+    private fun reportException(e: Throwable, keys: Map<String, Any>? = null) {
+        viewModelScope.launch {
+            crashlyticsReporter.recordException(e, keys)
+        }
+    }
 }
+
 

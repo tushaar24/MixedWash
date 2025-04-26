@@ -1,5 +1,6 @@
 package com.mixedwash
 
+import com.mixedwash.core.crash.di.CrashlyticsModule
 import com.mixedwash.core.data.di.DataModule
 import com.mixedwash.core.di.ConfigModule
 import com.mixedwash.core.di.NetworkModule
@@ -16,6 +17,7 @@ fun initKoin(appDeclaration: KoinAppDeclaration = {}) = startKoin {
     appDeclaration()
     modules(
         CommonModule,
+        CrashlyticsModule,
         LaundryServiceModule,
         NetworkModule,
         DataModule,

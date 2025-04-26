@@ -1,5 +1,7 @@
 package com.mixedwash.features.slot_selection.domain.model.error
 
+import com.mixedwash.core.crash.data.CrashReporterHolder
+
 sealed class OrderDraftCreationException(message: String, cause: Throwable? = null) :
     Exception(message, cause) {
     data object AddressNotFoundException : OrderDraftCreationException(message = "No address selected")
@@ -27,6 +29,7 @@ inline fun <T> Result<T>.onErrorOrderDraftCreation(
             is OrderDraftCreationException.InvalidSlotsException -> invalidSlots()
             else -> other(error)
         }
+        CrashReporterHolder.instance.log(error.message ?: "Unknown error")
     }
     return this
 }

@@ -11,6 +11,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.mixedwash.core.crash.domain.CrashReporter
 import com.mixedwash.core.domain.validation.PinCodeValidationUseCase
 import com.mixedwash.core.presentation.components.ButtonData
 import com.mixedwash.core.presentation.components.DialogPopupData
@@ -57,7 +58,8 @@ class AddressScreenViewModel(
     private val addressRepository: AddressRepository,
     private val locationService: LocationService,
     private val locationAvailabilityRepository: LocationAvailabilityRepository,
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    private val crashReporter: CrashReporter
 ) : ViewModel() {
 
     private val addressRoute = savedStateHandle.toRoute<Route.AddressRoute>()
@@ -162,7 +164,6 @@ class AddressScreenViewModel(
                                     "Navigation Failed: Invalid Submit Route",
                                     SnackBarType.ERROR
                                 )
-                                Logger.e("AddressScreenViewModel", e.stackTraceToString())
                             }
 
                             else -> {
@@ -170,9 +171,9 @@ class AddressScreenViewModel(
                                     e.message ?: "Error during address submission",
                                     SnackBarType.ERROR
                                 )
-                                Logger.e("AddressScreenViewModel", e.stackTraceToString())
                             }
                         }
+                        crashReporter.recordException(e)
                     } finally {
                         updateState {
                             copy(isLoading = false)
@@ -498,6 +499,7 @@ class AddressScreenViewModel(
                 updateState { copy(addressList = it) }
             }.onFailure {
                 snackbarEvent("Error Fetching Addresses", SnackBarType.ERROR)
+                crashReporter.recordException(it, "Error Fetching Addresses")
             }
             updateState { copy(isLoading = false) }
         }
@@ -725,4 +727,11 @@ class AddressScreenViewModel(
             )
         )
     )
+
+    private fun reportException(e: Throwable, keys: Map<String, Any>? = null) {
+        viewModelScope.launch {
+            crashReporter.recordException(e, keys)
+        }
+    }
+
 }
