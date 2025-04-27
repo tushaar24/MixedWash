@@ -155,7 +155,7 @@ fun BookingSummary(
                         contentDescription = null,
                         modifier = Modifier.size(20.dp)
                             .clip(RoundedCornerShape(4.dp))
-                            .background(BrandTheme.colors.gray.c200)
+                            .background(BrandTheme.colors.gray.c300)
                             .padding(4.17.dp)
                             .noRippleClickable {
                                 scope.launch {

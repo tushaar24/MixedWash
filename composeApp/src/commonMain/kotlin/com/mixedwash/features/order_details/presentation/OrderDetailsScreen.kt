@@ -20,6 +20,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,6 +38,7 @@ import com.mixedwash.core.presentation.util.convertToDateAndTime
 import com.mixedwash.features.order_details.presentation.components.BookingSummary
 import com.mixedwash.features.order_details.presentation.components.DetailsScreenHeaderContent
 import com.mixedwash.ui.theme.components.HeaderIconButton
+import com.mixedwash.ui.theme.headerContentSpacing
 import mixedwash.composeapp.generated.resources.Res
 import mixedwash.composeapp.generated.resources.ic_location_pin
 import mixedwash.composeapp.generated.resources.ic_pickup_scooter
@@ -52,7 +55,18 @@ fun OrderDetailsScreen(
     modifier: Modifier = Modifier
 ) {
     WindowInsetsContainer {
+        val pullToRefreshState = rememberPullToRefreshState()
         PullToRefreshBox(
+            indicator = {
+                Indicator(
+                    modifier = Modifier.align(Alignment.TopCenter),
+                    isRefreshing = state.isRefreshing,
+                    containerColor = BrandTheme.colors.gray.darker,
+                    color = BrandTheme.colors.gray.light,
+                    state = pullToRefreshState,
+                )
+            },
+            state = pullToRefreshState,
             isRefreshing = state.isRefreshing,
             onRefresh = { onEvent(OrderDetailsScreenEvent.Refresh) }
         ) {
@@ -66,6 +80,22 @@ fun OrderDetailsScreen(
                         )
                     },
                 )
+                Spacer(Modifier.height(headerContentSpacing))
+                if (state.stagingEnabled) {
+                    Box(
+                        modifier = Modifier.fillMaxWidth()
+                            .background(Color(0xFFFFE8BF))
+                    ) {
+                        Text(
+                            text = "staging mode enabled",
+                            fontSize = 12.sp,
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center,
+                            color = BrandTheme.colors.gray.dark
+                        )
+                    }
+                }
+
 
                 state.order?.let { order ->
                     LazyColumn(
@@ -73,22 +103,6 @@ fun OrderDetailsScreen(
                             .padding(start = 16.dp, top = 0.dp, end = 16.dp),
                         verticalArrangement = Arrangement.spacedBy(32.dp)
                     ) {
-                        if (state.stagingEnabled) {
-                            item {
-                                Box(
-                                    modifier = Modifier.fillMaxWidth()
-                                        .background(Color(0xFFFFE8BF))
-                                ) {
-                                    Text(
-                                        text = "staging mode enabled",
-                                        fontSize = 12.sp,
-                                        modifier = Modifier.fillMaxWidth(),
-                                        textAlign = TextAlign.Center,
-                                        color = BrandTheme.colors.gray.dark
-                                    )
-                                }
-                            }
-                        }
 
                         item {
                             Column(
