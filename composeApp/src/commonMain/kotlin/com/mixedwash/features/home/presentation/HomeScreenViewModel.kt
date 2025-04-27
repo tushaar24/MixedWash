@@ -7,8 +7,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mixedwash.core.crash.domain.CrashReporter
-import com.mixedwash.core.orders.domain.repository.OrdersRepository
+import com.mixedwash.core.feature.crash.domain.CrashReporter
+import com.mixedwash.core.feature.orders.domain.repository.OrdersRepository
 import com.mixedwash.core.presentation.components.ButtonData
 import com.mixedwash.core.presentation.components.DialogPopupData
 import com.mixedwash.core.presentation.models.SnackBarType

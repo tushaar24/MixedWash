@@ -31,8 +31,8 @@ import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
 import coil3.request.crossfade
-import com.mixedwash.core.orders.domain.model.BookingItemPricing
-import com.mixedwash.core.orders.domain.model.Order
+import com.mixedwash.core.feature.orders.domain.model.BookingItemPricing
+import com.mixedwash.core.feature.orders.domain.model.Order
 import com.mixedwash.core.presentation.util.convertToDate
 import com.mixedwash.ui.theme.GreenDark
 import com.mixedwash.ui.theme.dividerBlack

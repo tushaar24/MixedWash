@@ -237,6 +237,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.firebase.common.ktx)
     debugImplementation(compose.uiTooling)
     debugImplementation(libs.androidx.ui.tooling)
 

@@ -1,6 +1,6 @@
 package com.mixedwash.features.local_cart.domain.error
 
-import com.mixedwash.core.crash.data.CrashReporterHolder
+import com.mixedwash.core.feature.crash.data.CrashReporterHolder
 
 sealed class CartException(message: String, cause: Throwable? = null) : Exception(message, cause) {
 

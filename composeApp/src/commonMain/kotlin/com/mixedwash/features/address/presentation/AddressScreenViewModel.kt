@@ -11,8 +11,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.mixedwash.core.crash.domain.CrashReporter
 import com.mixedwash.core.domain.validation.PinCodeValidationUseCase
+import com.mixedwash.core.feature.crash.domain.CrashReporter
 import com.mixedwash.core.presentation.components.ButtonData
 import com.mixedwash.core.presentation.components.DialogPopupData
 import com.mixedwash.core.presentation.models.FieldID

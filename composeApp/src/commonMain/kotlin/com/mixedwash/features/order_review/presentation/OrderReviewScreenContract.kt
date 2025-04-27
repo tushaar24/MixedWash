@@ -1,6 +1,6 @@
 package com.mixedwash.features.order_review.presentation
 
-import com.mixedwash.core.orders.domain.model.Booking
+import com.mixedwash.core.feature.orders.domain.model.Booking
 import com.mixedwash.core.presentation.models.SnackbarPayload
 import com.mixedwash.features.address.domain.model.Address
 

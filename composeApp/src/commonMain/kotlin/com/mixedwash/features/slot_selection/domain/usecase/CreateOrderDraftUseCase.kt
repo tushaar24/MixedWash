@@ -1,10 +1,10 @@
 package com.mixedwash.features.slot_selection.domain.usecase
 
-import com.mixedwash.core.orders.domain.model.BookingData
-import com.mixedwash.core.orders.domain.model.BookingTimeSlot
-import com.mixedwash.core.orders.domain.model.Order
-import com.mixedwash.core.orders.domain.model.toBookingItem
-import com.mixedwash.core.orders.domain.repository.OrdersRepository
+import com.mixedwash.core.feature.orders.domain.model.BookingData
+import com.mixedwash.core.feature.orders.domain.model.BookingTimeSlot
+import com.mixedwash.core.feature.orders.domain.model.Order
+import com.mixedwash.core.feature.orders.domain.model.toBookingItem
+import com.mixedwash.core.feature.orders.domain.repository.OrdersRepository
 import com.mixedwash.features.address.domain.repository.AddressRepository
 import com.mixedwash.features.local_cart.domain.model.CartItem
 import com.mixedwash.features.location_availability.domain.LocationAvailabilityRepository
