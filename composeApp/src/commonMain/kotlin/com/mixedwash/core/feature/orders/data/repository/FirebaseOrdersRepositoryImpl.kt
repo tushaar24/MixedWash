@@ -141,7 +141,7 @@ class FirebaseOrdersRepositoryImpl(
 
     override suspend fun setBookingPaid(bookingId: String, isPaid: Boolean): Result<Unit> {
         return updateBooking(bookingId) { booking ->
-            booking.copy(isPaid = isPaid)
+            booking.copy(paymentId = "mock_payment_id")
         }
     }
 

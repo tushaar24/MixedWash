@@ -25,10 +25,12 @@ data class BookingDto(
     val outForDeliverySeconds: Long? = null,
     @SerialName("delivered_seconds")
     val deliveredSeconds: Long? = null,
-    @SerialName("is_paid")
-    val isPaid: Boolean = false,
+    @SerialName("payment_id")
+    val paymentId: String? = null,
     @SerialName("is_cancelled")
     val isCancelled: Boolean = false,
+    @SerialName("active_cancellation_request_placed_seconds")
+    val activeCancellationRequestPlacedSeconds: Long? = null,
     @SerialName("cancellation_reason")
     val cancellationReason: String? = null
 )

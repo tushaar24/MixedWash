@@ -35,10 +35,11 @@ fun Booking.toBookingDto(orderId: String, userId: String, createdAtSeconds: Long
     bookingItems = bookingItems,
     outForDeliverySeconds = outForDeliverySeconds,
     deliveredSeconds = deliveredSeconds,
-    isPaid = isPaid,
+    paymentId = paymentId,
     isCancelled = isCancelled,
     cancellationReason = cancellationReason,
-    createdAtSeconds = createdAtSeconds
+    createdAtSeconds = createdAtSeconds,
+    activeCancellationRequestPlacedSeconds = activeCancellationRequestPlacedSeconds
 )
 
 fun BookingDto.toBooking() = Booking(
@@ -48,7 +49,8 @@ fun BookingDto.toBooking() = Booking(
     bookingItems = bookingItems,
     outForDeliverySeconds = outForDeliverySeconds,
     deliveredSeconds = deliveredSeconds,
-    isPaid = isPaid,
+    paymentId = paymentId,
     isCancelled = isCancelled,
     cancellationReason = cancellationReason,
+    activeCancellationRequestPlacedSeconds = activeCancellationRequestPlacedSeconds
 )

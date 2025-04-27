@@ -145,7 +145,7 @@ class MockOrdersRepositoryImpl(
 
     override suspend fun setBookingPaid(bookingId: String, isPaid: Boolean): Result<Unit> {
         return findOrderWithBookingAndUpdate(bookingId) { order, booking ->
-            val updatedBooking = booking.copy(isPaid = isPaid)
+            val updatedBooking = booking.copy(paymentId = "mock_payment_id")
             updateBookingInOrder(order, updatedBooking)
         }
     }

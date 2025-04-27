@@ -15,5 +15,12 @@ data class UserMetadata(
     @SerialName("photo_url") val photoUrl: String? = null,
     @SerialName("user_serviceable") val userServiceable: Boolean? = null,
     @SerialName("address_list") val addressList: List<Address>,
-    @SerialName("current_address_id") val defaultAddressId: String? = null
+    @SerialName("current_address_id") val defaultAddressId: String? = null,
+    @SerialName("user_type") val userType: UserType = UserType.CUSTOMER
 )
+
+@Serializable
+enum class UserType {
+    @SerialName("customer")
+    CUSTOMER
+}

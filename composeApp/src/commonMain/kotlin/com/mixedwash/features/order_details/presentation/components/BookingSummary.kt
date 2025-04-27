@@ -274,7 +274,7 @@ fun BookingSummary(
                         )
                     }
 
-                    if (!booking.isPaid) {
+                    if (booking.paymentId == null) {
                         Box(
                             modifier = Modifier.clip(RoundedCornerShape(6.dp))
                                 .background(BrandTheme.colors.gray.darker)
