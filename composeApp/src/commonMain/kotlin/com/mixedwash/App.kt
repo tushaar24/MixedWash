@@ -35,8 +35,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.mixedwash.core.data.AuthState
-import com.mixedwash.core.data.UserService
+import com.mixedwash.core.feature.auth.domain.UserService
+import com.mixedwash.core.feature.auth.domain.model.AuthState
 import com.mixedwash.core.presentation.components.BrandSnackbar
 import com.mixedwash.core.presentation.components.ShimmerText
 import com.mixedwash.core.presentation.components.noRippleClickable

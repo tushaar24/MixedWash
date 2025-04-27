@@ -30,9 +30,9 @@ import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
 import coil3.request.crossfade
-import com.mixedwash.core.orders.domain.model.Booking
-import com.mixedwash.core.orders.domain.model.calculateItemPrice
-import com.mixedwash.core.orders.domain.model.calculateTotalPrice
+import com.mixedwash.core.feature.orders.domain.model.Booking
+import com.mixedwash.core.feature.orders.domain.model.calculateItemPrice
+import com.mixedwash.core.feature.orders.domain.model.calculateTotalPrice
 import com.mixedwash.core.presentation.components.OrderProgressRow
 import com.mixedwash.core.presentation.components.noRippleClickable
 import com.mixedwash.core.presentation.util.convertToDate

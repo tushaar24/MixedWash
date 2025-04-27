@@ -1,9 +1,10 @@
 package com.mixedwash
 
-import com.mixedwash.core.crash.di.CrashlyticsModule
 import com.mixedwash.core.data.di.DataModule
 import com.mixedwash.core.di.ConfigModule
 import com.mixedwash.core.di.NetworkModule
+import com.mixedwash.core.feature.auth.di.AuthModule
+import com.mixedwash.core.feature.crash.di.CrashlyticsModule
 import com.mixedwash.features.common.di.CommonModule
 import com.mixedwash.features.history.di.HistoryModule
 import com.mixedwash.features.laundryServices.di.LaundryServiceModule
@@ -16,6 +17,7 @@ import org.koin.dsl.KoinAppDeclaration
 fun initKoin(appDeclaration: KoinAppDeclaration = {}) = startKoin {
     appDeclaration()
     modules(
+        AuthModule,
         CommonModule,
         CrashlyticsModule,
         LaundryServiceModule,

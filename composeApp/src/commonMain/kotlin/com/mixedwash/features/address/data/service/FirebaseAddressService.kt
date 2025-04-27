@@ -1,8 +1,8 @@
 package com.mixedwash.features.address.data.service
 
-import com.mixedwash.core.data.USER_COLLECTION
-import com.mixedwash.core.data.UserNotFoundException
-import com.mixedwash.core.data.UserService
+import com.mixedwash.core.feature.auth.data.USER_COLLECTION
+import com.mixedwash.core.feature.auth.domain.UserService
+import com.mixedwash.core.feature.auth.domain.error.UserException.UserNotFoundException
 import com.mixedwash.features.address.domain.error.AddressNotFoundException
 import com.mixedwash.features.address.domain.error.OperationFailedException
 import com.mixedwash.features.address.domain.model.Address
@@ -26,7 +26,7 @@ class FirebaseAddressService(
         }
     }
 
-    suspend fun addAddress(address: Address): Result<Unit> = runCatching {
+    suspend fun addAddress (address: Address) : Result<Unit> = runCatching {
         addressMutex.withLock {
             val user = userService.currentUser ?: throw UserNotFoundException()
             val uid = user.uid
@@ -48,7 +48,7 @@ class FirebaseAddressService(
         }
     }
 
-    suspend fun upsertAddress(newAddress: Address): Result<Address> = runCatching {
+    suspend fun upsertAddress(newAddress: Address) : Result<Address> = runCatching {
         addressMutex.withLock {
             val user = userService.currentUser ?: throw UserNotFoundException()
             user.userMetadata ?: throw UserNotFoundException("User metadata not found")
@@ -148,6 +148,5 @@ class FirebaseAddressService(
         }
         return Result.success(defaultAddress)
     }
-
 
 }

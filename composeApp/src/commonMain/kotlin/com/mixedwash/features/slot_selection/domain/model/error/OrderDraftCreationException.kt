@@ -1,6 +1,6 @@
 package com.mixedwash.features.slot_selection.domain.model.error
 
-import com.mixedwash.core.crash.data.CrashReporterHolder
+import com.mixedwash.core.feature.crash.data.CrashReporterHolder
 
 sealed class OrderDraftCreationException(message: String, cause: Throwable? = null) :
     Exception(message, cause) {

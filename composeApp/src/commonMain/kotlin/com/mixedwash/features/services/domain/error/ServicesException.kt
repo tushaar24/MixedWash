@@ -1,6 +1,6 @@
 package com.mixedwash.features.services.domain.error
 
-import com.mixedwash.core.crash.data.CrashReporterHolder
+import com.mixedwash.core.feature.crash.data.CrashReporterHolder
 
 sealed class ServicesException : Exception() {
     data class ServiceItemNotFoundException(val id: String) : ServicesException()

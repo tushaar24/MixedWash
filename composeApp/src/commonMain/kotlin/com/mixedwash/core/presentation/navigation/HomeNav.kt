@@ -13,7 +13,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
-import com.mixedwash.core.data.UserService
+import com.mixedwash.core.feature.auth.domain.UserService
 import com.mixedwash.core.presentation.models.SnackbarHandler
 import com.mixedwash.features.home.presentation.HomeScreen
 import com.mixedwash.features.home.presentation.HomeScreenViewModel

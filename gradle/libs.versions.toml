@@ -34,6 +34,7 @@ firebaseGitlive = "1.13.0"
 kotlinx-coroutines = "1.10.0"
 compottie = "2.0.0-rc04"
 firebaseCrashlyticsPlugin = "3.0.3"
+firebaseCommonKtx = "21.0.0"
 
 
 
@@ -104,6 +105,7 @@ compottie = { module = "io.github.alexzhirkevich:compottie", version.ref = "comp
 
 # KMP Notifier
 kmp-notifier = { module = "io.github.mirzemehdi:kmpnotifier", version.ref = "kmpNotifier"}
+firebase-common-ktx = { group = "com.google.firebase", name = "firebase-common-ktx", version.ref = "firebaseCommonKtx" }
 
 
 [plugins]

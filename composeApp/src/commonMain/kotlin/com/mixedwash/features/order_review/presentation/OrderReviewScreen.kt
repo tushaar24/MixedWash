@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.mixedwash.WindowInsetsContainer
-import com.mixedwash.core.orders.domain.model.BookingItemPricing
+import com.mixedwash.core.feature.orders.domain.model.BookingItemPricing
 import com.mixedwash.core.presentation.components.DefaultHeader
 import com.mixedwash.core.presentation.components.ElevatedBox
 import com.mixedwash.core.presentation.components.HeadingAlign

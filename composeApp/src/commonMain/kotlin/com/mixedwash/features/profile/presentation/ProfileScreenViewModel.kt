@@ -2,7 +2,7 @@ package com.mixedwash.features.profile.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mixedwash.core.data.UserService
+import com.mixedwash.core.feature.auth.domain.UserService
 import com.mixedwash.core.presentation.navigation.Route
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow

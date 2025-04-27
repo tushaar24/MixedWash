@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.mixedwash.core.domain.config.AppConfig
-import com.mixedwash.core.orders.domain.repository.OrdersRepository
+import com.mixedwash.core.feature.orders.domain.repository.OrdersRepository
 import com.mixedwash.core.presentation.navigation.Route
 import com.mixedwash.features.services.domain.ServicesDataRepository
 import kotlinx.coroutines.Dispatchers

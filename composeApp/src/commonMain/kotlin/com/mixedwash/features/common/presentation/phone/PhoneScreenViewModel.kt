@@ -5,9 +5,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mixedwash.core.data.UserService
 import com.mixedwash.core.domain.models.Result
 import com.mixedwash.core.domain.validation.PhoneValidationUseCase
+import com.mixedwash.core.feature.auth.domain.UserService
 import com.mixedwash.core.presentation.models.FieldID
 import com.mixedwash.core.presentation.models.FormField
 import com.mixedwash.core.presentation.models.InputState

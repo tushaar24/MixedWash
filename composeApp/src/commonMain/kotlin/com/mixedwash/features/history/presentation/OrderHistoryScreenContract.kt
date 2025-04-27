@@ -1,6 +1,6 @@
 package com.mixedwash.features.history.presentation
 
-import com.mixedwash.core.orders.domain.model.Order
+import com.mixedwash.core.feature.orders.domain.model.Order
 import com.mixedwash.core.presentation.models.SnackbarPayload
 import com.mixedwash.core.presentation.navigation.Route
 import com.mixedwash.features.history.domain.model.InsightMetric

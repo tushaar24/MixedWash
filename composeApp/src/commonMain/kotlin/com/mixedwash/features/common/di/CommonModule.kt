@@ -1,7 +1,7 @@
 package com.mixedwash.features.common.di
 
 import com.mixedwash.TestApiKeyConfig
-import com.mixedwash.core.orders.di.OrdersModule
+import com.mixedwash.core.feature.orders.di.OrdersModule
 import com.mixedwash.core.presentation.navigation.NavigationModule
 import com.mixedwash.features.address.di.AddressModule
 import com.mixedwash.features.common.data.service.LocationService

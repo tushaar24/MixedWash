@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.mixedwash.core.domain.util.capitalize
-import com.mixedwash.core.orders.domain.model.Booking
+import com.mixedwash.core.feature.orders.domain.model.Booking
 import com.mixedwash.core.presentation.util.formatHour
 import com.mixedwash.core.presentation.util.getDayAndDate
 import com.mixedwash.features.address.domain.model.Address

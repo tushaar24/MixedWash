@@ -6,7 +6,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.mixedwash.core.crash.domain.CrashReporter
+import com.mixedwash.core.feature.crash.domain.CrashReporter
 import com.mixedwash.core.presentation.models.SnackBarType
 import com.mixedwash.core.presentation.models.SnackbarPayload
 import com.mixedwash.core.presentation.navigation.NavArgType
