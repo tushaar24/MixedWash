@@ -4,11 +4,12 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.mixedwash.core.feature.crash.domain.CrashReporter
+import com.mixedwash.core.feature.orders.domain.error.onOrderError
 import com.mixedwash.core.feature.orders.domain.repository.OrdersRepository
 import com.mixedwash.core.presentation.models.SnackBarType
 import com.mixedwash.core.presentation.models.SnackbarPayload
 import com.mixedwash.core.presentation.navigation.Route
-import com.mixedwash.core.presentation.util.Logger
 import com.mixedwash.features.local_cart.domain.LocalCartRepository
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,7 +27,8 @@ private const val TAG = "OrderDetailsScreenViewModel"
 class OrderReviewScreenViewModel(
     savedStateHandle: SavedStateHandle,
     private val localCartRepository: LocalCartRepository,
-    private val ordersRepository: OrdersRepository
+    private val ordersRepository: OrdersRepository,
+    private val crashReporter: CrashReporter
 ) : ViewModel() {
 
     val route = savedStateHandle.toRoute<Route.OrderReviewRoute>()
@@ -65,7 +67,6 @@ class OrderReviewScreenViewModel(
                 }
             }.onFailure {
                 showSnackbar(SnackbarPayload("Error Loading Booking", SnackBarType.ERROR))
-                Logger.e(TAG, it.message ?: "Error Loading Booking")
             }
         }
     }.stateIn(
@@ -85,14 +86,19 @@ class OrderReviewScreenViewModel(
                     ordersRepository.placeDraftOrder().onSuccess {
                         localCartRepository.clearCartItems().onFailure { e ->
                             //snackbarEvent("Error clearing cart", type = SnackBarType.ERROR)
-                            Logger.e("SlotSelectionScreenViewModel", "Error clearing cart")
-                            e.printStackTrace()
+                            crashReporter.recordException(e, "Error clearing cart")
                         }
                         sendEvent(OrderReviewScreenUiEvent.NavigateToOrderConfirmation(it.bookings.first().id))
-                    }.onFailure {
-                        showSnackbar(SnackbarPayload("Error Placing Booking", SnackBarType.ERROR))
-                        Logger.e(TAG, it.message ?: "Error Placing Booking")
-                    }
+                    }.onOrderError (
+                        failedToCreateOrder = {
+                            sendEvent(OrderReviewScreenUiEvent.ShowSnackbar(SnackbarPayload("Failed to create order", SnackBarType.ERROR)))
+                            crashReporter.recordException(it, "Failed to create order")
+                        },
+                        orderDraftNotFound = {
+                            sendEvent(OrderReviewScreenUiEvent.ShowSnackbar(SnackbarPayload("Order draft not found", SnackBarType.ERROR)))
+                            crashReporter.recordException(it, "Order draft expected but not found")
+                        }
+                    )
                 }
             }
         }

@@ -2,9 +2,12 @@ package com.mixedwash
 
 import android.app.Application
 import com.mixedwash.core.data.util.AppCoroutineScope
+import com.mixedwash.core.domain.config.AppConfig
 import com.mixedwash.libs.loki.permission.internal.context.LokiService
 import com.mmk.kmpauth.google.GoogleAuthCredentials
 import com.mmk.kmpauth.google.GoogleAuthProvider
+import dev.gitlive.firebase.Firebase
+import dev.gitlive.firebase.firestore.firestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -30,6 +33,8 @@ class MixedWashApplication : Application() {
             )
         )
 
-
+        if(AppConfig.enableFirestoreLogging) {
+            Firebase.firestore.setLoggingEnabled(true)
+        }
     }
 }

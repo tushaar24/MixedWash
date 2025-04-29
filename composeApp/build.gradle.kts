@@ -198,6 +198,7 @@ android {
             isMinifyEnabled = true
             buildConfigField(type= "boolean", name = "BYPASS_LOCATION_CHECK", value = "false" )
             buildConfigField(type= "boolean", name = "USE_STAGING_ORDERS_SERVICE", value = "false" )
+            buildConfigField(type = "boolean", name = "ENABLE_FIRESTORE_LOGGING", value = "false")
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             signingConfig = signingConfigs.getByName("release_dev_signing")
         }
@@ -206,13 +207,15 @@ android {
             isMinifyEnabled = false
             buildConfigField(type= "boolean", name = "BYPASS_LOCATION_CHECK", value = "false" )
             buildConfigField(type= "boolean", name = "USE_STAGING_ORDERS_SERVICE", value = "true" )
+            buildConfigField(type = "boolean", name = "ENABLE_FIRESTORE_LOGGING", value = "true")
             signingConfig = signingConfigs.getByName("release_dev_signing")
         }
         debug {
             applicationIdSuffix = ".debug"
             isMinifyEnabled = false
             buildConfigField(type= "boolean", name = "BYPASS_LOCATION_CHECK", value = "false" )
-            buildConfigField(type= "boolean", name = "USE_STAGING_ORDERS_SERVICE", value = "true" )
+            buildConfigField(type= "boolean", name = "USE_STAGING_ORDERS_SERVICE", value = "false" )
+            buildConfigField(type = "boolean", name = "ENABLE_FIRESTORE_LOGGING", value = "true")
             signingConfig = signingConfigs.getByName("debug_signing")
         }
 
