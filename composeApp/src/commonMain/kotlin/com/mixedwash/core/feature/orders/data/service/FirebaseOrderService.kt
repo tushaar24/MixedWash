@@ -4,6 +4,7 @@ import com.mixedwash.core.domain.error.UnauthorizedRequestException
 import com.mixedwash.core.feature.auth.domain.UserService
 import com.mixedwash.core.feature.auth.domain.model.User
 import com.mixedwash.core.feature.orders.data.model.BookingDto
+import com.mixedwash.core.feature.orders.data.model.OrderDto
 import com.mixedwash.core.feature.orders.data.model.toBooking
 import com.mixedwash.core.feature.orders.data.model.toBookingDto
 import com.mixedwash.core.feature.orders.data.model.toOrder
@@ -60,7 +61,11 @@ class FirebaseOrderService(
 
     override suspend fun placeOrder(order: Order): Result<Unit> {
         return orderMutex.withLock {
-            runCatching<Unit> { db.runTransaction { setOrder(order) } }
+            runCatching<Unit> {
+                db.runTransaction { setOrder(order) }
+            }.onFailure {
+                throw OrderException.FailedToCreateOrder(it)
+            }
         }
     }
 
@@ -77,7 +82,7 @@ class FirebaseOrderService(
                         throw OrderException.OrderNotFound
                     }
 
-                    val orderDocument = orderSnapshot.data<com.mixedwash.core.feature.orders.data.model.OrderDto>()
+                    val orderDocument = orderSnapshot.data<OrderDto>()
                     if (orderDocument.userId != user.uid) throw UnauthorizedRequestException()
                     orderDocument
                 }
@@ -86,6 +91,7 @@ class FirebaseOrderService(
                     val bookingsSnapshot = db.collection(CURRENT_ORDER_COLLECTION)
                         .document(orderId)
                         .collection(CURRENT_BOOKINGS_SUB_COLLECTION)
+                        .where { "user_id" equalTo user.uid }
                         .get()
 
                     bookingsSnapshot.documents.map { doc ->
@@ -111,7 +117,7 @@ class FirebaseOrderService(
                         .orderBy("created_at_seconds", Direction.DESCENDING)
                         .get()
                         .documents.map { doc ->
-                            doc.data<com.mixedwash.core.feature.orders.data.model.OrderDto>()
+                            doc.data<OrderDto>()
                         }
                 }
 
@@ -254,6 +260,8 @@ class FirebaseOrderService(
                     )
                 )
             }
-        }.onFailure { throw OrderException.FailedToCreateOrder }
+        }.onFailure {
+            throw OrderException.FailedToCreateOrder(it)
+        }
     }
 }

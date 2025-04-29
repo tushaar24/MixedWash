@@ -7,4 +7,6 @@ actual object AppConfig {
         get() = TODO("Not yet implemented")
     actual val versionString: String
         get() = TODO("Not yet implemented")
+    actual val enableFirestoreLogging: Boolean
+        get() = TODO("Not yet implemented")
 }
