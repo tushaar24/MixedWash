@@ -47,14 +47,14 @@ interface OrderService {
 class FirebaseOrderService(
     private val userService: UserService,
     override val useStagingCollection: Boolean = false,
-) : com.mixedwash.core.feature.orders.data.service.OrderService {
+) : OrderService {
 
     private val db = Firebase.firestore
     private val orderMutex = Mutex()
     private val CURRENT_ORDER_COLLECTION =
-        if (useStagingCollection) com.mixedwash.core.feature.orders.data.service.STAGING_ORDERS_COLLECTION else com.mixedwash.core.feature.orders.data.service.ORDERS_COLLECTION
+        if (useStagingCollection) STAGING_ORDERS_COLLECTION else ORDERS_COLLECTION
     private val CURRENT_BOOKINGS_SUB_COLLECTION =
-        if (useStagingCollection) com.mixedwash.core.feature.orders.data.service.STAGING_BOOKINGS_SUB_COLLECTION else com.mixedwash.core.feature.orders.data.service.BOOKINGS_SUB_COLLECTION
+        if (useStagingCollection) STAGING_BOOKINGS_SUB_COLLECTION else BOOKINGS_SUB_COLLECTION
     private val user: User
         get() = userService.currentUser ?: throw IllegalStateException("No current user")
 
@@ -211,7 +211,8 @@ class FirebaseOrderService(
                     updatedBooking.toBookingDto(
                         orderId = bookingDto.orderId,
                         userId = user.uid,
-                        createdAtSeconds = bookingDto.createdAtSeconds
+                        createdAtSeconds = bookingDto.createdAtSeconds,
+                        deliveryAddress = bookingDto.deliveryAddress
                     )
                 )
             }
@@ -248,7 +249,8 @@ class FirebaseOrderService(
                     data = booking.toBookingDto(
                         orderId = order.id,
                         userId = user.uid,
-                        createdAtSeconds = order.createdAtSeconds
+                        createdAtSeconds = order.createdAtSeconds,
+                        deliveryAddress = order.address
                     )
                 )
             }

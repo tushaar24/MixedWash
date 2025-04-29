@@ -2,6 +2,7 @@ package com.mixedwash.core.feature.orders.data.model
 
 import com.mixedwash.core.feature.orders.domain.model.BookingItem
 import com.mixedwash.core.feature.orders.domain.model.BookingTimeSlot
+import com.mixedwash.features.address.domain.model.Address
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -15,6 +16,8 @@ data class BookingDto(
     val orderId: String,
     @SerialName("created_at_seconds")
     val createdAtSeconds: Long,
+    @SerialName("delivery_address")
+    val deliveryAddress: Address,
     @SerialName("pickup_slot")
     val pickupSlotSelected: BookingTimeSlot,
     @SerialName("drop_slot")
@@ -32,5 +35,5 @@ data class BookingDto(
     @SerialName("active_cancellation_request_placed_seconds")
     val activeCancellationRequestPlacedSeconds: Long? = null,
     @SerialName("cancellation_reason")
-    val cancellationReason: String? = null
+    val cancellationReason: String? = null,
 )
