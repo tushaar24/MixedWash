@@ -20,15 +20,12 @@ room {
     schemaDirectory("$projectDir/schemas")
 }
 
-
 kotlin {
     androidTarget {
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
+            jvmTarget.set(JvmTarget.JVM_17)
         }
     }
-
-
 
     listOf(
         iosX64(),
@@ -167,8 +164,8 @@ android {
         buildConfig = true
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
 
@@ -214,7 +211,7 @@ android {
             applicationIdSuffix = ".debug"
             isMinifyEnabled = false
             buildConfigField(type= "boolean", name = "BYPASS_LOCATION_CHECK", value = "false" )
-            buildConfigField(type= "boolean", name = "USE_STAGING_ORDERS_SERVICE", value = "false" )
+            buildConfigField(type= "boolean", name = "USE_STAGING_ORDERS_SERVICE", value = "true" )
             buildConfigField(type = "boolean", name = "ENABLE_FIRESTORE_LOGGING", value = "true")
             signingConfig = signingConfigs.getByName("debug_signing")
         }

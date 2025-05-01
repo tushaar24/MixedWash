@@ -30,11 +30,12 @@ datastore = "1.1.2"
 playServicesAuth = "21.3.0"
 firebaseAuthCommon = "9.8.0"
 firebaseAuthKtx = "23.2.0"
-firebaseGitlive = "1.13.0"
+firebaseGitlive = "2.0.0"
 kotlinx-coroutines = "1.10.0"
 compottie = "2.0.0-rc04"
 firebaseCrashlyticsPlugin = "3.0.3"
 firebaseCommonKtx = "21.0.0"
+playServicesMeasurementApi = "22.4.0"
 
 
 
@@ -106,6 +107,7 @@ compottie = { module = "io.github.alexzhirkevich:compottie", version.ref = "comp
 # KMP Notifier
 kmp-notifier = { module = "io.github.mirzemehdi:kmpnotifier", version.ref = "kmpNotifier"}
 firebase-common-ktx = { group = "com.google.firebase", name = "firebase-common-ktx", version.ref = "firebaseCommonKtx" }
+play-services-measurement-api = { group = "com.google.android.gms", name = "play-services-measurement-api", version.ref = "playServicesMeasurementApi" }
 
 
 [plugins]
