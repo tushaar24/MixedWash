@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
@@ -102,7 +101,7 @@ fun ServiceDetail(
         ) {
 //            Spacer(Modifier.height(0.dp))
             Column(
-                modifier = Modifier.width(200.dp),
+                modifier = Modifier.fillMaxWidth(0.75f),
                 verticalArrangement = Arrangement.spacedBy(18.dp)
             ) {
 
