@@ -23,6 +23,7 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,11 +35,14 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.mixedwash.WindowInsetsContainer
 import com.mixedwash.core.presentation.components.DefaultHeader
+import com.mixedwash.core.presentation.models.SnackbarHandler
+import com.mixedwash.core.presentation.util.ObserveAsEvents
 import com.mixedwash.core.presentation.util.convertToDateAndTime
 import com.mixedwash.features.order_details.presentation.components.BookingSummary
 import com.mixedwash.features.order_details.presentation.components.DetailsScreenHeaderContent
 import com.mixedwash.ui.theme.components.HeaderIconButton
 import com.mixedwash.ui.theme.headerContentSpacing
+import kotlinx.coroutines.flow.Flow
 import mixedwash.composeapp.generated.resources.Res
 import mixedwash.composeapp.generated.resources.ic_location_pin
 import mixedwash.composeapp.generated.resources.ic_pickup_scooter
@@ -50,10 +54,22 @@ import org.jetbrains.compose.resources.vectorResource
 @Composable
 fun OrderDetailsScreen(
     state: OrderDetailsScreenState,
+    uiEvents: Flow<OrderDetailsScreenUiEvent>,
     onEvent: (OrderDetailsScreenEvent) -> Unit,
     navController: NavController,
+    snackbarHandler: SnackbarHandler,
     modifier: Modifier = Modifier
 ) {
+    val scope = rememberCoroutineScope()
+
+    ObserveAsEvents(uiEvents) { event ->
+        when (event) {
+            is OrderDetailsScreenUiEvent.ShowSnackbar -> {
+                snackbarHandler(event.payload)
+            }
+        }
+    }
+
     WindowInsetsContainer {
         val pullToRefreshState = rememberPullToRefreshState()
         PullToRefreshBox(
@@ -80,10 +96,11 @@ fun OrderDetailsScreen(
                         )
                     },
                 )
-                Spacer(Modifier.height(headerContentSpacing))
+
                 if (state.stagingEnabled) {
                     Box(
                         modifier = Modifier.fillMaxWidth()
+                            .padding(bottom = 8.dp)
                             .background(Color(0xFFFFE8BF))
                     ) {
                         Text(
@@ -94,6 +111,8 @@ fun OrderDetailsScreen(
                             color = BrandTheme.colors.gray.dark
                         )
                     }
+                } else {
+                    Spacer(Modifier.height(headerContentSpacing))
                 }
 
 
@@ -116,14 +135,13 @@ fun OrderDetailsScreen(
                                         modifier = Modifier
                                             .clip(RoundedCornerShape(12.dp))
                                             .size(44.dp)
-                                            .background(BrandTheme.colors.gray.darker)
-                                            .padding(5.5.dp),
+                                            .background(BrandTheme.colors.gray.darker),
                                         contentAlignment = Alignment.Center
                                     ) {
                                         Icon(
                                             imageVector = vectorResource(if (order.bookings.all { it.deliveredSeconds != null }) Res.drawable.ic_progress_completed else Res.drawable.ic_processing),
                                             contentDescription = null,
-                                            tint = BrandTheme.colors.gray.c200
+                                            tint = BrandTheme.colors.gray.c200,
                                         )
                                     }
 
@@ -165,10 +183,13 @@ fun OrderDetailsScreen(
 
                         items(order.bookings) { booking ->
                             BookingSummary(
+                                onEvent = onEvent,
                                 booking = booking,
                                 orderId = order.id,
+                                orderPickedUp = order.pickedUpSeconds != null,
                                 serviceImageUrls = state.serviceImageUrls,
                                 stagingOperations = state.stagingOperations,
+                                scope = scope,
                             )
                         }
 

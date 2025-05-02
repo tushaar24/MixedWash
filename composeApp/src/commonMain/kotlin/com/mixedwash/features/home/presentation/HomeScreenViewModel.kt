@@ -7,8 +7,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mixedwash.core.domain.models.Result
-import com.mixedwash.core.orders.domain.repository.OrdersRepository
+import com.mixedwash.core.feature.orders.domain.repository.OrdersRepository
 import com.mixedwash.core.presentation.components.ButtonData
 import com.mixedwash.core.presentation.components.DialogPopupData
 import com.mixedwash.core.presentation.models.SnackBarType
@@ -273,31 +272,25 @@ class HomeScreenViewModel(
     private fun reload() {
         viewModelScope.launch {
             _state.value = HomeScreenState(isLoading = true)
-            val data = homeScreenDataRepository.fetchData()
-            Logger.d("TAG", data.toString())
-            when (data) {
-                is Result.Success -> {
-                    _state.value = data.data.toPresentation().toUiState().copy(
-                        cartAddress = _state.value.cartAddress,
-                        activeOrders = ordersRepository.fetchActiveBookings().getOrNull()
-                            ?.map { pair ->     // pair.first -> orderId, pair.second -> booking
-                                OrderStatusWidgetData(
-                                    orderId = pair.first,
-                                    bookingId = pair.second.id,
-                                    title = pair.second.bookingItems.first().serviceName,
-                                    subtitle = "",
-                                    description = ""
-                                )
-                            } ?: emptyList()
-                    )
-                }
-
-                is Result.Error -> {
-                    snackbarEvent(
-                        message = data.error.toString(),
-                        type = SnackBarType.ERROR
-                    )
-                }
+            homeScreenDataRepository.fetchData().onSuccess { data ->
+                _state.value = data.toPresentation().toUiState().copy(
+                    cartAddress = _state.value.cartAddress,
+                    activeOrders = ordersRepository.fetchActiveBookings().getOrNull()
+                        ?.map { pair ->     // pair.first -> orderId, pair.second -> booking
+                            OrderStatusWidgetData(
+                                orderId = pair.first,
+                                bookingId = pair.second.id,
+                                title = pair.second.bookingItems.first().serviceName,
+                                subtitle = "",
+                                description = ""
+                            )
+                        } ?: emptyList()
+                )
+            }.onFailure { error ->
+                snackbarEvent(
+                    message = error.toString(),
+                    type = SnackBarType.ERROR
+                )
             }
         }
 

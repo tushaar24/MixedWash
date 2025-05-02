@@ -22,20 +22,29 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.navigation.NavController
 import com.mixedwash.WindowInsetsContainer
 import com.mixedwash.core.presentation.components.DefaultHeader
@@ -47,7 +56,7 @@ import com.mixedwash.features.history.presentation.components.StatisticCard
 import com.mixedwash.ui.theme.components.HeaderIconButton
 import kotlinx.coroutines.flow.Flow
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun OrderHistoryScreen(
     state: OrderHistoryScreenState,
@@ -69,146 +78,175 @@ fun OrderHistoryScreen(
         }
     }
 
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_START) {
+                onEvent(OrderHistoryScreenEvent.OnRefresh)
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
     WindowInsetsContainer {
-        Column {
-            DefaultHeader(
-                title = "Order History",
-                navigationButton = {
-                    HeaderIconButton(
-                        imageVector = Icons.AutoMirrored.Default.KeyboardArrowLeft,
-                        onClick = { navController.navigateUp() }
-                    )
-                }
-            )
-
-            LazyColumn(
-                modifier = modifier.fillMaxSize().padding(vertical = 16.dp),
-            ) {
-
-                if (state.stagingEnabled) {
-                    item {
-                        Box(
-                            modifier = Modifier.fillMaxWidth()
-                                .padding(bottom = 8.dp)
-                                .background(Color(0xFFFFE8BF))
-                        ) {
-                            Text(
-                                text = "staging mode enabled",
-                                fontSize = 12.sp,
-                                modifier = Modifier.fillMaxWidth(),
-                                textAlign = TextAlign.Center,
-                                color = BrandTheme.colors.gray.dark
-                            )
-                        }
+        val pullToRefreshState = rememberPullToRefreshState()
+        PullToRefreshBox(
+            indicator = {
+                Indicator(
+                    modifier = Modifier.align(Alignment.TopCenter),
+                    isRefreshing = state.isRefreshing,
+                    containerColor = BrandTheme.colors.gray.darker,
+                    color = BrandTheme.colors.gray.light,
+                    state = pullToRefreshState,
+                )
+            },
+            state = pullToRefreshState,
+            isRefreshing = state.isRefreshing,
+            onRefresh = { onEvent(OrderHistoryScreenEvent.OnRefresh) }
+        ) {
+            Column {
+                DefaultHeader(
+                    title = "Order History",
+                    navigationButton = {
+                        HeaderIconButton(
+                            imageVector = Icons.AutoMirrored.Default.KeyboardArrowLeft,
+                            onClick = { navController.navigateUp() }
+                        )
                     }
-                }
+                )
 
-                state.insights?.let { insights ->
-                    item {
-                        LazyRow(
-                            contentPadding = PaddingValues(horizontal = 16.dp),
-                            horizontalArrangement = Arrangement.spacedBy(16.dp)
-                        ) {
-                            items(insights) {
-                                StatisticCard(
-                                    value = it.value,
-                                    metric = it.metric,
-                                    unit = it.unit,
-                                    icon = it.icon,
+                LazyColumn(
+                    modifier = modifier.fillMaxSize().padding(vertical = 16.dp),
+                ) {
+
+                    if (state.stagingEnabled) {
+                        item {
+                            Box(
+                                modifier = Modifier.fillMaxWidth()
+                                    .padding(bottom = 8.dp)
+                                    .background(Color(0xFFFFE8BF))
+                            ) {
+                                Text(
+                                    text = "staging mode enabled",
+                                    fontSize = 12.sp,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    textAlign = TextAlign.Center,
+                                    color = BrandTheme.colors.gray.dark
                                 )
-
                             }
                         }
                     }
-                }
 
-                item {
-                    Spacer(Modifier.height(48.dp))
-                }
+                    state.insights?.let { insights ->
+                        item {
+                            LazyRow(
+                                contentPadding = PaddingValues(horizontal = 16.dp),
+                                horizontalArrangement = Arrangement.spacedBy(16.dp)
+                            ) {
+                                items(insights) {
+                                    StatisticCard(
+                                        value = it.value,
+                                        metric = it.metric,
+                                        unit = it.unit,
+                                        icon = it.icon,
+                                    )
 
-                if (state.stagingEnabled) {
-                    item {
-                        Box(
-                            modifier = Modifier.fillMaxWidth()
-                                .padding(16.dp)
-                                .noRippleClickable { onEvent(OrderHistoryScreenEvent.OnClearAllOrders) }
-                                .background(Color(0xFFFFE8BF))
-                                .padding(vertical = 8.dp)
-                        ) {
-                            Text(
-                                text = "Clear All Orders",
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                modifier = Modifier.fillMaxWidth(),
-                                textAlign = TextAlign.Center,
-                            )
+                                }
+                            }
                         }
                     }
 
                     item {
-                        Spacer(Modifier.height(24.dp))
+                        Spacer(Modifier.height(48.dp))
                     }
-                }
 
-                if (state.orders.isEmpty()) {
-                    item {
-                        Text(
-                            text = "Nothing to show!",
-                            fontSize = 12.sp,
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Center
-                        )
+                    if (state.stagingEnabled) {
+                        item {
+                            Box(
+                                modifier = Modifier.fillMaxWidth()
+                                    .padding(16.dp)
+                                    .noRippleClickable { onEvent(OrderHistoryScreenEvent.OnClearAllOrders) }
+                                    .background(Color(0xFFFFE8BF))
+                                    .padding(vertical = 8.dp)
+                            ) {
+                                Text(
+                                    text = "Clear All Orders",
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    textAlign = TextAlign.Center,
+                                )
+                            }
+                        }
+
+                        item {
+                            Spacer(Modifier.height(24.dp))
+                        }
                     }
-                } else {
-                    itemsIndexed(state.orders) { index, orderPresentation ->
-                        Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-                            Box {
-                                var showDropdown by remember { mutableStateOf(false) }
-                                val tapPosition by remember { mutableStateOf(Offset.Zero) }
 
-                                OrderSummaryCard(
-                                    order = orderPresentation.order,
-                                    delivered = orderPresentation.delivered,
-                                    serviceImageUrls = orderPresentation.serviceImageUrls,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .combinedClickable(
+                    if (state.orders.isEmpty()) {
+                        item {
+                            Text(
+                                text = "Nothing to show!",
+                                fontSize = 12.sp,
+                                modifier = Modifier.fillMaxWidth(),
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    } else {
+                        itemsIndexed(state.orders) { index, orderPresentation ->
+                            Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+                                Box {
+                                    var showDropdown by remember { mutableStateOf(false) }
+                                    val tapPosition by remember { mutableStateOf(Offset.Zero) }
+
+                                    OrderSummaryCard(
+                                        order = orderPresentation.order,
+                                        delivered = orderPresentation.delivered,
+                                        serviceImageUrls = orderPresentation.serviceImageUrls,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .combinedClickable(
+                                                onClick = {
+                                                    onEvent(
+                                                        OrderHistoryScreenEvent.OnOrderDetailsScreen(
+                                                            orderPresentation.order.id
+                                                        )
+                                                    )
+                                                },
+                                                onLongClick = { showDropdown = true },
+                                                interactionSource = remember { MutableInteractionSource() },
+                                                indication = null,
+                                            )
+                                    )
+
+                                    DropdownMenu(
+                                        expanded = showDropdown,
+                                        onDismissRequest = { showDropdown = false },
+                                        offset = DpOffset(
+                                            x = tapPosition.x.dp,
+                                            y = tapPosition.y.dp
+                                        )
+                                    ) {
+                                        DropdownMenuItem(
+                                            text = { Text("Delete Order") },
                                             onClick = {
                                                 onEvent(
-                                                    OrderHistoryScreenEvent.OnOrderDetailsScreen(
+                                                    OrderHistoryScreenEvent.OnDeleteOrder(
                                                         orderPresentation.order.id
                                                     )
                                                 )
-                                            },
-                                            onLongClick = { showDropdown = true },
-                                            interactionSource = remember { MutableInteractionSource() },
-                                            indication = null,
+                                                showDropdown = false
+                                            }
                                         )
-                                )
-
-                                DropdownMenu(
-                                    expanded = showDropdown,
-                                    onDismissRequest = { showDropdown = false },
-                                    offset = DpOffset(
-                                        x = tapPosition.x.dp,
-                                        y = tapPosition.y.dp
-                                    )
-                                ) {
-                                    DropdownMenuItem(
-                                        text = { Text("Delete Order") },
-                                        onClick = {
-                                            onEvent(
-                                                OrderHistoryScreenEvent.OnDeleteOrder(
-                                                    orderPresentation.order.id
-                                                )
-                                            )
-                                            showDropdown = false
-                                        }
-                                    )
+                                    }
                                 }
-                            }
 
-                            Spacer(Modifier.height(24.dp))
+                                Spacer(Modifier.height(24.dp))
+                            }
                         }
                     }
                 }

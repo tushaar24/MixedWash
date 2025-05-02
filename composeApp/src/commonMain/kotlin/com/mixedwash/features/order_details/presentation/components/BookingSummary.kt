@@ -3,6 +3,7 @@ package com.mixedwash.features.order_details.presentation.components
 import BrandTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,7 +19,6 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,9 +38,11 @@ import com.mixedwash.core.presentation.components.noRippleClickable
 import com.mixedwash.core.presentation.util.convertToDate
 import com.mixedwash.core.presentation.util.formattedHourTime
 import com.mixedwash.features.home.presentation.components.OrderProgressStage
-import com.mixedwash.features.order_details.presentation.StagingOperation
+import com.mixedwash.features.order_details.presentation.OrderDetailsScreenEvent
+import com.mixedwash.features.order_details.presentation.StagingOperationType
 import com.mixedwash.ui.theme.GreenDark
 import com.mixedwash.ui.theme.dividerBlack
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import mixedwash.composeapp.generated.resources.Res
 import mixedwash.composeapp.generated.resources.ic_drop
@@ -53,19 +55,22 @@ import org.jetbrains.compose.resources.vectorResource
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BookingSummary(
+    scope: CoroutineScope,
+    onEvent: (OrderDetailsScreenEvent) -> Unit,
     booking: Booking,
     orderId: String,
+    orderPickedUp: Boolean,
     serviceImageUrls: Map<String, String>,
-    stagingOperations: List<StagingOperation>,
+    stagingOperations: List<StagingOperationType>,
     modifier: Modifier = Modifier
 ) {
+
     val stagingOperationSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    val scope = rememberCoroutineScope()
-
-
     if (stagingOperationSheetState.isVisible) {
         ModalBottomSheet(
-            onDismissRequest = {},
+            onDismissRequest = {
+                scope.launch { stagingOperationSheetState.hide() }
+            },
             dragHandle = {},
             containerColor = BrandTheme.colors.gray.c100,
             shape = RoundedCornerShape(12.dp)
@@ -89,18 +94,28 @@ fun BookingSummary(
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    stagingOperations.forEach { op ->
+                    stagingOperations.forEach { type ->
                         Column(
-                            modifier = Modifier.fillMaxWidth().noRippleClickable {
+                            modifier = Modifier.fillMaxWidth().clickable {
+                                onEvent(
+                                    when (type) {
+                                        StagingOperationType.CANCEL -> OrderDetailsScreenEvent.OnCancelOrder(orderId)
+                                        StagingOperationType.DELETE -> OrderDetailsScreenEvent.OnDeleteOrder(orderId)
+                                        StagingOperationType.SET_OUT_FOR_PICKUP -> OrderDetailsScreenEvent.OnSetOutForPickup(orderId)
+                                        StagingOperationType.SET_PICKED_UP -> OrderDetailsScreenEvent.OnSetPickedUp(orderId)
+                                        StagingOperationType.SET_OUT_FOR_DELIVERY -> OrderDetailsScreenEvent.OnSetOutForDelivery(booking.id)
+                                        StagingOperationType.SET_DELIVERED -> OrderDetailsScreenEvent.OnSetDelivered(booking.id)
+                                        StagingOperationType.SET_PAID -> OrderDetailsScreenEvent.OnSetPaid(booking.id)
+                                    }
+                                )
                                 scope.launch {
-                                    op.callback(booking.id, orderId)
                                     stagingOperationSheetState.hide()
                                 }
                             },
                             verticalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
                             Text(
-                                text = op.operationName,
+                                text = type.title,
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Medium,
                             )
@@ -153,9 +168,10 @@ fun BookingSummary(
                     Icon(
                         imageVector = vectorResource(Res.drawable.ic_pencil),
                         contentDescription = null,
+                        tint = BrandTheme.colors.gray.c500,
                         modifier = Modifier.size(20.dp)
                             .clip(RoundedCornerShape(4.dp))
-                            .background(BrandTheme.colors.gray.c300)
+                            .background(BrandTheme.colors.gray.c200)
                             .padding(4.17.dp)
                             .noRippleClickable {
                                 scope.launch {
@@ -323,7 +339,7 @@ fun BookingSummary(
                     }
                 }
             } else {
-                OrderProgressRow(stage = OrderProgressStage.WASH)
+                OrderProgressRow(stage = if (orderPickedUp) OrderProgressStage.WASH else OrderProgressStage.PICKUP)
             }
         }
     }

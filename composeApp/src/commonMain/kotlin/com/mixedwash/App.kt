@@ -189,10 +189,13 @@ fun App() {
                             composable<Route.OrderDetailsRoute> {
                                 val viewModel = koinViewModel<OrderDetailsScreenViewModel>()
                                 val state by viewModel.state.collectAsStateWithLifecycle()
+                                val uiEvent = viewModel.uiEventsFlow
                                 OrderDetailsScreen(
                                     state = state,
                                     onEvent = viewModel::onEvent,
-                                    navController = navController
+                                    navController = navController,
+                                    uiEvents = uiEvent,
+                                    snackbarHandler = snackbarHandler,
                                 )
                             }
                         }

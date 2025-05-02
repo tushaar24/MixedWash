@@ -68,6 +68,15 @@ class OrderHistoryScreenViewModel(
                     loadScreenData()
                 }
             }
+
+            OrderHistoryScreenEvent.OnRefresh -> {
+                viewModelScope.launch {
+                    _state.update { it.copy(isRefreshing = true) }
+                    val job = loadScreenData()
+                    job.join()
+                    _state.update { it.copy(isRefreshing = false) }
+                }
+            }
         }
     }
 
@@ -79,7 +88,7 @@ class OrderHistoryScreenViewModel(
                 },
                 other = { error ->
                     snackbarEvent("Failed to load orders: ${error.message}", SnackBarType.ERROR)
-                    // throw error
+                    throw error
                 }
             )
             .onSuccess { orders ->

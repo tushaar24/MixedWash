@@ -31,14 +31,15 @@ fun DetailsScreenHeaderContent(
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Box(
-            modifier = Modifier.size(48.dp)
-                .padding(8.dp),
+            modifier = Modifier.size(44.dp)
+                .padding(12.83.dp),
             contentAlignment = Alignment.Center
         ) {
             Icon(
                 imageVector = vectorResource(icon),
                 contentDescription = null,
-                tint = BrandTheme.colors.gray.dark
+                tint = BrandTheme.colors.gray.dark,
+                modifier = Modifier.size(18.33.dp)
             )
         }
 
