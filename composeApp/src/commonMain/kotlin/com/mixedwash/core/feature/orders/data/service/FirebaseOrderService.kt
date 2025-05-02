@@ -62,7 +62,7 @@ class FirebaseOrderService(
     override suspend fun placeOrder(order: Order): Result<Unit> {
         return orderMutex.withLock {
             runCatching<Unit> {
-                db.runTransaction { setOrder(order) }
+                db.runTransaction { setOrder(order) }.getOrThrow()
             }.onFailure {
                 throw OrderException.FailedToCreateOrder(it)
             }
@@ -153,7 +153,7 @@ class FirebaseOrderService(
                 val updatedOrder = update(order)
 
                 // clear existing bookings for order
-                db.runTransaction {
+                return@runCatching db.runTransaction {
                     db.collectionGroup(CURRENT_BOOKINGS_SUB_COLLECTION)
                         .where { "order_id" equalTo orderId }
                         .get()
@@ -161,7 +161,7 @@ class FirebaseOrderService(
                         .forEach { delete(it.reference) }
 
                     setOrder(updatedOrder)
-                }
+                }.getOrThrow()
             }
         }
     }
@@ -227,7 +227,7 @@ class FirebaseOrderService(
 
 
     override suspend fun fetchActiveOrders(): Result<List<Pair<String, Booking>>> {
-        val orders = getAllOrdersMostRecentFirst().getOrNull() ?: return Result.failure(Exception("Failed to fetch orders"))
+        val orders = getAllOrdersMostRecentFirst().getOrThrow()
         return Result.success(
             orders.flatMap { order ->
                 order.bookings.filter { booking ->

@@ -37,20 +37,15 @@ class FirebaseOrdersRepositoryImpl(
     override suspend fun getOrderDraft(): Result<Order> = orderDraftService.getOrderDraft()
 
     override suspend fun clearOrderDraft(): Result<Unit> =
-        orderDraftService.clearOrderDraft().map { }
+        runCatching { orderDraftService.clearOrderDraft().getOrThrow() }
 
-    override suspend fun getAllOrdersMostRecentFirst(): Result<List<Order>> {
-        return runCatching {
-            orderService.getAllOrdersMostRecentFirst().getOrThrow()
-        }
-    }
+    override suspend fun getAllOrdersMostRecentFirst(): Result<List<Order>> =
+        runCatching { orderService.getAllOrdersMostRecentFirst().getOrThrow() }
 
-    override suspend fun getOrderById(id: String): Result<Order> {
-        return orderService.getOrderById(id)
-    }
+    override suspend fun getOrderById(id: String): Result<Order> = orderService.getOrderById(id)
 
-    override suspend fun getOrderByBookingId(bookingId: String): Result<Order> {
-        return runCatching {
+
+    override suspend fun getOrderByBookingId(bookingId: String): Result<Order> = runCatching {
             val orders = orderService.getAllOrdersMostRecentFirst().getOrThrow()
             val order =
                 orders.firstOrNull { it.bookings.any { booking -> booking.id == bookingId } }
@@ -64,10 +59,9 @@ class FirebaseOrdersRepositoryImpl(
 
             order
         }
-    }
 
-    override suspend fun placeDraftOrder(): Result<Order> {
-        return runCatching {
+
+    override suspend fun placeDraftOrder(): Result<Order> = runCatching {
             val draftOrder =
                 orderDraftService.getCurrentDraft() ?: throw OrderException.OrderNotFound
 
@@ -76,10 +70,12 @@ class FirebaseOrdersRepositoryImpl(
                 .getOrThrow()
 
             // Clear the draft after successful placement
-            orderDraftService.clearOrderDraft()
+            orderDraftService.clearOrderDraft().onFailure {
+                throw Exception("Failed to clear draft order after placement")
+            }
             draftOrder
         }
-    }
+
 
     /**
      * Helper function that executes the given operation only when useStagingCollection is true.
@@ -88,8 +84,7 @@ class FirebaseOrdersRepositoryImpl(
      * @param block The operation to execute when useStagingCollection is true
      * @return Result of the operation or IllegalStagingOperationException if useStagingCollection is false
      */
-    private suspend fun <T> ifStaging(block: suspend () -> Result<T>): Result<T> {
-        return mutex.withLock {
+    private suspend fun <T> ifStaging(block: suspend () -> Result<T>): Result<T> = mutex.withLock {
             if (!isStagingEnabled) {
                 return@withLock Result.failure(OrderException.IllegalStagingOperationException)
             }
@@ -103,47 +98,43 @@ class FirebaseOrdersRepositoryImpl(
                 Result.failure(e)
             }
         }
+
+
+    override suspend fun deleteOrder(orderId: String): Result<Unit> = ifStaging {
+        orderService.deleteOrder(orderId)
     }
 
-    override suspend fun deleteOrder(orderId: String): Result<Unit> {
-        return ifStaging {
-            orderService.deleteOrder(orderId)
-        }
-    }
-
-    override suspend fun setOrderOutForPickup(orderId: String): Result<Unit> {
-        return ifStaging {
+    override suspend fun setOrderOutForPickup(orderId: String): Result<Unit> = ifStaging {
             orderService.updateOrder(orderId) { order ->
                 order.copy(outForPickupSeconds = Clock.System.now().epochSeconds)
-            }.map { }
+            }
         }
-    }
 
-    override suspend fun setOrderPickedUp(orderId: String): Result<Unit> {
-        return ifStaging {
+
+    override suspend fun setOrderPickedUp(orderId: String): Result<Unit> = ifStaging {
             orderService.updateOrder(orderId) { order ->
                 order.copy(pickedUpSeconds = Clock.System.now().epochSeconds)
-            }.map { }
+            }
         }
-    }
 
-    override suspend fun setBookingOutForDelivery(bookingId: String): Result<Unit> {
-        return updateBooking(bookingId) { booking ->
+
+    override suspend fun setBookingOutForDelivery(bookingId: String): Result<Unit> =
+        updateBooking(bookingId) { booking ->
             booking.copy(outForDeliverySeconds = Clock.System.now().epochSeconds)
         }
-    }
 
-    override suspend fun setBookingDelivered(bookingId: String): Result<Unit> {
-        return updateBooking(bookingId) { booking ->
+
+    override suspend fun setBookingDelivered(bookingId: String): Result<Unit> =
+        updateBooking(bookingId) { booking ->
             booking.copy(deliveredSeconds = Clock.System.now().epochSeconds)
         }
-    }
 
-    override suspend fun setBookingPaid(bookingId: String, isPaid: Boolean): Result<Unit> {
-        return updateBooking(bookingId) { booking ->
-            booking.copy(paymentId = "mock_payment_id")
+
+    override suspend fun setBookingPaid(bookingId: String, isPaid: Boolean): Result<Unit> =
+        updateBooking(bookingId) { booking ->
+            booking.copy(paymentId = if(isPaid) "mockPaymentId" else null)
         }
-    }
+
 
     /**
      * Helper function to update a specific booking within an order and return Unit.
@@ -155,19 +146,17 @@ class FirebaseOrdersRepositoryImpl(
     private suspend fun updateBooking(
         bookingId: String,
         update: (booking: Booking) -> Booking
-    ): Result<Unit> {
-        return ifStaging {
+    ): Result<Unit> = ifStaging {
             orderService.updateBooking(bookingId, update)
         }
+
+
+    override suspend fun clearAllOrders(): Result<Unit> = ifStaging {
+        orderService.clearAllOrders()
     }
 
-    override suspend fun clearAllOrders(): Result<Unit> {
-        return ifStaging {
-            orderService.clearAllOrders()
-        }
-    }
 
-    override suspend fun fetchActiveBookings(): Result<List<Pair<String, Booking>>> {
-        return orderService.fetchActiveOrders()
-    }
+    override suspend fun fetchActiveBookings(): Result<List<Pair<String, Booking>>> =
+        orderService.fetchActiveOrders()
+
 }
