@@ -1,0 +1,26 @@
+[
+  {
+    "title": "Free Pickup & Delivery",
+    "description": "We offer free pickup and delivery, so you can relax while we take care of everything.",
+    "image_url": "https://assets-aac.pages.dev/assets/delivery_scooter.png",
+    "background_color_hex": "#FEE6CD"
+  },
+  {
+    "title": "Hassle Free Process",
+    "description": "Enjoy easy pickup with no need to count your clothes. Convenience at its best, with no extra charges.",
+    "image_url": "https://assets-aac.pages.dev/assets/basket_woman.png",
+    "background_color_hex": "#F1F0CC"
+  },
+  {
+    "title": "Doorstep Weighing",
+    "description": "Your laundry is weighed at your doorstep, ensuring complete transparency. We confirm the price on the spot.",
+    "image_url": "https://assets-aac.pages.dev/assets/weighing_scale.png",
+    "background_color_hex": "#CFE2A8"
+  },
+  {
+    "title": "Delivery in 24 hrs",
+    "description": "We value your time. Fresh, clean clothes delivered to your doorstep within 24 hours.",
+    "image_url": "https://assets-aac.pages.dev/assets/man_relaxing.png",
+    "background_color_hex": "#C9C9C9"
+  }
+]

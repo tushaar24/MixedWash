@@ -1,22 +1,32 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.io.ByteArrayOutputStream
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.googleServices)
+    alias(libs.plugins.buildKonfig)
+    alias(libs.plugins.roomGradlePlugin)
+    id("com.google.devtools.ksp")
+    alias(libs.plugins.firebase.crashlytics)
+}
+
+room {
+    schemaDirectory("$projectDir/schemas")
 }
 
 kotlin {
     androidTarget {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
+            jvmTarget.set(JvmTarget.JVM_17)
         }
     }
-    
+
     listOf(
         iosX64(),
         iosArm64(),
@@ -27,23 +37,106 @@ kotlin {
             isStatic = true
         }
     }
-    
+
     sourceSets {
-        
+
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.kotlinx.coroutines.android)
+
+            // koin
+            implementation(libs.koin.android)
+//            implementation(libs.koin.androidx.compose)
+
+            // ktor
+            implementation(libs.ktor.client.okhttp)
+
+            // firebase (notifications)
+            implementation(project.dependencies.platform(libs.android.firebase.bom))
+            implementation(libs.firebase.analytics)
+
+            // firebase auth
+            // implementation(libs.firebase.auth)
+            // implementation(libs.play.services.auth)
+
+            // location
+            api(libs.play.services.location)
+            api(libs.play.services.coroutines)
+
+            // startup
+            implementation(libs.androidx.startup)
         }
+
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
-            implementation(compose.material)
+            implementation(compose.material3)
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
+            api(libs.kotlinx.serialization.json)
+            implementation(libs.kotlinx.coroutines.core)
+
+
+            // ktor
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.serialization.kotlinx.json)
+            api(libs.ktor.client.logging)
+
+
+            // koin
+            api(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
+
+            // coil
+            implementation(libs.coil.compose)
+            implementation(libs.coil.network.ktor)
+
+            // datetime
+            implementation(libs.kotlinx.datetime)
+
+            // navigation
+            implementation(libs.navigation.compose)
+
+            // room
+            implementation(libs.androidx.room.runtime)
+            implementation(libs.androidx.sqlite.bundled)
+
+            // datastore
+            implementation(libs.kotlinx.atomicfu)               // for kmp-notifier too
+            implementation(libs.androidx.datastore.preferences)
+            implementation(libs.kotlinx.atomicfu)
+
+            // kmpauth
+            implementation(libs.kmpauth.google)     //Google One Tap Sign-In
+            implementation(libs.kmpauth.firebase)   //Integrated Authentications with Firebase
+            implementation(libs.kmpauth.uihelper)   //UiHelper SignIn buttons (AppleSignIn, GoogleSignInButton)
+
+
+            // firebase gitlive
+            implementation(libs.gitlive.firebase.firestore)
+            implementation (libs.gitlive.firebase.crashlytics)
+
+            // lottie
+            implementation (libs.compottie)
+
+
         }
+
+        commonTest.dependencies {
+            implementation(kotlin("test"))
+        }
+
+        iosMain.dependencies {
+            implementation(libs.ktor.client.darwin)
+            api(libs.kmp.notifier)  // documentation says to use export...
+        }
+
     }
 }
 
@@ -56,25 +149,147 @@ android {
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
-        versionName = "1.0"
+        versionName = getSemanticVersionName(
+            major = 1,
+            minor = 1
+        )
     }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-    buildTypes {
-        getByName("release") {
-            isMinifyEnabled = false
-        }
+    buildFeatures {
+        compose = true
+        buildConfig = true
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+
+    /*
+     * The signing keys used to create the debug and the developer-release builds of the application.
+     * Keystore is stored in the project and the signing information is hardcoded as seen below
+     * */
+    signingConfigs {
+        create("debug_signing") {
+            storeFile = rootProject.file("debug_keystore.jks")
+            storePassword = "emmawatson"
+            keyAlias = "key0"
+            keyPassword = "emmawatson"
+        }
+        create("release_dev_signing") {
+            storeFile = rootProject.file("release_keystore.jks")
+            storePassword = "emmastone"
+            keyAlias = "key0"
+            keyPassword = "emmastone"
+        }
+
+    }
+
+    // Build Variant Configuration
+    buildTypes {
+        create("prod") {
+            isMinifyEnabled = true
+            buildConfigField(type= "boolean", name = "BYPASS_LOCATION_CHECK", value = "false" )
+            buildConfigField(type= "boolean", name = "USE_STAGING_ORDERS_SERVICE", value = "false" )
+            buildConfigField(type = "boolean", name = "ENABLE_FIRESTORE_LOGGING", value = "false")
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            signingConfig = signingConfigs.getByName("release_dev_signing")
+        }
+        create("release_dev") {
+            applicationIdSuffix = ".release_dev"
+            isMinifyEnabled = false
+            buildConfigField(type= "boolean", name = "BYPASS_LOCATION_CHECK", value = "false" )
+            buildConfigField(type= "boolean", name = "USE_STAGING_ORDERS_SERVICE", value = "true" )
+            buildConfigField(type = "boolean", name = "ENABLE_FIRESTORE_LOGGING", value = "true")
+            signingConfig = signingConfigs.getByName("release_dev_signing")
+        }
+        debug {
+            applicationIdSuffix = ".debug"
+            isMinifyEnabled = false
+            buildConfigField(type= "boolean", name = "BYPASS_LOCATION_CHECK", value = "false" )
+            buildConfigField(type= "boolean", name = "USE_STAGING_ORDERS_SERVICE", value = "true" )
+            buildConfigField(type = "boolean", name = "ENABLE_FIRESTORE_LOGGING", value = "true")
+            signingConfig = signingConfigs.getByName("debug_signing")
+        }
+
+    }
+    // Build File Naming
+    applicationVariants.all {
+        val variant = this
+        outputs.forEach { output ->
+            val outputFileName =
+                "${rootProject.name}_${variant.name}_${variant.versionName}_${variant.versionCode}"
+            if (output is com.android.build.gradle.internal.api.BaseVariantOutputImpl) {
+                output.outputFileName = if (output.outputFileName.endsWith(".apk")) {
+                    "$outputFileName.apk"
+                } else if (output.outputFileName.endsWith(".aab")) {
+                    "$outputFileName.aab"
+                } else {
+                    output.outputFileName
+                }
+            }
+        }
     }
 }
 
 dependencies {
+    implementation(libs.firebase.common.ktx)
     debugImplementation(compose.uiTooling)
+    debugImplementation(libs.androidx.ui.tooling)
+
+    // room
+    add("kspAndroid", libs.androidx.room.compiler)
+    add("kspIosSimulatorArm64", libs.androidx.room.compiler)
+    add("kspIosX64", libs.androidx.room.compiler)
+    add("kspIosArm64", libs.androidx.room.compiler)
+
 }
+
+/**
+ * Helper Function that gets the version name in semantic versioning format (MAJOR.MINOR.PATCH)
+ * where PATCH is the git commit count
+ */
+private fun getSemanticVersionName(major: Int, minor: Int): String {
+    return "$major.$minor.${getGitCommitCount()}"
+}
+
+/**
+ * Helper Function that gets the total count of commits in the git repository
+ */
+private fun getGitCommitCount(): Int {
+    val stdout = ByteArrayOutputStream()
+    exec {
+        commandLine("cmd", "/c", "git", "rev-list", "--count", "HEAD")
+        standardOutput = stdout
+    }
+    return stdout.toString().trim().toInt()
+}
+
+/**
+ * Multiplatform Config File Generation
+ * */
+
+val apiKeys = Properties()
+val testApiKeysFile = rootProject.file("test_api_keys.properties")
+apiKeys.load(testApiKeysFile.inputStream())
+
+val googleTestApiKey = apiKeys.getProperty("loki_test_google_api_key") ?: ""
+val rzrpayTestKeyId = apiKeys.getProperty("rzrpay_test_key_id") ?: ""
+val rzrpayTestKeySecret = apiKeys.getProperty("rzrpay_test_key_secret") ?: ""
+
+buildkonfig {
+    packageName = "com.mixedwash"
+    objectName = "TestApiKeyConfig"
+
+    defaultConfigs {
+        buildConfigField(STRING, "googleApiKey", googleTestApiKey)
+        buildConfigField(STRING, "rzrpayTestKeyId", rzrpayTestKeyId)
+        buildConfigField(STRING, "rzrpayTestKeySecret", rzrpayTestKeySecret)
+    }
+}
+
 

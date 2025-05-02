@@ -1,0 +1,233 @@
+{
+  "path": "composeApp/src/commonMain/kotlin/com/mixedwash/features/support",
+  "name": "Support",
+  "type": "feature",
+  "purpose": "Provides customer support functionality including FAQ (Frequently Asked Questions), support contact information, and search capabilities for help topics to assist users with common questions and issues.",
+  "lastUpdated": {
+    "date": "2025-04-01",
+    "commit": "caf2977cfc4d11e9a1d77509d722f370dca9d86e"
+  },
+  "change_log": [
+    {
+      "commit_range": "caf2977cfc4d11e9a1d77509d722f370dca9d86e",
+      "date": "2025-04-01",
+      "summary": "Updated state file with current commit hash"
+    },
+    {
+      "commit_range": "caf2977cfc4d11e9a1d77509d722f370dca9d86e",
+      "date": "2025-04-01",
+      "summary": "Initial state capture of the support feature"
+    }
+  ],
+  "architecture": {
+    "pattern": "Clean Architecture with MVVM",
+    "description": "The support feature implements Clean Architecture with MVVM (Model-View-ViewModel) pattern, separating concerns into data, domain, and presentation layers.",
+    "layers": [
+      {
+        "name": "Data",
+        "description": "Contains repository implementation and service for fetching FAQ data"
+      },
+      {
+        "name": "Domain",
+        "description": "Contains repository interface and domain models for FAQ items, categories, and tags"
+      },
+      {
+        "name": "Presentation",
+        "description": "Contains UI components, ViewModel, and contract for the FAQ screen"
+      },
+      {
+        "name": "DI",
+        "description": "Contains dependency injection module for the support feature"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "FaqItemDTO",
+      "type": "Domain Model",
+      "purpose": "Represents a frequently asked question with its answer, categories, and tags",
+      "path": "domain/model/FaqItemDTO.kt",
+      "implementation_description": "Serializable data class containing question (String), answer (String), categories (List<FaqItemCategoryDto>), and tags (List<FaqItemTagDto>). The model represents individual FAQ entries with categorization and search metadata."
+    },
+    {
+      "name": "FaqData",
+      "type": "Domain Model",
+      "purpose": "Container for all FAQ items and support phone number",
+      "path": "domain/model/FaqItemDTO.kt",
+      "implementation_description": "Serializable data class containing phoneNumber (String) and faqItemDtos (List<FaqItemDTO>). Serves as the root container for all FAQ data."
+    },
+    {
+      "name": "FaqItemCategoryDto",
+      "type": "Domain Model",
+      "purpose": "Represents a category for FAQ items",
+      "path": "domain/model/FaqItemCategoryDto.kt",
+      "implementation_description": "Serializable data class with label (String) and icon (String) fields for categorizing FAQ items. Categories help organize FAQ items into logical groups."
+    },
+    {
+      "name": "FaqItemTagDto",
+      "type": "Domain Model",
+      "purpose": "Represents tags associated with FAQ items for search and filtering",
+      "path": "domain/model/FaqItemTagDto.kt",
+      "implementation_description": "Serializable data class containing tag (String) and other metadata used for filtering and searching FAQ items. Tags are hidden keywords associated with questions for improved search functionality."
+    },
+    {
+      "name": "FaqRepository",
+      "type": "Repository Interface",
+      "purpose": "Defines operations for fetching and filtering FAQ data",
+      "path": "domain/FaqRepository.kt",
+      "implementation_description": "Interface with methods getAllFaqs(), getFaqsByCategory(), searchFaqs(), and filterByTag(). Each method returns Result<T> to handle success/failure states."
+    },
+    {
+      "name": "FaqRepositoryImpl",
+      "type": "Repository Implementation",
+      "purpose": "Implements the FaqRepository interface",
+      "path": "data/FaqRepositoryImpl.kt",
+      "implementation_description": "Implementation that delegates to FaqService for data operations, with additional methods for filtering and searching FAQ items based on categories and text input."
+    },
+    {
+      "name": "FaqService",
+      "type": "Service",
+      "purpose": "Provides direct access to FAQ data from resources or API",
+      "path": "data/FaqService.kt",
+      "implementation_description": "Service class that loads FAQ data from JSON resources, with methods to fetch and deserialize FAQ data using kotlinx.serialization."
+    },
+    {
+      "name": "FaqScreen",
+      "type": "Screen",
+      "purpose": "UI component that displays FAQ items with search, filtering and categorization",
+      "path": "presentation/FaqScreen.kt",
+      "implementation_description": "Composable function that displays FAQ items in an expandable list format with search functionality, category filtering through chips, and contact support option. Implements animated card expansion for FAQ answers."
+    },
+    {
+      "name": "FaqScreenViewModel",
+      "type": "ViewModel",
+      "purpose": "Manages the state and business logic for the FAQ screen",
+      "path": "presentation/FaqScreenViewModel.kt",
+      "implementation_description": "ViewModel that loads FAQ data from the repository, handles search functionality, category filtering, and phone number calling. Uses StateFlow for UI state management."
+    },
+    {
+      "name": "FaqScreenContract",
+      "type": "Contract",
+      "purpose": "Defines the state and events for the FAQ screen",
+      "path": "presentation/FaqScreenContract.kt",
+      "implementation_description": "Contains FaqScreenState data class with FAQ data and UI state, and FaqScreenEvent sealed interface for user interactions like category selection, search, and phone calling."
+    },
+    {
+      "name": "SupportModule",
+      "type": "DI Module",
+      "purpose": "Provides dependency injection for support feature components",
+      "path": "di/SupportModule.kt",
+      "implementation_description": "Koin module that registers FaqService, FaqRepositoryImpl, and FaqScreenViewModel for dependency injection."
+    }
+  ],
+  "contracts": [
+    {
+      "name": "FaqScreenContract",
+      "path": "presentation/FaqScreenContract.kt",
+      "states": [
+        "FaqScreenState"
+      ],
+      "events": [
+        "FaqScreenEvent"
+      ],
+      "effects": []
+    }
+  ],
+  "utilities": [
+    {
+      "name": "FAQ JSON Resource",
+      "path": "composeResources/files/mock/faq_data.json",
+      "purpose": "JSON data source for FAQs",
+      "usage": "Used by FaqService to load FAQ data"
+    }
+  ],
+  "dependencies": [
+    {
+      "name": "Koin",
+      "type": "external",
+      "purpose": "Dependency injection for support components"
+    },
+    {
+      "name": "Compose",
+      "type": "external",
+      "purpose": "UI implementation for FAQ screen"
+    },
+    {
+      "name": "Kotlinx.Serialization",
+      "type": "external",
+      "purpose": "JSON deserialization of FAQ data"
+    },
+    {
+      "name": "Compose Resources",
+      "type": "external",
+      "purpose": "Loading FAQ data from resource files"
+    }
+  ],
+  "integrationPoints": [
+    {
+      "name": "Profile Screen",
+      "description": "Support feature can be accessed from the profile screen's support section"
+    },
+    {
+      "name": "Onboarding",
+      "description": "Users can navigate to help center from the onboarding flow"
+    },
+    {
+      "name": "Platform Integration",
+      "description": "Support feature integrates with platform-specific phone dialing functionality"
+    }
+  ],
+  "userFlows": [
+    {
+      "name": "Browse FAQs by Category",
+      "steps": [
+        "User navigates to FAQ screen",
+        "User selects a category from the category chips",
+        "System filters FAQ items to show only those in the selected category",
+        "User can expand individual FAQ items to view answers"
+      ]
+    },
+    {
+      "name": "Search FAQs",
+      "steps": [
+        "User enters search text in the search field",
+        "System filters FAQ items based on search terms in questions, answers, and tags",
+        "User can view and expand filtered results"
+      ]
+    },
+    {
+      "name": "Contact Support",
+      "steps": [
+        "User taps on call support button",
+        "System initiates a call to the support phone number",
+        "User is connected with customer service"
+      ]
+    },
+    {
+      "name": "Filter by Tags",
+      "steps": [
+        "User clicks on a tag associated with an FAQ",
+        "System filters all FAQs to show only those with the selected tag",
+        "User can view filtered FAQs related to the specific topic"
+      ]
+    }
+  ],
+  "dataFlow": {
+    "description": "The support feature loads FAQ data from resources or API, processes it for display, and provides filtering capabilities",
+    "sources": [
+      "JSON resource file containing FAQ data",
+      "User search input",
+      "Category and tag selections"
+    ],
+    "transformations": [
+      "Deserialization of JSON to domain models",
+      "Filtering by category, search text, or tags",
+      "Organization of FAQ items into expandable UI components"
+    ],
+    "destinations": [
+      "FAQ screen UI components",
+      "Filtered results based on user interaction"
+    ]
+  },
+  "developers_notes": "The support feature currently focuses on FAQ functionality with a static dataset stored in JSON resources. While this approach works well for initial deployment, it limits the ability to update FAQ content without app releases. A key enhancement would be implementing a backend API to fetch FAQ data dynamically and caching it for offline use. The search functionality is currently limited to exact matches and could be improved with fuzzy search and natural language processing to better handle user queries. The UI implementation features expandable cards with smooth animations, but on devices with many FAQ items, there might be performance issues that need optimization. The direct phone calling functionality works well but lacks alternative contact methods like email or chat support. The tag system is implemented but underutilized in the current UI; adding a visual representation of common tags as chips could improve discoverability of related questions."
+}

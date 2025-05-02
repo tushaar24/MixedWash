@@ -1,0 +1,180 @@
+{
+  "path": "composeApp/src/commonMain/kotlin/com/mixedwash/features/onboarding",
+  "name": "Onboarding",
+  "type": "feature",
+  "purpose": "Provides the main onboarding functionality for new users, including the UI, data handling, and business logic for displaying onboarding content and guiding users through the initial application experience.",
+  "lastUpdated": {
+    "date": "2025-04-01",
+    "commit": "caf2977cfc4d11e9a1d77509d722f370dca9d86e"
+  },
+  "change_log": [
+    {
+      "commit_range": "caf2977cfc4d11e9a1d77509d722f370dca9d86e",
+      "date": "2025-04-01",
+      "summary": "Updated state file with current commit hash"
+    },
+    {
+      "commit_range": "caf2977cfc4d11e9a1d77509d722f370dca9d86e",
+      "date": "2025-04-01",
+      "summary": "Initial state capture of the onboarding feature"
+    }
+  ],
+  "architecture": {
+    "pattern": "Clean Architecture with MVVM and MVI concepts",
+    "description": "The feature implements Clean Architecture with MVVM (Model-View-ViewModel) pattern and MVI (Model-View-Intent) concepts for state management. It separates concerns into data, domain, and presentation layers.",
+    "layers": [
+      {
+        "name": "Data",
+        "description": "Contains repository implementation for fetching onboarding data from resources"
+      },
+      {
+        "name": "Domain",
+        "description": "Contains repository interface and domain model for onboarding items"
+      },
+      {
+        "name": "Presentation",
+        "description": "Contains UI components, ViewModel, and contract for the onboarding screen"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "OnboardingItem",
+      "type": "Domain Model",
+      "purpose": "Represents an individual onboarding screen item with title, description, image URL, and background color",
+      "path": "domain/model/OnboardingItem.kt",
+      "implementation_description": "Serializable data class with fields for title (String), description (String), imageUrl (String), and backgroundColorHex (String). Used to represent each screen in the onboarding carousel."
+    },
+    {
+      "name": "OnboardingRepository",
+      "type": "Repository Interface",
+      "purpose": "Defines operations for fetching onboarding data",
+      "path": "domain/OnboardingRepository.kt",
+      "implementation_description": "Interface with a single method fetchOnboardingData() that returns Result<List<OnboardingItem>> to handle success/failure states safely."
+    },
+    {
+      "name": "OnboardingRepositoryImpl",
+      "type": "Repository Implementation",
+      "purpose": "Implements the OnboardingRepository interface to fetch onboarding data from resources",
+      "path": "data/OnboardingRepositoryImpl.kt",
+      "implementation_description": "Implementation that reads onboarding data from a JSON file in resources (files/mock/onboarding_data.json), deserializes it using kotlinx.serialization, and returns a Result containing the list of OnboardingItem objects."
+    },
+    {
+      "name": "OnboardingScreen",
+      "type": "Screen",
+      "purpose": "UI component that displays the onboarding carousel with animated transitions",
+      "path": "presentation/OnboardingScreen.kt",
+      "implementation_description": "Composable function that implements a horizontal pager with animated transitions between onboarding items. Features include background color animation, circular image containers, progress indicators, and action buttons for navigation. Implements skip functionality and next/previous navigation."
+    },
+    {
+      "name": "OnboardingScreenViewModel",
+      "type": "ViewModel",
+      "purpose": "Manages the state and business logic for the onboarding screen",
+      "path": "presentation/OnboardingScreenViewModel.kt",
+      "implementation_description": "ViewModel class that initializes onboarding data from the repository, manages UI state using StateFlow, and handles user events with side effects through a Channel. Implements event handler for navigation to Service screen or FAQ screen based on user selection."
+    },
+    {
+      "name": "OnboardingScreenContract",
+      "type": "Contract",
+      "purpose": "Defines the state, events, and UI events for the onboarding screen",
+      "path": "presentation/OnboardingScreenContract.kt",
+      "implementation_description": "Contains OnboardingScreenState data class, OnboardingScreenEvent sealed interface, and OnboardingScreenUiEvent sealed interface for managing the onboarding screen state and user interactions."
+    }
+  ],
+  "contracts": [
+    {
+      "name": "OnboardingScreenContract",
+      "path": "presentation/OnboardingScreenContract.kt",
+      "states": [
+        "OnboardingScreenState"
+      ],
+      "events": [
+        "OnboardingScreenEvent"
+      ],
+      "effects": [
+        "OnboardingScreenUiEvent"
+      ]
+    }
+  ],
+  "utilities": [
+    {
+      "name": "Color.parse()",
+      "path": "features/common/util/ColorExtensions.kt",
+      "purpose": "Converts hex color string to Color object",
+      "usage": "Used to convert background color hex strings from OnboardingItem to Color objects for UI rendering"
+    }
+  ],
+  "dependencies": [
+    {
+      "name": "Koin",
+      "type": "external",
+      "purpose": "Dependency injection for onboarding components"
+    },
+    {
+      "name": "Compose",
+      "type": "external",
+      "purpose": "UI implementation for onboarding screen"
+    },
+    {
+      "name": "Navigation Compose",
+      "type": "external",
+      "purpose": "Navigation to different routes after onboarding completion"
+    },
+    {
+      "name": "Kotlinx.Serialization",
+      "type": "external",
+      "purpose": "JSON deserialization of onboarding data"
+    },
+    {
+      "name": "Coil",
+      "type": "external",
+      "purpose": "Loading and displaying onboarding images"
+    },
+    {
+      "name": "Compose Resources",
+      "type": "external",
+      "purpose": "Reading onboarding data from resource files"
+    }
+  ],
+  "integrationPoints": [
+    {
+      "name": "App Entry Flow",
+      "description": "Serves as an entry point for new users to familiarize themselves with the application"
+    },
+    {
+      "name": "Services Screen",
+      "description": "Users can navigate to the Services screen after completing onboarding"
+    },
+    {
+      "name": "Help Center",
+      "description": "Users can navigate to the FAQ/Help Center screen from the onboarding flow"
+    }
+  ],
+  "userFlows": [
+    {
+      "name": "Onboarding Walkthrough",
+      "steps": [
+        "User opens the app for the first time",
+        "App loads onboarding data from resources",
+        "User is presented with a series of onboarding screens with animations",
+        "User can navigate through screens using the next button, gesture swiping, or skip ahead",
+        "On the final screen, user selects either 'Explore' to start using the app or 'Help Center' to view FAQ"
+      ]
+    }
+  ],
+  "dataFlow": {
+    "description": "The onboarding feature loads data from a JSON resource file and presents it to the user through an interactive UI",
+    "sources": [
+      "JSON resource file (files/mock/onboarding_data.json)"
+    ],
+    "transformations": [
+      "Deserialization of JSON to OnboardingItem objects",
+      "Conversion of hex color strings to Color objects for UI rendering"
+    ],
+    "destinations": [
+      "Onboarding screen UI components",
+      "Navigation events directing user to next screens"
+    ]
+  },
+  "developers_notes": "The onboarding feature is designed with animation-heavy UI components that provide an engaging first-time user experience. The current implementation uses local JSON resources for onboarding content, which allows for easy updates but requires app deployment for content changes. A future enhancement could be to fetch onboarding content from a remote API to enable dynamic updates without app releases. The animations are currently implemented using Compose's animation APIs, which may need performance optimization on lower-end devices. The feature is well-integrated with the navigation system but lacks analytics tracking for user engagement metrics, which would be valuable for measuring the effectiveness of different onboarding screens."
+}

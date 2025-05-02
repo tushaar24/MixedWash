@@ -1,0 +1,191 @@
+{
+  "path": "composeApp/src/commonMain/kotlin/com/mixedwash/features/laundryServices",
+  "name": "LaundryServices",
+  "type": "feature",
+  "purpose": "Provides core functionality for managing laundry services information, including service listing, pricing, and details for use by other features in the application.",
+  "lastUpdated": {
+    "date": "2025-04-01",
+    "commit": "caf2977cfc4d11e9a1d77509d722f370dca9d86e"
+  },
+  "change_log": [
+    {
+      "commit_range": "caf2977cfc4d11e9a1d77509d722f370dca9d86e",
+      "date": "2025-04-01",
+      "summary": "Updated state file with current commit hash"
+    },
+    {
+      "commit_range": "caf2977cfc4d11e9a1d77509d722f370dca9d86e",
+      "date": "2025-04-01",
+      "summary": "Initial state capture of the laundryServices feature"
+    }
+  ],
+  "architecture": {
+    "pattern": "Clean Architecture with MVVM",
+    "description": "The laundryServices feature implements Clean Architecture with MVVM (Model-View-ViewModel) pattern, separating concerns into data, domain, and presentation layers with use cases for business logic.",
+    "layers": [
+      {
+        "name": "Data",
+        "description": "Contains repository implementation, entities, and service layer for fetching laundry service data"
+      },
+      {
+        "name": "Domain",
+        "description": "Contains repository interfaces, use cases for business logic, and domain models"
+      },
+      {
+        "name": "Presentation",
+        "description": "Contains UI components, contracts, and state definitions for displaying laundry services"
+      },
+      {
+        "name": "DI",
+        "description": "Contains dependency injection module for the laundryServices feature"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "ServiceResponseEntity",
+      "type": "Data Entity",
+      "purpose": "Represents a laundry service with its basic information",
+      "path": "data/entities/ServiceResponseEntity.kt",
+      "implementation_description": "Serializable data class containing service information including name, price, ID, and unit of measurement. Used for data transfer between layers."
+    },
+    {
+      "name": "ServiceListResponseEntity",
+      "type": "Data Entity",
+      "purpose": "Container for a list of laundry services",
+      "path": "data/entities/ServiceListResponseEntity.kt",
+      "implementation_description": "Serializable data class containing a list of ServiceResponseEntity objects. Used as the root response container for service data."
+    },
+    {
+      "name": "LaundryServiceRepository",
+      "type": "Repository Interface",
+      "purpose": "Defines operations for fetching laundry service data",
+      "path": "domain/repository/LaundryServiceRepository.kt",
+      "implementation_description": "Interface with a single method fetchAllLaundryServices() that returns ServiceListResponseEntity with all available laundry services."
+    },
+    {
+      "name": "LaundryServicesRepositoryImpl",
+      "type": "Repository Implementation",
+      "purpose": "Implements the LaundryServiceRepository interface",
+      "path": "data/repository/LaundryServicesRepositoryImpl.kt",
+      "implementation_description": "Implementation that delegates to LaundryServicesService for fetching laundry service data. Provides a clean separation between data source and repository consumers."
+    },
+    {
+      "name": "LaundryServicesService",
+      "type": "Service",
+      "purpose": "Provides direct access to laundry service data via API",
+      "path": "data/service/remote/LaundryServicesService.kt",
+      "implementation_description": "Service class that uses Ktor HTTP client to fetch laundry service data. Currently implements a mock implementation that returns hardcoded data instead of making actual API calls."
+    },
+    {
+      "name": "FetchAllLaundryServicesUseCase",
+      "type": "Use Case Interface",
+      "purpose": "Defines business operation for retrieving all laundry services",
+      "path": "domain/useCases/FetchAllLaundryServicesUseCase.kt",
+      "implementation_description": "Interface defining a single operation fetchAllLaundryServices() that returns ServiceListResponseEntity with all available services."
+    },
+    {
+      "name": "FetchAllLaundryServicesUseCaseImpl",
+      "type": "Use Case Implementation",
+      "purpose": "Implements the FetchAllLaundryServicesUseCase",
+      "path": "domain/useCases/impl/FetchAllLaundryServicesUseCaseImpl.kt",
+      "implementation_description": "Implementation that delegates to LaundryServiceRepository to fetch all laundry services. Acts as a simple pass-through for now but could include additional business logic in the future."
+    },
+    {
+      "name": "LaundryScreenListUIState",
+      "type": "UI State",
+      "purpose": "Represents the UI state for the laundry service list screen",
+      "path": "presentation/laundryServiceListScreen/LaundryScreenListContract.kt",
+      "implementation_description": "Data class annotated with @Stable containing a list of ServiceResponseEntity objects for display in the UI."
+    },
+    {
+      "name": "LaundryScreenListUiEvents",
+      "type": "UI Events",
+      "purpose": "Defines UI events for the laundry service list screen",
+      "path": "presentation/laundryServiceListScreen/LaundryScreenListContract.kt",
+      "implementation_description": "Sealed class with ShowLaundryServices event that contains a list of ServiceResponseEntity objects for displaying laundry services."
+    },
+    {
+      "name": "LaundryServiceListScreen",
+      "type": "Screen",
+      "purpose": "Main UI component for displaying laundry services list",
+      "path": "presentation/laundryServiceListScreen/LaundryServiceListScreen.kt",
+      "implementation_description": "Composable function with basic implementation for displaying laundry services. Currently a minimal placeholder waiting for full implementation."
+    },
+    {
+      "name": "LaundryServiceModule",
+      "type": "DI Module",
+      "purpose": "Provides dependency injection for laundryServices feature components",
+      "path": "di/LaundryServiceModule.kt",
+      "implementation_description": "Koin module that registers LaundryServicesService, LaundryServicesRepositoryImpl, FetchAllLaundryServicesUseCaseImpl, and any future ViewModels for dependency injection."
+    }
+  ],
+  "contracts": [
+    {
+      "name": "LaundryScreenListContract",
+      "path": "presentation/laundryServiceListScreen/LaundryScreenListContract.kt",
+      "states": [
+        "LaundryScreenListUIState"
+      ],
+      "events": [],
+      "effects": [
+        "LaundryScreenListUiEvents"
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "name": "Koin",
+      "type": "external",
+      "purpose": "Dependency injection for laundryServices components"
+    },
+    {
+      "name": "Ktor",
+      "type": "external",
+      "purpose": "HTTP client for fetching laundry service data from API"
+    },
+    {
+      "name": "Kotlinx.Serialization",
+      "type": "external",
+      "purpose": "JSON serialization/deserialization for API data"
+    },
+    {
+      "name": "Compose",
+      "type": "external",
+      "purpose": "UI implementation for laundry service screens"
+    }
+  ],
+  "integrationPoints": [
+    {
+      "name": "Services Feature",
+      "description": "The laundryServices feature provides core service data models used by the services feature"
+    },
+    {
+      "name": "Local Cart",
+      "description": "Service information is used by the cart feature for item pricing and details"
+    }
+  ],
+  "userFlows": [
+    {
+      "name": "View Laundry Services",
+      "steps": [
+        "User navigates to laundry services screen",
+        "System fetches available laundry services from repository",
+        "User views list of available laundry services with prices",
+        "User can select services for more details"
+      ]
+    }
+  ],
+  "dataFlow": {
+    "description": "The laundryServices feature handles the flow of laundry service data from API to UI",
+    "sources": [
+      "API (currently mocked in LaundryServicesService)"
+    ],
+    "transformations": [],
+    "destinations": [
+      "UI components displaying laundry service information",
+      "Other features that consume laundry service data"
+    ]
+  },
+  "developers_notes": "The laundryServices feature is currently in an early development stage with minimal implementation. It's designed to be a core provider of laundry service data for other features rather than a standalone user-facing feature. The current implementation uses hardcoded mock data instead of actual API calls, which will need to be replaced with real API integration. There's also a lack of error handling, caching mechanisms, and proper UI implementation. The presentation layer is particularly underdeveloped with just placeholder components. The feature follows Clean Architecture but its use case implementation is currently just a pass-through - future versions should add business logic like filtering, sorting, or data transformation. This feature should be considered a foundation for extension rather than a complete implementation. A key architectural decision was to separate this as a core data provider from the user-facing 'services' feature that handles service selection and cart integration."
+}

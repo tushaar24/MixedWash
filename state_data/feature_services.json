@@ -1,0 +1,270 @@
+{
+  "path": "composeApp/src/commonMain/kotlin/com/mixedwash/features/services",
+  "name": "Services",
+  "type": "feature",
+  "purpose": "Provides functionality for browsing, selecting, and adding laundry services to the cart, allowing users to choose from various service options and customize their laundry orders.",
+  "lastUpdated": {
+    "date": "2025-04-01",
+    "commit": "caf2977cfc4d11e9a1d77509d722f370dca9d86e"
+  },
+  "change_log": [
+    {
+      "commit_range": "caf2977cfc4d11e9a1d77509d722f370dca9d86e",
+      "date": "2025-04-01",
+      "summary": "Updated state file with current commit hash"
+    },
+    {
+      "commit_range": "caf2977cfc4d11e9a1d77509d722f370dca9d86e",
+      "date": "2025-04-01",
+      "summary": "Initial state capture of the services feature"
+    }
+  ],
+  "architecture": {
+    "pattern": "Clean Architecture with MVVM",
+    "description": "The services feature implements Clean Architecture with MVVM (Model-View-ViewModel) pattern, separating concerns into data, domain, and presentation layers.",
+    "layers": [
+      {
+        "name": "Data",
+        "description": "Contains repository implementation and DTOs for service data"
+      },
+      {
+        "name": "Domain",
+        "description": "Contains repository interface defining service data operations"
+      },
+      {
+        "name": "Presentation",
+        "description": "Contains UI components, ViewModel, Contract, and presentation models for the services screen"
+      },
+      {
+        "name": "DI",
+        "description": "Contains dependency injection module for the services feature"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "ServiceDto",
+      "type": "Data Model",
+      "purpose": "Represents a laundry service with its details from the API",
+      "path": "data/remote/model/ServiceDto.kt",
+      "implementation_description": "Serializable data class containing service information including ID, title, description, image URL, items, pricing metadata, delivery times, and service details."
+    },
+    {
+      "name": "ServiceItemDto",
+      "type": "Data Model",
+      "purpose": "Represents an individual laundry service item that can be selected by users",
+      "path": "data/remote/model/ServiceItemDto.kt",
+      "implementation_description": "Serializable data class containing item ID, name, description, and metadata for laundry service items."
+    },
+    {
+      "name": "ItemPricingDto",
+      "type": "Data Model",
+      "purpose": "Represents pricing information for service items",
+      "path": "data/remote/model/ItemPricingDto.kt",
+      "implementation_description": "Serializable data class containing pricing details including item ID, price, description, offer price, and gender-specific pricing information."
+    },
+    {
+      "name": "PricingMetadataDto",
+      "type": "Data Model",
+      "purpose": "Contains metadata about service pricing structure",
+      "path": "data/remote/model/PricingMetadataDto.kt",
+      "implementation_description": "Serializable data class containing pricing type, price title, unit, minimum order value, and pricing list for services."
+    },
+    {
+      "name": "GenderDto",
+      "type": "Data Model",
+      "purpose": "Represents gender-specific categorization for service items",
+      "path": "data/remote/model/GenderDto.kt",
+      "implementation_description": "Serializable enum class for gender categorization (MEN, WOMEN, NA) used for filtering and pricing differentiation."
+    },
+    {
+      "name": "ServiceResponseDto",
+      "type": "Data Model",
+      "purpose": "Root response containing list of services from the API",
+      "path": "data/remote/model/ServiceResponseDto.kt",
+      "implementation_description": "Serializable data class containing a list of ServiceDto objects and schema version information."
+    },
+    {
+      "name": "ServicesDataRepository",
+      "type": "Repository Interface",
+      "purpose": "Defines operations for fetching service data",
+      "path": "domain/ServicesDataRepository.kt",
+      "implementation_description": "Interface with a single method getServices() that returns Result<ServiceResponseDto> to handle success/failure states."
+    },
+    {
+      "name": "MockServicesDataRepository",
+      "type": "Repository Implementation",
+      "purpose": "Implements the ServicesDataRepository interface with mock data",
+      "path": "data/remote/MockServicesDataRepository.kt",
+      "implementation_description": "Implementation that reads service data from a JSON resource file, deserializes it using kotlinx.serialization, and returns a Result containing the service data."
+    },
+    {
+      "name": "ServicePresentation",
+      "type": "Presentation Model",
+      "purpose": "UI representation of a service with presentation-specific information",
+      "path": "presentation/model/ServicePresentation.kt",
+      "implementation_description": "Data class containing UI-friendly representation of service data, including ID, title, description, image URL, delivery times, and presentation-specific fields."
+    },
+    {
+      "name": "ServiceItemPresentation",
+      "type": "Presentation Model",
+      "purpose": "UI representation of a service item",
+      "path": "presentation/model/ServiceItemPresentation.kt",
+      "implementation_description": "Data class containing UI-friendly representation of service item data, including ID, name, description, and metadata."
+    },
+    {
+      "name": "Gender",
+      "type": "Presentation Model",
+      "purpose": "Simplified gender enum for UI filtering",
+      "path": "presentation/model/Gender.kt",
+      "implementation_description": "Enum class for gender categorization (MEN, WOMEN, ANY) used for UI filtering of service items."
+    },
+    {
+      "name": "Mapper",
+      "type": "Utility",
+      "purpose": "Converts data models to presentation models",
+      "path": "presentation/model/Mapper.kt",
+      "implementation_description": "Contains extension functions to transform DTOs from the data layer to presentation models for the UI layer."
+    },
+    {
+      "name": "ServicesScreen",
+      "type": "Screen",
+      "purpose": "Main UI component for displaying and selecting services",
+      "path": "presentation/ServicesScreen.kt",
+      "implementation_description": "Composable function implementing the services screen UI with service list, selected service details, item selection, and cart integration."
+    },
+    {
+      "name": "ServicesScreenViewModel",
+      "type": "ViewModel",
+      "purpose": "Manages the state and business logic for the services screen",
+      "path": "presentation/ServicesScreenViewModel.kt",
+      "implementation_description": "ViewModel that loads service data from the repository, manages service selection, cart operations, filtering, and search functionality. Uses StateFlow for UI state management and handles integration with cart feature."
+    },
+    {
+      "name": "ServicesScreenContract",
+      "type": "Contract",
+      "purpose": "Defines the state, events, and UI events for the services screen",
+      "path": "presentation/ServicesScreenContract.kt",
+      "implementation_description": "Contains ServicesScreenState data class with service list and UI state, ServiceSubItemsListState for sub-item display, ServicesScreenEvent sealed class for user actions, and ServicesScreenUiEvent sealed class for UI events."
+    },
+    {
+      "name": "ServicesModule",
+      "type": "DI Module",
+      "purpose": "Provides dependency injection for services feature components",
+      "path": "di/ServicesModule.kt",
+      "implementation_description": "Koin module that registers MockServicesDataRepository and ServicesScreenViewModel for dependency injection."
+    }
+  ],
+  "contracts": [
+    {
+      "name": "ServicesScreenContract",
+      "path": "presentation/ServicesScreenContract.kt",
+      "states": [
+        "ServicesScreenState",
+        "ServiceSubItemsListState"
+      ],
+      "events": [
+        "ServicesScreenEvent"
+      ],
+      "effects": [
+        "ServicesScreenUiEvent"
+      ]
+    }
+  ],
+  "utilities": [
+    {
+      "name": "ServiceDTO to ServicePresentation Mapper",
+      "path": "presentation/model/Mapper.kt",
+      "purpose": "Transforms data models to presentation models",
+      "usage": "Used to convert service data from repository to UI-friendly format"
+    }
+  ],
+  "dependencies": [
+    {
+      "name": "Koin",
+      "type": "external",
+      "purpose": "Dependency injection for services components"
+    },
+    {
+      "name": "Compose",
+      "type": "external",
+      "purpose": "UI implementation for services screen"
+    },
+    {
+      "name": "Kotlinx.Serialization",
+      "type": "external",
+      "purpose": "JSON deserialization of service data"
+    },
+    {
+      "name": "Compose Resources",
+      "type": "external",
+      "purpose": "Loading service data from resource files"
+    },
+    {
+      "name": "Local Cart",
+      "type": "internal",
+      "purpose": "Integration with cart functionality for adding service items"
+    }
+  ],
+  "integrationPoints": [
+    {
+      "name": "Local Cart Feature",
+      "description": "Services feature integrates with local cart for adding and managing selected service items"
+    },
+    {
+      "name": "Home Screen",
+      "description": "Services can be accessed from the home screen through service category buttons"
+    },
+    {
+      "name": "Slot Selection",
+      "description": "After service selection, users proceed to slot selection for delivery timing"
+    }
+  ],
+  "userFlows": [
+    {
+      "name": "Browse Services",
+      "steps": [
+        "User navigates to services screen",
+        "User views list of available laundry services",
+        "User selects a service to view details",
+        "User can read service description, inclusions, exclusions, and delivery times"
+      ]
+    },
+    {
+      "name": "Select Service Items",
+      "steps": [
+        "User selects a specific service",
+        "User views available items within the service",
+        "User can filter items by gender",
+        "User can search for specific items",
+        "User adds items to cart by tapping the add button"
+      ]
+    },
+    {
+      "name": "Manage Service Cart",
+      "steps": [
+        "User can view selected items in the cart section",
+        "User can increment or decrement item quantities",
+        "User can remove items from the cart",
+        "User proceeds to checkout after selecting items"
+      ]
+    }
+  ],
+  "dataFlow": {
+    "description": "The services feature loads service data from resources or API, processes it for display, and integrates with cart feature for item selection",
+    "sources": [
+      "JSON resource file containing service data",
+      "User selection and filtering input"
+    ],
+    "transformations": [
+      "Deserialization of JSON to domain models",
+      "Mapping of data models to presentation models",
+      "Filtering by gender, search text, or service ID"
+    ],
+    "destinations": [
+      "Services screen UI components",
+      "Local cart for selected items"
+    ]
+  },
+  "developers_notes": "The services feature currently uses mock data from a JSON file rather than live API data. This simplifies development but will require refactoring when connecting to actual backend services. The gender filtering functionality is implemented but could be enhanced with additional filtering options like price range or service type. The UI implementation has been optimized for phone form factors but might need adjustments for tablet layouts to better utilize screen space. One current limitation is that pricing information doesn't dynamically update based on quantity selection - this calculation is currently handled in the cart feature, which could lead to confusion if prices change. The search functionality is basic text matching and could be improved with better relevance algorithms. Service images are currently using placeholders rather than real images due to the mock implementation. There's also limited error handling for network failures since we're using local resources."
+}

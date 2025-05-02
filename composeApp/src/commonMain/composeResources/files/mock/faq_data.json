@@ -1,0 +1,155 @@
+{
+  "phone_number": "9876543210",
+  "faq_item_dtos": [
+    {
+      "question": "How do I manage all the notifications on the App?",
+      "answer": "In the Profile section, go to Notification Settings. Here, you can turn all notifications on or off collectively. You can also customize notification for specific categories, such as Orders, Purchases, Promotions, and Offers, based on your preferences.",
+      "categories": [
+        "all"
+      ],
+      "tags": []
+    },
+    {
+      "question": "How do I check my booked tickets on the district app?",
+      "answer": "After booking, you'll receive all the ticket details via Whatsapp and email. You can also view your booking by going to the movie tickets section in your profile on the district app",
+      "categories": [
+        "all",
+        "pickup"
+      ],
+      "tags": []
+    },
+    {
+      "question": "Where can I set my event tickets?",
+      "answer": "Head to your profile on the app and find event tickets to view all your event bookings.",
+      "categories": [
+        "general",
+        "all",
+        "processing"
+      ],
+      "tags": []
+    },
+    {
+      "question": "How do I pay my dining bill using the District app?",
+      "answer": "After dining at a partner restaurant, simply open the restaurant's page in the district app and use the pay bill option. Alternatively, you can scan the district qr code if available at the restaurant",
+      "categories": [
+        "delivery",
+        "pickup",
+        "all"
+      ],
+      "tags": []
+    },
+    {
+      "question": "How do I manage all the notifications on the App?",
+      "answer": "In the Profile section, go to Notification Settings. Here, you can turn all notifications on or off collectively. You can also customize notification for specific categories, such as Orders, Purchases, Promotions, and Offers, based on your preferences.",
+      "categories": [
+        "all"
+      ],
+      "tags": []
+    },
+    {
+      "question": "How do I check my booked tickets on the district app?",
+      "answer": "After booking, you'll receive all the ticket details via Whatsapp and email. You can also view your booking by going to the movie tickets section in your profile on the district app",
+      "categories": [
+        "all",
+        "pickup"
+      ],
+      "tags": []
+    },
+    {
+      "question": "Where can I set my event tickets?",
+      "answer": "Head to your profile on the app and find event tickets to view all your event bookings.",
+      "categories": [
+        "general",
+        "all",
+        "processing"
+      ],
+      "tags": []
+    },
+    {
+      "question": "How do I pay my dining bill using the District app?",
+      "answer": "After dining at a partner restaurant, simply open the restaurant's page in the district app and use the pay bill option. Alternatively, you can scan the district qr code if available at the restaurant",
+      "categories": [
+        "delivery",
+        "pickup",
+        "all"
+      ],
+      "tags": []
+    },
+    {
+      "question": "How do I manage all the notifications on the App?",
+      "answer": "In the Profile section, go to Notification Settings. Here, you can turn all notifications on or off collectively. You can also customize notification for specific categories, such as Orders, Purchases, Promotions, and Offers, based on your preferences.",
+      "categories": [
+        "all"
+      ],
+      "tags": []
+    },
+    {
+      "question": "How do I check my booked tickets on the district app?",
+      "answer": "After booking, you'll receive all the ticket details via Whatsapp and email. You can also view your booking by going to the movie tickets section in your profile on the district app",
+      "categories": [
+        "all",
+        "pickup"
+      ],
+      "tags": []
+    },
+    {
+      "question": "Where can I set my event tickets?",
+      "answer": "Head to your profile on the app and find event tickets to view all your event bookings.",
+      "categories": [
+        "general",
+        "all",
+        "processing"
+      ],
+      "tags": []
+    },
+    {
+      "question": "How do I pay my dining bill using the District app?",
+      "answer": "After dining at a partner restaurant, simply open the restaurant's page in the district app and use the pay bill option. Alternatively, you can scan the district qr code if available at the restaurant",
+      "categories": [
+        "delivery",
+        "pickup",
+        "all"
+      ],
+      "tags": []
+    },
+    {
+      "question": "How do I manage all the notifications on the App?",
+      "answer": "In the Profile section, go to Notification Settings. Here, you can turn all notifications on or off collectively. You can also customize notification for specific categories, such as Orders, Purchases, Promotions, and Offers, based on your preferences.",
+      "categories": [
+        "all"
+      ],
+      "tags": []
+    },
+    {
+      "question": "How do I check my booked tickets on the district app?",
+      "answer": "After booking, you'll receive all the ticket details via Whatsapp and email. You can also view your booking by going to the movie tickets section in your profile on the district app",
+      "categories": [
+        "all",
+        "pickup"
+      ],
+      "tags": []
+    },
+    {
+      "question": "Where can I set my event tickets?",
+      "answer": "Head to your profile on the app and find event tickets to view all your event bookings.",
+      "categories": [
+        "general",
+        "all",
+        "processing"
+      ],
+      "tags": []
+    },
+    {
+      "question": "How do I pay my dining bill using the District app?",
+      "answer": "After dining at a partner restaurant, simply open the restaurant's page in the district app and use the pay bill option. Alternatively, you can scan the district qr code if available at the restaurant",
+      "categories": [
+        "delivery",
+        "pickup",
+        "all"
+      ],
+      "tags": [
+        "login_issue"
+      ]
+    }
+  ]
+}

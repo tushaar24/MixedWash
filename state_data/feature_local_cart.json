@@ -1,0 +1,190 @@
+{
+  "path": "composeApp/src/commonMain/kotlin/com/mixedwash/features/local_cart",
+  "name": "LocalCart",
+  "type": "feature",
+  "purpose": "Provides cart functionality for storing and managing selected laundry service items locally on the device, including CRUD operations and reactive updates for the cart state.",
+  "lastUpdated": {
+    "date": "2025-04-01",
+    "commit": "caf2977cfc4d11e9a1d77509d722f370dca9d86e"
+  },
+  "change_log": [
+    {
+      "commit_range": "caf2977cfc4d11e9a1d77509d722f370dca9d86e",
+      "date": "2025-04-01",
+      "summary": "Initial state capture of the local_cart feature"
+    }
+  ],
+  "architecture": {
+    "pattern": "Clean Architecture",
+    "description": "The local_cart feature follows Clean Architecture principles with a clear separation between data, domain, and presentation layers, focusing on local persistence of cart data.",
+    "layers": [
+      {
+        "name": "Data",
+        "description": "Contains repository implementation, data models, database access objects, and mappers for cart data"
+      },
+      {
+        "name": "Domain",
+        "description": "Contains repository interface, domain models, and error handling for cart operations"
+      },
+      {
+        "name": "DI",
+        "description": "Contains dependency injection module for the local cart feature with platform-specific implementations"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "CartItem",
+      "type": "Domain Model",
+      "purpose": "Represents an item in the user's cart with associated metadata",
+      "path": "domain/model/CartItem.kt",
+      "implementation_description": "Data class with fields for item ID, name, quantity, price, and other metadata needed to represent a laundry service item in the cart."
+    },
+    {
+      "name": "CartItemEntity",
+      "type": "Data Model",
+      "purpose": "Database representation of a cart item",
+      "path": "data/model/CartItemEntity.kt",
+      "implementation_description": "Entity class designed for database storage with fields matching the cart item structure but optimized for persistence."
+    },
+    {
+      "name": "Mapper",
+      "type": "Utility",
+      "purpose": "Converts between domain and data models",
+      "path": "domain/model/Mapper.kt",
+      "implementation_description": "Extension functions that transform between CartItem domain models and CartItemEntity data models to maintain separation between layers."
+    },
+    {
+      "name": "LocalCartRepository",
+      "type": "Repository Interface",
+      "purpose": "Defines operations for managing cart items",
+      "path": "domain/LocalCartRepository.kt",
+      "implementation_description": "Interface with methods for retrieving, adding, updating, and removing cart items, providing both synchronous and reactive access to cart data."
+    },
+    {
+      "name": "LocalCartRepositoryImpl",
+      "type": "Repository Implementation",
+      "purpose": "Implements the LocalCartRepository interface using local database storage",
+      "path": "data/repository/LocalCartRepositoryImpl.kt",
+      "implementation_description": "Implementation that delegates to CartDao for database operations, with additional error handling and business logic for cart operations."
+    },
+    {
+      "name": "CartDatabase",
+      "type": "Database",
+      "purpose": "Defines the structure of the cart database",
+      "path": "data/database/CartDatabase.kt",
+      "implementation_description": "Database class that defines the schema for cart storage and provides access to database operations through DAOs."
+    },
+    {
+      "name": "CartDao",
+      "type": "DAO",
+      "purpose": "Data Access Object for cart database operations",
+      "path": "data/database/CartDao.kt",
+      "implementation_description": "Interface with annotated methods for database operations on cart items including queries, insertions, updates, and deletions."
+    },
+    {
+      "name": "CartDatabaseBuilder",
+      "type": "Factory",
+      "purpose": "Creates and configures the cart database",
+      "path": "data/database/CartDatabaseBuilder.kt",
+      "implementation_description": "Factory class with platform-specific implementations for database creation and configuration."
+    },
+    {
+      "name": "CartError",
+      "type": "Error Handling",
+      "purpose": "Defines cart-specific error types",
+      "path": "domain/error/CartError.kt",
+      "implementation_description": "Sealed class hierarchy of cart-related errors for precise error handling and reporting."
+    },
+    {
+      "name": "LocalCartModule",
+      "type": "DI Module",
+      "purpose": "Provides dependency injection for local cart components",
+      "path": "di/LocalCartModule.kt",
+      "implementation_description": "Koin module that includes platform-specific module and registers CartDatabase, CartDao, and LocalCartRepository for dependency injection."
+    },
+    {
+      "name": "TargetLocalCartModule",
+      "type": "DI Module",
+      "purpose": "Platform-specific dependency injection for local cart",
+      "path": "di/LocalCartModule.kt",
+      "implementation_description": "Expect function with platform-specific actual implementations that provide the appropriate database builder for each platform."
+    }
+  ],
+  "dependencies": [
+    {
+      "name": "Koin",
+      "type": "external",
+      "purpose": "Dependency injection for local cart components"
+    },
+    {
+      "name": "SQLDelight",
+      "type": "external",
+      "purpose": "Local database implementation for cart storage"
+    },
+    {
+      "name": "Kotlinx.Coroutines",
+      "type": "external",
+      "purpose": "Asynchronous operations and Flow support for reactive cart updates"
+    }
+  ],
+  "integrationPoints": [
+    {
+      "name": "Services Feature",
+      "description": "The services feature adds items to the cart through the local cart repository"
+    },
+    {
+      "name": "Checkout Flow",
+      "description": "The checkout process retrieves cart items for order processing"
+    },
+    {
+      "name": "Cart UI Components",
+      "description": "UI components across the app display and interact with cart data through this feature"
+    }
+  ],
+  "userFlows": [
+    {
+      "name": "Add to Cart",
+      "steps": [
+        "User selects a service item from the services screen",
+        "System adds the item to the local cart",
+        "User receives confirmation that item was added",
+        "Cart count and total are updated across the UI"
+      ]
+    },
+    {
+      "name": "Modify Cart",
+      "steps": [
+        "User views cart items",
+        "User can increase or decrease item quantities",
+        "User can remove items from cart",
+        "System updates cart totals in real-time"
+      ]
+    },
+    {
+      "name": "Checkout",
+      "steps": [
+        "User reviews items in cart",
+        "System validates cart contents",
+        "User proceeds to checkout with cart items"
+      ]
+    }
+  ],
+  "dataFlow": {
+    "description": "The local_cart feature manages the flow of cart data between the UI and local storage",
+    "sources": [
+      "User selection of service items",
+      "Local database for persistent cart data"
+    ],
+    "transformations": [
+      "Conversion between domain models and database entities",
+      "Aggregation of cart items for totals and counts"
+    ],
+    "destinations": [
+      "Local SQL database for persistence",
+      "UI components for display",
+      "Checkout process for order creation"
+    ]
+  },
+  "developers_notes": "The local_cart feature is designed with a platform-agnostic approach using expect/actual declarations for database implementations. This allows for native database solutions on each platform while maintaining a consistent API. The feature currently uses SQLDelight for cross-platform database operations, which works well but requires platform-specific implementations. The cart implementation is entirely local, which means cart data is not synchronized across devices for the same user - this could be a future enhancement by integrating with a remote cart service. The repository returns results wrapped in Kotlin's Result class, which is a good practice for error handling but means consumers must handle potential failures explicitly. Flow is used for reactive updates, which enables real-time UI updates across the app when cart changes occur."
+}

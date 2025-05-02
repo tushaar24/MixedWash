@@ -1,0 +1,166 @@
+{
+  "path": "composeApp/src/commonMain",
+  "name": "CommonSourceSet",
+  "type": "sourceSet",
+  "purpose": "Contains shared Kotlin code that runs on both Android and iOS platforms, representing the core functionality of the Mixed Wash application.",
+  "lastUpdated": {
+    "date": "2025-04-01",
+    "commit": "caf2977cfc4d11e9a1d77509d722f370dca9d86e"
+  },
+  "change_log": [
+    {
+      "commit_range": "caf2977cfc4d11e9a1d77509d722f370dca9d86e",
+      "date": "2025-04-01",
+      "summary": "Updated state file with current commit hash"
+    },
+    {
+      "commit_range": "209101caec9ef7e157d1392ba29076d61a4c2a79",
+      "date": "2025-04-01",
+      "summary": "Updated state file with current commit hash"
+    },
+    {
+      "commit_range": "caf2977cfc4d11e9a1d77509d722f370dca9d86e",
+      "date": "2025-04-01",
+      "summary": "Enhanced state file schema and updated cross-feature component documentation"
+    }
+  ],
+  "architecture": {
+    "pattern": "Clean Architecture",
+    "description": "The project follows Clean Architecture principles with data, domain, and presentation layers across all features.",
+    "layers": [
+      {
+        "name": "Data",
+        "description": "Contains repositories, data sources, and models for API and local storage"
+      },
+      {
+        "name": "Domain",
+        "description": "Contains use cases, business logic, and domain models"
+      },
+      {
+        "name": "Presentation",
+        "description": "Contains ViewModels, UI state, and Composable UI components"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Core",
+      "type": "Package",
+      "purpose": "Contains fundamental components and utilities used across the application",
+      "subComponents": ["core/data", "core/di", "core/domain", "core/presentation", "core/booking"]
+    },
+    {
+      "name": "Features",
+      "type": "Package",
+      "purpose": "Contains feature-specific implementations organized in feature modules",
+      "subComponents": [
+        "features/address", 
+        "features/booking_details", 
+        "features/common", 
+        "features/getting_started",
+        "features/history",
+        "features/home",
+        "features/laundryServices",
+        "features/local_cart",
+        "features/location_availability",
+        "features/onboarding",
+        "features/order_confirmation",
+        "features/profile",
+        "features/services",
+        "features/slot_selection",
+        "features/support"
+      ]
+    },
+    {
+      "name": "UI and Theme",
+      "type": "Package",
+      "purpose": "Contains themes, colors, typography, and other style resources",
+      "subComponents": ["ui/theme"]
+    },
+    {
+      "name": "App.kt",
+      "type": "Entry Point",
+      "purpose": "Main entry point that sets up the application's theme, navigation, and state management"
+    }
+  ],
+  "crossFeatureComponents": [
+    {
+      "name": "AddressList",
+      "originatingFeature": "address",
+      "path": "features/address/presentation/components/AddressList.kt",
+      "consumedBy": ["home"],
+      "purpose": "Displays the list of saved addresses with options to edit or delete"
+    },
+    {
+      "name": "AddressSearch",
+      "originatingFeature": "address",
+      "path": "features/address/presentation/components/AddressSearch.kt",
+      "consumedBy": ["home"],
+      "purpose": "Allows users to search for addresses"
+    },
+    {
+      "name": "AddressBottomSheetState",
+      "originatingFeature": "home",
+      "path": "features/home/presentation/model/AddressBottomSheetState.kt",
+      "consumedBy": ["address"],
+      "purpose": "State container for address bottom sheet in the home screen"
+    }
+  ],
+  "dependencies": [
+    {
+      "name": "Jetpack Compose",
+      "type": "external",
+      "purpose": "UI framework for building native UIs"
+    },
+    {
+      "name": "Koin",
+      "type": "external",
+      "purpose": "Dependency injection framework"
+    },
+    {
+      "name": "Ktor",
+      "type": "external",
+      "purpose": "Networking and HTTP client"
+    },
+    {
+      "name": "Room",
+      "type": "external",
+      "purpose": "Local database persistence"
+    },
+    {
+      "name": "Kotlinx.Serialization",
+      "type": "external",
+      "purpose": "JSON serialization/deserialization"
+    },
+    {
+      "name": "Kotlinx.Coroutines",
+      "type": "external",
+      "purpose": "Asynchronous programming"
+    },
+    {
+      "name": "Coil",
+      "type": "external",
+      "purpose": "Image loading library"
+    },
+    {
+      "name": "DataStore",
+      "type": "external",
+      "purpose": "Preferences storage"
+    },
+    {
+      "name": "KMP-Auth",
+      "type": "external",
+      "purpose": "Cross-platform authentication"
+    },
+    {
+      "name": "Firebase",
+      "type": "external",
+      "purpose": "Backend services including authentication and Firestore"
+    },
+    {
+      "name": "Navigation Compose",
+      "type": "external",
+      "purpose": "Navigation framework for Compose"
+    }
+  ]
+}
