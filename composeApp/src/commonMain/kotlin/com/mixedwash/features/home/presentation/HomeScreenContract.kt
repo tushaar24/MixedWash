@@ -17,6 +17,7 @@ data class HomeScreenState(
     val offerCards: List<HomeOfferCard>? = null,
     val services: List<HomeService>? = null,
     val activeOrders: List<OrderStatusWidgetData>? = null,
+    val orderedBefore: Boolean = false,
     val introSection: IntroSection? = null,
     val isLoading: Boolean,
     val cartAddress: CartAddressState = CartAddressState.Unassigned,

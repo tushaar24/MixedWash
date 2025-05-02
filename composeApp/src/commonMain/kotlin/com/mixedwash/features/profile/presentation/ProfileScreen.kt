@@ -57,7 +57,7 @@ import com.mixedwash.ui.theme.screenBottomSpacing
 import com.mixedwash.ui.theme.screenHorizontalPadding
 import kotlinx.coroutines.flow.Flow
 import mixedwash.composeapp.generated.resources.Res
-import mixedwash.composeapp.generated.resources.ic_clothes_hanger
+import mixedwash.composeapp.generated.resources.ic_cloth_hangar_outlined
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.vectorResource
 
@@ -317,7 +317,7 @@ private fun PreviewProfileScreenItem() {
 
             ProfileScreenItem(
                 Modifier.align(Center),
-                resource = Res.drawable.ic_clothes_hanger,
+                resource = Res.drawable.ic_cloth_hangar_outlined,
                 text = "Order History",
                 onClick = {}
             )

@@ -113,9 +113,31 @@
         ],
         "angle": 70.999
       }
+    },
+    {
+      "id": "banner_laundry_this_good",
+      "heading": "Your laundry could look this good \uD83D\uDE0F",
+      "image_url": "https://assets-aac.pages.dev/assets/basket_clothes.png",
+      "button": "Order Now",
+      "link": "pickup_screen",
+      "ui_text_color": "#C3C3C3",
+      "content_text_color": "#A5A5A5",
+      "gradient": {
+        "gradient_colors": [
+          {
+            "color_hex": "#181818",
+            "color_stop": 0.0
+          },
+          {
+            "color_hex": "#313131",
+            "color_stop": 1.0
+          }
+        ],
+        "angle": 70.999
+      }
     }
   ],
-  "preferred_banner_id": "banner_washing_bed_sheets",
+  "preferred_banner_id": "banner_laundry_this_good",
   "offer_cards": [
     {
       "text": "**20% OFF** on your first order",

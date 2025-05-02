@@ -8,21 +8,27 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.SpanStyle
@@ -114,6 +120,34 @@ fun OrderReviewScreen(
                     .padding(top = headerContentSpacing)
             ) {
 
+                state.note?.let {
+                    Box(
+                        modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp))
+                            .background(BrandTheme.colors.gray.c200)
+                            .padding(horizontal = 16.dp, vertical = 24.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Info,
+                                contentDescription = null,
+                                tint = BrandTheme.colors.gray.dark,
+                                modifier = Modifier.size(20.dp)
+                            )
+
+                            Text(
+                                text = it,
+                                fontSize = 12.sp,
+                                lineHeight = 16.sp,
+                                color = BrandTheme.colors.gray.dark
+                            )
+                        }
+                    }
+                }
+
                 if (state.bookings.isNotEmpty() && state.deliveryAddress != null) {
                     Text(
                         text = "Booking Details",
@@ -201,7 +235,7 @@ fun OrderReviewScreen(
                             else -> "${item.name} · ${item.serviceName}"
                         }
 
-                        BookingItem (
+                        BookingItem(
                             title = title,
                             description = description,
                             annotatedPriceText = annotatedPriceText,
@@ -216,14 +250,14 @@ fun OrderReviewScreen(
                     }
                 }
 
-                state.note?.let {
-                    Text(
-                        text = it,
-                        modifier = Modifier.padding(vertical = 8.dp),
-                        fontSize = 12.sp,
-                        lineHeight = 16.sp
-                    )
-                }
+//                state.note?.let {
+//                    Text(
+//                        text = it,
+//                        modifier = Modifier.padding(vertical = 8.dp),
+//                        fontSize = 12.sp,
+//                        lineHeight = 16.sp
+//                    )
+//                }
 
                 Spacer(Modifier.height(16.dp))
             }
@@ -240,7 +274,6 @@ fun OrderReviewScreen(
         }
     }
 }
-
 
 
 //@Preview(showSystemUi = true)
