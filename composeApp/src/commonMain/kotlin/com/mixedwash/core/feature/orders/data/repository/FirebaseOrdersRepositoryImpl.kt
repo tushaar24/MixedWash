@@ -177,7 +177,7 @@ class FirebaseOrdersRepositoryImpl(
         }
     }
 
-    override suspend fun fetchActiveBookings(): Result<List<Pair<String, Booking>>> {
+    override suspend fun fetchActiveBookings(): Result<List<Pair<Order, Booking>>> {
         return orderService.fetchActiveOrders()
     }
 }

@@ -571,11 +571,13 @@ class HomeScreenViewModel(
             snackbarEvent("Error fetching active bookings", SnackBarType.WARNING)
         }.getOrNull()?.map { pair ->     // pair.first -> orderId, pair.second -> booking
             OrderStatusWidgetData(
-                orderId = pair.first,
+                orderId = pair.first.id,
                 bookingId = pair.second.id,
                 title = pair.second.bookingItems.first().serviceName,
                 subtitle = "",
-                description = ""
+                description = "",
+                outForDelivery = pair.second.outForDeliverySeconds != null,
+                pickedUp = pair.first.pickedUpSeconds != null,
             )
         } ?: emptyList()
 

@@ -24,16 +24,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.mixedwash.ui.theme.Gray100
-import com.mixedwash.ui.theme.Gray300
 import com.mixedwash.ui.theme.Gray500
 import com.mixedwash.ui.theme.Gray700
 import com.mixedwash.ui.theme.Green
 import com.mixedwash.ui.theme.dividerBlack
-import com.mixedwash.core.presentation.components.gradient
-import com.mixedwash.features.home.presentation.model.Gradient
 import mixedwash.composeapp.generated.resources.Res
-import mixedwash.composeapp.generated.resources.ic_progress_completed
+import mixedwash.composeapp.generated.resources.ic_progress_completed_small
 import mixedwash.composeapp.generated.resources.ic_progress_pending
 import mixedwash.composeapp.generated.resources.ic_progress_processing
 import org.jetbrains.compose.resources.painterResource
@@ -162,7 +158,7 @@ fun ProgressStage(stageName: String, state: Int, modifier: Modifier = Modifier) 
             2 ->
                 Box(modifier = Modifier.clip(CircleShape).background(color = Green)) {
                     Image(
-                        painter = painterResource(Res.drawable.ic_progress_completed),
+                        painter = painterResource(Res.drawable.ic_progress_completed_small),
                         contentDescription = null
                     )
                 }

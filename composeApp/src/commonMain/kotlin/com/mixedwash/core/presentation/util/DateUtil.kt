@@ -34,6 +34,19 @@ fun Long.getMonth(): String {
 }
 
 /**
+ * Converts a Unix timestamp (seconds since epoch) to a formatted date string
+ * in the format "MMM DD, YYYY" (e.g., "Aug 27, 2025").
+ */
+fun Long.convertToFullDate(): String {
+    val instant = Instant.fromEpochSeconds(this)
+    val localDate = instant.toLocalDateTime(TimeZone.currentSystemDefault()).date
+    val month = localDate.month.name.lowercase().replaceFirstChar { it.uppercase() }.take(3)
+    val day = localDate.dayOfMonth
+    val year = localDate.year
+    return "$month $day,  $year"
+}
+
+/**
  * Converts a Unix timestamp (seconds since epoch) to a formatted date and time string
  * in the format "MMM DD, HH:MM" (e.g., "Aug 27, 10:15")
  *

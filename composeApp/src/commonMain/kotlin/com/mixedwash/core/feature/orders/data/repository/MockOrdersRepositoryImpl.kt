@@ -169,13 +169,13 @@ class MockOrdersRepositoryImpl(
         }
     }
 
-    override suspend fun fetchActiveBookings(): Result<List<Pair<String, Booking>>> {
+    override suspend fun fetchActiveBookings(): Result<List<Pair<Order, Booking>>> {
         return Result.success(
             userOrders.flatMap { order ->
                 order.bookings.filter { booking ->
                     booking.deliveredSeconds == null
                 }.map { booking ->
-                    Pair(order.id, booking)
+                    Pair(order, booking)
                 }
             }
         )

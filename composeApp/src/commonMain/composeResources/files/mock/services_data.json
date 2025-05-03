@@ -396,7 +396,7 @@
       "items": [
         {
           "item_id": "item_service_shoe_cleaning",
-          "name": "Shoe Cleaning",
+          "name": "Shoe Clean",
           "item_pricing": {
             "type": "service_item_pricing",
             "price_per_unit": 35000,

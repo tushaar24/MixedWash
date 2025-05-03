@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mixedwash.features.home.presentation.components.OrderProgressStage
 import mixedwash.composeapp.generated.resources.Res
-import mixedwash.composeapp.generated.resources.ic_progress_completed
+import mixedwash.composeapp.generated.resources.ic_progress_completed_small
 import mixedwash.composeapp.generated.resources.ic_progress_pending
 import mixedwash.composeapp.generated.resources.ic_progress_processing
 import org.jetbrains.compose.resources.vectorResource
@@ -39,7 +39,7 @@ fun OrderProgressRow(
             ) {
                 Icon(
                     imageVector = vectorResource(
-                        if (entry.ordinal < stage.ordinal) Res.drawable.ic_progress_completed
+                        if (entry.ordinal < stage.ordinal) Res.drawable.ic_progress_completed_small
                         else if (entry.ordinal > stage.ordinal) Res.drawable.ic_progress_pending
                         else Res.drawable.ic_progress_processing
                     ),

@@ -42,7 +42,7 @@ interface OrderService {
     /**
      * Returns a list of active bookings along with their order ids.
      */
-    suspend fun fetchActiveOrders(): Result<List<Pair<String, Booking>>>
+    suspend fun fetchActiveOrders(): Result<List<Pair<Order, Booking>>>
 }
 
 class FirebaseOrderService(
@@ -226,14 +226,14 @@ class FirebaseOrderService(
     }
 
 
-    override suspend fun fetchActiveOrders(): Result<List<Pair<String, Booking>>> {
+    override suspend fun fetchActiveOrders(): Result<List<Pair<Order, Booking>>> {
         val orders = getAllOrdersMostRecentFirst().getOrNull() ?: return Result.failure(Exception("Failed to fetch orders"))
         return Result.success(
             orders.flatMap { order ->
                 order.bookings.filter { booking ->
                     booking.deliveredSeconds == null
                 }.map { booking ->
-                    Pair(order.id, booking)
+                    Pair(order, booking)
                 }
             }
         )

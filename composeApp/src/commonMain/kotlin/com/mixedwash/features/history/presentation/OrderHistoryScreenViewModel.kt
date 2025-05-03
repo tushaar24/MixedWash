@@ -96,6 +96,7 @@ class OrderHistoryScreenViewModel(
                     OrderHistoryPresentation(
                         order = order,
                         delivered = order.bookings.all { it.deliveredSeconds != null },
+                        cancelled = order.bookings.all { it.isCancelled },
                         serviceImageUrls = servicesDataRepository.getAllServices()
                             .onFailure { error ->
                                 snackbarEvent(

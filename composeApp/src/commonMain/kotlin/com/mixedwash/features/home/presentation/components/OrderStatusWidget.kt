@@ -40,26 +40,31 @@ fun OrderStatusWidget(
     onClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val stage = OrderProgressStage.PICKUP
     val pagerState = rememberPagerState(pageCount = { orders.size })
-    val textColorPrimary = if (stage.completed) colors.gray.c200 else colors.gray.dark
-    val textColorSecondary = if (stage.completed) colors.gray.c300 else colors.gray.c600
-    val matteGreen = Color(0xFF8AAA6B)
-    val gradientColors = if (stage.completed) {
-        listOf(
-            matteGreen,
-            matteGreen
-        )
-    } else {
-        listOf(
-            colors.gray.c100,
-            colors.gray.c300
-        )
-    }
-
     Column(modifier = modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
-        HorizontalPager(state = pagerState, pageSpacing = 24.dp) { page ->
+        HorizontalPager(
+            state = pagerState,
+            pageSpacing = 24.dp,
+            userScrollEnabled = orders.size > 1
+        ) { page ->
             val order = orders[page]
+            val stage = if (order.outForDelivery) OrderProgressStage.DELIVERY
+                        else if (order.pickedUp) OrderProgressStage.WASH
+                        else OrderProgressStage.PICKUP
+            val textColorPrimary = if (stage.completed) colors.gray.c200 else colors.gray.dark
+            val textColorSecondary = if (stage.completed) colors.gray.c300 else colors.gray.c600
+            val matteGreen = Color(0xFF8AAA6B)
+            val gradientColors = if (stage.completed) {
+                listOf(
+                    matteGreen,
+                    matteGreen
+                )
+            } else {
+                listOf(
+                    colors.gray.c100,
+                    colors.gray.c300
+                )
+            }
             Box(
                 modifier = Modifier.fillMaxWidth()
                     .clip(RoundedCornerShape(12.dp))
@@ -101,14 +106,14 @@ fun OrderStatusWidget(
                                 Box(contentAlignment = Alignment.Center) {
                                     Box(
                                         modifier = Modifier.size(10.dp)
-                                        .clip(CircleShape)
-                                        .background(textColorPrimary).padding(2.dp)
+                                            .clip(CircleShape)
+                                            .background(textColorPrimary).padding(2.dp)
                                     )
                                     Icon(
                                         modifier = Modifier.size(10.dp),
                                         imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
                                         contentDescription = null,
-                                        tint = colors.gray.c100
+                                        tint = gradientColors[0]
                                     )
                                 }
                             }

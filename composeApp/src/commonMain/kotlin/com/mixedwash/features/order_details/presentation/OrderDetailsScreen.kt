@@ -47,7 +47,7 @@ import mixedwash.composeapp.generated.resources.Res
 import mixedwash.composeapp.generated.resources.ic_location_pin
 import mixedwash.composeapp.generated.resources.ic_pickup_scooter
 import mixedwash.composeapp.generated.resources.ic_processing
-import mixedwash.composeapp.generated.resources.ic_progress_completed
+import mixedwash.composeapp.generated.resources.ic_progress_completed_small
 import org.jetbrains.compose.resources.vectorResource
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -139,7 +139,7 @@ fun OrderDetailsScreen(
                                         contentAlignment = Alignment.Center
                                     ) {
                                         Icon(
-                                            imageVector = vectorResource(if (order.bookings.all { it.deliveredSeconds != null }) Res.drawable.ic_progress_completed else Res.drawable.ic_processing),
+                                            imageVector = vectorResource(if (order.bookings.all { it.deliveredSeconds != null }) Res.drawable.ic_progress_completed_small else Res.drawable.ic_processing),
                                             contentDescription = null,
                                             tint = BrandTheme.colors.gray.c200,
                                         )

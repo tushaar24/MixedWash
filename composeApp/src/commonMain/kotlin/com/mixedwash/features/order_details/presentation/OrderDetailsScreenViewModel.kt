@@ -53,7 +53,7 @@ class OrderDetailsScreenViewModel(
             }
 
             is OrderDetailsScreenEvent.OnCancelOrder -> {
-                viewModelScope.launch { /* */ }
+                viewModelScope.launch { }
             }
 
             is OrderDetailsScreenEvent.OnDeleteOrder -> {

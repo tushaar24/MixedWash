@@ -8,6 +8,8 @@ data class OrderStatusWidgetData(
     val bookingId: String,
     val title: String,
     val subtitle: String,
+    val pickedUp: Boolean = false,
+    val outForDelivery: Boolean = false,
     val description: String
 )
 
@@ -17,7 +19,7 @@ fun OrderStatusDto.toPresentation(): OrderStatusWidgetData = OrderStatusWidgetDa
     bookingId = bookingId,
     title = title,
     subtitle = subtitle,
-    description = description
+    description = description,
 )
 
 //

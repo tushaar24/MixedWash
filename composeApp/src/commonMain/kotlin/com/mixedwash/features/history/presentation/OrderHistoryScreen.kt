@@ -18,10 +18,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
@@ -29,22 +28,18 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
 import com.mixedwash.WindowInsetsContainer
 import com.mixedwash.core.presentation.components.DefaultHeader
@@ -160,13 +155,14 @@ fun OrderHistoryScreen(
                     }
 
                     item {
-                        Spacer(Modifier.height(48.dp))
+                        Spacer(Modifier.height(32.dp))
                     }
 
                     if (state.stagingEnabled) {
                         item {
                             Box(
                                 modifier = Modifier.fillMaxWidth()
+                                    .clip(RoundedCornerShape(6.dp))
                                     .padding(16.dp)
                                     .noRippleClickable { onEvent(OrderHistoryScreenEvent.OnClearAllOrders) }
                                     .background(Color(0xFFFFE8BF))
@@ -183,7 +179,7 @@ fun OrderHistoryScreen(
                         }
 
                         item {
-                            Spacer(Modifier.height(24.dp))
+                            Spacer(Modifier.height(8.dp))
                         }
                     }
 
@@ -197,15 +193,14 @@ fun OrderHistoryScreen(
                             )
                         }
                     } else {
-                        itemsIndexed(state.orders) { index, orderPresentation ->
+                        itemsIndexed(state.orders) { _, orderPresentation ->
                             Column(modifier = Modifier.padding(horizontal = 16.dp)) {
                                 Box {
-                                    var showDropdown by remember { mutableStateOf(false) }
-                                    val tapPosition by remember { mutableStateOf(Offset.Zero) }
 
                                     OrderSummaryCard(
                                         order = orderPresentation.order,
                                         delivered = orderPresentation.delivered,
+                                        cancelled = orderPresentation.cancelled,
                                         serviceImageUrls = orderPresentation.serviceImageUrls,
                                         modifier = Modifier
                                             .fillMaxWidth()
@@ -217,32 +212,10 @@ fun OrderHistoryScreen(
                                                         )
                                                     )
                                                 },
-                                                onLongClick = { showDropdown = true },
                                                 interactionSource = remember { MutableInteractionSource() },
                                                 indication = null,
                                             )
                                     )
-
-                                    DropdownMenu(
-                                        expanded = showDropdown,
-                                        onDismissRequest = { showDropdown = false },
-                                        offset = DpOffset(
-                                            x = tapPosition.x.dp,
-                                            y = tapPosition.y.dp
-                                        )
-                                    ) {
-                                        DropdownMenuItem(
-                                            text = { Text("Delete Order") },
-                                            onClick = {
-                                                onEvent(
-                                                    OrderHistoryScreenEvent.OnDeleteOrder(
-                                                        orderPresentation.order.id
-                                                    )
-                                                )
-                                                showDropdown = false
-                                            }
-                                        )
-                                    }
                                 }
 
                                 Spacer(Modifier.height(24.dp))
