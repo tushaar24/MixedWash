@@ -31,8 +31,8 @@ import com.mixedwash.core.presentation.navigation.Route
 import com.mixedwash.core.presentation.util.Logger
 import com.mixedwash.core.presentation.util.ObserveAsEvents
 import com.mixedwash.features.services.presentation.components.DefaultButtonLarge
-import com.mixedwash.features.slot_selection.presentation.components.DeliveryNotes
 import com.mixedwash.features.slot_selection.presentation.components.BookingSlotContainer
+import com.mixedwash.features.slot_selection.presentation.components.DeliveryNotes
 import com.mixedwash.features.slot_selection.presentation.components.PickupSlotContainer
 import com.mixedwash.ui.theme.components.HeaderIconButton
 import com.mixedwash.ui.theme.headerContentSpacing
@@ -143,7 +143,7 @@ fun SlotSelectionScreen(
                         )
                     }
                     // Show booking slots for each service group
-                    state.bookingsSlotStates.forEach { bookingSlotState ->
+                    state.bookingSlotStateList.forEach { bookingSlotState ->
                         BookingSlotContainer(
                             bookingSlotState = bookingSlotState,
                             onDateSelected = { dateSlot ->

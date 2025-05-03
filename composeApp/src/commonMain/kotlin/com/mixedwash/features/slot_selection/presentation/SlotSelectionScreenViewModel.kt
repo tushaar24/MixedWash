@@ -3,9 +3,11 @@ package com.mixedwash.features.slot_selection.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mixedwash.core.presentation.models.SnackBarType
+import com.mixedwash.core.presentation.util.addHoursToSeconds
 import com.mixedwash.features.local_cart.data.model.CartItemEntity
 import com.mixedwash.features.local_cart.domain.LocalCartRepository
-import com.mixedwash.features.local_cart.domain.model.toDomain
+import com.mixedwash.features.local_cart.domain.model.CartItem
+import com.mixedwash.features.local_cart.domain.model.toCartItem
 import com.mixedwash.features.slot_selection.domain.model.error.onErrorOrderDraftCreation
 import com.mixedwash.features.slot_selection.domain.model.response.DateSlot
 import com.mixedwash.features.slot_selection.domain.model.response.TimeSlot
@@ -32,7 +34,7 @@ class SlotSelectionScreenViewModel(
         isLoading = true,
         screenTitle = "Book Slots",
         pickupSlotState = PickupSlotState(),
-        bookingsSlotStates = emptyList(),
+        bookingSlotStateList = emptyList(),
         deliveryNotes = "",
         screenEvent = { onEvent(it) }
     )
@@ -73,8 +75,8 @@ class SlotSelectionScreenViewModel(
                             dateSlotSelectedId = event.dateSlot.id
                         ),
 
-                        bookingsSlotStates = bookingsSlotStates.setAvailabilityAndEarliestSelection { startTimeStamp, _, bookingDurationInHrs, _ ->
-                            startTimeStamp >= event.timeSlot.startTimeStamp.plusHours(
+                        bookingSlotStateList = bookingSlotStateList.setAvailabilityAndEarliestSelection { startTimeStamp, _, bookingDurationInHrs, _ ->
+                            startTimeStamp >= event.timeSlot.startTimeStamp.addHoursToSeconds(
                                 bookingDurationInHrs
                             )
                         }
@@ -100,7 +102,7 @@ class SlotSelectionScreenViewModel(
             is SlotSelectionScreenEvent.OnBookingTimeSelected -> {
                 updateState {
                     copy(
-                        bookingsSlotStates = bookingsSlotStates.map { bookingSlotState ->
+                        bookingSlotStateList = bookingSlotStateList.map { bookingSlotState ->
                             if (bookingSlotState.id == event.bookingId) {
                                 bookingSlotState.copy(
                                     timeSlotSelectedId = event.timeSlot.id,
@@ -146,30 +148,26 @@ class SlotSelectionScreenViewModel(
                             val cartItems = localCartRepository.getCartItems()
                                 .getOrElse { throw (Exception("Failed to retrieve cart items")) }
 
-                            // Convert cart items to domain models and group by service ID
-                            val itemsByServiceId = cartItems.map { it.toDomain() }
-                                .groupBy { it.serviceId }
+                            val itemsByDropSlot = mutableMapOf<TimeSlot, List<CartItem>>()
+                            state.value.bookingSlotStateList.forEach { bookingSlotState ->
+                                val dropSlot = findTimeSlotById(
+                                    dateSlots = bookingSlotState.dateSlots,
+                                    timeSlotId = bookingSlotState.timeSlotSelectedId
+                                        ?: throw Exception("No Time Slot Selected for Booking")
+                                )?: throw Exception("Failed to find selected time slot")
 
-                            // Create a map of service ID to selected drop time slot
-                            val dropSlotsByServiceId = mutableMapOf<String, TimeSlot>()
-                            state.value.bookingsSlotStates.forEach { bookingState ->
-                                if (bookingState.timeSlotSelectedId != null) {
-                                    val dropSlot = findTimeSlotById(
-                                        bookingState.dateSlots,
-                                        bookingState.timeSlotSelectedId
-                                    )
-                                    if (dropSlot != null) {
-                                        // Associate this drop slot with all services in this booking group
-                                        bookingState.bookingServices.forEach { service ->
-                                            dropSlotsByServiceId[service.serviceId] = dropSlot
+                                itemsByDropSlot[dropSlot] =
+                                    cartItems.filter { cartItem ->
+                                        bookingSlotState.bookingServices.any {
+                                            it.serviceId == cartItem.serviceId
                                         }
-                                    }
-                                }
+                                    }.map { it.toCartItem() }
                             }
+
+
                             createOrderDraftUseCase(
-                                pickupTimeSlot = pickupSlot,
-                                cartItemsByServiceId = itemsByServiceId,
-                                dropTimeSlotsByServiceId = dropSlotsByServiceId,
+                                pickupSlot = pickupSlot,
+                                itemsByDropSlot = itemsByDropSlot,
                                 deliveryNotes = state.value.deliveryNotes
                             ).onErrorOrderDraftCreation(
                                 addressNotFound = {
@@ -198,7 +196,7 @@ class SlotSelectionScreenViewModel(
                                 },
                                 invalidSlots = {
                                     snackbarEvent(
-                                        "Invalid slots selected",
+                                        it.message?: "Invalid Slots Selected",
                                         type = SnackBarType.WARNING
                                     )
                                 },
@@ -207,7 +205,6 @@ class SlotSelectionScreenViewModel(
                                         e.message ?: "An unexpected error occurred",
                                         type = SnackBarType.ERROR
                                     )
-                                    e.printStackTrace()
                                 }
                             ).onSuccess { _ ->
                                 _uiEventsChannel.send(SlotSelectionScreenUiEvent.NavigateToReview)
@@ -230,7 +227,7 @@ class SlotSelectionScreenViewModel(
 
             is SlotSelectionScreenEvent.OnToggleBookingExpanded -> {
                 updateState {
-                        copy(bookingsSlotStates = bookingsSlotStates.map { booking ->
+                    copy(bookingSlotStateList = bookingSlotStateList.map { booking ->
                             if (booking.id == event.bookingId) {
                                 booking.copy(isExpanded = !booking.isExpanded)
                             } else booking
@@ -291,19 +288,19 @@ class SlotSelectionScreenViewModel(
                 return false
             }
 
-            if (bookingsSlotStates.any { it.timeSlotSelectedId == null }) {
+            if (bookingSlotStateList.any { it.timeSlotSelectedId == null }) {
                 snackbarEvent("All bookings require a delivery slot", type = SnackBarType.WARNING)
                 return false
             }
 
-            bookingsSlotStates.filter{it.timeSlotSelectedId != null}.forEach { bookingSlot ->
+            bookingSlotStateList.filter { it.timeSlotSelectedId != null }.forEach { bookingSlot ->
                 val dropTimeSlot =
                     findTimeSlotById(bookingSlot.dateSlots, bookingSlot.timeSlotSelectedId!!)
                 val pickupTimeSlot =
                     findTimeSlotById(pickupSlotState.slots, pickupSlotState.timeSlotSelectedId)
 
                 if (dropTimeSlot != null && pickupTimeSlot != null) {
-                    if (dropTimeSlot.startTimeStamp < pickupTimeSlot.startTimeStamp.plusHours(
+                    if (dropTimeSlot.startTimeStamp < pickupTimeSlot.startTimeStamp.addHoursToSeconds(
                             bookingSlot.serviceDurationInHrs
                         )
                     ) {
@@ -348,12 +345,6 @@ class SlotSelectionScreenViewModel(
         return null
     }
 
-    /**
-     * Add duration in hours to seconds
-     * */
-    private fun Long.plusHours(durationInHours: Int): Long {
-        return this + (durationInHours * 60 * 60)
-    }
 
     private fun triggerScreenLoad() {
         viewModelScope.launch {
@@ -371,7 +362,7 @@ class SlotSelectionScreenViewModel(
                             slotsResponse.pickupSlots.firstOrNull()?.timeSlots?.firstOrNull()?.startTimeStamp
                         return@run if (pickupStartTimeStamp != null) {
                             setAvailabilityAndEarliestSelection { startTimeStamp, _, bookingDurationInHrs, _ ->
-                                startTimeStamp >= pickupStartTimeStamp.plusHours(
+                                startTimeStamp >= pickupStartTimeStamp.addHoursToSeconds(
                                     bookingDurationInHrs
                                 )
                             }
@@ -387,7 +378,7 @@ class SlotSelectionScreenViewModel(
                             timeSlotSelectedId = slotsResponse.pickupSlots.firstOrNull()?.timeSlots?.firstOrNull()?.id,
                             isExpanded = true
                         ),
-                        bookingsSlotStates = bookingSlots,
+                        bookingSlotStateList = bookingSlots,
                     )
                 }
             }

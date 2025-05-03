@@ -10,11 +10,11 @@ import com.mixedwash.features.services.presentation.model.ItemPricing
 import com.mixedwash.features.services.presentation.model.ServiceItemMetadata
 import com.mixedwash.features.services.presentation.model.ServiceItemPresentation
 
-fun CartItemEntity.toDomain() = CartItem (
+fun CartItemEntity.toCartItem() = CartItem (
     itemId = itemId,
     name = name,
-    metadata = metadata?.toDomain(),
-    itemPricing = itemPricing.toDomain(),
+    metadata = metadata?.toServiceItemMetadata(),
+    itemPricing = itemPricing.toItemPricing(),
     serviceId = serviceId,
     deliveryTimeMinInHrs = deliveryTimeMinInHrs,
     deliveryTimeMaxInHrs = deliveryTimeMaxInHrs,
@@ -23,12 +23,12 @@ fun CartItemEntity.toDomain() = CartItem (
     serviceImageUrl = serviceImageUrl
 )
 
-fun ItemMetadataEntity.toDomain() = ServiceItemMetadata(
+fun ItemMetadataEntity.toServiceItemMetadata() = ServiceItemMetadata(
     imageUrl = imageUrl,
-    gender = gender?.toDomain()
+    gender = gender?.toGender()
 )
 
-fun ItemPricingEntity.toDomain() : ItemPricing = when (pricingType) {
+fun ItemPricingEntity.toItemPricing() : ItemPricing = when (pricingType) {
     PricingTypeEntity.FIXED -> ItemPricing.SubItemFixedPricingPresentation(
         fixedPrice = fixedPrice ?: 0
     )
@@ -44,7 +44,7 @@ fun ItemPricingEntity.toDomain() : ItemPricing = when (pricingType) {
     )
 }
 
-fun GenderEntity.toDomain() = when (this) {
+fun GenderEntity.toGender() = when (this) {
     GenderEntity.FEMALE -> Gender.FEMALE
     GenderEntity.MALE -> Gender.MALE
 }

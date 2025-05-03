@@ -19,7 +19,6 @@ import com.mixedwash.features.local_cart.domain.LocalCartRepository
 import com.mixedwash.features.local_cart.domain.error.onCartException
 import com.mixedwash.features.local_cart.domain.model.CartItem
 import com.mixedwash.features.local_cart.domain.model.toCartItem
-import com.mixedwash.features.local_cart.domain.model.toDomain
 import com.mixedwash.features.services.data.remote.model.ServiceDto
 import com.mixedwash.features.services.domain.ServicesDataRepository
 import com.mixedwash.features.services.presentation.model.Gender
@@ -59,7 +58,7 @@ class ServicesScreenViewModel(
         cartRepository.getCartItemFlow().getOrElse { flowOf(emptyList()) },
     ) { currentState, cartItems ->
         currentState.copy(
-            cartItems = cartItems.map { it.toDomain() },
+            cartItems = cartItems.map { it.toCartItem() },
             subItemsListState = currentState.subItemsListState?.let {
                 it.copy(
                     items = it.items.fastMap { subItem ->

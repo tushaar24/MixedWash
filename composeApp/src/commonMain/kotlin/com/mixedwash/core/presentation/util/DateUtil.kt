@@ -114,3 +114,10 @@ inline fun getDayOfWeekAbbrev(epochSeconds: Long): String {
     )
     return dayOfWeekAbbreviations[dayOfWeek.isoDayNumber - 1]
 }
+
+/**
+ * Add duration in hours to seconds
+ * */
+fun Long.addHoursToSeconds(durationInHours: Int): Long {
+    return this + (durationInHours * 60 * 60)
+}

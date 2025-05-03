@@ -1,6 +1,8 @@
 package com.mixedwash.core.presentation.components
 
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,7 +15,10 @@ import com.mixedwash.ui.theme.components.DefaultCircularProgressIndicator
 
 @Composable
 fun ClickableLoadingOverlay(isLoading: Boolean) {
-    Crossfade(targetState = isLoading) {
+    Crossfade(
+        targetState = isLoading,
+        animationSpec = spring(stiffness = Spring.StiffnessMedium)
+    ) {
         when (isLoading) {
             true -> Box(
                 modifier = Modifier

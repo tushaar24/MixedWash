@@ -14,5 +14,8 @@ data class CartItem(
     val deliveryTimeMinInHrs: Int,
     val deliveryTimeMaxInHrs: Int? = null,
     val quantity: Int
-)
+) {
+    val maximumDurationInHrs : Int
+        get() = deliveryTimeMaxInHrs ?: deliveryTimeMinInHrs
+}
 

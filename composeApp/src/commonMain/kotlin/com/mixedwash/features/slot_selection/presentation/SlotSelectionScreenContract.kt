@@ -12,12 +12,12 @@ data class SlotSelectionScreenState(
     val isLoading: Boolean,
     val screenTitle: String,
     val pickupSlotState: PickupSlotState,
-    val bookingsSlotStates: List<BookingSlotState>,
+    val bookingSlotStateList: List<BookingSlotState>,
     val screenEvent: (SlotSelectionScreenEvent) -> Unit = {},
     val deliveryNotes: String = "",
 ) {
     fun canSubmit(): Boolean {
-        return pickupSlotState.timeSlotSelectedId != null && bookingsSlotStates.all{it.timeSlotSelectedId != null}
+        return pickupSlotState.timeSlotSelectedId != null && bookingSlotStateList.all{it.timeSlotSelectedId != null}
     }
 }
 
