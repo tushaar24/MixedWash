@@ -114,7 +114,10 @@ class FirebaseOrdersRepositoryImpl(
     override suspend fun setOrderOutForPickup(orderId: String): Result<Unit> {
         return ifStaging {
             orderService.updateOrder(orderId) { order ->
-                order.copy(outForPickupSeconds = Clock.System.now().epochSeconds)
+                order.copy(
+                    outForPickupSeconds = Clock.System.now().epochSeconds,
+                    pickedUpSeconds = null
+                )
             }.map { }
         }
     }
@@ -129,7 +132,10 @@ class FirebaseOrdersRepositoryImpl(
 
     override suspend fun setBookingOutForDelivery(bookingId: String): Result<Unit> {
         return updateBooking(bookingId) { booking ->
-            booking.copy(outForDeliverySeconds = Clock.System.now().epochSeconds)
+            booking.copy(
+                outForDeliverySeconds = Clock.System.now().epochSeconds,
+                deliveredSeconds = null
+            )
         }
     }
 
