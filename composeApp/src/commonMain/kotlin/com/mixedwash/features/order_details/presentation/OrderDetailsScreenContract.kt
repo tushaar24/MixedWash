@@ -12,8 +12,8 @@ data class OrderDetailsScreenState(
 )
 
 enum class StagingOperationType(val title: String) {
-    CANCEL("Cancel Order"),
     DELETE("Delete Order"),
+    CANCEL("Cancel Booking"),
     SET_OUT_FOR_PICKUP("Set Order Out For Pickup"),
     SET_PICKED_UP("Set Order Picked Up"),
     SET_OUT_FOR_DELIVERY("Set Booking Out For Delivery"),
@@ -23,7 +23,7 @@ enum class StagingOperationType(val title: String) {
 
 sealed class OrderDetailsScreenEvent {
     data object Refresh: OrderDetailsScreenEvent()
-    data class OnCancelOrder(val orderId: String): OrderDetailsScreenEvent()
+    data class OnCancelBooking(val bookingId: String): OrderDetailsScreenEvent()
     data class OnDeleteOrder(val orderId: String): OrderDetailsScreenEvent()
     data class OnSetOutForPickup(val orderId: String): OrderDetailsScreenEvent()
     data class OnSetPickedUp(val orderId: String): OrderDetailsScreenEvent()

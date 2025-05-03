@@ -21,7 +21,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -53,9 +52,9 @@ fun OrderSummaryCard(
     cancelled: Boolean,
     modifier: Modifier = Modifier
 ) {
-    Box {
+    Box(modifier = modifier) {
+
         Column(
-            modifier = modifier,
             verticalArrangement = Arrangement.spacedBy(24.dp),
         ) {
             Row(
@@ -115,6 +114,7 @@ fun OrderSummaryCard(
                         "Out For Delivery",
                         GreenDark
                     )
+                    else if (order.pickedUpSeconds != null) Pair("Processing", colors.gray.c500)
                     else if (order.outForPickupSeconds != null) Pair("Out For Pickup", GreenDark)
                     else Pair("Processing", colors.gray.c500)
 
@@ -212,7 +212,7 @@ fun OrderSummaryCard(
         }
 
         if (cancelled) Box(
-            modifier = Modifier.matchParentSize().background(Color.White.copy(alpha = 0.4f))
+            modifier = Modifier.matchParentSize().background(colors.gray.c50.copy(alpha = 0.6f))
         )
     }
 }

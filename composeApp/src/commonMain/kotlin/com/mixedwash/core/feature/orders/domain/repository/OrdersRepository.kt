@@ -154,5 +154,5 @@ interface OrdersRepository {
      *
      * @return Result containing a list of (order ID, Booking) pairs on success, or an error if the operation fails.
      */
-    suspend fun fetchActiveBookings(): Result<List<Pair<String, Booking>>>
+    suspend fun fetchActiveBookings(): Result<List<Pair<Order, Booking>>>
 }

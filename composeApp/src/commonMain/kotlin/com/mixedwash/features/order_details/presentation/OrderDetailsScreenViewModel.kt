@@ -52,8 +52,8 @@ class OrderDetailsScreenViewModel(
                 }
             }
 
-            is OrderDetailsScreenEvent.OnCancelOrder -> {
-                viewModelScope.launch { }
+            is OrderDetailsScreenEvent.OnCancelBooking -> {
+                execute { ordersRepository.setBookingCancelled(event.bookingId) }
             }
 
             is OrderDetailsScreenEvent.OnDeleteOrder -> {

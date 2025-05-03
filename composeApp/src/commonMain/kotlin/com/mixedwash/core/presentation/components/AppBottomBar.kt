@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -61,7 +62,7 @@ fun AppBottomBar(
 ) {
     var selectedItem by remember { mutableStateOf(initialSelectedItem) }
     Box(
-        modifier = modifier.fillMaxWidth().background(BrandTheme.colors.gray.lighter),
+        modifier = modifier.fillMaxWidth().height(66.dp).background(BrandTheme.colors.gray.lighter),
     ) {
         Row(
             modifier = Modifier.fillMaxWidth()
@@ -70,18 +71,19 @@ fun AppBottomBar(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             BottomBarItem.entries.forEach { item ->
-                Box(modifier = Modifier.padding(12.dp).noRippleClickable {
-                    if (selectedItem != item) {
-                        selectedItem = item
-                        onNavigate(item.navigationRoute)
-                    }
-                }) {
+//                Box(modifier = Modifier.padding(12.dp)) {
                     Icon(
                         imageVector = vectorResource(if (item == selectedItem) item.iconFilled else item.iconOutlined),
                         contentDescription = null,
-                        tint = if (item == selectedItem) BrandTheme.colors.gray.darker else BrandTheme.colors.gray.c400
+                        tint = if (item == selectedItem) BrandTheme.colors.gray.darker else BrandTheme.colors.gray.c400,
+                        modifier = Modifier.noRippleClickable {
+                            if (selectedItem != item) {
+                                selectedItem = item
+                                onNavigate(item.navigationRoute)
+                            }
+                        }
                     )
-                }
+//                }
             }
         }
 

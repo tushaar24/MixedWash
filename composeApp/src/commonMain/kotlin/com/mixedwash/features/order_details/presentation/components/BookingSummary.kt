@@ -99,13 +99,33 @@ fun BookingSummary(
                             modifier = Modifier.fillMaxWidth().clickable {
                                 onEvent(
                                     when (type) {
-                                        StagingOperationType.CANCEL -> OrderDetailsScreenEvent.OnCancelOrder(orderId)
-                                        StagingOperationType.DELETE -> OrderDetailsScreenEvent.OnDeleteOrder(orderId)
-                                        StagingOperationType.SET_OUT_FOR_PICKUP -> OrderDetailsScreenEvent.OnSetOutForPickup(orderId)
-                                        StagingOperationType.SET_PICKED_UP -> OrderDetailsScreenEvent.OnSetPickedUp(orderId)
-                                        StagingOperationType.SET_OUT_FOR_DELIVERY -> OrderDetailsScreenEvent.OnSetOutForDelivery(booking.id)
-                                        StagingOperationType.SET_DELIVERED -> OrderDetailsScreenEvent.OnSetDelivered(booking.id)
-                                        StagingOperationType.SET_PAID -> OrderDetailsScreenEvent.OnSetPaid(booking.id)
+                                        StagingOperationType.CANCEL -> OrderDetailsScreenEvent.OnCancelBooking(
+                                            booking.id
+                                        )
+
+                                        StagingOperationType.DELETE -> OrderDetailsScreenEvent.OnDeleteOrder(
+                                            orderId
+                                        )
+
+                                        StagingOperationType.SET_OUT_FOR_PICKUP -> OrderDetailsScreenEvent.OnSetOutForPickup(
+                                            orderId
+                                        )
+
+                                        StagingOperationType.SET_PICKED_UP -> OrderDetailsScreenEvent.OnSetPickedUp(
+                                            orderId
+                                        )
+
+                                        StagingOperationType.SET_OUT_FOR_DELIVERY -> OrderDetailsScreenEvent.OnSetOutForDelivery(
+                                            booking.id
+                                        )
+
+                                        StagingOperationType.SET_DELIVERED -> OrderDetailsScreenEvent.OnSetDelivered(
+                                            booking.id
+                                        )
+
+                                        StagingOperationType.SET_PAID -> OrderDetailsScreenEvent.OnSetPaid(
+                                            booking.id
+                                        )
                                     }
                                 )
                                 scope.launch {
@@ -131,216 +151,233 @@ fun BookingSummary(
     Box(
         modifier = modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp))
             .background(BrandTheme.colors.gray.light)
-            .padding(vertical = 24.dp, horizontal = 16.dp),
     ) {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(24.dp)
+        Box(
+            modifier = Modifier.padding(vertical = 24.dp, horizontal = 16.dp),
         ) {
-            Row(
+            Column(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Column {
-                        Text(
-                            text = "Booking #${booking.id.takeLast(6)}",
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Medium
-                        )
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        Column {
+                            Text(
+                                text = "Booking #${booking.id.takeLast(6)}",
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Medium
+                            )
 
-                        Text(
-                            text = "${booking.dropSlotSelected.startTimeStamp.convertToDate()}, ${
-                                formattedHourTime(
-                                    booking.dropSlotSelected.startTimeStamp,
-                                    booking.dropSlotSelected.endTimeStamp
-                                )
-                            }",
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Medium,
-                            color = BrandTheme.colors.gray.c500
+                            Text(
+                                text = "${booking.dropSlotSelected.startTimeStamp.convertToDate()}, ${
+                                    formattedHourTime(
+                                        booking.dropSlotSelected.startTimeStamp,
+                                        booking.dropSlotSelected.endTimeStamp
+                                    )
+                                }",
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = BrandTheme.colors.gray.c500
+                            )
+                        }
+
+                        Icon(
+                            imageVector = vectorResource(Res.drawable.ic_pencil),
+                            contentDescription = null,
+                            tint = BrandTheme.colors.gray.c500,
+                            modifier = Modifier.size(20.dp)
+                                .clip(RoundedCornerShape(4.dp))
+                                .background(BrandTheme.colors.gray.c200)
+                                .padding(4.17.dp)
+                                .noRippleClickable {
+                                    scope.launch {
+                                        stagingOperationSheetState.show()
+                                    }
+                                }
                         )
                     }
 
-                    Icon(
-                        imageVector = vectorResource(Res.drawable.ic_pencil),
-                        contentDescription = null,
-                        tint = BrandTheme.colors.gray.c500,
-                        modifier = Modifier.size(20.dp)
-                            .clip(RoundedCornerShape(4.dp))
-                            .background(BrandTheme.colors.gray.c200)
-                            .padding(4.17.dp)
-                            .noRippleClickable {
-                                scope.launch {
-                                    stagingOperationSheetState.show()
+                    if (booking.deliveredSeconds != null) {
+                        StatusChip(
+                            text = "Delivered",
+                            textColor = GreenDark,
+                            backgroundColor = Color.Unspecified,
+                            borderColor = GreenDark,
+                        )
+                    } else if (booking.outForDeliverySeconds != null) {
+                        StatusChip(
+                            text = "Out for delivery",
+                            textColor = BrandTheme.colors.gray.c200,
+                            backgroundColor = GreenDark,
+                            borderColor = GreenDark,
+                        )
+                    } else if (booking.isCancelled) {
+                        StatusChip(
+                            text = "Cancelled",
+                            textColor = BrandTheme.colors.gray.dark,
+                            backgroundColor = BrandTheme.colors.gray.c300,
+                            borderColor = Color.Transparent,
+                        )
+                    } else {
+                        StatusChip(
+                            text = "Processing",
+                            textColor = BrandTheme.colors.gray.dark,
+                            backgroundColor = BrandTheme.colors.gray.c300,
+                            borderColor = Color.Transparent,
+                        )
+                    }
+                }
+
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    Column {
+                        booking.bookingItems.forEach { item ->
+
+                            val cost = item.calculateItemPrice()
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Row(
+                                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    AsyncImage(
+                                        model = ImageRequest.Builder(LocalPlatformContext.current)
+                                            .data(item.imageUrl ?: serviceImageUrls[item.serviceId])
+                                            .crossfade(true)
+                                            .build(),
+                                        contentDescription = null,
+                                        error = painterResource(Res.drawable.ic_drop),
+                                        modifier = Modifier.size(20.dp)
+                                    )
+
+                                    Text(
+                                        text = item.name,
+                                        fontSize = 12.sp,
+                                        fontWeight = FontWeight.Medium
+                                    )
                                 }
+
+                                Text(
+                                    text = "₹ $cost",
+                                    fontSize = 12.sp,
+                                )
                             }
-                    )
-                }
+                        }
+                    }
 
-                if (booking.deliveredSeconds != null) {
-                    StatusChip(
-                        text = "Delivered",
-                        textColor = GreenDark,
-                        backgroundColor = Color.Unspecified,
-                        borderColor = GreenDark,
-                    )
-                } else if (booking.outForDeliverySeconds != null) {
-                    StatusChip(
-                        text = "Out for delivery",
-                        textColor = BrandTheme.colors.gray.c200,
-                        backgroundColor = GreenDark,
-                        borderColor = GreenDark,
-                    )
-                } else {
-                    StatusChip(
-                        text = "Processing",
-                        textColor = BrandTheme.colors.gray.dark,
-                        backgroundColor = BrandTheme.colors.gray.c300,
-                        borderColor = Color.Transparent,
-                    )
-                }
-            }
+                    if (booking.outForDeliverySeconds != null) {
+                        HorizontalDivider(color = dividerBlack)
 
-            Column(
-                verticalArrangement = Arrangement.spacedBy(6.dp)
-            ) {
-                Column {
-                    booking.bookingItems.forEach { item ->
-
-                        val cost = item.calculateItemPrice()
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Row(
-                                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                AsyncImage(
-                                    model = ImageRequest.Builder(LocalPlatformContext.current)
-                                        .data(item.imageUrl ?: serviceImageUrls[item.serviceId])
-                                        .crossfade(true)
-                                        .build(),
-                                    contentDescription = null,
-                                    error = painterResource(Res.drawable.ic_drop),
-                                    modifier = Modifier.size(20.dp)
-                                )
-
-                                Text(
-                                    text = item.name,
-                                    fontSize = 12.sp,
-                                    fontWeight = FontWeight.Medium
-                                )
-                            }
+                            Text(
+                                text = "Subtotal",
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Medium,
+                            )
 
                             Text(
-                                text = "₹ $cost",
-                                fontSize = 12.sp,
+                                text = "₹ ${booking.calculateTotalPrice()}",
+                                fontWeight = FontWeight.Medium,
+                                fontSize = 12.sp
                             )
                         }
                     }
                 }
 
-                if (booking.outForDeliverySeconds != null) {
-                    HorizontalDivider(color = dividerBlack)
-
+                if (booking.deliveredSeconds != null || booking.outForDeliverySeconds != null) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(
-                            text = "Subtotal",
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Medium,
-                        )
+                        Column {
+                            Text(
+                                text = "Booking Total",
+                                fontSize = 12.sp,
+                                color = BrandTheme.colors.gray.dark,
+                            )
 
-                        Text(
-                            text = "₹ ${booking.calculateTotalPrice()}",
-                            fontWeight = FontWeight.Medium,
-                            fontSize = 12.sp
-                        )
-                    }
-                }
-            }
+                            Text(
+                                text = "₹ ${booking.calculateTotalPrice()}/-",
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = BrandTheme.colors.gray.c800
+                            )
+                        }
 
-            if (booking.deliveredSeconds != null || booking.outForDeliverySeconds != null) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column {
-                        Text(
-                            text = "Booking Total",
-                            fontSize = 12.sp,
-                            color = BrandTheme.colors.gray.dark,
-                        )
+                        if (booking.paymentId == null) {
+                            Box(
+                                modifier = Modifier.clip(RoundedCornerShape(6.dp))
+                                    .background(BrandTheme.colors.gray.darker)
+                                    .padding(horizontal = 14.dp, vertical = 8.dp)
+                                    .noRippleClickable { },
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                ) {
+                                    Text(
+                                        text = "Pay Now",
+                                        fontSize = 12.sp,
+                                        fontWeight = FontWeight.Medium,
+                                        color = BrandTheme.colors.gray.light
+                                    )
 
-                        Text(
-                            text = "₹ ${booking.calculateTotalPrice()}/-",
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            color = BrandTheme.colors.gray.c800
-                        )
-                    }
-
-                    if (booking.paymentId == null) {
-                        Box(
-                            modifier = Modifier.clip(RoundedCornerShape(6.dp))
-                                .background(BrandTheme.colors.gray.darker)
-                                .padding(horizontal = 14.dp, vertical = 8.dp)
-                                .noRippleClickable { },
-                            contentAlignment = Alignment.Center
-                        ) {
+                                    Icon(
+                                        imageVector = vectorResource(Res.drawable.ic_redirect_arrow),
+                                        contentDescription = null,
+                                        tint = BrandTheme.colors.gray.light
+                                    )
+                                }
+                            }
+                        } else {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                horizontalArrangement = Arrangement.spacedBy(6.dp)
                             ) {
                                 Text(
-                                    text = "Pay Now",
-                                    fontSize = 12.sp,
+                                    text = "Paid",
+                                    fontSize = 14.sp,
                                     fontWeight = FontWeight.Medium,
-                                    color = BrandTheme.colors.gray.light
+                                    lineHeight = 14.4.sp,
+                                    color = GreenDark
                                 )
 
                                 Icon(
-                                    imageVector = vectorResource(Res.drawable.ic_redirect_arrow),
+                                    imageVector = vectorResource(Res.drawable.ic_verified),
                                     contentDescription = null,
-                                    tint = BrandTheme.colors.gray.light
+                                    tint = GreenDark,
+                                    modifier = Modifier.size(18.dp)
                                 )
                             }
                         }
-                    } else {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(6.dp)
-                        ) {
-                            Text(
-                                text = "Paid",
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Medium,
-                                lineHeight = 14.4.sp,
-                                color = GreenDark
-                            )
-
-                            Icon(
-                                imageVector = vectorResource(Res.drawable.ic_verified),
-                                contentDescription = null,
-                                tint = GreenDark,
-                                modifier = Modifier.size(18.dp)
-                            )
-                        }
                     }
+                } else {
+                    OrderProgressRow(stage = if (orderPickedUp) OrderProgressStage.WASH else OrderProgressStage.PICKUP)
                 }
-            } else {
-                OrderProgressRow(stage = if (orderPickedUp) OrderProgressStage.WASH else OrderProgressStage.PICKUP)
             }
+        }
+
+        if (booking.isCancelled) {
+            Box(
+                modifier = Modifier.matchParentSize().clip(RoundedCornerShape(12.dp))
+                    .background(Color.White.copy(alpha = 0.6f))
+            )
         }
     }
 }

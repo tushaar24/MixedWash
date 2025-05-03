@@ -231,7 +231,7 @@ class FirebaseOrderService(
         return Result.success(
             orders.flatMap { order ->
                 order.bookings.filter { booking ->
-                    booking.deliveredSeconds == null
+                    booking.deliveredSeconds == null && !booking.isCancelled
                 }.map { booking ->
                     Pair(order, booking)
                 }

@@ -150,7 +150,9 @@ class FirebaseOrdersRepositoryImpl(
             booking.copy(
                 isCancelled = true,
                 activeCancellationRequestPlacedSeconds = Clock.System.now().epochSeconds,
-                cancellationReason = "Cancelled by user"
+                cancellationReason = "Cancelled by user",
+                outForDeliverySeconds = null,
+                deliveredSeconds = null,
             )
         }
     }
