@@ -145,7 +145,7 @@ fun OrderDetailsScreen(
                                         )
                                     }
 
-                                    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                                    Column {
                                         Text(
                                             text = "Order #${order.id.takeLast(6)}",
                                             fontSize = 16.sp,
