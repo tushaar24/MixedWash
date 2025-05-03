@@ -129,7 +129,7 @@ fun OrderSummaryCard(
                             color = colors.gray.dark
                         )
                     ) {
-                        append("${order.createdAtSeconds.convertToDate()} • ")
+                        append("${booking.dropSlotSelected.endTimeStamp.convertToDate()} • ")
                     }
                     withStyle(
                         style = SpanStyle(
