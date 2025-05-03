@@ -106,7 +106,12 @@ class OrderHistoryScreenViewModel(
                             }
                             .getOrNull()?.services?.associate {
                                 it.serviceId to it.imageUrl
-                            } ?: emptyMap()
+                            } ?: emptyMap(),
+                        imageUrls = order.bookings.flatMap { booking ->
+                            booking.bookingItems.map {
+                                it.imageUrl
+                            }
+                        },
                     )
                 }
 

@@ -48,6 +48,7 @@ import org.jetbrains.compose.resources.vectorResource
 fun OrderSummaryCard(
     order: Order,
     serviceImageUrls: Map<String, String>,
+    imageUrls: List<String?>,
     delivered: Boolean,
     cancelled: Boolean,
     modifier: Modifier = Modifier
@@ -163,7 +164,7 @@ fun OrderSummaryCard(
                                 ) {
                                     AsyncImage(
                                         model = ImageRequest.Builder(LocalPlatformContext.current)
-                                            .data(serviceImageUrls[item.serviceId]).crossfade(true)
+                                            .data(imageUrls[index] ?: serviceImageUrls[item.serviceId]).crossfade(true)
                                             .build(),
                                         contentDescription = null,
                                         error = painterResource(Res.drawable.ic_drop),
@@ -171,7 +172,7 @@ fun OrderSummaryCard(
                                     )
 
                                     Text(
-                                        text = item.name + if (item.serviceName == "Dry Clean") " • ${item.serviceName}" else "",
+                                        text = item.name + if (item.serviceName != item.name) " • ${item.serviceName}" else "",
                                         fontSize = 12.sp,
                                         fontWeight = FontWeight.Medium,
                                         color = colors.gray.dark

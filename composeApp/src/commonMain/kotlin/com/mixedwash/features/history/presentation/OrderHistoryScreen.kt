@@ -214,7 +214,8 @@ fun OrderHistoryScreen(
                                                 },
                                                 interactionSource = remember { MutableInteractionSource() },
                                                 indication = null,
-                                            )
+                                            ),
+                                        imageUrls = orderPresentation.imageUrls
                                     )
                                 }
 
