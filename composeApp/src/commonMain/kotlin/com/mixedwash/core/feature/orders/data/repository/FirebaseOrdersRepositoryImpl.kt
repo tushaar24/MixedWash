@@ -145,6 +145,16 @@ class FirebaseOrdersRepositoryImpl(
         }
     }
 
+    override suspend fun setBookingCancelled(bookingId: String): Result<Unit> {
+        return updateBooking(bookingId) { booking ->
+            booking.copy(
+                isCancelled = true,
+                activeCancellationRequestPlacedSeconds = Clock.System.now().epochSeconds,
+                cancellationReason = "Cancelled by user"
+            )
+        }
+    }
+
     /**
      * Helper function to update a specific booking within an order and return Unit.
      *

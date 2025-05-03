@@ -125,6 +125,18 @@ interface OrdersRepository {
     suspend fun setBookingPaid(bookingId: String, isPaid: Boolean): Result<Unit>
 
     /**
+     * Cancels a booking by its ID, marking it as cancelled by the user.
+     *
+     * This function updates the booking to record that it has been cancelled, including setting the cancellation timestamp
+     * and the reason for cancellation. The operation returns a Result indicating success or failure.
+     *
+     * @param bookingId The unique identifier of the booking to cancel.
+     * @return A Result<Unit> signifying the outcome of the cancellation operation.
+     */
+    suspend fun setBookingCancelled(bookingId: String): Result<Unit>
+
+
+    /**
      * Clears all staging orders.
      * Only available when using the staging collection.
      *
@@ -132,6 +144,15 @@ interface OrdersRepository {
      * @throws OrderException.IllegalStagingOperationException if not using the staging collection
      */
     suspend fun clearAllOrders(): Result<Unit>
+    
 
+    /**
+     * Fetches a list of active bookings.
+     *
+     * Active bookings are those that have not yet been marked as delivered.
+     * Each entry in the returned list pairs an order ID with its associated active booking.
+     *
+     * @return Result containing a list of (order ID, Booking) pairs on success, or an error if the operation fails.
+     */
     suspend fun fetchActiveBookings(): Result<List<Pair<String, Booking>>>
 }

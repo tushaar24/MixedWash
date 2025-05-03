@@ -150,6 +150,17 @@ class MockOrdersRepositoryImpl(
         }
     }
 
+    override suspend fun setBookingCancelled(bookingId: String): Result<Unit> {
+        return findOrderWithBookingAndUpdate(bookingId) { order, booking ->
+            val updatedBooking = booking.copy(
+                isCancelled = true,
+                activeCancellationRequestPlacedSeconds = Clock.System.now().epochSeconds,
+                cancellationReason = "Cancelled by user"
+            )
+            updateBookingInOrder(order, updatedBooking)
+        }
+    }
+
     override suspend fun clearAllOrders(): Result<Unit> {
         return withStagingMode {
             runCatching {
