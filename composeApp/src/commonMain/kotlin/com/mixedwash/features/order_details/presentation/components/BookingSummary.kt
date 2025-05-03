@@ -269,7 +269,7 @@ fun BookingSummary(
                 }
             }
 
-            if (booking.outForDeliverySeconds != null) {
+            if (booking.deliveredSeconds != null || booking.outForDeliverySeconds != null) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,

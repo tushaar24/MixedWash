@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.mixedwash.core.feature.orders.domain.repository.OrdersRepository
 import com.mixedwash.core.presentation.navigation.NavArgType
 import com.mixedwash.core.presentation.navigation.NavArgs
 import com.mixedwash.core.presentation.navigation.PopUpOption
@@ -16,6 +17,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 class OrderConfirmationScreenViewModel(
+    private val ordersRepository: OrdersRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -47,20 +49,23 @@ class OrderConfirmationScreenViewModel(
             }
 
             OrderConfirmationScreenEvent.OnOrderStatusClicked -> {
-                sendUiEvent(
-                    OrderConfirmationScreenUiEvent.Navigate(
-                        NavArgs(
-                            navType = NavArgType.Navigate(
-                                Route.OrderReviewRoute(
-                                    bookingId = route.bookingId,
-                                    destinationType = Route.OrderReviewRoute.DestinationType.VIEW_ORDER_BY_BOOKING_ID
-                                ),
-                                popUpOption = PopUpOption.PopToRoute(Route.HomeRoute, false),
-                                launchSingleTop = true
+                viewModelScope.launch {
+                    _uiEventsChannel.send(
+                        OrderConfirmationScreenUiEvent.Navigate(
+                            NavArgs(
+                                navType = NavArgType.Navigate(
+                                    Route.OrderDetailsRoute(
+                                        ordersRepository.getOrderByBookingId(
+                                            route.bookingId
+                                        ).getOrNull()?.id ?: "0"
+                                    ),
+                                    popUpOption = PopUpOption.PopToRoute(Route.HomeRoute, false),
+                                    launchSingleTop = true
+                                )
                             )
                         )
                     )
-                )
+                }
             }
 
             OrderConfirmationScreenEvent.OnSupportClicked -> {

@@ -57,46 +57,37 @@ class OrderDetailsScreenViewModel(
             }
 
             is OrderDetailsScreenEvent.OnDeleteOrder -> {
-                viewModelScope.launch {
-                    ordersRepository.deleteOrder(event.orderId)
-                    loadOrderDetails()
-                }
+                execute { ordersRepository.deleteOrder(event.orderId) }
             }
 
             is OrderDetailsScreenEvent.OnSetDelivered -> {
-                viewModelScope.launch {
-                    ordersRepository.setBookingDelivered(event.bookingId).getOrThrow()
-                    loadOrderDetails()
-                }
+                execute { ordersRepository.setBookingDelivered(event.bookingId) }
             }
 
             is OrderDetailsScreenEvent.OnSetOutForDelivery -> {
-                viewModelScope.launch {
-                    ordersRepository.setBookingOutForDelivery(event.bookingId)
-                    loadOrderDetails()
-                }
+                execute { ordersRepository.setBookingOutForDelivery(event.bookingId) }
             }
 
             is OrderDetailsScreenEvent.OnSetOutForPickup -> {
-                viewModelScope.launch {
-                    ordersRepository.setOrderOutForPickup(event.orderId)
-                    loadOrderDetails()
-                }
+                execute { ordersRepository.setOrderOutForPickup(event.orderId) }
             }
 
             is OrderDetailsScreenEvent.OnSetPaid -> {
-                viewModelScope.launch {
-                    ordersRepository.setBookingPaid(event.bookingId, true)
-                    loadOrderDetails()
-                }
+                execute { ordersRepository.setBookingPaid(event.bookingId, true) }
             }
 
             is OrderDetailsScreenEvent.OnSetPickedUp -> {
-                viewModelScope.launch {
-                    ordersRepository.setOrderPickedUp(event.orderId)
-                    loadOrderDetails()
-                }
+                execute { ordersRepository.setOrderPickedUp(event.orderId) }
             }
+        }
+    }
+
+    private fun execute(action: suspend () -> Unit) {
+        viewModelScope.launch {
+            _state.update { it.copy(isRefreshing = true) }
+            action()
+            loadOrderDetails()
+            _state.update { it.copy(isRefreshing = false) }
         }
     }
 

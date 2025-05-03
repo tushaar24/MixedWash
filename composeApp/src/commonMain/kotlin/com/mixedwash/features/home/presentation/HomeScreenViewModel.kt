@@ -7,6 +7,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mixedwash.core.feature.orders.domain.error.onOrderError
 import com.mixedwash.core.feature.orders.domain.repository.OrdersRepository
 import com.mixedwash.core.presentation.components.ButtonData
 import com.mixedwash.core.presentation.components.DialogPopupData
@@ -250,6 +251,8 @@ class HomeScreenViewModel(
     private fun onScreenStart() {
         viewModelScope.launch {
             updateState { copy(isLoading = true) }
+            val activeBookings = fetchActiveBookings()
+            updateState { copy(activeOrders = activeBookings) }
             // current address is the first source of truth.
             // otherwise check if a prev address had been assigned (probably location fetched)
             val currentAddress = addressRepository.getCurrentAddress().getOrNull()
@@ -275,16 +278,7 @@ class HomeScreenViewModel(
             homeScreenDataRepository.fetchData().onSuccess { data ->
                 _state.value = data.toPresentation().toUiState().copy(
                     cartAddress = _state.value.cartAddress,
-                    activeOrders = ordersRepository.fetchActiveBookings().getOrNull()
-                        ?.map { pair ->     // pair.first -> orderId, pair.second -> booking
-                            OrderStatusWidgetData(
-                                orderId = pair.first,
-                                bookingId = pair.second.id,
-                                title = pair.second.bookingItems.first().serviceName,
-                                subtitle = "",
-                                description = ""
-                            )
-                        } ?: emptyList()
+                    activeOrders = fetchActiveBookings()
                 )
             }.onFailure { error ->
                 snackbarEvent(
@@ -571,6 +565,19 @@ class HomeScreenViewModel(
     private fun updateState(action: HomeScreenState.() -> HomeScreenState) {
         _state.update(action)
     }
+
+    private suspend fun fetchActiveBookings() =
+        ordersRepository.fetchActiveBookings().onOrderError {
+            snackbarEvent("Error fetching active bookings", SnackBarType.WARNING)
+        }.getOrNull()?.map { pair ->     // pair.first -> orderId, pair.second -> booking
+            OrderStatusWidgetData(
+                orderId = pair.first,
+                bookingId = pair.second.id,
+                title = pair.second.bookingItems.first().serviceName,
+                subtitle = "",
+                description = ""
+            )
+        } ?: emptyList()
 
 }
 
