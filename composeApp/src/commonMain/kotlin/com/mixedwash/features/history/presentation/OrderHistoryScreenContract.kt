@@ -17,7 +17,7 @@ data class OrderHistoryPresentation(
     val serviceImageUrls: Map<String, String>,
     val delivered: Boolean,
     val cancelled: Boolean,
-    val imageUrls: List<String?>,
+    val imageUrls: List<List<String?>>,
 )
 
 sealed interface OrderHistoryScreenEvent {

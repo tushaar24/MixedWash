@@ -48,7 +48,7 @@ import org.jetbrains.compose.resources.vectorResource
 fun OrderSummaryCard(
     order: Order,
     serviceImageUrls: Map<String, String>,
-    imageUrls: List<String?>,
+    imageUrls: List<List<String?>>,
     delivered: Boolean,
     cancelled: Boolean,
     modifier: Modifier = Modifier
@@ -107,7 +107,7 @@ fun OrderSummaryCard(
                 )
             }
 
-            order.bookings.forEach { booking ->
+            order.bookings.forEachIndexed { outerIdx, booking ->
                 val progress =
                     if (booking.deliveredSeconds != null) Pair("Delivered", colors.gray.dark)
                     else if (booking.isCancelled) Pair("Cancelled", colors.gray.dark)
@@ -150,7 +150,7 @@ fun OrderSummaryCard(
 
                     Spacer(Modifier.height(8.dp))
 
-                    booking.bookingItems.forEachIndexed { index, item ->
+                    booking.bookingItems.forEachIndexed { innerIdx, item ->
 
                         Column {
                             Row(
@@ -164,7 +164,7 @@ fun OrderSummaryCard(
                                 ) {
                                     AsyncImage(
                                         model = ImageRequest.Builder(LocalPlatformContext.current)
-                                            .data(imageUrls[index] ?: serviceImageUrls[item.serviceId]).crossfade(true)
+                                            .data(imageUrls[outerIdx][innerIdx] ?: serviceImageUrls[item.serviceId]).crossfade(true)
                                             .build(),
                                         contentDescription = null,
                                         error = painterResource(Res.drawable.ic_drop),
@@ -193,7 +193,7 @@ fun OrderSummaryCard(
 //                                )
                             }
 
-                            if (index != booking.bookingItems.lastIndex) {
+                            if (innerIdx != booking.bookingItems.lastIndex) {
                                 Spacer(modifier = Modifier.height(6.dp))
                                 HorizontalDivider(
                                     color = colors.gray.light,
