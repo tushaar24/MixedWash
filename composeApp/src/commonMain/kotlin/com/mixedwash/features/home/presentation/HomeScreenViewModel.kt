@@ -586,7 +586,7 @@ class HomeScreenViewModel(
     private suspend fun fetchActiveBookings() =
         ordersRepository.fetchActiveBookings().onOrderError {
             snackbarEvent("Error fetching active bookings", SnackBarType.WARNING)
-        }.getOrNull()?.map { pair ->     // pair.first -> orderId, pair.second -> booking
+        }.getOrNull()?.map { pair ->     // pair.first -> order, pair.second -> booking
             OrderStatusWidgetData(
                 orderId = pair.first.id,
                 bookingId = pair.second.id,
@@ -594,6 +594,7 @@ class HomeScreenViewModel(
                 subtitle = "",
                 description = "",
                 outForDelivery = pair.second.outForDeliverySeconds != null,
+                outForPickup = pair.first.outForPickupSeconds != null,
                 pickedUp = pair.first.pickedUpSeconds != null,
             )
         } ?: emptyList()

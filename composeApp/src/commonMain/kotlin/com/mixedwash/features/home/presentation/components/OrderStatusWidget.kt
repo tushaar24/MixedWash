@@ -48,13 +48,19 @@ fun OrderStatusWidget(
             userScrollEnabled = orders.size > 1
         ) { page ->
             val order = orders[page]
-            val stage = if (order.outForDelivery) OrderProgressStage.DELIVERY
-                        else if (order.pickedUp) OrderProgressStage.WASH
-                        else OrderProgressStage.PICKUP
-            val textColorPrimary = if (stage.completed) colors.gray.c200 else colors.gray.dark
-            val textColorSecondary = if (stage.completed) colors.gray.c300 else colors.gray.c600
+            val completedTill = if (order.outForDelivery) OrderProgressStage.WASH
+                                else if (order.pickedUp) OrderProgressStage.PICKUP
+                                else OrderProgressStage.PLACED
+            val currentActive: OrderProgressStage? = if (order.outForDelivery) OrderProgressStage.DELIVERY
+                                    else if (order.pickedUp) OrderProgressStage.WASH
+                                    else if (order.outForPickup) OrderProgressStage.PICKUP
+                                    else null
+            val textColorPrimary =
+                if (currentActive?.completed == true) colors.gray.c200 else colors.gray.dark
+            val textColorSecondary =
+                if (currentActive?.completed == true) colors.gray.c300 else colors.gray.c600
             val matteGreen = Color(0xFF8AAA6B)
-            val gradientColors = if (stage.completed) {
+            val gradientColors = if (currentActive?.completed == true) {
                 listOf(
                     matteGreen,
                     matteGreen
@@ -119,7 +125,7 @@ fun OrderStatusWidget(
                             }
 
                             Text(
-                                text = stage.catchPhrase,
+                                text = currentActive?.catchPhrase ?: completedTill.catchPhrase,
                                 minLines = 2,
                                 lineHeight = 16.sp,
                                 fontSize = 12.sp,
@@ -135,7 +141,7 @@ fun OrderStatusWidget(
                         )
                     }
 
-                    OrderProgressRow(stage)
+                    OrderProgressRow(lastCompletedStage = completedTill, currentlyActiveStage = currentActive)
                 }
             }
         }

@@ -10,6 +10,7 @@ data class OrderStatusWidgetData(
     val subtitle: String,
     val pickedUp: Boolean = false,
     val outForDelivery: Boolean = false,
+    val outForPickup: Boolean = false,
     val description: String
 )
 

@@ -37,7 +37,9 @@ import com.mixedwash.core.presentation.components.OrderProgressRow
 import com.mixedwash.core.presentation.components.noRippleClickable
 import com.mixedwash.core.presentation.util.convertToDate
 import com.mixedwash.core.presentation.util.formattedHourTime
-import com.mixedwash.features.home.presentation.components.OrderProgressStage
+import com.mixedwash.features.home.presentation.components.OrderProgressStage.PICKUP
+import com.mixedwash.features.home.presentation.components.OrderProgressStage.PLACED
+import com.mixedwash.features.home.presentation.components.OrderProgressStage.WASH
 import com.mixedwash.features.order_details.presentation.OrderDetailsScreenEvent
 import com.mixedwash.features.order_details.presentation.StagingOperationType
 import com.mixedwash.ui.theme.GreenDark
@@ -60,6 +62,7 @@ fun BookingSummary(
     booking: Booking,
     orderId: String,
     orderPickedUp: Boolean,
+    orderOutForPickup: Boolean,
     serviceImageUrls: Map<String, String>,
     stagingOperations: List<StagingOperationType>,
     modifier: Modifier = Modifier
@@ -368,7 +371,10 @@ fun BookingSummary(
                         }
                     }
                 } else {
-                    OrderProgressRow(stage = if (orderPickedUp) OrderProgressStage.WASH else OrderProgressStage.PICKUP)
+                    OrderProgressRow(
+                        lastCompletedStage = if (orderPickedUp) PICKUP else PLACED,
+                        currentlyActiveStage = if (orderPickedUp) WASH else if (orderOutForPickup) PICKUP else null,
+                    )
                 }
             }
         }

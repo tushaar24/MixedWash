@@ -192,6 +192,7 @@ fun OrderDetailsScreen(
                                 serviceImageUrls = state.serviceImageUrls,
                                 stagingOperations = state.stagingOperations,
                                 scope = scope,
+                                orderOutForPickup = order.outForPickupSeconds != null
                             )
                         }
 

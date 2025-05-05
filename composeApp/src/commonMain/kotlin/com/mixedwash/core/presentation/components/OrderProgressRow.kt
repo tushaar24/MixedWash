@@ -22,10 +22,11 @@ import org.jetbrains.compose.resources.vectorResource
 
 @Composable
 fun OrderProgressRow(
-    stage: OrderProgressStage,
+    lastCompletedStage: OrderProgressStage,
+    currentlyActiveStage: OrderProgressStage? = null,
     modifier: Modifier = Modifier
 ) {
-    val textColorPrimary = if (stage.completed) colors.gray.c200 else colors.gray.dark
+    val textColorPrimary = if (currentlyActiveStage?.completed == true) colors.gray.c200 else colors.gray.dark
     val matteGreen = Color(0xFF8AAA6B)
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -39,12 +40,12 @@ fun OrderProgressRow(
             ) {
                 Icon(
                     imageVector = vectorResource(
-                        if (entry.ordinal < stage.ordinal) Res.drawable.ic_progress_completed_small
-                        else if (entry.ordinal > stage.ordinal) Res.drawable.ic_progress_pending
-                        else Res.drawable.ic_progress_processing
+                        if (entry.ordinal <= lastCompletedStage.ordinal) Res.drawable.ic_progress_completed_small
+                        else if (entry.ordinal == currentlyActiveStage?.ordinal) Res.drawable.ic_progress_processing
+                        else Res.drawable.ic_progress_pending
                     ),
                     contentDescription = null,
-                    tint = if (stage.completed) textColorPrimary else matteGreen,
+                    tint = if (currentlyActiveStage?.completed == true) textColorPrimary else matteGreen,
                     modifier = Modifier.size(18.dp)
                 )
 
