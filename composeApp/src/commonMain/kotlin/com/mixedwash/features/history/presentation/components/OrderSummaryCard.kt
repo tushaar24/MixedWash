@@ -121,7 +121,7 @@ fun OrderSummaryCard(
 
 //                val bookingDelivered = booking.deliveredSeconds != null
                 val dateAndStatusText = buildAnnotatedString {
-                    "${order.createdAtSeconds.convertToDate()} • ${progress.first}"
+                    "${booking.dropSlotSelected.endTimeStamp.convertToDate()} • ${progress.first}"
                     withStyle(
                         style = SpanStyle(
                             fontSize = 12.sp,

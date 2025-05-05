@@ -33,6 +33,7 @@ import com.mixedwash.libs.loki.geolocation.GeolocatorResult
 import com.mixedwash.ui.theme.Gray100
 import com.mixedwash.ui.theme.Gray800
 import com.mixedwash.ui.theme.Gray900
+import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -233,7 +234,7 @@ class HomeScreenViewModel(
 
             is HomeScreenEvent.OnOrderStatusWidgetClicked -> {
                 sendUiEvent(
-                    HomeScreenUiEvent.Navigate(Route.HistoryRoute)
+                    HomeScreenUiEvent.Navigate(Route.OrderDetailsRoute(event.orderId))
                 )
             }
         }
@@ -251,8 +252,24 @@ class HomeScreenViewModel(
     private fun onScreenStart() {
         viewModelScope.launch {
             updateState { copy(isLoading = true) }
-            val activeBookings = fetchActiveBookings()
-            updateState { copy(activeOrders = activeBookings) }
+
+            val activeBookingsDeferred = async { fetchActiveBookings() }
+            val ordersDeferred = async {
+                ordersRepository.getAllOrdersMostRecentFirst().onOrderError(
+                    other = { snackbarEvent("Error fetching orders", SnackBarType.ERROR) }
+                )
+            }
+
+            val activeBookings = activeBookingsDeferred.await()
+            ordersDeferred.await().onSuccess { orders ->
+                updateState {
+                    copy(
+                        orderedBefore = orders.isNotEmpty(),
+                        activeOrders = activeBookings
+                    )
+                }
+            }
+
             // current address is the first source of truth.
             // otherwise check if a prev address had been assigned (probably location fetched)
             val currentAddress = addressRepository.getCurrentAddress().getOrNull()

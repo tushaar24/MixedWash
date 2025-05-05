@@ -40,6 +40,7 @@ import com.mixedwash.core.presentation.util.ObserveAsEvents
 import com.mixedwash.core.presentation.util.convertToDateAndTime
 import com.mixedwash.features.order_details.presentation.components.BookingSummary
 import com.mixedwash.features.order_details.presentation.components.DetailsScreenHeaderContent
+import com.mixedwash.ui.theme.Green
 import com.mixedwash.ui.theme.components.HeaderIconButton
 import com.mixedwash.ui.theme.headerContentSpacing
 import kotlinx.coroutines.flow.Flow
@@ -47,7 +48,7 @@ import mixedwash.composeapp.generated.resources.Res
 import mixedwash.composeapp.generated.resources.ic_location_pin
 import mixedwash.composeapp.generated.resources.ic_pickup_scooter
 import mixedwash.composeapp.generated.resources.ic_processing
-import mixedwash.composeapp.generated.resources.ic_progress_completed_small
+import mixedwash.composeapp.generated.resources.ic_progress_completed_large
 import org.jetbrains.compose.resources.vectorResource
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -124,6 +125,7 @@ fun OrderDetailsScreen(
                     ) {
 
                         item {
+                            val complete = order.bookings.all { it.deliveredSeconds != null }
                             Column(
                                 verticalArrangement = Arrangement.spacedBy(16.dp)
                             ) {
@@ -135,13 +137,13 @@ fun OrderDetailsScreen(
                                         modifier = Modifier
                                             .clip(RoundedCornerShape(12.dp))
                                             .size(44.dp)
-                                            .background(BrandTheme.colors.gray.darker),
+                                            .background(if (complete) BrandTheme.colors.gray.light else BrandTheme.colors.gray.darker),
                                         contentAlignment = Alignment.Center
                                     ) {
                                         Icon(
-                                            imageVector = vectorResource(if (order.bookings.all { it.deliveredSeconds != null }) Res.drawable.ic_progress_completed_small else Res.drawable.ic_processing),
+                                            imageVector = vectorResource(if (complete) Res.drawable.ic_progress_completed_large else Res.drawable.ic_processing),
                                             contentDescription = null,
-                                            tint = BrandTheme.colors.gray.c200,
+                                            tint = if (complete) Green else BrandTheme.colors.gray.c200,
                                         )
                                     }
 
