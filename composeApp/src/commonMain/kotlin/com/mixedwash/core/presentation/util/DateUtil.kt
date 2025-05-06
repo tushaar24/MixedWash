@@ -108,25 +108,17 @@ fun formatTimestamp(timestamp: Long): String {
 /**
  * Returns string like "9 am - 11 am"
  * */
-inline fun formattedHourTime(startEpochSeconds: Long, endEpochSeconds: Long): String {
-    val startDateTime =
-        Instant.fromEpochSeconds(startEpochSeconds).toLocalDateTime(TimeZone.currentSystemDefault())
-    val endDateTime =
-        Instant.fromEpochSeconds(endEpochSeconds).toLocalDateTime(TimeZone.currentSystemDefault())
-
-    val startDateTimeString = startDateTime.run {
-        val hour = if (hour % 12 == 0) 12 else hour % 12
-        val amPm = if (hour < 12) "am" else "pm"
-        "$hour $amPm"
+fun formattedHourTime(startEpochSeconds: Long, endEpochSeconds: Long): String {
+    fun Long.toShortHourString(): String {
+        val instant = Instant.fromEpochSeconds(this)
+        val localDateTime = instant.toLocalDateTime(TimeZone.currentSystemDefault())
+        val hour = if (localDateTime.hour % 12 == 0) 12 else localDateTime.hour % 12
+        val amPm = if (localDateTime.hour < 12) "am" else "pm"
+        return "$hour$amPm"
     }
-    val endDateTimeString = endDateTime.run {
-        val hour = if (hour % 12 == 0) 12 else hour % 12
-        val amPm = if (hour < 12) "am" else "pm"
-        "$hour $amPm"
-    }
-
-    return "$startDateTimeString - $endDateTimeString"
+    return "${startEpochSeconds.toShortHourString()} - ${endEpochSeconds.toShortHourString()}"
 }
+
 
 
 
