@@ -19,10 +19,20 @@ fun Long.formatHour(): Pair<String, String> {
     return Pair(formattedTime, period)
 }
 
+/**
+ * Converts a Unix timestamp (seconds since epoch) into a pair containing:
+ * 1. The abbreviated day of the week (e.g., "MON", "TUE").
+ * 2. The zero-padded day of the month (e.g., "01", "27").
+ *
+ * @receiver The Unix timestamp in seconds.
+ * @return A Pair where the first element is the 3-letter uppercase day abbreviation
+ *         and the second element is the zero-padded day of the month.
+ */
 fun Long.getDayAndDate(): Pair<String, String> {
     val instant = Instant.fromEpochSeconds(this)
     val localDate = instant.toLocalDateTime(TimeZone.currentSystemDefault()).date
-    val dayOfWeek = localDate.dayOfWeek.name.take(3)
+    // Take the first 3 letters and convert to uppercase for consistency (e.g., MON, TUE)
+    val dayOfWeek = localDate.dayOfWeek.name.take(3).uppercase()
     val dayOfMonth = localDate.dayOfMonth.toString().padStart(2, '0')
     return Pair(dayOfWeek, dayOfMonth)
 }
@@ -117,6 +127,7 @@ inline fun formattedHourTime(startEpochSeconds: Long, endEpochSeconds: Long): St
 
     return "$startDateTimeString - $endDateTimeString"
 }
+
 
 
 inline fun getDayOfWeekAbbrev(epochSeconds: Long): String {

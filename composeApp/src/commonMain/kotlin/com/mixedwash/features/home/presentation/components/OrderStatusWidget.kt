@@ -32,6 +32,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.mixedwash.core.presentation.components.OrderProgressRow
+import com.mixedwash.core.presentation.util.convertToDate
+import com.mixedwash.core.presentation.util.formattedHourTime
 import com.mixedwash.features.home.presentation.model.OrderStatusWidgetData
 
 @Composable
@@ -49,12 +51,13 @@ fun OrderStatusWidget(
         ) { page ->
             val order = orders[page]
             val completedTill = if (order.outForDelivery) OrderProgressStage.WASH
-                                else if (order.pickedUp) OrderProgressStage.PICKUP
-                                else OrderProgressStage.PLACED
-            val currentActive: OrderProgressStage? = if (order.outForDelivery) OrderProgressStage.DELIVERY
-                                    else if (order.pickedUp) OrderProgressStage.WASH
-                                    else if (order.outForPickup) OrderProgressStage.PICKUP
-                                    else null
+            else if (order.pickedUp) OrderProgressStage.PICKUP
+            else OrderProgressStage.PLACED
+            val currentActive: OrderProgressStage? =
+                if (order.outForDelivery) OrderProgressStage.DELIVERY
+                else if (order.pickedUp) OrderProgressStage.WASH
+                else if (order.outForPickup) OrderProgressStage.PICKUP
+                else null
             val textColorPrimary =
                 if (currentActive?.completed == true) colors.gray.c200 else colors.gray.dark
             val textColorSecondary =
@@ -124,8 +127,15 @@ fun OrderStatusWidget(
                                 }
                             }
 
+                            // hacky solution - because there is only a single use-case for this alternate catchphrase
                             Text(
-                                text = currentActive?.catchPhrase ?: completedTill.catchPhrase,
+                                text = currentActive?.activeCatchPhrase
+                                    ?: "Order has been placed. Pickup will be performed on ${order.pickupStartTimeStamp.convertToDate()}, ${
+                                        formattedHourTime(
+                                            order.pickupStartTimeStamp,
+                                            order.pickedUpEndTimestamp
+                                        )
+                                    }",
                                 minLines = 2,
                                 lineHeight = 16.sp,
                                 fontSize = 12.sp,
@@ -141,7 +151,10 @@ fun OrderStatusWidget(
                         )
                     }
 
-                    OrderProgressRow(lastCompletedStage = completedTill, currentlyActiveStage = currentActive)
+                    OrderProgressRow(
+                        lastCompletedStage = completedTill,
+                        currentlyActiveStage = currentActive
+                    )
                 }
             }
         }
@@ -173,13 +186,13 @@ fun OrderStatusWidget(
 enum class OrderProgressStage(
     val displayName: String,
     val imageUrl: String,
-    val catchPhrase: String,
+    val activeCatchPhrase: String,
     val completed: Boolean = false,
 ) {
     PLACED(
         "Placed",
         "https://assets-aac.pages.dev/assets/delivery_scooter.png",
-        "Our captain is on his way to pickup your order"
+        "Our captain is on his way to pickup your order",
     ),
     PICKUP(
         "Pickup",

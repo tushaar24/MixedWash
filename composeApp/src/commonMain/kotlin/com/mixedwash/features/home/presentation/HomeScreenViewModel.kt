@@ -596,6 +596,8 @@ class HomeScreenViewModel(
                 outForDelivery = pair.second.outForDeliverySeconds != null,
                 outForPickup = pair.first.outForPickupSeconds != null,
                 pickedUp = pair.first.pickedUpSeconds != null,
+                pickedUpEndTimestamp = pair.second.pickupSlotSelected.endTimeStamp,
+                pickupStartTimeStamp = pair.second.pickupSlotSelected.startTimeStamp
             )
         } ?: emptyList()
 

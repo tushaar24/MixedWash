@@ -11,6 +11,8 @@ data class OrderStatusWidgetData(
     val pickedUp: Boolean = false,
     val outForDelivery: Boolean = false,
     val outForPickup: Boolean = false,
+    val pickupStartTimeStamp: Long = 0,
+    val pickedUpEndTimestamp: Long = 0,
     val description: String
 )
 
